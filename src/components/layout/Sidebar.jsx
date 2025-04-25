@@ -34,7 +34,7 @@ const categories = [
 ];
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [activeCategory, setActiveCategory] = useState(0);
 
   const toggleSidebar = () => {
