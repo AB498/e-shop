@@ -4,7 +4,6 @@ import ProductCarousel from "../ui/ProductCarousel";
 async function WeeklyDiscounts() {
   // Fetch products directly in the server component
   const products = await getProductsByCategories([3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 10);
-  console.log(products);
   // Pass the fetched data to the client component
   return (
     <ProductCarousel

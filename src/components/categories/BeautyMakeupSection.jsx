@@ -4,7 +4,6 @@ import ProductCarousel from "../ui/ProductCarousel";
 async function BeautyMakeupSection() {
   // Fetch products directly in the server component
   const products = await getProductsByCategories([13, 14, 15], 9);
-  console.log(products);
   // Pass the fetched data to the client component
   return (
     <ProductCarousel

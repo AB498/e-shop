@@ -4,7 +4,6 @@ import ProductCarousel from "../ui/ProductCarousel";
 export default async function VegetableAndFruitsServer() {
   // Fetch products directly in the server component
   const products = await getProductsByCategories([1, 2], 8);
-  console.log(products);
   // Pass the fetched data to the client component
   return (
     <ProductCarousel

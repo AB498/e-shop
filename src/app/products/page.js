@@ -1,5 +1,7 @@
 import ProductListingPage from '@/components/products/ProductListingPage';
 
-export default function ProductsPage() {
-  return <ProductListingPage />;
+export const dynamic = 'force-dynamic';
+
+export default function ProductsPage({ searchParams }) {
+  return <ProductListingPage searchParams={searchParams} />;
 }

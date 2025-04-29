@@ -2,6 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import SearchBar from './SearchBar';
 
 const Navigation = () => {
   return (
@@ -82,23 +83,7 @@ const Navigation = () => {
           </Link>
 
           {/* Search Bar */}
-          <div className="relative flex-grow max-w-2xl">
-            <div className="flex items-center border border-[#D2D2D2] rounded-full px-4 py-2 bg-white">
-              <input
-                type="text"
-                placeholder="Search for products (e.g. eggs, milk, potato)"
-                className="flex-grow bg-transparent outline-none text-[#555555] text-base "
-              />
-              <div className="relative w-5 h-5 ml-2">
-                <Image
-                  src="/images/navigation/search.png"
-                  alt="Search"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </div>
-          </div>
+          <SearchBar />
 
           {/* Promotions Section - Only visible on larger screens */}
           <div className="hidden lg:flex items-center space-x-8">
@@ -161,21 +146,7 @@ const Navigation = () => {
 
         {/* Mobile Search Bar */}
         <div className="mt-4 md:hidden">
-          <div className="flex items-center border border-[#D2D2D2] rounded-full px-4 py-2 bg-white">
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="flex-grow bg-transparent outline-none text-[#555555] text-sm "
-            />
-            <div className="relative w-4 h-4">
-              <Image
-                src="/images/navigation/search.png"
-                alt="Search"
-                fill
-                className="object-contain"
-              />
-            </div>
-          </div>
+          <SearchBar placeholder="Search products..." />
         </div>
       </div>
     </div>
