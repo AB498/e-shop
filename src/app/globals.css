@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: #FAF8F5;
+}
+
+/* Swiper custom styles */
+.carousel-container {
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+}
+
+/* Generic product carousel styles */
+.product-carousel {
+  padding-bottom: 40px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+.product-carousel .swiper-pagination,.swiper-pagination {
+  bottom: 0 !important;
+}
+
+.product-carousel .swiper-pagination-bullet,.swiper-pagination-bullet {
+  background: #006B51;
+  opacity: 0.5;
+}
+
+.product-carousel .swiper-pagination-bullet-active,.swiper-pagination-bullet-active {
+  background: #006B51;
+  opacity: 1;
+}
+
+.product-carousel .swiper-slide,.swiper-slide {
+  height: auto !important;
+  transition: transform 0.3s ease;
+}

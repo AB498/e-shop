@@ -1,5 +1,3 @@
-"use client";
-import { useState } from "react";
 import Topbar from "../components/layout/Topbar";
 import Navigation from "../components/layout/Navigation";
 import Hero from "../components/layout/Hero";
