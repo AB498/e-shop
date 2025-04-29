@@ -92,19 +92,19 @@ const FeaturedCarousel = () => {
   };
 
   return (
-    <div className="relative w-full h-[300px] mb-10 mt-6 overflow-visible">
+    <div className="relative w-full h-[440px] mb-10 mt-6 overflow-visible">
       {/* Carousel Container */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center justify-center w-full" >
         {/* All Slides */}
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className="absolute"
+            className="absolute w-1/2 aspect-video"
             style={getSlideStyle(index)}
           >
             <div
               onClick={() => goToSlide(index)}
-              className="relative w-[480px] h-[270px] rounded-lg shadow-lg overflow-hidden cursor-pointer"
+              className="relative w-full h-full rounded-lg shadow-lg overflow-hidden cursor-pointer"
               aria-label={`Go to slide ${index + 1}`}
             >
               <Image
@@ -127,7 +127,7 @@ const FeaturedCarousel = () => {
       {/* Navigation Arrows - Positioned outside the component */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+        className="absolute -left-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
         aria-label="Previous slide"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,7 +137,7 @@ const FeaturedCarousel = () => {
 
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+        className="absolute -right-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
         aria-label="Next slide"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

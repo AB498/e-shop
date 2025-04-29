@@ -116,54 +116,56 @@ const PopularCategories = () => {
       </div>
 
       {/* Categories Container with Overflow Hidden */}
-      <div className="relative overflow-hidden">
-        {/* Categories Grid */}
-        <div
-          ref={containerRef}
-          className="grid gap-6 transition-transform duration-500 ease-in-out"
-          style={{
-            gridTemplateColumns: `repeat(${totalCategories}, minmax(0, 1fr))`,
-            width: `calc(100% * ${totalCategories / visibleCategories})`,
-          }}
-        >
-          {categories.map((category) => (
-            <div key={category.id} className="flex bg-white rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full">
-              {/* Category Image */}
-              <div className="relative w-1/3 min-w-[120px]">
-                <div className="absolute inset-0 bg-[#B74B4B] rounded-[10px]"></div>
-                <div className="relative w-full h-full min-h-[200px]">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    fill
-                    className="object-cover rounded-[10px]"
-                    sizes="(max-width: 768px) 33vw, 25vw"
-                  />
+      <div className="relative overflow-visible">
+        <div className="relative overflow-hidden left-0 p-2">
+          {/* Categories Grid */}
+          <div
+            ref={containerRef}
+            className="grid gap-6 transition-transform duration-500 ease-in-out"
+            style={{
+              gridTemplateColumns: `repeat(${totalCategories}, minmax(0, 1fr))`,
+              width: `calc(100% * ${totalCategories / visibleCategories})`,
+            }}
+          >
+            {categories.map((category) => (
+              <div key={category.id} className="flex bg-white rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full">
+                {/* Category Image */}
+                <div className="relative w-1/3 min-w-[120px]">
+                  <div className="absolute inset-0 bg-[#B74B4B] rounded-[10px]"></div>
+                  <div className="relative w-full h-full min-h-[200px]">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      className="object-cover rounded-[10px]"
+                      sizes="(max-width: 768px) 33vw, 25vw"
+                    />
+                  </div>
+                </div>
+
+                {/* Category Content */}
+                <div className="p-5 flex-grow">
+                  <h3 className="font-semibold text-lg mb-3 ">{category.name}</h3>
+                  <ul className="space-y-1.5">
+                    {category.subcategories.map((subcategory, index) => (
+                      <li
+                        key={index}
+                        className="text-[#535353] text-base hover:text-black transition-colors cursor-pointer "
+                      >
+                        {subcategory}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
-
-              {/* Category Content */}
-              <div className="p-5 flex-grow">
-                <h3 className="font-semibold text-lg mb-3 ">{category.name}</h3>
-                <ul className="space-y-1.5">
-                  {category.subcategories.map((subcategory, index) => (
-                    <li
-                      key={index}
-                      className="text-[#535353] text-base hover:text-black transition-colors cursor-pointer "
-                    >
-                      {subcategory}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-[7px] w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
+          className="absolute left-0 top-1/2 transform -translate-x-1/2 z-10 bg-white rounded-[7px] w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
           aria-label="Previous categories"
         >
           <Image
@@ -176,7 +178,7 @@ const PopularCategories = () => {
 
         <button
           onClick={nextSlide}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-[7px] w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
+          className="absolute right-0 top-1/2 transform translate-x-1/2 z-10 bg-white rounded-[7px] w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
           aria-label="Next categories"
         >
           <Image

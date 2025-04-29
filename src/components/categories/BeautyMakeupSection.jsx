@@ -3,7 +3,7 @@ import ProductCarousel from "../ui/ProductCarousel";
 // This is a Server Component that fetches data
 async function BeautyMakeupSection() {
   // Fetch products directly in the server component
-  const products = await getProductsByCategories([1, 2, 3, 4, 5, 6, 7], 9);
+  const products = await getProductsByCategories([13, 14, 15], 9);
   console.log(products);
   // Pass the fetched data to the client component
   return (
