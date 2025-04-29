@@ -17,7 +17,7 @@ const Hero = () => {
                         alt=""
                         className="w-6 h-6 mr-4 object-contain"
                     />
-                    <p className="text-[14px] font-['Open_Sans'] text-white font-normal">
+                    <p className="text-[14px]  text-white font-normal">
                         Your Trusted Source for Thai & Bangladeshi Groceries
                     </p>
                 </div>
@@ -28,7 +28,7 @@ const Hero = () => {
                         <input
                             type="text"
                             placeholder="Search for products (e.g. eggs, milk, potato)"
-                            className="w-full bg-transparent border-none outline-none text-[12px] text-white placeholder-white font-['Open_Sans']"
+                            className="w-full bg-transparent border-none outline-none text-[12px] text-white placeholder-white "
                         />
                         <img
                             src="/images/hero/search-icon.png"
@@ -39,7 +39,7 @@ const Hero = () => {
                 </div>
 
                 {/* Description text */}
-                <p className="text-[12px] font-['Open_Sans'] font-normal text-white max-w-[560px] tracking-wide">
+                <p className="text-[12px]  font-normal text-white max-w-[560px] tracking-wide">
                     From Bangkok to Dhaka — premium Thai imports and everyday Bangladeshi<br />
                     essentials delivered to your doorstep.
                 </p>

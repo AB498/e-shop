@@ -1,6 +1,6 @@
 "use client";
 
-const DiscountedProducts = () => {
+const VegetableAndFruits = () => {
   // Product data (in a real app, this would come from an API)
   const products = [
     {
@@ -58,11 +58,10 @@ const DiscountedProducts = () => {
       {/* Section title */}
       <div className="flex items-center justify-start mb-6 relative h-10 gap-4">
         <img
-          src="/images/topbar/icon-daily-deal.png"
-          alt="Beauty & Makeup Icon"
+          src="/images/sidebar/vegetables-fruits.png"
           className="h-full aspect-square object-contain"
         />
-        <h2 className="text-2xl font-semibold">Discounted Products</h2>
+        <h2 className="text-2xl font-semibold">Vegetable & Fruits</h2>
       </div>
 
       {/* Products grid */}
@@ -140,4 +139,4 @@ const DiscountedProducts = () => {
   );
 };
 
-export default DiscountedProducts; 
+export default VegetableAndFruits; 

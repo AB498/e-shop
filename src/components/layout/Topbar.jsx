@@ -4,102 +4,36 @@ import Image from 'next/image';
 
 const Topbar = () => {
   return (
-    <div className="w-full bg-[#FAF8F5] border-b border-[#E3E3E3] py-1.5">
-      <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center">
-        {/* Left section with About Us, Contact Us, Delivery */}
-        <div className="text-[#006B51] text-sm font-['Open_Sans'] hidden md:block">
-          <span className="px-2">About Us</span>
-          <span className="px-2">|</span>
-          <span className="px-2">Contact Us</span>
-          <span className="px-2">|</span>
-          <span className="px-2">Delivery</span>
-        </div>
-        
-        {/* Right section with Location, Language, Phone, Wishlist, Login/Registration */}
-        <div className="flex items-center space-x-5 flex-wrap justify-center">
-          {/* Location */}
-          <div className="flex items-center space-x-1 cursor-pointer">
-            <div className="relative w-4 h-4">
-              <Image
-                src="/images/topbar/map-marker.png"
-                alt="Location"
-                fill
-                className="object-contain"
-              />
+    <div className="border-b border-[#E3E3E3]">
+      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+        <span className="text-[#616161] text-sm">About Us   |   Contact Us   |   Delivery</span>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <Image src="/images/topbar/map-marker.png" alt="Location" width={16} height={16} />
+              <span className="text-[#616161] text-sm">Dhaka</span>
+              <Image src="/images/topbar/chevron-down.png" alt="Dropdown" width={12} height={12} />
             </div>
-            <span className="text-[#616161] text-sm font-['Open_Sans']">Dhaka</span>
-            <div className="relative w-3 h-3 ml-1">
-              <Image
-                src="/images/topbar/chevron-down.png"
-                alt="Dropdown"
-                fill
-                className="object-contain"
-              />
+            <div className="w-px h-4 bg-[#D5D5D5]"></div>
+            <div className="flex items-center space-x-2">
+              <span className="text-[#616161] text-sm">EN|BN</span>
+              <Image src="/images/topbar/language.png" alt="Language" width={16} height={16} />
+            </div>
+            <div className="w-px h-4 bg-[#D5D5D5]"></div>
+            <div className="flex items-center space-x-2">
+              <Image src="/images/topbar/phone.png" alt="Phone" width={16} height={16} />
+              <span className="text-[#616161] text-sm">+880 1407-016740</span>
             </div>
           </div>
-          
-          {/* Separator */}
-          <div className="h-4 w-px bg-[#D5D5D5] hidden md:block"></div>
-          
-          {/* Language */}
-          <div className="flex items-center space-x-1 cursor-pointer">
-            <div className="relative w-4 h-4">
-              <Image
-                src="/images/topbar/language.png"
-                alt="Language"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <span className="text-[#616161] text-sm font-['Open_Sans'] ml-1">EN|BN</span>
+          <div className="w-px h-4 bg-[#D5D5D5]"></div>
+          <div className="flex items-center space-x-2">
+            <Image src="/images/topbar/wishlist.png" alt="Wishlist" width={16} height={16} />
+            <span className="text-[#616161] text-sm">Wishlist</span>
           </div>
-          
-          {/* Separator */}
-          <div className="h-4 w-px bg-[#D5D5D5] hidden md:block"></div>
-          
-          {/* Phone */}
-          <div className="flex items-center space-x-1">
-            <div className="relative w-4 h-4">
-              <Image
-                src="/images/topbar/phone.png"
-                alt="Phone"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <span className="text-[#616161] text-sm font-['Open_Sans'] ml-1">+880 1407-016740</span>
-          </div>
-          
-          {/* Separator */}
-          <div className="h-4 w-px bg-[#D5D5D5] hidden md:block"></div>
-          
-          {/* Wishlist */}
-          <div className="flex items-center space-x-1 cursor-pointer">
-            <div className="relative w-4 h-4">
-              <Image
-                src="/images/topbar/wishlist.png"
-                alt="Wishlist"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <span className="text-[#616161] text-sm font-['Open_Sans'] ml-1">Wishlist</span>
-          </div>
-          
-          {/* Separator */}
-          <div className="h-4 w-px bg-[#D5D5D5] hidden md:block"></div>
-          
-          {/* Login/Registration */}
-          <div className="flex items-center space-x-1 cursor-pointer">
-            <div className="relative w-4 h-4">
-              <Image
-                src="/images/topbar/user.png"
-                alt="User"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <span className="text-[#616161] text-sm font-['Open_Sans'] ml-1">Login/Registration</span>
+          <div className="w-px h-4 bg-[#D5D5D5]"></div>
+          <div className="flex items-center space-x-2">
+            <Image src="/images/topbar/user.png" alt="User" width={16} height={16} />
+            <span className="text-[#616161] text-sm">Login/Registration</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client'
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Navigation = () => {
   return (
@@ -8,27 +9,31 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         {/* Mobile View */}
         <div className="flex md:hidden items-center justify-between w-full">
-          <div className="relative w-24 h-8">
-            <Image
-              src="/images/navigation/logo.png"
-              alt="Thai Bangla Logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-          
+          <Link href="/">
+            <div className="relative w-24 h-8">
+              <Image
+                src="/images/navigation/logo.png"
+                alt="Thai Bangla Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </Link>
+
           <div className="flex items-center space-x-2">
-            <button className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
-              <div className="relative w-5 h-5">
-                <Image
-                  src="/images/navigation/menu.png"
-                  alt="Menu"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </button>
-            
+            <Link href="/products">
+              <button className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
+                <div className="relative w-5 h-5">
+                  <Image
+                    src="/images/navigation/menu.png"
+                    alt="Menu"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </button>
+            </Link>
+
             <div className="relative">
               <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
                 <div className="relative w-5 h-5">
@@ -46,31 +51,35 @@ const Navigation = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Desktop View */}
         <div className="hidden md:flex flex-wrap items-center justify-between gap-4">
           {/* Logo */}
-          <div className="relative w-36 h-12">
-            <Image
-              src="/images/navigation/logo.png"
-              alt="Thai Bangla Logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-
-          {/* All Categories Button */}
-          <button className="flex items-center space-x-2 bg-[#006B51] text-white px-5 py-2 rounded-full">
-            <div className="relative w-5 h-5">
+          <Link href="/">
+            <div className="relative w-36 h-12">
               <Image
-                src="/images/navigation/menu.png"
-                alt="Menu"
+                src="/images/navigation/logo.png"
+                alt="Thai Bangla Logo"
                 fill
                 className="object-contain"
               />
             </div>
-            <span className="text-base font-['Open_Sans'] font-medium">All Categories</span>
-          </button>
+          </Link>
+
+          {/* All Categories Button */}
+          <Link href="/products">
+            <button className="flex items-center space-x-2 bg-[#006B51] text-white px-5 py-2 rounded-full">
+              <div className="relative w-5 h-5">
+                <Image
+                  src="/images/navigation/menu.png"
+                  alt="Menu"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <span className="text-base font-medium">All Categories</span>
+            </button>
+          </Link>
 
           {/* Search Bar */}
           <div className="relative flex-grow max-w-2xl">
@@ -78,7 +87,7 @@ const Navigation = () => {
               <input
                 type="text"
                 placeholder="Search for products (e.g. eggs, milk, potato)"
-                className="flex-grow bg-transparent outline-none text-[#555555] text-base font-['Open_Sans']"
+                className="flex-grow bg-transparent outline-none text-[#555555] text-base "
               />
               <div className="relative w-5 h-5 ml-2">
                 <Image
@@ -93,18 +102,20 @@ const Navigation = () => {
 
           {/* Promotions Section - Only visible on larger screens */}
           <div className="hidden lg:flex items-center space-x-8">
-            <div className="flex items-center space-x-2 cursor-pointer">
-              <div className="relative w-5 h-5">
-                <Image
-                  src="/images/navigation/promotions.png"
-                  alt="Promotions"
-                  fill
-                  className="object-contain"
-                />
+            <Link href="/products">
+              <div className="flex items-center space-x-2 cursor-pointer">
+                <div className="relative w-5 h-5">
+                  <Image
+                    src="/images/navigation/promotions.png"
+                    alt="Promotions"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <span className="text-base text-[#333333] font-medium">Products</span>
               </div>
-              <span className="text-base font-['Open_Sans'] text-[#333333] font-medium">Promotions</span>
-            </div>
-            
+            </Link>
+
             <div className="flex items-center space-x-2 cursor-pointer">
               <div className="relative w-5 h-5">
                 <Image
@@ -114,9 +125,9 @@ const Navigation = () => {
                   className="object-contain"
                 />
               </div>
-              <span className="text-base font-['Open_Sans'] text-[#333333] font-medium">Get 1 Hour Delivery</span>
+              <span className="text-base text-[#333333] font-medium">Get 1 Hour Delivery</span>
             </div>
-            
+
             <div className="flex items-center space-x-2 cursor-pointer">
               <div className="relative w-5 h-5">
                 <Image
@@ -126,7 +137,7 @@ const Navigation = () => {
                   className="object-contain"
                 />
               </div>
-              <span className="text-base font-['Open_Sans'] text-[#333333] font-medium">Weekly Offer</span>
+              <span className="text-base text-[#333333] font-medium">Weekly Offer</span>
             </div>
           </div>
 
@@ -143,18 +154,18 @@ const Navigation = () => {
               </div>
             </div>
             <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#DD2222] flex items-center justify-center">
-              <span className="text-xs text-white font-['Open_Sans'] font-bold">1</span>
+              <span className="text-xs text-white font-bold">1</span>
             </div>
           </div>
         </div>
-        
+
         {/* Mobile Search Bar */}
         <div className="mt-4 md:hidden">
           <div className="flex items-center border border-[#D2D2D2] rounded-full px-4 py-2 bg-white">
             <input
               type="text"
               placeholder="Search products..."
-              className="flex-grow bg-transparent outline-none text-[#555555] text-sm font-['Open_Sans']"
+              className="flex-grow bg-transparent outline-none text-[#555555] text-sm "
             />
             <div className="relative w-4 h-4">
               <Image
@@ -171,4 +182,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation; 
+export default Navigation;

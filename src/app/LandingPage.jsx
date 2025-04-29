@@ -10,7 +10,10 @@ import BeautyMakeupSection from "../components/categories/BeautyMakeupSection";
 import ProductShowcase from "../components/landing/ProductShowcase";
 import Footer from "../components/layout/Footer";
 import Copyright from "../components/layout/Copyright";
-import DiscountedProducts from "@/components/categories/DiscountedProducts";
+import WeeklyDiscounts from "@/components/categories/WeeklyDiscounts";
+import FeaturedCarousel from "@/components/layout/FeaturedCarousel";
+import DealsOfTheDay from "@/components/deals/DealsOfTheDay";
+import VegetableAndFruits from "@/components/categories/VegetableAndFruits";
 
 export default function LandingPage() {
     return (
@@ -36,9 +39,17 @@ export default function LandingPage() {
                 <PopularCategories />
             </div>
 
+            <div className="max-w-7xl mx-auto">
+                <FeaturedCarousel />
+            </div>
+
             {/* Discounted Products */}
             <div className="max-w-7xl mx-auto">
-                <DiscountedProducts />
+                <WeeklyDiscounts />
+            </div>
+            {/* Discounted Products */}
+            <div className="max-w-7xl mx-auto">
+                <VegetableAndFruits />
             </div>
 
             {/* Banner Section */}
@@ -49,6 +60,10 @@ export default function LandingPage() {
             {/* Beauty & Makeup Section */}
             <div className="max-w-7xl mx-auto">
                 <BeautyMakeupSection />
+            </div>
+
+            <div className="max-w-7xl mx-auto">
+                <DealsOfTheDay />
             </div>
 
             {/* Product Showcase */}

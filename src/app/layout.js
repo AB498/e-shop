@@ -24,8 +24,12 @@ export default function RootLayout({ children }) {
       <body className="bg-gray-50 text-neutral-700">
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-        
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <style>
+          {`html, body {
+            font-family: 'Poppins', sans-serif;
+          }`}
+        </style>
         <div className="flex w-full">
           {/* Sidebar - Fixed at the left */}
           <div className="flex-none">
