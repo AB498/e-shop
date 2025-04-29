@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import SearchBar from './SearchBar';
+import SearchBarWrapper from './SearchBarWrapper';
 
 const Navigation = () => {
   return (
@@ -83,7 +83,7 @@ const Navigation = () => {
           </Link>
 
           {/* Search Bar */}
-          <SearchBar />
+          <SearchBarWrapper />
 
           {/* Promotions Section - Only visible on larger screens */}
           <div className="hidden lg:flex items-center space-x-8">
@@ -146,7 +146,7 @@ const Navigation = () => {
 
         {/* Mobile Search Bar */}
         <div className="mt-4 md:hidden">
-          <SearchBar placeholder="Search products..." />
+          <SearchBarWrapper placeholder="Search products..." />
         </div>
       </div>
     </div>

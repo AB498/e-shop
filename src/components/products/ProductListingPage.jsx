@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Topbar from '../layout/Topbar';
 import Navigation from '../layout/Navigation';
 import ProductBreadcrumb from './ProductBreadcrumb';
-import ProductLeftBar from './ProductLeftBar';
+import ProductLeftBarWrapper from './ProductLeftBarWrapper';
 import DealsOfTheDay from '../deals/DealsOfTheDay';
 import ProductList from './ProductList';
 import Footer from '../layout/Footer';
@@ -41,7 +41,7 @@ export default async function ProductListingPage({ searchParams }) {
       <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
         {/* Left Sidebar */}
         <div className="w-full md:w-64 flex-shrink-0">
-          <ProductLeftBar categories={categories} />
+          <ProductLeftBarWrapper categories={categories} />
         </div>
 
         {/* Main Content */}

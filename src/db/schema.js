@@ -14,9 +14,16 @@ const userRoleEnum = pgEnum('user_role', ['admin', 'customer'])
 // Users table
 const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  name: text('name').notNull(),
+  first_name: text('first_name').notNull(),
+  last_name: text('last_name').notNull(),
   email: text('email').notNull().unique(),
   password_hash: text('password_hash'),
+  phone: text('phone'),
+  address: text('address'),
+  city: text('city'),
+  post_code: text('post_code'),
+  country: text('country'),
+  region: text('region'),
   role: userRoleEnum('role').default('customer').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
@@ -69,7 +76,7 @@ const orderItems = pgTable('order_items', {
   created_at: timestamp('created_at').defaultNow(),
 })
 
-module.exports = {
+export {
   files,
   users,
   categories,

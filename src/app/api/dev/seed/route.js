@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db, pool } from '@/lib/db';
 import * as schema from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import bcrypt from 'bcrypt';
 
 // Import expanded seed data
 import categoriesSeed from './categories-seed';
@@ -53,9 +55,16 @@ export async function POST() {
       await pool.query(`
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
-          name TEXT NOT NULL,
+          first_name TEXT NOT NULL,
+          last_name TEXT NOT NULL,
           email TEXT NOT NULL UNIQUE,
           password_hash TEXT,
+          phone TEXT,
+          address TEXT,
+          city TEXT,
+          post_code TEXT,
+          country TEXT,
+          region TEXT,
           role user_role NOT NULL DEFAULT 'customer',
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
@@ -123,10 +132,46 @@ export async function POST() {
         await db.insert(schema.categories).values(category);
       }
 
-      // Insert users using Drizzle ORM
+      // Insert users using Drizzle ORM with password hashing
       console.log('Inserting users...');
       for (const user of usersSeed) {
-        await db.insert(schema.users).values(user);
+        try {
+          // Check if user already exists
+          const existingUser = await db
+            .select()
+            .from(schema.users)
+            .where(eq(schema.users.email, user.email))
+            .limit(1);
+
+          if (existingUser && existingUser.length > 0) {
+            console.log(`User ${user.email} already exists, skipping...`);
+            continue;
+          }
+
+          // Hash the password
+          const hashedPassword = await bcrypt.hash(user.password, 10);
+
+          // Create user object with hashed password - don't specify ID
+          const userToInsert = {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            password_hash: hashedPassword,
+            phone: user.phone || null,
+            address: user.address || null,
+            city: user.city || null,
+            post_code: user.post_code || null,
+            country: user.country || null,
+            region: user.region || null,
+            role: user.role
+          };
+
+          console.log(`Inserting user: ${user.email}`);
+          await db.insert(schema.users).values(userToInsert);
+        } catch (error) {
+          console.error(`Error inserting user ${user.email}:`, error);
+          // Continue with other users even if one fails
+        }
       }
 
       // Insert products using Drizzle ORM

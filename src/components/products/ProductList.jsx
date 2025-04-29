@@ -1,7 +1,7 @@
 import React from 'react';
 import ProductCard from './ProductCard';
-import ProductListControls from './ProductListControls';
-import Pagination from './Pagination';
+import ProductListControlsWrapper from './ProductListControlsWrapper';
+import PaginationWrapper from './PaginationWrapper';
 import EmptyProductState from './EmptyProductState';
 import { getAllProducts } from '@/lib/actions/products';
 
@@ -46,7 +46,7 @@ export default async function ProductList({
   return (
     <div>
       {/* Product List Controls (Sort and Limit) */}
-      <ProductListControls totalProducts={pagination.totalProducts} />
+      <ProductListControlsWrapper totalProducts={pagination.totalProducts} />
 
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
@@ -64,7 +64,7 @@ export default async function ProductList({
       </div>
 
       {/* Pagination */}
-      <Pagination pagination={pagination} />
+      <PaginationWrapper pagination={pagination} />
     </div>
   );
 }

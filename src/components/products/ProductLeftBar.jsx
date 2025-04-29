@@ -3,8 +3,8 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import PriceRangeFilter from './PriceRangeFilter';
-import CheckboxFilter from './CheckboxFilter';
+import PriceRangeFilterWrapper from './PriceRangeFilterWrapper';
+import CheckboxFilterWrapper from './CheckboxFilterWrapper';
 
 const ProductLeftBar = ({ categories = [] }) => {
     const searchParams = useSearchParams();
@@ -113,18 +113,18 @@ const ProductLeftBar = ({ categories = [] }) => {
                 </div>
 
                 {/* Price Range Filter Component */}
-                <PriceRangeFilter />
+                <PriceRangeFilterWrapper />
 
                 {/* Color Filter */}
                 <div className="mb-4">
                     <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-3">Color</h4>
-                    <CheckboxFilter type="color" options={colorOptions} />
+                    <CheckboxFilterWrapper title="Color" type="color" options={colorOptions} />
                 </div>
 
                 {/* Item Condition Filter */}
                 <div className="mb-6">
                     <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-3">Item Condition</h4>
-                    <CheckboxFilter type="condition" options={conditionOptions} />
+                    <CheckboxFilterWrapper title="Item Condition" type="condition" options={conditionOptions} />
                 </div>
 
                 {/* Clear All Filters Button */}

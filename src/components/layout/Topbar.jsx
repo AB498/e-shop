@@ -1,8 +1,19 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 
 const Topbar = () => {
+  const { data: session, status } = useSession();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const isAuthenticated = status === 'authenticated';
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: true, callbackUrl: '/' });
+  };
+
   return (
     <div className="border-b border-[#E3E3E3]">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
@@ -26,19 +37,60 @@ const Topbar = () => {
             </div>
           </div>
           <div className="w-px h-4 bg-[#D5D5D5]"></div>
-          <div className="flex items-center space-x-2">
+          <Link href="/wishlist" className="flex items-center space-x-2 hover:text-[#3BB77E] transition-colors">
             <Image src="/images/topbar/wishlist.png" alt="Wishlist" width={16} height={16} />
             <span className="text-[#616161] text-sm">Wishlist</span>
-          </div>
+          </Link>
           <div className="w-px h-4 bg-[#D5D5D5]"></div>
-          <div className="flex items-center space-x-2">
-            <Image src="/images/topbar/user.png" alt="User" width={16} height={16} />
-            <span className="text-[#616161] text-sm">Login/Registration</span>
-          </div>
+
+          {isAuthenticated ? (
+            <div className="relative">
+              <button
+                className="flex items-center space-x-2 hover:text-[#3BB77E] transition-colors"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+              >
+                <Image src="/images/topbar/user.png" alt="User" width={16} height={16} />
+                <span className="text-[#616161] text-sm">
+                  {session.user.firstName || 'My Account'}
+                </span>
+                <Image src="/images/topbar/chevron-down.png" alt="Dropdown" width={12} height={12} />
+              </button>
+
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1">
+                  <Link
+                    href="/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    My Profile
+                  </Link>
+                  <Link
+                    href="/orders"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    My Orders
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link href="/auth/login" className="flex items-center space-x-2 hover:text-[#3BB77E] transition-colors">
+              <Image src="/images/topbar/user.png" alt="User" width={16} height={16} />
+              <span className="text-[#616161] text-sm">Login/Registration</span>
+            </Link>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default Topbar; 
+export default Topbar;
