@@ -2,10 +2,12 @@
 import React from 'react';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useCart } from '@/context/CartContext';
 
 const ProductInfo = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(product?.defaultSize || '60g');
+  const { addToCart } = useCart();
 
   // Handle quantity change
   const decreaseQuantity = () => {
@@ -134,6 +136,15 @@ const ProductInfo = ({ product }) => {
           </div>
 
           <button
+            onClick={() => {
+              // Create a product object with selected options
+              const cartItem = {
+                ...product,
+                quantity,
+                size: selectedSize
+              };
+              addToCart(cartItem, quantity);
+            }}
             className={`${
               product?.stock > 0
                 ? 'bg-[#3BB77E] hover:bg-[#2A9D6E]'

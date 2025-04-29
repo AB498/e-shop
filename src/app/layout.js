@@ -3,6 +3,7 @@ import "./globals.css";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
 import SessionProvider from "../components/providers/SessionProvider";
+import { CartProvider } from "../context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,19 +33,21 @@ export default function RootLayout({ children }) {
           }`}
         </style>
         <SessionProvider>
-          <div className="flex w-full">
-            {/* Sidebar - Fixed at the left */}
-            <div className="flex-none">
-              <Sidebar />
-            </div>
+          <CartProvider>
+            <div className="flex w-full">
+              {/* Sidebar - Fixed at the left */}
+              <div className="flex-none">
+                <Sidebar />
+              </div>
 
-            {/* Main Content - Adjusts based on sidebar width */}
-            <div
-              className="flex-grow min-h-screen transition-all duration-300"
-            >
-              {children}
+              {/* Main Content - Adjusts based on sidebar width */}
+              <div
+                className="flex-grow min-h-screen transition-all duration-300"
+              >
+                {children}
+              </div>
             </div>
-          </div>
+          </CartProvider>
         </SessionProvider>
       </body>
     </html>

@@ -3,8 +3,11 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SearchBarWrapper from './SearchBarWrapper';
+import { useCart } from '@/context/CartContext';
 
 const Navigation = () => {
+  const { cartCount } = useCart();
+
   return (
     <div className="w-full bg-[#FAF8F5] border-b border-[#E3E3E3] py-4">
       <div className="container mx-auto px-4">
@@ -35,7 +38,7 @@ const Navigation = () => {
               </button>
             </Link>
 
-            <div className="relative">
+            <Link href="/cart" className="relative">
               <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
                 <div className="relative w-5 h-5">
                   <Image
@@ -46,10 +49,12 @@ const Navigation = () => {
                   />
                 </div>
               </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#DD2222] flex items-center justify-center">
-                <span className="text-[10px] text-white font-bold">1</span>
-              </div>
-            </div>
+              {cartCount > 0 && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#DD2222] flex items-center justify-center">
+                  <span className="text-[10px] text-white font-bold">{cartCount}</span>
+                </div>
+              )}
+            </Link>
           </div>
         </div>
 
@@ -127,7 +132,7 @@ const Navigation = () => {
           </div>
 
           {/* Cart */}
-          <div className="relative cursor-pointer">
+          <Link href="/cart" className="relative cursor-pointer">
             <div className="w-12 h-12 rounded-full bg-[#006B51] flex items-center justify-center">
               <div className="relative w-6 h-6">
                 <Image
@@ -138,10 +143,12 @@ const Navigation = () => {
                 />
               </div>
             </div>
-            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#DD2222] flex items-center justify-center">
-              <span className="text-xs text-white font-bold">1</span>
-            </div>
-          </div>
+            {cartCount > 0 && (
+              <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#DD2222] flex items-center justify-center">
+                <span className="text-xs text-white font-bold">{cartCount}</span>
+              </div>
+            )}
+          </Link>
         </div>
 
         {/* Mobile Search Bar */}
