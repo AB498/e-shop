@@ -1,4 +1,4 @@
-import SidebarClient from './SidebarClient';
+import SidebarWrapper from './SidebarWrapper';
 
 // This is a Server Component that defines the main categories
 export default async function SidebarServer() {
@@ -48,6 +48,6 @@ export default async function SidebarServer() {
     }
   ];
 
-  // Pass the main categories to the client component
-  return <SidebarClient categories={mainCategories} />;
+  // Pass the main categories to the wrapper component with Suspense boundary
+  return <SidebarWrapper categories={mainCategories} />;
 }
