@@ -1,10 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 // Import Swiper and required modules
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y } from "swiper/modules";
+import ProductCarouselSkeleton from "./ProductCarouselSkeleton";
 
 // Import Swiper styles
 import "swiper/css";
@@ -13,7 +15,7 @@ import "swiper/css/pagination";
 
 /**
  * A reusable product carousel component
- * 
+ *
  * @param {Object} props
  * @param {Array} props.products - Array of product objects to display
  * @param {string} props.title - Title of the carousel
@@ -46,6 +48,36 @@ export default function ProductCarousel({
 }) {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Set loading to false after Swiper is initialized
+  useEffect(() => {
+    // Check if products are loaded
+    if (products.length > 0) {
+      // Simulate loading time or wait for resources to load
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 800); // Adjust timing as needed - shorter time for better UX
+
+      return () => clearTimeout(timer);
+    } else {
+      // If no products, no need to show loading state
+      setIsLoading(false);
+    }
+  }, [products]);
+
+  // Show skeleton while loading
+  if (isLoading) {
+    return (
+      <ProductCarouselSkeleton
+        title={title}
+        hasIcon={!!icon}
+        className={className}
+        itemCount={Math.min(products.length, 6) || 6}
+        breakpoints={breakpoints}
+      />
+    );
+  }
 
   return (
     <section className={`py-8 relative ${className}`}>
@@ -125,45 +157,54 @@ export default function ProductCarousel({
                 swiper.params.navigation.nextEl = nextRef.current;
                 swiper.navigation.init();
                 swiper.navigation.update();
+
+                // Ensure loading state is set to false when Swiper is fully initialized
+                setIsLoading(false);
               }}
               className={carouselClassName}
             >
               {products.map((product) => (
                 <SwiperSlide key={product.id}>
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden relative h-full">
-                    {/* Product Image */}
-                    <div className="aspect-square relative">
-                      <Image
-                        src={product.image || "/images/product-image.png"}
-                        alt={product.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 16vw"
-                      />
+                  <div className="bg-white rounded-lg shadow-md overflow-hidden relative h-full max-h-[360px]">
+                    {/* Product Image with Link */}
+                    <Link href={`/products/${product.id}`} className="block">
+                      <div className="aspect-square relative">
+                        <Image
+                          src={product.image || "/images/product-image.png"}
+                          alt={product.name}
+                          width={240}
+                          height={240}
+                          className="w-full h-full object-cover rounded-[10px] transition-transform duration-300 hover:scale-105"
+                          />
 
-                      {/* Discount tag */}
-                      <div className="absolute top-2 left-2">
-                        <div className="bg-[#006B51] text-white px-2 py-1 rounded-lg text-xs font-semibold">
-                          -10%
+                        {/* Discount tag */}
+                        <div className="absolute top-2 left-2">
+                          <div className="bg-[#006B51] text-white px-2 py-1 rounded-lg text-xs font-semibold">
+                            -10%
+                          </div>
+                        </div>
+
+                        {/* Wishlist icon */}
+                        <div className="absolute top-2 right-2">
+                          <Image
+                            src="/images/beauty-makeup/wishlist-icon.png"
+                            alt="Add to wishlist"
+                            width={24}
+                            height={24}
+                            className="cursor-pointer"
+                          />
                         </div>
                       </div>
-
-                      {/* Wishlist icon */}
-                      <div className="absolute top-2 right-2">
-                        <Image
-                          src="/images/beauty-makeup/wishlist-icon.png"
-                          alt="Add to wishlist"
-                          width={24}
-                          height={24}
-                          className="cursor-pointer"
-                        />
-                      </div>
-                    </div>
+                    </Link>
 
                     {/* Product Info */}
                     <div className="p-3 text-center">
                       <p className="text-[#A9A9A9] text-xs font-semibold uppercase">{product.category}</p>
-                      <h3 className="text-[#3F3F3F] text-base font-semibold mt-1 line-clamp-1">{product.name}</h3>
+                      <Link href={`/products/${product.id}`}>
+                        <h3 className="text-[#3F3F3F] text-base font-semibold mt-1 line-clamp-1 hover:text-[#006B51] transition-colors">
+                          {product.name}
+                        </h3>
+                      </Link>
 
                       {/* Price */}
                       <div className="mt-2 flex items-center justify-center gap-2">

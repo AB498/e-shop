@@ -9,7 +9,7 @@ async function WeeklyDiscounts() {
     <ProductCarousel
       products={products}
       title="Weekly Discounts"
-      icon="/images/sidebar/weekly-discounts.png"
+      icon="/images/deals/discount-coupon-icon.png"
       // Optional custom breakpoints
       breakpoints={{
         640: { slidesPerView: 4 },
