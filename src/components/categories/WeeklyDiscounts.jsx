@@ -12,8 +12,8 @@ async function WeeklyDiscounts() {
       icon="/images/sidebar/weekly-discounts.png"
       // Optional custom breakpoints
       breakpoints={{
-        640: { slidesPerView: 2 },
-        768: { slidesPerView: 4 },
+        640: { slidesPerView: 4 },
+        768: { slidesPerView: 6 },
       }}
     />
   );

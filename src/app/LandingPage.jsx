@@ -22,53 +22,35 @@ export default function LandingPage() {
             {/* Navigation */}
             <Navigation />
 
-            {/* Hero Section */}
-            <div className="max-w-7xl mx-auto">
+
+            <div className="container mx-auto">
+                {/* Hero Section */}
                 <Hero />
-            </div>
 
-            {/* Feature Icons */}
-            <div className="max-w-7xl mx-auto">
+                {/* Feature Icons */}
                 <FeatureIcons />
-            </div>
 
-            {/* Popular Categories */}
-            <div className="max-w-7xl mx-auto">
+                {/* Popular Categories */}
                 <PopularCategories />
-            </div>
 
-            <div className="max-w-7xl mx-auto">
                 <FeaturedCarousel />
-            </div>
 
-            {/* Discounted Products */}
-            <div className="max-w-7xl mx-auto">
+                {/* Discounted Products */}
                 <WeeklyDiscounts />
-            </div>
-            {/* Discounted Products */}
-            <div className="max-w-7xl mx-auto">
+                {/* Discounted Products */}
                 <VegetableAndFruits />
-            </div>
 
-            {/* Banner Section */}
-            <div className="max-w-7xl mx-auto">
+                {/* Banner Section */}
                 <BannerSection />
-            </div>
 
-            {/* Beauty & Makeup Section */}
-            <div className="max-w-7xl mx-auto">
+                {/* Beauty & Makeup Section */}
                 <BeautyMakeupSection />
-            </div>
 
-            <div className="max-w-7xl mx-auto">
                 <DealsOfTheDay />
-            </div>
 
-            {/* Product Showcase */}
-            <div className="max-w-7xl mx-auto">
+                {/* Product Showcase */}
                 <ProductShowcase />
             </div>
-
             {/* Footer */}
             <Footer />
 

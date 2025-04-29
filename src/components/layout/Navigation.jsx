@@ -8,6 +8,15 @@ import { useCart } from '@/context/CartContext';
 const Navigation = () => {
   const { cartCount } = useCart();
 
+  // Function to toggle the sidebar
+  const toggleSidebar = () => {
+    console.log('Navigation: toggleSidebar called');
+    // Dispatch a custom event to toggle the sidebar
+    const event = new Event('expandSidebar');
+    window.dispatchEvent(event);
+    console.log('Navigation: toggleSidebar event dispatched');
+  };
+
   return (
     <div className="w-full bg-[#FAF8F5] border-b border-[#E3E3E3] py-4">
       <div className="container mx-auto px-4">
@@ -25,18 +34,19 @@ const Navigation = () => {
           </Link>
 
           <div className="flex items-center space-x-2">
-            <Link href="/products">
-              <button className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
-                <div className="relative w-5 h-5">
-                  <Image
-                    src="/images/navigation/menu.png"
-                    alt="Menu"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              </button>
-            </Link>
+            <button
+              onClick={toggleSidebar}
+              className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center cursor-pointer"
+            >
+              <div className="relative w-5 h-5">
+                <Image
+                  src="/images/navigation/menu.png"
+                  alt="Menu"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </button>
 
             <Link href="/cart" className="relative">
               <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
@@ -73,19 +83,20 @@ const Navigation = () => {
           </Link>
 
           {/* All Categories Button */}
-          <Link href="/products">
-            <button className="flex items-center space-x-2 bg-[#006B51] text-white px-5 py-2 rounded-full">
-              <div className="relative w-5 h-5">
-                <Image
-                  src="/images/navigation/menu.png"
-                  alt="Menu"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <span className="text-base font-medium">All Categories</span>
-            </button>
-          </Link>
+          <button
+            onClick={toggleSidebar}
+            className="flex items-center space-x-2 bg-[#006B51] text-white px-5 py-2 rounded-full cursor-pointer"
+          >
+            <div className="relative w-5 h-5">
+              <Image
+                src="/images/navigation/menu.png"
+                alt="Menu"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <span className="text-base font-medium">All Categories</span>
+          </button>
 
           {/* Search Bar */}
           <SearchBarWrapper />

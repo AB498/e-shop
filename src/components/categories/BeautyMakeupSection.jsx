@@ -12,8 +12,8 @@ async function BeautyMakeupSection() {
       icon="/images/beauty-makeup/category-icon.png"
       // Optional custom breakpoints
       breakpoints={{
-        640: { slidesPerView: 2 },
-        768: { slidesPerView: 4 },
+        640: { slidesPerView: 4 },
+        768: { slidesPerView: 6 },
       }}
     />
   );
