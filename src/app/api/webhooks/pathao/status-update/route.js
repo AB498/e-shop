@@ -12,22 +12,22 @@ export async function POST(request) {
     // Verify webhook signature
     const webhookSecret = process.env.PATHAO_WEBHOOK_SECRET;
     const signature = request.headers.get('X-PATHAO-Signature');
-    
+
     // Log headers for debugging
     console.log('Webhook request headers:', {
       signature,
       contentType: request.headers.get('Content-Type'),
     });
-    
+
     // Webhook integration verification
     if (request.headers.get('Content-Type')?.includes('application/json')) {
       const webhookData = await request.json();
       console.log('Received webhook data:', JSON.stringify(webhookData, null, 2));
-      
+
       // Handle webhook integration verification
       if (webhookData.event === 'webhook_integration') {
         console.log('Webhook integration verification received');
-        
+
         // Return 202 Accepted with the required header
         return new NextResponse(null, {
           status: 202,
@@ -36,23 +36,26 @@ export async function POST(request) {
           }
         });
       }
-      
+
       // Process the webhook event
       const processedData = processWebhookEvent(webhookData);
-      
-      if (processedData.orderId) {
-        // Update order status in database
-        const result = await updateOrderFromWebhook(processedData);
-        
-        if (result) {
-          console.log(`Successfully updated order ${processedData.orderId} status to ${processedData.courierStatus}`);
-        } else {
-          console.error(`Failed to update order ${processedData.orderId}`);
+
+      // Always try to update the order, even if we don't have an orderId
+      // The updateOrderFromWebhook function will try to find the order by consignment ID
+      const result = await updateOrderFromWebhook(processedData);
+
+      if (result) {
+        console.log(`Successfully updated order status to ${processedData.courierStatus}`);
+        if (processedData.orderId) {
+          console.log(`Order ID: ${processedData.orderId}`);
+        } else if (result.order_id) {
+          console.log(`Found and updated order ID: ${result.order_id}`);
         }
       } else {
-        console.warn('Could not extract order ID from webhook data');
+        console.error('Failed to update order from webhook data');
+        console.warn('Could not find matching order for webhook data');
       }
-      
+
       // Return 202 Accepted with the required header
       return new NextResponse(null, {
         status: 202,
@@ -61,7 +64,7 @@ export async function POST(request) {
         }
       });
     }
-    
+
     // Invalid request
     console.error('Invalid webhook request: Content-Type not application/json');
     return new NextResponse(JSON.stringify({ error: 'Invalid request' }), {
@@ -73,7 +76,7 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error('Error processing webhook:', error);
-    
+
     // Even in case of error, return 202 with the required header to prevent Pathao from retrying
     return new NextResponse(null, {
       status: 202,

@@ -297,24 +297,64 @@ export async function getTrackingHistory(orderId) {
  */
 export async function updateOrderFromWebhook(webhookData) {
   try {
-    if (!webhookData.orderId || !webhookData.consignmentId) {
-      throw new Error('Missing required webhook data: orderId or consignmentId');
+    // Check if we have a consignment ID at minimum
+    if (!webhookData.consignmentId) {
+      throw new Error('Missing required webhook data: consignmentId');
     }
 
-    console.log(`Updating order ${webhookData.orderId} from webhook:`, JSON.stringify(webhookData, null, 2));
+    let orderId = webhookData.orderId;
+    let orderData = [];
 
-    // Get order information
-    const orderData = await db
-      .select({
-        id: orders.id,
-        courier_id: orders.courier_id,
-      })
-      .from(orders)
-      .where(eq(orders.id, webhookData.orderId))
-      .limit(1);
+    // If we don't have an order ID but we have a consignment ID, try to look up the order
+    if (!orderId) {
+      console.log(`No order ID provided, looking up order by consignment ID: ${webhookData.consignmentId}`);
 
-    if (!orderData.length) {
-      throw new Error(`Order ${webhookData.orderId} not found`);
+      // Try to find the order by consignment ID (courier_order_id or courier_tracking_id)
+      orderData = await db
+        .select({
+          id: orders.id,
+          courier_id: orders.courier_id,
+        })
+        .from(orders)
+        .where(eq(orders.courier_order_id, webhookData.consignmentId))
+        .limit(1);
+
+      if (!orderData.length) {
+        // Try with courier_tracking_id as well
+        orderData = await db
+          .select({
+            id: orders.id,
+            courier_id: orders.courier_id,
+          })
+          .from(orders)
+          .where(eq(orders.courier_tracking_id, webhookData.consignmentId))
+          .limit(1);
+      }
+
+      if (orderData.length) {
+        orderId = orderData[0].id;
+        console.log(`Found order ID ${orderId} by consignment ID ${webhookData.consignmentId}`);
+      } else {
+        console.error(`Could not find order by consignment ID ${webhookData.consignmentId}`);
+        return null;
+      }
+    } else {
+      // We have an order ID, get the order information
+      console.log(`Updating order ${orderId} from webhook:`, JSON.stringify(webhookData, null, 2));
+
+      orderData = await db
+        .select({
+          id: orders.id,
+          courier_id: orders.courier_id,
+        })
+        .from(orders)
+        .where(eq(orders.id, orderId))
+        .limit(1);
+
+      if (!orderData.length) {
+        console.error(`Order ${orderId} not found`);
+        return null;
+      }
     }
 
     const order = orderData[0];
@@ -326,11 +366,11 @@ export async function updateOrderFromWebhook(webhookData) {
         status: webhookData.orderStatus,
         updated_at: new Date(),
       })
-      .where(eq(orders.id, webhookData.orderId));
+      .where(eq(orders.id, order.id));
 
     // Create tracking entry
     const trackingEntry = await db.insert(courierTracking).values({
-      order_id: webhookData.orderId,
+      order_id: order.id,
       courier_id: order.courier_id,
       tracking_id: webhookData.consignmentId,
       status: webhookData.courierStatus,

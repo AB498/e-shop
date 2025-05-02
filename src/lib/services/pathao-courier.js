@@ -419,12 +419,33 @@ export function processWebhookEvent(webhookData) {
       throw new Error('Invalid webhook data: missing event type');
     }
 
-    // Extract merchant order ID (format: "order-123")
+    // Extract merchant order ID
     let orderId = null;
     if (webhookData.merchant_order_id) {
-      const match = webhookData.merchant_order_id.match(/^order-(\d+)$/);
-      if (match && match[1]) {
-        orderId = parseInt(match[1], 10);
+      // Try to match our format first (order-123)
+      const orderMatch = webhookData.merchant_order_id.match(/^order-(\d+)$/);
+      if (orderMatch && orderMatch[1]) {
+        orderId = parseInt(orderMatch[1], 10);
+        console.log(`Extracted order ID ${orderId} from merchant_order_id ${webhookData.merchant_order_id}`);
+      } else {
+        // If we can't match our format, check if it's a direct order ID reference
+        // For example, if the merchant_order_id is "DT020525VEPFHD" and we have an order with that ID
+        console.log(`Looking up order by merchant_order_id: ${webhookData.merchant_order_id}`);
+
+        // For now, we'll extract the order ID from the webhook data directly
+        // This assumes the merchant_order_id is the actual order ID in our system
+        try {
+          // Check if we have an order with this ID in our database
+          // For now, we'll just log this and return null
+          console.log(`Could not extract order ID from merchant_order_id: ${webhookData.merchant_order_id}`);
+
+          // If we have a consignment_id, we can try to look up the order by that
+          if (webhookData.consignment_id) {
+            console.log(`Will try to look up order by consignment_id: ${webhookData.consignment_id}`);
+          }
+        } catch (err) {
+          console.error(`Error extracting order ID from merchant_order_id: ${err.message}`);
+        }
       }
     }
 
@@ -433,77 +454,86 @@ export function processWebhookEvent(webhookData) {
     let orderStatus = 'processing';
     let details = 'Status update received';
 
-    switch (webhookData.event) {
-      case 'order.created':
-        courierStatus = 'pending';
-        details = 'Order created with courier';
-        break;
-      case 'order.pickup_requested':
-        courierStatus = 'pending';
-        details = 'Pickup requested';
-        break;
-      case 'order.assigned_for_pickup':
-        courierStatus = 'pending';
-        details = 'Assigned for pickup';
-        break;
-      case 'order.pickup':
-        courierStatus = 'picked';
-        details = 'Order picked up';
-        break;
-      case 'order.pickup_failed':
-        courierStatus = 'pending';
-        details = 'Pickup failed';
-        break;
-      case 'order.pickup_cancelled':
-        courierStatus = 'cancelled';
-        orderStatus = 'cancelled';
-        details = 'Pickup cancelled';
-        break;
-      case 'order.at_sorting_hub':
-        courierStatus = 'in_transit';
-        orderStatus = 'shipped';
-        details = 'At sorting hub';
-        break;
-      case 'order.in_transit':
-        courierStatus = 'in_transit';
-        orderStatus = 'shipped';
-        details = 'In transit';
-        break;
-      case 'order.received_at_last_mile_hub':
-        courierStatus = 'in_transit';
-        orderStatus = 'shipped';
-        details = 'Received at last mile hub';
-        break;
-      case 'order.assigned_for_delivery':
-        courierStatus = 'in_transit';
-        orderStatus = 'shipped';
-        details = 'Assigned for delivery';
-        break;
-      case 'order.delivered':
-        courierStatus = 'delivered';
-        orderStatus = 'delivered';
-        details = 'Order delivered';
-        break;
-      case 'order.partial_delivery':
-        courierStatus = 'delivered';
-        orderStatus = 'delivered';
-        details = 'Order partially delivered';
-        break;
-      case 'order.return':
-        courierStatus = 'returned';
-        orderStatus = 'cancelled';
-        details = 'Order returned';
-        break;
-      case 'order.delivery_failed':
-        courierStatus = 'in_transit';
-        details = 'Delivery failed';
-        break;
-      case 'order.on_hold':
-        courierStatus = 'in_transit';
-        details = 'Order on hold';
-        break;
-      default:
-        details = `Unknown event: ${webhookData.event}`;
+    // Extract the event type from the original event string
+    // Pathao uses hyphenated event names like "order.pickup-requested"
+    const eventType = webhookData.event.toLowerCase();
+
+    console.log(`Processing event type: ${eventType}`);
+
+    // Map the event directly based on the Pathao webhook API docs
+    // All events use the format "order.xxx-yyy" with hyphens
+    if (eventType === 'order.created') {
+      courierStatus = 'pending';
+      details = 'Order created with courier';
+    } else if (eventType === 'order.updated') {
+      courierStatus = 'pending';
+      details = 'Order updated';
+    } else if (eventType === 'order.pickup-requested') {
+      courierStatus = 'pending';
+      details = 'Pickup requested';
+    } else if (eventType === 'order.assigned-for-pickup') {
+      courierStatus = 'pending';
+      details = 'Assigned for pickup';
+    } else if (eventType === 'order.picked' || eventType === 'order.pickup') {
+      courierStatus = 'picked';
+      details = 'Order picked up';
+    } else if (eventType === 'order.pickup-failed') {
+      courierStatus = 'pending';
+      details = 'Pickup failed';
+    } else if (eventType === 'order.pickup-cancelled') {
+      courierStatus = 'cancelled';
+      orderStatus = 'cancelled';
+      details = 'Pickup cancelled';
+    } else if (eventType === 'order.at-the-sorting-hub') {
+      courierStatus = 'in_transit';
+      orderStatus = 'shipped';
+      details = 'At sorting hub';
+    } else if (eventType === 'order.in-transit') {
+      courierStatus = 'in_transit';
+      orderStatus = 'shipped';
+      details = 'In transit';
+    } else if (eventType === 'order.received-at-last-mile-hub') {
+      courierStatus = 'in_transit';
+      orderStatus = 'shipped';
+      details = 'Received at last mile hub';
+    } else if (eventType === 'order.assigned-for-delivery') {
+      courierStatus = 'in_transit';
+      orderStatus = 'shipped';
+      details = 'Assigned for delivery';
+    } else if (eventType === 'order.delivered') {
+      courierStatus = 'delivered';
+      orderStatus = 'delivered';
+      details = 'Order delivered';
+    } else if (eventType === 'order.partial-delivery') {
+      courierStatus = 'delivered';
+      orderStatus = 'delivered';
+      details = 'Order partially delivered';
+    } else if (eventType === 'order.returned') {
+      courierStatus = 'returned';
+      orderStatus = 'cancelled';
+      details = 'Order returned';
+    } else if (eventType === 'order.delivery-failed') {
+      courierStatus = 'in_transit';
+      details = 'Delivery failed';
+    } else if (eventType === 'order.on-hold') {
+      courierStatus = 'in_transit';
+      details = 'Order on hold';
+    } else if (eventType === 'order.paid') {
+      courierStatus = 'delivered';
+      orderStatus = 'delivered';
+      details = 'Payment received';
+    } else if (eventType === 'order.paid-return') {
+      courierStatus = 'returned';
+      orderStatus = 'cancelled';
+      details = 'Paid return';
+    } else if (eventType === 'order.exchanged') {
+      courierStatus = 'returned';
+      orderStatus = 'cancelled';
+      details = 'Order exchanged';
+    } else {
+      // For any other event, log it but use default values
+      console.warn(`Unknown event type: ${eventType}`);
+      details = `Unknown event: ${eventType}`;
     }
 
     return {
