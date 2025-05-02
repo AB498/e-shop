@@ -37,11 +37,24 @@ export async function POST(request) {
         });
       }
 
+      // Log important webhook data fields
+      console.log('Important webhook data fields:');
+      console.log(`- consignment_id: ${webhookData.consignment_id}`);
+      console.log(`- merchant_order_id: ${webhookData.merchant_order_id}`);
+      console.log(`- event: ${webhookData.event}`);
+
       // Process the webhook event
       const processedData = processWebhookEvent(webhookData);
 
+      console.log('Processed webhook data:');
+      console.log(`- orderId: ${processedData.orderId}`);
+      console.log(`- consignmentId: ${processedData.consignmentId}`);
+      console.log(`- merchantOrderId: ${processedData.merchantOrderId}`);
+      console.log(`- courierStatus: ${processedData.courierStatus}`);
+      console.log(`- orderStatus: ${processedData.orderStatus}`);
+
       // Always try to update the order, even if we don't have an orderId
-      // The updateOrderFromWebhook function will try to find the order by consignment ID
+      // The updateOrderFromWebhook function will try to find the order by consignment ID or merchant_order_id
       const result = await updateOrderFromWebhook(processedData);
 
       if (result) {
@@ -54,6 +67,12 @@ export async function POST(request) {
       } else {
         console.error('Failed to update order from webhook data');
         console.warn('Could not find matching order for webhook data');
+
+        // Log additional debug information
+        console.log('Please check the following:');
+        console.log('1. Verify that the order exists in the database');
+        console.log('2. Verify that courier_order_id or courier_tracking_id in the database matches either consignment_id or merchant_order_id from the webhook');
+        console.log('3. Check if there are any orders with courier tracking information in the database');
       }
 
       // Return 202 Accepted with the required header

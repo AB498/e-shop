@@ -280,11 +280,14 @@ export async function createAutomaticCourierOrder(orderId) {
     const deliveryFee = pathaoResponse.data.delivery_fee || null;
 
     // 12. Update order with courier information
+    const merchantOrderId = pathaoOrderData.merchant_order_id;
+    console.log(`Using merchant_order_id: ${merchantOrderId} and consignment_id: ${consignmentId}`);
+
     const updatedOrder = await db.update(orders)
       .set({
         courier_id: courierId,
-        courier_order_id: consignmentId,
-        courier_tracking_id: consignmentId,
+        courier_order_id: merchantOrderId, // Store the merchant_order_id here
+        courier_tracking_id: consignmentId, // Store the consignment_id here
         courier_status: 'pending',
         status: 'processing', // Update main order status
         shipping_instructions: deliveryFee ? `Delivery Fee: ${deliveryFee}` : null, // Store delivery fee in shipping_instructions field

@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db';
 import { couriers, orders, courierTracking } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
 
 /**
@@ -167,11 +167,18 @@ export async function createCourierOrder(orderId, pathaoOrderData) {
       throw new Error('Failed to create Pathao courier order');
     }
 
+    // Log the Pathao response for debugging
+    console.log('Pathao response for createCourierOrder:', JSON.stringify(pathaoResponse, null, 2));
+
+    // Extract merchant_order_id from the request data
+    const merchantOrderId = pathaoOrderData.merchant_order_id;
+    console.log(`Using merchant_order_id: ${merchantOrderId}`);
+
     // Update order with courier order information
     const result = await db.update(orders)
       .set({
-        courier_order_id: pathaoResponse.consignment_id,
-        courier_tracking_id: pathaoResponse.consignment_id,
+        courier_order_id: merchantOrderId, // Store the merchant_order_id here
+        courier_tracking_id: pathaoResponse.consignment_id, // Store the consignment_id here
         courier_status: 'pending',
         status: 'processing', // Update main order status
         updated_at: new Date(),
@@ -305,38 +312,104 @@ export async function updateOrderFromWebhook(webhookData) {
     let orderId = webhookData.orderId;
     let orderData = [];
 
-    // If we don't have an order ID but we have a consignment ID, try to look up the order
+    // If we don't have an order ID but we have a consignment ID or merchant_order_id, try to look up the order
     if (!orderId) {
-      console.log(`No order ID provided, looking up order by consignment ID: ${webhookData.consignmentId}`);
+      // First, try to find the order by merchant_order_id
+      if (webhookData.merchantOrderId) {
+        console.log(`Looking up order by merchant_order_id: ${webhookData.merchantOrderId}`);
 
-      // Try to find the order by consignment ID (courier_order_id or courier_tracking_id)
-      orderData = await db
-        .select({
-          id: orders.id,
-          courier_id: orders.courier_id,
-        })
-        .from(orders)
-        .where(eq(orders.courier_order_id, webhookData.consignmentId))
-        .limit(1);
-
-      if (!orderData.length) {
-        // Try with courier_tracking_id as well
+        // Try to find the order by merchant_order_id directly
         orderData = await db
           .select({
             id: orders.id,
             courier_id: orders.courier_id,
           })
           .from(orders)
-          .where(eq(orders.courier_tracking_id, webhookData.consignmentId))
+          .where(eq(orders.courier_order_id, webhookData.merchantOrderId))
           .limit(1);
+
+        if (!orderData.length) {
+          // Try with courier_tracking_id as well
+          orderData = await db
+            .select({
+              id: orders.id,
+              courier_id: orders.courier_id,
+            })
+            .from(orders)
+            .where(eq(orders.courier_tracking_id, webhookData.merchantOrderId))
+            .limit(1);
+        }
+
+        if (orderData.length) {
+          orderId = orderData[0].id;
+          console.log(`Found order ID ${orderId} by merchant_order_id ${webhookData.merchantOrderId}`);
+        } else {
+          console.log(`Could not find order by merchant_order_id ${webhookData.merchantOrderId}, trying consignment_id`);
+        }
       }
 
-      if (orderData.length) {
-        orderId = orderData[0].id;
-        console.log(`Found order ID ${orderId} by consignment ID ${webhookData.consignmentId}`);
-      } else {
-        console.error(`Could not find order by consignment ID ${webhookData.consignmentId}`);
-        return null;
+      // If we still don't have an order, try by consignment_id
+      if (!orderData.length && webhookData.consignmentId) {
+        console.log(`Looking up order by consignment_id: ${webhookData.consignmentId}`);
+
+        // Try to find the order by consignment ID (courier_order_id or courier_tracking_id)
+        orderData = await db
+          .select({
+            id: orders.id,
+            courier_id: orders.courier_id,
+          })
+          .from(orders)
+          .where(eq(orders.courier_order_id, webhookData.consignmentId))
+          .limit(1);
+
+        if (!orderData.length) {
+          // Try with courier_tracking_id as well
+          orderData = await db
+            .select({
+              id: orders.id,
+              courier_id: orders.courier_id,
+            })
+            .from(orders)
+            .where(eq(orders.courier_tracking_id, webhookData.consignmentId))
+            .limit(1);
+        }
+
+        if (orderData.length) {
+          orderId = orderData[0].id;
+          console.log(`Found order ID ${orderId} by consignment_id ${webhookData.consignmentId}`);
+        } else {
+          console.error(`Could not find order by consignment_id ${webhookData.consignmentId}`);
+        }
+      }
+
+      // If we still don't have an order, try a broader search
+      if (!orderData.length) {
+        console.log(`Trying to find any order with courier tracking information...`);
+
+        // Get all orders with courier tracking information
+        const allOrdersWithTracking = await db
+          .select({
+            id: orders.id,
+            courier_id: orders.courier_id,
+            courier_order_id: orders.courier_order_id,
+            courier_tracking_id: orders.courier_tracking_id,
+          })
+          .from(orders)
+          .where(
+            sql`${orders.courier_order_id} IS NOT NULL OR ${orders.courier_tracking_id} IS NOT NULL`
+          )
+          .limit(10);
+
+        console.log(`Found ${allOrdersWithTracking.length} orders with tracking information:`);
+        allOrdersWithTracking.forEach(order => {
+          console.log(`Order ID: ${order.id}, courier_order_id: ${order.courier_order_id}, courier_tracking_id: ${order.courier_tracking_id}`);
+        });
+
+        // If we still can't find the order, return null
+        if (!orderData.length) {
+          console.error(`Could not find any matching order for webhook data`);
+          return null;
+        }
       }
     } else {
       // We have an order ID, get the order information

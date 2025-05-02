@@ -539,6 +539,7 @@ export function processWebhookEvent(webhookData) {
     return {
       orderId,
       consignmentId: webhookData.consignment_id,
+      merchantOrderId: webhookData.merchant_order_id,
       courierStatus,
       orderStatus,
       details,
