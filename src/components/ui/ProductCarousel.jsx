@@ -74,7 +74,7 @@ export default function ProductCarousel({
   }, [products]);
 
   // Show skeleton while loading
-  if (isLoading) {
+  if (isLoading || !products.length) {
     return (
       <ProductCarouselSkeleton
         title={title}
