@@ -91,7 +91,8 @@ export default function PathaoWebhookTester() {
         <div className="mt-5">
           <p className="text-sm text-gray-500 mb-4">
             Test Pathao webhook status updates by simulating events for an existing order.
-            This will update the order status and create tracking entries in the database.
+            This will update the order status and <strong>always create new tracking entries</strong> in the database,
+            just like real webhook events would.
           </p>
 
           <div className="space-y-4">

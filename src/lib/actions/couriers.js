@@ -1,6 +1,6 @@
 'use server';
 
-import { db } from '@/lib/db';
+import { db, pool } from '@/lib/db';
 import { couriers, orders, courierTracking } from '@/db/schema';
 import { eq, desc, sql, and } from 'drizzle-orm';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
@@ -517,17 +517,39 @@ export async function updateOrderFromWebhook(webhookData) {
       })
       .where(eq(orders.id, order.id));
 
-    // Always create a new tracking entry for webhook events
+    // ALWAYS create a new tracking entry for webhook events
     // This ensures that the tracking history is properly updated with each webhook event
-    const trackingEntry = await db.insert(courierTracking).values({
-      order_id: order.id,
-      courier_id: order.courier_id,
-      tracking_id: webhookData.consignmentId,
-      status: webhookData.courierStatus,
-      details: webhookData.details,
-      location: 'Pathao Courier',
-      timestamp: webhookData.timestamp ? new Date(webhookData.timestamp) : new Date(),
-    }).returning();
+    console.log(`Creating new tracking entry for order ${order.id} with status ${webhookData.courierStatus}`);
+
+    // Use a direct SQL query to ensure the entry is created
+    const insertQuery = `
+      INSERT INTO courier_tracking
+      (order_id, courier_id, tracking_id, status, details, location, timestamp)
+      VALUES
+      ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *
+    `;
+
+    const timestamp = webhookData.timestamp ? new Date(webhookData.timestamp) : new Date();
+
+    const insertResult = await pool.query(insertQuery, [
+      order.id,
+      order.courier_id,
+      webhookData.consignmentId,
+      webhookData.courierStatus,
+      webhookData.details,
+      'Pathao Courier',
+      timestamp
+    ]);
+
+    let trackingEntry;
+    if (insertResult.rows && insertResult.rows.length > 0) {
+      console.log(`Successfully created tracking entry: ${JSON.stringify(insertResult.rows[0])}`);
+      trackingEntry = [insertResult.rows[0]];
+    } else {
+      console.error(`Failed to create tracking entry for order ${order.id}`);
+      trackingEntry = [];
+    }
 
     return trackingEntry.length ? trackingEntry[0] : null;
   } catch (error) {
