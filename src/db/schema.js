@@ -55,10 +55,7 @@ const products = pgTable('products', {
 })
 
 // Order status enum
-const orderStatusEnum = pgEnum('order_status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])
-
-// Courier status enum
-const courierStatusEnum = pgEnum('courier_status', ['pending', 'picked', 'in_transit', 'delivered', 'returned', 'cancelled'])
+const orderStatusEnum = pgEnum('order_status', ['pending', 'processing', 'in_transit', 'shipped', 'delivered', 'cancelled'])
 
 // Couriers table
 const couriers = pgTable('couriers', {
@@ -79,7 +76,7 @@ const orders = pgTable('orders', {
   courier_id: integer('courier_id').references(() => couriers.id),
   courier_order_id: text('courier_order_id'),
   courier_tracking_id: text('courier_tracking_id'),
-  courier_status: courierStatusEnum('courier_status'),
+  courier_status: text('courier_status'),
   shipping_address: text('shipping_address'),
   shipping_city: text('shipping_city'),
   shipping_post_code: text('shipping_post_code'),
@@ -107,7 +104,7 @@ const courierTracking = pgTable('courier_tracking', {
   order_id: integer('order_id').references(() => orders.id),
   courier_id: integer('courier_id').references(() => couriers.id),
   tracking_id: text('tracking_id').notNull(),
-  status: courierStatusEnum('status').notNull(),
+  status: text('status'),
   details: text('details'),
   location: text('location'),
   timestamp: timestamp('timestamp').defaultNow(),
@@ -143,6 +140,5 @@ export {
   courierTracking,
   storeLocations,
   userRoleEnum,
-  orderStatusEnum,
-  courierStatusEnum
+  orderStatusEnum
 }

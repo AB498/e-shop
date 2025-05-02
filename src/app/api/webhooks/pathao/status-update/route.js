@@ -44,7 +44,7 @@ export async function POST(request) {
       console.log(`- event: ${webhookData.event}`);
 
       // Process the webhook event
-      const processedData = processWebhookEvent(webhookData);
+      const processedData = await processWebhookEvent(webhookData);
 
       console.log('Processed webhook data:');
       console.log(`- orderId: ${processedData.orderId}`);

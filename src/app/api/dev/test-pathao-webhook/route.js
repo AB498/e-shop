@@ -42,7 +42,7 @@ export async function POST(request) {
     console.log('Testing webhook with mock data:', JSON.stringify(mockWebhookData, null, 2));
 
     // Process the webhook event
-    const processedData = processWebhookEvent(mockWebhookData);
+    const processedData = await processWebhookEvent(mockWebhookData);
     
     // Update order status in database
     const result = await updateOrderFromWebhook(processedData);

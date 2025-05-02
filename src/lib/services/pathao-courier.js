@@ -218,7 +218,7 @@ export async function createOrder(orderData) {
       orderData.recipient_phone = '01712345678';
     } else {
       try {
-        orderData.recipient_phone = formatBangladeshPhoneNumber(orderData.recipient_phone);
+        orderData.recipient_phone = await formatBangladeshPhoneNumber(orderData.recipient_phone);
         console.log('Formatted phone number:', orderData.recipient_phone);
       } catch (phoneError) {
         console.error('Error formatting phone number:', phoneError);
@@ -257,18 +257,17 @@ export async function trackOrder(consignmentId) {
  * @param {string} pathaoStatus - Pathao courier status
  * @returns {string} - Internal courier status
  */
-export function mapPathaoStatus(pathaoStatus) {
+export async function mapPathaoStatus(pathaoStatus) {
   const statusMap = {
-    'Pickup Pending': 'pending',
-    'Pickup Assigned': 'pending',
-    'Picked': 'picked',
-    'In Transit': 'in_transit',
-    'Delivered': 'delivered',
-    'Returned': 'returned',
-    'Cancelled': 'cancelled'
+    'pending': 'pending',
+    'picked': 'picked',
+    'in_transit': 'in_transit',
+    'delivered': 'delivered',
+    'returned': 'returned',
+    'cancelled': 'cancelled'
   };
 
-  return statusMap[pathaoStatus] || 'pending';
+  return pathaoStatus || 'pending';
 }
 
 /**
@@ -276,7 +275,7 @@ export function mapPathaoStatus(pathaoStatus) {
  * @param {string} phone - Phone number to format
  * @returns {string} - Formatted phone number
  */
-export function formatBangladeshPhoneNumber(phone) {
+export async function formatBangladeshPhoneNumber(phone) {
   if (!phone) {
     console.error('Phone number is empty or undefined');
     // Return a default phone number for testing purposes
@@ -343,7 +342,7 @@ export async function createStore(storeData) {
       throw new Error('Contact number is required');
     } else {
       try {
-        storeData.contact_number = formatBangladeshPhoneNumber(storeData.contact_number);
+        storeData.contact_number = await formatBangladeshPhoneNumber(storeData.contact_number);
         console.log('Formatted contact number:', storeData.contact_number);
       } catch (phoneError) {
         console.error('Error formatting contact number:', phoneError);
@@ -354,7 +353,7 @@ export async function createStore(storeData) {
     // Format secondary contact if provided
     if (storeData.secondary_contact) {
       try {
-        storeData.secondary_contact = formatBangladeshPhoneNumber(storeData.secondary_contact);
+        storeData.secondary_contact = await formatBangladeshPhoneNumber(storeData.secondary_contact);
       } catch (phoneError) {
         console.warn('Error formatting secondary contact, removing it:', phoneError);
         delete storeData.secondary_contact;
@@ -381,7 +380,7 @@ export async function formatOrderForPathao(order, user, items, storeInfo, delive
   // Format phone number - handle potential errors
   let formattedPhone;
   try {
-    formattedPhone = formatBangladeshPhoneNumber(deliveryInfo.phone || user.phone);
+    formattedPhone = await formatBangladeshPhoneNumber(deliveryInfo.phone || user.phone);
   } catch (error) {
     console.warn('Error formatting phone number, using default:', error);
     formattedPhone = '01712345678';
@@ -411,7 +410,7 @@ export async function formatOrderForPathao(order, user, items, storeInfo, delive
  * @param {object} webhookData - Webhook data from Pathao
  * @returns {object} - Processed webhook data
  */
-export function processWebhookEvent(webhookData) {
+export async function processWebhookEvent(webhookData) {
   try {
     console.log('Processing Pathao webhook event:', JSON.stringify(webhookData, null, 2));
 
@@ -451,7 +450,6 @@ export function processWebhookEvent(webhookData) {
 
     // Map event type to courier status
     let courierStatus = 'pending';
-    let orderStatus = 'processing';
     let details = 'Status update received';
 
     // Extract the event type from the original event string
@@ -482,35 +480,27 @@ export function processWebhookEvent(webhookData) {
       details = 'Pickup failed';
     } else if (eventType === 'order.pickup-cancelled') {
       courierStatus = 'cancelled';
-      orderStatus = 'cancelled';
       details = 'Pickup cancelled';
     } else if (eventType === 'order.at-the-sorting-hub') {
       courierStatus = 'in_transit';
-      orderStatus = 'shipped';
       details = 'At sorting hub';
     } else if (eventType === 'order.in-transit') {
       courierStatus = 'in_transit';
-      orderStatus = 'shipped';
       details = 'In transit';
     } else if (eventType === 'order.received-at-last-mile-hub') {
       courierStatus = 'in_transit';
-      orderStatus = 'shipped';
       details = 'Received at last mile hub';
     } else if (eventType === 'order.assigned-for-delivery') {
       courierStatus = 'in_transit';
-      orderStatus = 'shipped';
       details = 'Assigned for delivery';
     } else if (eventType === 'order.delivered') {
       courierStatus = 'delivered';
-      orderStatus = 'delivered';
       details = 'Order delivered';
     } else if (eventType === 'order.partial-delivery') {
       courierStatus = 'delivered';
-      orderStatus = 'delivered';
       details = 'Order partially delivered';
     } else if (eventType === 'order.returned') {
       courierStatus = 'returned';
-      orderStatus = 'cancelled';
       details = 'Order returned';
     } else if (eventType === 'order.delivery-failed') {
       courierStatus = 'in_transit';
@@ -520,15 +510,12 @@ export function processWebhookEvent(webhookData) {
       details = 'Order on hold';
     } else if (eventType === 'order.paid') {
       courierStatus = 'delivered';
-      orderStatus = 'delivered';
       details = 'Payment received';
     } else if (eventType === 'order.paid-return') {
       courierStatus = 'returned';
-      orderStatus = 'cancelled';
       details = 'Paid return';
     } else if (eventType === 'order.exchanged') {
       courierStatus = 'returned';
-      orderStatus = 'cancelled';
       details = 'Order exchanged';
     } else {
       // For any other event, log it but use default values
@@ -541,7 +528,6 @@ export function processWebhookEvent(webhookData) {
       consignmentId: webhookData.consignment_id,
       merchantOrderId: webhookData.merchant_order_id,
       courierStatus,
-      orderStatus,
       details,
       timestamp: webhookData.timestamp || webhookData.updated_at || new Date().toISOString(),
       rawEvent: webhookData.event,

@@ -33,7 +33,6 @@ export async function POST() {
       await pool.query('DROP TABLE IF EXISTS files CASCADE');
       await pool.query('DROP TYPE IF EXISTS user_role CASCADE');
       await pool.query('DROP TYPE IF EXISTS order_status CASCADE');
-      await pool.query('DROP TYPE IF EXISTS courier_status CASCADE');
     } catch (error) {
       console.error('Error dropping tables:', error);
       // Continue anyway, as some tables might not exist yet
@@ -45,7 +44,6 @@ export async function POST() {
       // Create enum types first
       await pool.query("CREATE TYPE user_role AS ENUM ('admin', 'customer')");
       await pool.query("CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled')");
-      await pool.query("CREATE TYPE courier_status AS ENUM ('pending', 'picked', 'in_transit', 'delivered', 'returned', 'cancelled')");
 
       // Create tables
       await pool.query(`
@@ -123,7 +121,7 @@ export async function POST() {
           courier_id INTEGER REFERENCES couriers(id),
           courier_order_id TEXT,
           courier_tracking_id TEXT,
-          courier_status courier_status,
+          courier_status TEXT,
           shipping_address TEXT,
           shipping_city TEXT,
           shipping_post_code TEXT,
@@ -153,7 +151,7 @@ export async function POST() {
           order_id INTEGER REFERENCES orders(id),
           courier_id INTEGER REFERENCES couriers(id),
           tracking_id TEXT NOT NULL,
-          status courier_status NOT NULL,
+          status TEXT NOT NULL,
           details TEXT,
           location TEXT,
           timestamp TIMESTAMP DEFAULT NOW(),

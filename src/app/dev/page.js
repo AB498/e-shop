@@ -3,6 +3,7 @@
 import DatabaseSeeder from './components/DatabaseSeeder';
 import OrderTester from './components/OrderTester';
 import PathaoWebhookTester from './components/PathaoWebhookTester';
+import CourierStatusMigration from './components/CourierStatusMigration';
 
 export default function DevPage() {
   return (
@@ -36,6 +37,9 @@ export default function DevPage() {
 
             {/* Pathao Webhook Tester Component */}
             <PathaoWebhookTester />
+
+            {/* Courier Status Migration Component */}
+            <CourierStatusMigration />
           </div>
 
           {/* Webhook Information */}

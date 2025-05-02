@@ -296,7 +296,8 @@ export async function createAutomaticCourierOrder(orderId) {
       .where(eq(orders.id, orderId))
       .returning();
 
-    // 13. Create initial tracking entry
+    // 13. Create initial tracking entry with a consistent timestamp
+    const timestamp = new Date();
     const trackingEntry = await db.insert(courierTracking).values({
       order_id: orderId,
       courier_id: courierId,
@@ -304,7 +305,7 @@ export async function createAutomaticCourierOrder(orderId) {
       status: 'pending',
       details: 'Order created with courier',
       location: 'Merchant',
-      timestamp: new Date(),
+      timestamp: timestamp,
     }).returning();
 
     return {

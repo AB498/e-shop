@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import { couriers, orders, courierTracking } from '@/db/schema';
 import { eq, desc, sql, and } from 'drizzle-orm';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
+import { mapCourierStatusToOrderStatus } from '@/lib/utils/status-mapping';
 
 /**
  * Get all couriers
@@ -186,7 +187,8 @@ export async function createCourierOrder(orderId, pathaoOrderData) {
       .where(eq(orders.id, orderId))
       .returning();
 
-    // Create initial tracking entry
+    // Create initial tracking entry with a consistent timestamp
+    const timestamp = new Date();
     await db.insert(courierTracking).values({
       order_id: orderId,
       courier_id: result[0].courier_id,
@@ -194,7 +196,7 @@ export async function createCourierOrder(orderId, pathaoOrderData) {
       status: 'pending',
       details: 'Order created with courier',
       location: 'Merchant',
-      timestamp: new Date(),
+      timestamp: timestamp,
     });
 
     return result.length ? result[0] : null;
@@ -211,12 +213,14 @@ export async function createCourierOrder(orderId, pathaoOrderData) {
  */
 export async function updateCourierTracking(orderId) {
   try {
-    // Get order information
+    // Get order information including current status
     const orderData = await db
       .select({
         id: orders.id,
         courier_id: orders.courier_id,
         courier_tracking_id: orders.courier_tracking_id,
+        courier_status: orders.courier_status,
+        status: orders.status,
       })
       .from(orders)
       .where(eq(orders.id, orderId))
@@ -236,39 +240,64 @@ export async function updateCourierTracking(orderId) {
     }
 
     // Map Pathao status to our internal status
-    const courierStatus = pathaoCourier.mapPathaoStatus(trackingInfo.data.order_status);
+    const courierStatus = await pathaoCourier.mapPathaoStatus(trackingInfo.data.order_status);
+    console.log(`Courier status: ${courierStatus}, Pathao status: ${trackingInfo.data.order_status}`);
 
-    // Update order with latest status
-    await db.update(orders)
-      .set({
-        courier_status: courierStatus,
-        // Update main order status based on courier status
-        status: courierStatus === 'delivered' ? 'delivered' :
-                courierStatus === 'returned' ? 'cancelled' :
-                courierStatus === 'cancelled' ? 'cancelled' :
-                'shipped',
-        updated_at: new Date(),
+    // Only update the order status if the courier status has actually changed
+    // First, get the current courier status
+    const currentStatus = order.courier_status || 'pending';
+
+    // Only update if the status has changed
+    if (courierStatus !== currentStatus) {
+      // Map courier status to order status using our utility function
+      // Pass the current order status to ensure proper transitions
+      const newOrderStatus = await mapCourierStatusToOrderStatus(courierStatus, order.status);
+
+      console.log(`Updating order status from ${order.status} to ${newOrderStatus} based on courier status ${courierStatus}`);
+
+      // Update order with latest status
+      await db.update(orders)
+        .set({
+          courier_status: courierStatus,
+          status: newOrderStatus,
+          updated_at: new Date(),
+        })
+        .where(eq(orders.id, orderId));
+    }
+
+    // Get all existing tracking entries for this order
+    const allTrackingEntries = await db
+      .select({
+        id: courierTracking.id,
+        status: courierTracking.status,
+        details: courierTracking.details,
+        location: courierTracking.location,
       })
-      .where(eq(orders.id, orderId));
-
-    // Check if a tracking entry with the same status already exists
-    const existingEntries = await db
-      .select({ id: courierTracking.id })
       .from(courierTracking)
       .where(
         and(
           eq(courierTracking.order_id, orderId),
-          eq(courierTracking.tracking_id, order.courier_tracking_id),
-          eq(courierTracking.status, courierStatus),
-          eq(courierTracking.details, trackingInfo.data.order_status_text || trackingInfo.data.order_status)
+          eq(courierTracking.tracking_id, order.courier_tracking_id)
         )
       )
-      .limit(1);
+      .orderBy(desc(courierTracking.timestamp));
+
+    // Check if a tracking entry with the same status already exists
+    const existingEntries = allTrackingEntries.filter(entry =>
+      entry.status === courierStatus &&
+      entry.details === (trackingInfo.data.order_status_text || trackingInfo.data.order_status)
+    );
+
+    // Check if we should skip creating a new entry
+    // If the status is still "pending" and the details are generic, and we already have an initial entry
+    const shouldSkipGenericPending = false;
 
     let trackingEntry;
 
-    // Only create a new entry if one doesn't already exist with the same status and details
-    if (existingEntries.length === 0) {
+    // Only create a new entry if:
+    // 1. One doesn't already exist with the same status and details, AND
+    // 2. We're not dealing with a generic "Pending" status when we already have an initial entry
+    if (existingEntries.length === 0 && !shouldSkipGenericPending) {
       trackingEntry = await db.insert(courierTracking).values({
         order_id: orderId,
         courier_id: order.courier_id,
@@ -276,11 +305,20 @@ export async function updateCourierTracking(orderId) {
         status: courierStatus,
         details: trackingInfo.data.order_status_text || trackingInfo.data.order_status,
         location: trackingInfo.data.current_location || 'Unknown',
-        timestamp: new Date(trackingInfo.data.updated_at) || new Date(),
+        timestamp: trackingInfo.data.updated_at ? new Date(trackingInfo.data.updated_at) : new Date(),
       }).returning();
     } else {
-      // Return the existing entry
-      trackingEntry = existingEntries;
+      // Return the existing entry or the initial "Order created with courier" entry
+      if (existingEntries.length > 0) {
+        trackingEntry = existingEntries;
+      } else {
+        // Find the initial entry
+        const initialEntry = allTrackingEntries.find(entry =>
+          entry.status === 'pending' &&
+          entry.details === 'Order created with courier'
+        );
+        trackingEntry = initialEntry ? [initialEntry] : [];
+      }
     }
 
     return trackingEntry.length ? trackingEntry[0] : null;
@@ -453,11 +491,28 @@ export async function updateOrderFromWebhook(webhookData) {
 
     const order = orderData[0];
 
+    // Get the current order status
+    const currentOrderData = await db
+      .select({
+        status: orders.status,
+      })
+      .from(orders)
+      .where(eq(orders.id, order.id))
+      .limit(1);
+
+    const currentOrderStatus = currentOrderData.length ? currentOrderData[0].status : null;
+
+    // Map courier status to order status using our utility function
+    // Pass the current order status to ensure proper transitions
+    const newOrderStatus = await mapCourierStatusToOrderStatus(webhookData.courierStatus, currentOrderStatus);
+
+    console.log(`Webhook: Updating order status from ${currentOrderStatus} to ${newOrderStatus} based on courier status ${webhookData.courierStatus}`);
+
     // Update order with latest status
     await db.update(orders)
       .set({
         courier_status: webhookData.courierStatus,
-        status: webhookData.orderStatus,
+        status: newOrderStatus,
         updated_at: new Date(),
       })
       .where(eq(orders.id, order.id));
@@ -487,7 +542,7 @@ export async function updateOrderFromWebhook(webhookData) {
         status: webhookData.courierStatus,
         details: webhookData.details,
         location: 'Pathao Courier',
-        timestamp: new Date(webhookData.timestamp),
+        timestamp: webhookData.timestamp ? new Date(webhookData.timestamp) : new Date(),
       }).returning();
     } else {
       // Return the existing entry

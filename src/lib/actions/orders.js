@@ -68,8 +68,16 @@ export async function getUserOrders(userId) {
           ...order,
           items,
           // Format dates for display
-          created_at: order.created_at.toLocaleDateString(),
-          updated_at: order.updated_at.toLocaleDateString(),
+          created_at: new Date(order.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+          }),
+          updated_at: new Date(order.updated_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+          }),
           // Format status for display (capitalize first letter)
           status: order.status.charAt(0).toUpperCase() + order.status.slice(1),
         };
@@ -204,8 +212,16 @@ export async function getOrderDetails(orderId, userId) {
       courier: courierInfo,
       tracking: trackingInfo,
       // Format dates for display
-      created_at: order.created_at.toLocaleDateString(),
-      updated_at: order.updated_at.toLocaleDateString(),
+      created_at: new Date(order.created_at).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      }),
+      updated_at: new Date(order.updated_at).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      }),
       // Format status for display (capitalize first letter)
       status: order.status.charAt(0).toUpperCase() + order.status.slice(1),
       // Format courier status for display if available
@@ -315,13 +331,19 @@ export async function getOrderTracking(orderId, userId) {
       current_status: order.courier_status
         ? order.courier_status.charAt(0).toUpperCase() + order.courier_status.slice(1)
         : 'Pending',
-      tracking: trackingInfo.map(item => ({
-        ...item,
-        // Format status for display (capitalize first letter)
-        status: item.status.charAt(0).toUpperCase() + item.status.slice(1),
-        // Format timestamp for display
-        timestamp: item.timestamp.toLocaleString(),
-      }))
+      tracking: trackingInfo.map(item => {
+        // Create a consistent date object
+        const date = new Date(item.timestamp);
+
+        return {
+          ...item,
+          // Format status for display (capitalize first letter)
+          status: item.status.charAt(0).toUpperCase() + item.status.slice(1),
+          // Format timestamp for display with proper timezone handling
+          // Use a consistent format that respects the local timezone
+          timestamp: date.toLocaleString(),
+        };
+      })
     };
   } catch (error) {
     console.error('Error fetching order tracking:', error);
