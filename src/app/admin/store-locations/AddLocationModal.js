@@ -27,8 +27,8 @@ export default function AddLocationModal({
     zone_id: '',
     area_id: '',
     is_default: false,
-    is_active: true,
-    create_in_pathao: true
+    is_active: true
+    // create_in_pathao is now always true and not configurable
   });
 
   // Reset form when modal opens
@@ -44,8 +44,8 @@ export default function AddLocationModal({
         zone_id: selectedZoneId || '',
         area_id: '',
         is_default: false,
-        is_active: true,
-        create_in_pathao: true
+        is_active: true
+        // create_in_pathao is now always true and not configurable
       });
     }
   }, [isOpen, selectedCityId, selectedZoneId]);
@@ -288,18 +288,18 @@ export default function AddLocationModal({
               </label>
             </div>
 
+            {/* Create in Pathao checkbox removed - now always true */}
             <div className="mb-4 flex items-center">
-              <input
-                type="checkbox"
-                name="create_in_pathao"
-                id="create_in_pathao"
-                checked={formData.create_in_pathao}
-                onChange={handleInputChange}
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-              />
-              <label htmlFor="create_in_pathao" className="ml-2 block text-sm text-gray-900">
-                Create in Pathao
-              </label>
+              <div className="flex items-center">
+                <span className="h-4 w-4 rounded border-gray-300 bg-indigo-600 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </span>
+                <span className="ml-2 block text-sm text-gray-900">
+                  Will be created in Pathao
+                </span>
+              </div>
             </div>
           </div>
 

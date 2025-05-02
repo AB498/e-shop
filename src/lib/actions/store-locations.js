@@ -87,30 +87,32 @@ export async function createStoreLocation(locationData) {
         .where(eq(storeLocations.is_default, true));
     }
 
-    // Create store in Pathao if needed
+    // Create store in Pathao (mandatory)
     let pathaoStoreId = null;
-    if (locationData.create_in_pathao) {
-      try {
-        const pathaoStoreData = {
-          name: locationData.name,
-          contact_name: locationData.contact_name,
-          contact_number: locationData.contact_number,
-          secondary_contact: locationData.secondary_contact || '',
-          address: locationData.address,
-          city_id: locationData.city_id,
-          zone_id: locationData.zone_id,
-          area_id: locationData.area_id
-        };
+    try {
+      const pathaoStoreData = {
+        name: locationData.name,
+        contact_name: locationData.contact_name,
+        contact_number: locationData.contact_number,
+        secondary_contact: locationData.secondary_contact || '',
+        address: locationData.address,
+        city_id: locationData.city_id,
+        zone_id: locationData.zone_id,
+        area_id: locationData.area_id
+      };
 
-        const pathaoResponse = await pathaoCourier.createStore(pathaoStoreData);
-        if (pathaoResponse && pathaoResponse.data && pathaoResponse.data.store_name) {
-          pathaoStoreId = pathaoResponse.data.store_id || `pending-${Date.now()}`;
-          console.log('Pathao store created successfully:', pathaoResponse.data.store_name);
-        }
-      } catch (pathaoError) {
-        console.error('Error creating store in Pathao:', pathaoError);
-        // Continue with local creation even if Pathao creation fails
+      const pathaoResponse = await pathaoCourier.createStore(pathaoStoreData);
+      if (pathaoResponse && pathaoResponse.data && pathaoResponse.data.store_name) {
+        pathaoStoreId = pathaoResponse.data.store_id || `pending-${Date.now()}`;
+        console.log('Pathao store created successfully:', pathaoResponse.data.store_name);
+      } else {
+        // If we didn't get a valid response but no error was thrown
+        throw new Error('Failed to create store in Pathao: Invalid response');
       }
+    } catch (pathaoError) {
+      console.error('Error creating store in Pathao:', pathaoError);
+      // Don't continue with local creation if Pathao creation fails
+      throw new Error(`Failed to create store in Pathao: ${pathaoError.message || 'Unknown error'}`);
     }
 
     const result = await db.insert(storeLocations).values({

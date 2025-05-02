@@ -47,6 +47,10 @@ export async function POST(request) {
     return NextResponse.json(storeLocation, { status: 201 });
   } catch (error) {
     console.error('Error creating store location:', error);
-    return NextResponse.json({ error: 'Failed to create store location' }, { status: 500 });
+    // Return more specific error message, especially for Pathao-related errors
+    const errorMessage = error.message && error.message.includes('Pathao')
+      ? error.message
+      : 'Failed to create store location';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

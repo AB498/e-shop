@@ -189,12 +189,18 @@ export default function StoreLocationsPage() {
   // Function to handle adding a store location
   const handleAddLocation = async (locationData) => {
     try {
+      // Always set create_in_pathao to true since it's mandatory
+      const dataToSubmit = {
+        ...locationData,
+        create_in_pathao: true
+      };
+
       const response = await fetch('/api/store-locations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(locationData),
+        body: JSON.stringify(dataToSubmit),
       });
 
       if (!response.ok) {
@@ -214,6 +220,8 @@ export default function StoreLocationsPage() {
   // Function to handle editing a store location
   const handleEditLocation = async (id, locationData) => {
     try {
+      // For editing, we don't need to set create_in_pathao since we're not creating a new Pathao store
+      // The store should already exist in Pathao
       const response = await fetch(`/api/store-locations/${id}`, {
         method: 'PUT',
         headers: {
@@ -301,8 +309,21 @@ export default function StoreLocationsPage() {
 
       {/* Error message */}
       {error && (
-        <div className="mt-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded relative">
-          {error}
+        <div className="mt-4 bg-red-50 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded shadow-md relative">
+          <div className="flex items-center">
+            <svg className="h-6 w-6 text-red-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <div>
+              <p className="font-bold">Error</p>
+              <p className="text-sm">{error}</p>
+              {error.includes('Pathao') && (
+                <p className="text-sm mt-1 font-medium">
+                  Note: Creating store locations in Pathao is mandatory for our delivery system.
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
