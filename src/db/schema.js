@@ -1,4 +1,4 @@
-const { pgTable, serial, text, timestamp, integer, decimal, boolean, json, varchar, pgEnum } = require('drizzle-orm/pg-core')
+const { pgTable, serial, text, timestamp, integer, decimal, boolean, json, jsonb, varchar, pgEnum } = require('drizzle-orm/pg-core')
 
 // Files table for storing uploaded files
 const files = pgTable('files', {
@@ -47,6 +47,7 @@ const products = pgTable('products', {
   category_id: integer('category_id').references(() => categories.id),
   price: decimal('price', { precision: 10, scale: 2 }).notNull(),
   stock: integer('stock').default(0).notNull(),
+  weight: decimal('weight', { precision: 5, scale: 2 }).default('0.5'),
   description: text('description'),
   image: text('image'),
   created_at: timestamp('created_at').defaultNow(),
@@ -56,12 +57,36 @@ const products = pgTable('products', {
 // Order status enum
 const orderStatusEnum = pgEnum('order_status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])
 
+// Courier status enum
+const courierStatusEnum = pgEnum('courier_status', ['pending', 'picked', 'in_transit', 'delivered', 'returned', 'cancelled'])
+
+// Couriers table
+const couriers = pgTable('couriers', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  is_active: boolean('is_active').default(true).notNull(),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
 // Orders table
 const orders = pgTable('orders', {
   id: serial('id').primaryKey(),
   user_id: integer('user_id').references(() => users.id),
   status: orderStatusEnum('status').default('pending').notNull(),
   total: decimal('total', { precision: 10, scale: 2 }).notNull(),
+  courier_id: integer('courier_id').references(() => couriers.id),
+  courier_order_id: text('courier_order_id'),
+  courier_tracking_id: text('courier_tracking_id'),
+  courier_status: courierStatusEnum('courier_status'),
+  shipping_address: text('shipping_address'),
+  shipping_city: text('shipping_city'),
+  shipping_post_code: text('shipping_post_code'),
+  shipping_phone: text('shipping_phone'),
+  shipping_area: text('shipping_area'),
+  shipping_landmark: text('shipping_landmark'),
+  shipping_instructions: text('shipping_instructions'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
 })
@@ -76,6 +101,37 @@ const orderItems = pgTable('order_items', {
   created_at: timestamp('created_at').defaultNow(),
 })
 
+// Courier tracking table
+const courierTracking = pgTable('courier_tracking', {
+  id: serial('id').primaryKey(),
+  order_id: integer('order_id').references(() => orders.id),
+  courier_id: integer('courier_id').references(() => couriers.id),
+  tracking_id: text('tracking_id').notNull(),
+  status: courierStatusEnum('status').notNull(),
+  details: text('details'),
+  location: text('location'),
+  timestamp: timestamp('timestamp').defaultNow(),
+  created_at: timestamp('created_at').defaultNow(),
+})
+
+// Store locations table for courier pickups
+const storeLocations = pgTable('store_locations', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  contact_name: text('contact_name').notNull(),
+  contact_number: text('contact_number').notNull(),
+  secondary_contact: text('secondary_contact'),
+  address: text('address').notNull(),
+  city_id: integer('city_id').notNull(),
+  zone_id: integer('zone_id').notNull(),
+  area_id: integer('area_id').notNull(),
+  is_default: boolean('is_default').default(false),
+  pathao_store_id: text('pathao_store_id'),
+  is_active: boolean('is_active').default(true),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
 export {
   files,
   users,
@@ -83,6 +139,10 @@ export {
   products,
   orders,
   orderItems,
+  couriers,
+  courierTracking,
+  storeLocations,
   userRoleEnum,
-  orderStatusEnum
+  orderStatusEnum,
+  courierStatusEnum
 }

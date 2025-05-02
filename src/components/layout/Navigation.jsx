@@ -4,9 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import SearchBarWrapper from './SearchBarWrapper';
 import { useCart } from '@/context/CartContext';
+import { useSession } from 'next-auth/react';
 
 const Navigation = () => {
   const { cartCount } = useCart();
+  const { data: session, status } = useSession();
 
   // Function to toggle the sidebar
   const toggleSidebar = () => {
@@ -47,6 +49,19 @@ const Navigation = () => {
                 />
               </div>
             </button>
+
+            <Link href="/profile" className="relative">
+              <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
+                <div className="relative w-5 h-5">
+                  <Image
+                    src="/images/topbar/user.png"
+                    alt="User"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+            </Link>
 
             <Link href="/cart" className="relative">
               <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
@@ -114,6 +129,25 @@ const Navigation = () => {
                   />
                 </div>
                 <span className="text-base text-[#333333] font-medium">Products</span>
+              </div>
+            </Link>
+
+            {/* User Profile Link */}
+            <Link href="/profile">
+              <div className="flex items-center space-x-2 cursor-pointer">
+                <div className="relative w-5 h-5">
+                  <Image
+                    src="/images/topbar/user.png"
+                    alt="User"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <span className="text-base text-[#333333] font-medium">
+                  {status === 'authenticated' && session?.user?.firstName
+                    ? `Hi, ${session.user.firstName}`
+                    : 'My Account'}
+                </span>
               </div>
             </Link>
 

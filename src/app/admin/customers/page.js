@@ -1,81 +1,102 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MagnifyingGlassIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 export default function CustomersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showCustomerDetails, setShowCustomerDetails] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customers, setCustomers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [customerDetails, setCustomerDetails] = useState(null);
 
-  // Sample customers data
-  const customers = [
-    { 
-      id: 1, 
-      name: 'John Doe', 
-      email: 'john.doe@example.com', 
-      orders: 5, 
-      totalSpent: '$625.45', 
-      lastOrder: '2023-06-10',
-      status: 'Active'
-    },
-    { 
-      id: 2, 
-      name: 'Jane Smith', 
-      email: 'jane.smith@example.com', 
-      orders: 3, 
-      totalSpent: '$289.97', 
-      lastOrder: '2023-06-05',
-      status: 'Active'
-    },
-    { 
-      id: 3, 
-      name: 'Robert Johnson', 
-      email: 'robert.johnson@example.com', 
-      orders: 8, 
-      totalSpent: '$1,245.30', 
-      lastOrder: '2023-06-12',
-      status: 'Active'
-    },
-    { 
-      id: 4, 
-      name: 'Emily Davis', 
-      email: 'emily.davis@example.com', 
-      orders: 2, 
-      totalSpent: '$178.50', 
-      lastOrder: '2023-05-28',
-      status: 'Active'
-    },
-    { 
-      id: 5, 
-      name: 'Michael Brown', 
-      email: 'michael.brown@example.com', 
-      orders: 6, 
-      totalSpent: '$756.80', 
-      lastOrder: '2023-06-08',
-      status: 'Active'
-    },
-    { 
-      id: 6, 
-      name: 'Sarah Wilson', 
-      email: 'sarah.wilson@example.com', 
-      orders: 1, 
-      totalSpent: '$112.30', 
-      lastOrder: '2023-05-15',
-      status: 'Inactive'
-    },
-  ];
+  // Fetch customers data
+  useEffect(() => {
+    async function fetchCustomers() {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/admin/customers');
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch customers');
+        }
+
+        const data = await response.json();
+
+        // Process the data to add derived fields
+        const processedData = data.map(customer => ({
+          ...customer,
+          name: customer.fullName,
+          // These fields will be populated when viewing details
+          orders: '...',
+          totalSpent: '...',
+          lastOrder: '...',
+          status: 'Active' // Default status
+        }));
+
+        setCustomers(processedData);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Error fetching customers:', err);
+        setError(err.message);
+        setIsLoading(false);
+      }
+    }
+
+    fetchCustomers();
+  }, []);
 
   // Filter customers based on search term
-  const filteredCustomers = customers.filter(customer => 
+  const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Handle view customer details
-  const handleViewCustomer = (customer) => {
-    setSelectedCustomer(customer);
-    setShowCustomerDetails(true);
+  const handleViewCustomer = async (customer) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/admin/customers/${customer.id}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch customer details');
+      }
+
+      const data = await response.json();
+
+      // Calculate total spent from orders
+      let totalSpent = 0;
+      let lastOrderDate = '';
+
+      if (data.orders && data.orders.length > 0) {
+        data.orders.forEach(order => {
+          totalSpent += parseFloat(order.total.replace('$', ''));
+        });
+
+        // Get the most recent order date
+        lastOrderDate = data.orders[0].createdAt;
+      }
+
+      const customerWithDetails = {
+        ...data,
+        name: data.fullName,
+        orders: data.orders ? data.orders.length : 0,
+        totalSpent: `$${totalSpent.toFixed(2)}`,
+        lastOrder: lastOrderDate || 'No orders',
+        status: 'Active' // Default status
+      };
+
+      setSelectedCustomer(customerWithDetails);
+      setCustomerDetails(data);
+      setShowCustomerDetails(true);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Error fetching customer details:', err);
+      setError(err.message);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -88,6 +109,19 @@ export default function CustomersPage() {
           </p>
         </div>
       </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
+          <h3 className="text-lg font-medium">Error loading customers</h3>
+          <p>{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded-md"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="p-6 border-b border-gray-200">
@@ -102,6 +136,7 @@ export default function CustomersPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                 placeholder="Search customers..."
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -135,33 +170,69 @@ export default function CustomersPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredCustomers.map((customer) => (
-                <tr key={customer.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{customer.name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{customer.email}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.orders}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{customer.totalSpent}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.lastOrder}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${customer.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                      {customer.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleViewCustomer(customer)}
-                      className="text-emerald-600 hover:text-emerald-900"
-                    >
-                      <EyeIcon className="h-5 w-5" />
-                    </button>
+              {isLoading ? (
+                // Loading skeleton
+                [...Array(5)].map((_, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 bg-gray-200 rounded w-8 animate-pulse"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-5 bg-gray-200 rounded-full w-5 animate-pulse"></div>
+                    </td>
+                  </tr>
+                ))
+              ) : filteredCustomers.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="px-6 py-4 text-center text-sm text-gray-500">
+                    No customers found
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredCustomers.map((customer) => (
+                  <tr key={customer.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{customer.name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{customer.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.orders}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{customer.totalSpent}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.lastOrder}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                        ${customer.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                        {customer.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                        onClick={() => handleViewCustomer(customer)}
+                        className="text-emerald-600 hover:text-emerald-900"
+                        disabled={isLoading}
+                      >
+                        <EyeIcon className="h-5 w-5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -191,6 +262,28 @@ export default function CustomersPage() {
                           <dd className="mt-1 text-sm text-gray-900">{selectedCustomer.email}</dd>
                         </div>
                         <div className="sm:col-span-1">
+                          <dt className="text-sm font-medium text-gray-500">Phone</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{selectedCustomer.phone || 'Not provided'}</dd>
+                        </div>
+                        <div className="sm:col-span-1">
+                          <dt className="text-sm font-medium text-gray-500">Joined</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{selectedCustomer.createdAt}</dd>
+                        </div>
+                        <div className="sm:col-span-2">
+                          <dt className="text-sm font-medium text-gray-500">Address</dt>
+                          <dd className="mt-1 text-sm text-gray-900">
+                            {selectedCustomer.address ? (
+                              <>
+                                {selectedCustomer.address}<br />
+                                {selectedCustomer.city}, {selectedCustomer.postCode}<br />
+                                {selectedCustomer.region}, {selectedCustomer.country}
+                              </>
+                            ) : (
+                              'Not provided'
+                            )}
+                          </dd>
+                        </div>
+                        <div className="sm:col-span-1">
                           <dt className="text-sm font-medium text-gray-500">Total Orders</dt>
                           <dd className="mt-1 text-sm text-gray-900">{selectedCustomer.orders}</dd>
                         </div>
@@ -198,15 +291,52 @@ export default function CustomersPage() {
                           <dt className="text-sm font-medium text-gray-500">Total Spent</dt>
                           <dd className="mt-1 text-sm text-gray-900">{selectedCustomer.totalSpent}</dd>
                         </div>
-                        <div className="sm:col-span-1">
-                          <dt className="text-sm font-medium text-gray-500">Last Order Date</dt>
-                          <dd className="mt-1 text-sm text-gray-900">{selectedCustomer.lastOrder}</dd>
-                        </div>
-                        <div className="sm:col-span-1">
-                          <dt className="text-sm font-medium text-gray-500">Status</dt>
-                          <dd className="mt-1 text-sm text-gray-900">{selectedCustomer.status}</dd>
-                        </div>
                       </dl>
+
+                      {/* Recent Orders */}
+                      {customerDetails && customerDetails.orders && customerDetails.orders.length > 0 && (
+                        <div className="mt-6">
+                          <h4 className="text-md font-medium text-gray-900">Recent Orders</h4>
+                          <div className="mt-2 overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                              <thead className="bg-gray-50">
+                                <tr>
+                                  <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Order ID
+                                  </th>
+                                  <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Date
+                                  </th>
+                                  <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                  </th>
+                                  <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Total
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className="bg-white divide-y divide-gray-200">
+                                {customerDetails.orders.map((order) => (
+                                  <tr key={order.id}>
+                                    <td className="px-4 py-2 whitespace-nowrap text-xs font-medium text-blue-600">#{order.id}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500">{order.createdAt}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap">
+                                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                        ${order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
+                                          order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
+                                          order.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
+                                          'bg-yellow-100 text-yellow-800'}`}>
+                                        {order.status}
+                                      </span>
+                                    </td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900">{order.total}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

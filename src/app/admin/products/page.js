@@ -1,126 +1,92 @@
 'use client';
 
-import { useState } from 'react';
-import { 
-  PlusIcon, 
-  MagnifyingGlassIcon, 
-  PencilIcon, 
-  TrashIcon, 
-  ArrowUpIcon, 
-  ArrowDownIcon,
+import { useState, useEffect } from 'react';
+import {
+  PlusIcon,
+  MagnifyingGlassIcon,
+  PencilIcon,
+  TrashIcon,
   FunnelIcon,
   ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import { DataGrid } from '@mui/x-data-grid';
+import { getAllProductsWithInventory, updateProductStock } from '@/lib/actions/admin';
+
+// Helper function to process product data
+const processProductData = (data) => {
+  return data.map(product => {
+    // Convert price string like "$129.99" to number 129.99
+    const numericPrice = typeof product.price === 'string'
+      ? parseFloat(product.price.replace('$', ''))
+      : product.price;
+
+    // Determine stock status based on stock level and threshold
+    // Default threshold if not set
+    const threshold = product.threshold || 10;
+    let stockStatus = 'In Stock';
+
+    if (product.stock <= 0) {
+      stockStatus = 'Out of Stock';
+    } else if (product.stock <= threshold) {
+      stockStatus = 'Low Stock';
+    }
+
+    return {
+      ...product,
+      price: numericPrice,
+      threshold: threshold,
+      stockStatus: stockStatus
+    };
+  });
+};
 
 export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddStockModal, setShowAddStockModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  const [filterStock, setFilterStock] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null);
 
-  // Sample product data
-  const products = [
-    { 
-      id: 1, 
-      name: 'Wireless Headphones', 
-      sku: 'WH-001', 
-      category: 'Electronics', 
-      price: 129.99, 
-      stock: 45, 
-      status: 'Active' 
-    },
-    { 
-      id: 2, 
-      name: 'Smart Watch', 
-      sku: 'SW-002', 
-      category: 'Electronics', 
-      price: 199.99, 
-      stock: 28, 
-      status: 'Active' 
-    },
-    { 
-      id: 3, 
-      name: 'Bluetooth Speaker', 
-      sku: 'BS-003', 
-      category: 'Electronics', 
-      price: 79.99, 
-      stock: 62, 
-      status: 'Active' 
-    },
-    { 
-      id: 4, 
-      name: 'Laptop Backpack', 
-      sku: 'LB-004', 
-      category: 'Accessories', 
-      price: 49.99, 
-      stock: 120, 
-      status: 'Active' 
-    },
-    { 
-      id: 5, 
-      name: 'USB-C Cable', 
-      sku: 'UC-005', 
-      category: 'Accessories', 
-      price: 12.99, 
-      stock: 200, 
-      status: 'Active' 
-    },
-    { 
-      id: 6, 
-      name: 'Wireless Mouse', 
-      sku: 'WM-006', 
-      category: 'Electronics', 
-      price: 29.99, 
-      stock: 75, 
-      status: 'Active' 
-    },
-    { 
-      id: 7, 
-      name: 'Desk Lamp', 
-      sku: 'DL-007', 
-      category: 'Home', 
-      price: 34.99, 
-      stock: 50, 
-      status: 'Active' 
-    },
-    { 
-      id: 8, 
-      name: 'Coffee Mug', 
-      sku: 'CM-008', 
-      category: 'Home', 
-      price: 14.99, 
-      stock: 150, 
-      status: 'Active' 
-    },
-    { 
-      id: 9, 
-      name: 'Wireless Charger', 
-      sku: 'WC-009', 
-      category: 'Electronics', 
-      price: 39.99, 
-      stock: 85, 
-      status: 'Active' 
-    },
-    { 
-      id: 10, 
-      name: 'Fitness Tracker', 
-      sku: 'FT-010', 
-      category: 'Electronics', 
-      price: 89.99, 
-      stock: 0, 
-      status: 'Out of Stock' 
-    },
-  ];
+  // Fetch products from the database
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await getAllProductsWithInventory();
+        const processedData = processProductData(data);
+        setProducts(processedData);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setError('Failed to load products. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  // Filter products based on search term
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    fetchProducts();
+  }, []);
+
+  // Filter products based on search term and stock filter
+  const filteredProducts = products.filter(product => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesFilter =
+      filterStock === 'all' ||
+      (filterStock === 'low' && product.stockStatus === 'Low Stock') ||
+      (filterStock === 'out' && product.stockStatus === 'Out of Stock');
+
+    return matchesSearch && matchesFilter;
+  });
 
   // Handle product selection
   const handleSelectionChange = (newSelection) => {
@@ -140,38 +106,106 @@ export default function ProductsPage() {
     // Then update the UI
   };
 
+  // Handle add stock
+  const handleAddStock = (product) => {
+    setCurrentProduct(product);
+    setShowAddStockModal(true);
+  };
+
+  // Handle stock update
+  const handleStockUpdate = async (productId, quantityToAdd) => {
+    if (!quantityToAdd || isNaN(quantityToAdd) || parseInt(quantityToAdd) <= 0) {
+      setError('Please enter a valid quantity');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Find the current product to get its current stock
+      const product = products.find(p => p.id === productId);
+      if (!product) {
+        throw new Error('Product not found');
+      }
+
+      // Calculate new stock level
+      const newStockLevel = product.stock + parseInt(quantityToAdd);
+
+      // Update stock in the database
+      const updatedProduct = await updateProductStock(productId, newStockLevel);
+
+      if (!updatedProduct) {
+        throw new Error('Failed to update stock');
+      }
+
+      // Update the products state with the new stock level
+      setProducts(prevProducts =>
+        prevProducts.map(p => {
+          if (p.id === productId) {
+            // Determine new stock status
+            let stockStatus = 'In Stock';
+            if (newStockLevel <= 0) {
+              stockStatus = 'Out of Stock';
+            } else if (newStockLevel <= (p.threshold || 10)) {
+              stockStatus = 'Low Stock';
+            }
+
+            return {
+              ...p,
+              stock: newStockLevel,
+              stockStatus
+            };
+          }
+          return p;
+        })
+      );
+
+      setShowAddStockModal(false);
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      setError('Failed to update stock. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // DataGrid columns
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Product Name', width: 250 },
-    { field: 'sku', headerName: 'SKU', width: 120 },
-    { field: 'category', headerName: 'Category', width: 150 },
-    { 
-      field: 'price', 
-      headerName: 'Price', 
-      width: 120,
+    { field: 'name', headerName: 'Product Name', width: 200 },
+    { field: 'sku', headerName: 'SKU', width: 100 },
+    { field: 'category', headerName: 'Category', width: 120 },
+    {
+      field: 'price',
+      headerName: 'Price',
+      width: 100,
       renderCell: (params) => (
         <div className="font-medium">${params.value.toFixed(2)}</div>
       ),
     },
-    { 
-      field: 'stock', 
-      headerName: 'Stock', 
-      width: 120,
+    {
+      field: 'stock',
+      headerName: 'Stock',
+      width: 80,
       renderCell: (params) => (
         <div className={params.value === 0 ? 'text-red-500 font-medium' : 'font-medium'}>
           {params.value}
         </div>
       ),
     },
-    { 
-      field: 'status', 
-      headerName: 'Status', 
-      width: 150,
+    {
+      field: 'threshold',
+      headerName: 'Threshold',
+      width: 100,
+    },
+    {
+      field: 'stockStatus',
+      headerName: 'Stock Status',
+      width: 120,
       renderCell: (params) => (
-        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-          params.value === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
+        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+          ${params.value === 'In Stock' ? 'bg-green-100 text-green-800' :
+            params.value === 'Low Stock' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'}`}>
           {params.value}
         </span>
       ),
@@ -179,18 +213,27 @@ export default function ProductsPage() {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 180,
       renderCell: (params) => (
         <div className="flex space-x-2">
           <button
             onClick={() => handleEditProduct(params.row)}
             className="text-blue-600 hover:text-blue-900"
+            title="Edit Product"
           >
             <PencilIcon className="h-5 w-5" />
           </button>
           <button
+            onClick={() => handleAddStock(params.row)}
+            className="text-emerald-600 hover:text-emerald-900"
+            title="Add Stock"
+          >
+            <PlusIcon className="h-5 w-5" />
+          </button>
+          <button
             onClick={() => handleDeleteProduct(params.row.id)}
             className="text-red-600 hover:text-red-900"
+            title="Delete Product"
           >
             <TrashIcon className="h-5 w-5" />
           </button>
@@ -236,6 +279,15 @@ export default function ProductsPage() {
               />
             </div>
             <div className="flex space-x-2">
+              <select
+                value={filterStock}
+                onChange={(e) => setFilterStock(e.target.value)}
+                className="block pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
+              >
+                <option value="all">All Stock</option>
+                <option value="low">Low Stock</option>
+                <option value="out">Out of Stock</option>
+              </select>
               <div className="relative">
                 <button
                   type="button"
@@ -266,27 +318,62 @@ export default function ProductsPage() {
               </div>
               <button
                 type="button"
+                onClick={() => {
+                  setIsLoading(true);
+                  setError(null);
+                  getAllProductsWithInventory()
+                    .then(data => {
+                      const processedData = processProductData(data);
+                      setProducts(processedData);
+                    })
+                    .catch(err => {
+                      console.error('Error refreshing products:', err);
+                      setError('Failed to refresh products. Please try again later.');
+                    })
+                    .finally(() => {
+                      setIsLoading(false);
+                    });
+                }}
+                disabled={isLoading}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
               >
-                <ArrowPathIcon className="-ml-1 mr-2 h-5 w-5 text-gray-400" aria-hidden="true" />
-                Refresh
+                <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${isLoading ? 'animate-spin text-emerald-500' : 'text-gray-400'}`} aria-hidden="true" />
+                {isLoading ? 'Refreshing...' : 'Refresh'}
               </button>
             </div>
           </div>
         </div>
 
-        <div style={{ height: 600, width: '100%' }}>
-          <DataGrid
-            rows={filteredProducts}
-            columns={columns}
-            pageSize={10}
-            rowsPerPageOptions={[10, 25, 50]}
-            checkboxSelection
-            disableSelectionOnClick
-            onSelectionModelChange={handleSelectionChange}
-            selectionModel={selectedProducts}
-          />
-        </div>
+        {error && (
+          <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+            <p>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-2 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-md text-sm px-5 py-2"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="flex justify-center items-center h-96">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+          </div>
+        ) : (
+          <div style={{ height: 600, width: '100%' }}>
+            <DataGrid
+              rows={filteredProducts}
+              columns={columns}
+              pageSize={10}
+              rowsPerPageOptions={[10, 25, 50]}
+              checkboxSelection
+              disableSelectionOnClick
+              onSelectionModelChange={handleSelectionChange}
+              selectionModel={selectedProducts}
+            />
+          </div>
+        )}
 
         {selectedProducts.length > 0 && (
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
@@ -384,6 +471,89 @@ export default function ProductsPage() {
                   type="button"
                   onClick={() => setShowEditModal(false)}
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Stock Modal */}
+      {showAddStockModal && currentProduct && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={() => !isLoading && setShowAddStockModal(false)}></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">Add Stock: {currentProduct.name}</h3>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Current stock: <span className="font-medium">{currentProduct.stock}</span> units
+                      </p>
+                    </div>
+
+                    {error && (
+                      <div className="mt-2 p-2 text-sm text-red-700 bg-red-100 rounded-md">
+                        {error}
+                      </div>
+                    )}
+
+                    <div className="mt-4">
+                      <div>
+                        <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+                          Quantity to Add
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            type="number"
+                            name="quantity"
+                            id="quantity"
+                            min="1"
+                            disabled={isLoading}
+                            className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            placeholder="Enter quantity"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => handleStockUpdate(currentProduct.id, document.getElementById('quantity').value)}
+                  className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 ${
+                    isLoading ? 'bg-emerald-400' : 'bg-emerald-600 hover:bg-emerald-700'
+                  } text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:ml-3 sm:w-auto sm:text-sm`}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing...
+                    </>
+                  ) : (
+                    'Add Stock'
+                  )}
+                </button>
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => setShowAddStockModal(false)}
+                  className={`mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 ${
+                    isLoading ? 'bg-gray-200 text-gray-500' : 'bg-white text-gray-700 hover:bg-gray-50'
+                  } text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`}
                 >
                   Cancel
                 </button>

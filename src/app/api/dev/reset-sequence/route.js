@@ -1,28 +1,40 @@
 import { NextResponse } from 'next/server';
-import { pool } from '@/lib/db';
+import { resetSequence, forceResetSequence } from '@/lib/utils/db-utils';
 
 export async function POST(request) {
   try {
-    // Get the table name from the request
-    const { table } = await request.json();
-    
+    // Get the table name and optional value from the request
+    const { table, value } = await request.json();
+
     if (!table) {
       return NextResponse.json(
         { error: 'Table name is required' },
         { status: 400 }
       );
     }
-    
-    // Reset the sequence for the specified table
-    const result = await pool.query(`
-      SELECT setval(pg_get_serial_sequence('${table}', 'id'), 
-        (SELECT COALESCE(MAX(id), 0) + 1 FROM ${table}), false);
-    `);
-    
+
+    let success;
+
+    // If a specific value is provided, use forceResetSequence
+    if (value !== undefined) {
+      success = await forceResetSequence(table, value);
+    } else {
+      // Otherwise use the standard resetSequence
+      success = await resetSequence(table);
+    }
+
+    if (!success) {
+      return NextResponse.json(
+        { error: `Failed to reset sequence for table ${table}` },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
       message: `Sequence for table ${table} has been reset`,
-      result: result.rows[0]
+      table,
+      value: value !== undefined ? value : 'auto-calculated'
     });
   } catch (error) {
     console.error('Error resetting sequence:', error);

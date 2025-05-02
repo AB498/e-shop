@@ -13,6 +13,7 @@ import { getAllCategories } from '@/lib/actions/products';
 // This is a Server Component that fetches data
 export default async function ProductListingPage({ searchParams }) {
   // Extract query parameters with defaults
+  await searchParams;
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit || '12';
   const sortBy = searchParams?.sortBy || 'id';

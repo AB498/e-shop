@@ -5,6 +5,14 @@ const ordersSeed = [
     user_id: 1,
     status: 'delivered',
     total: 35.96,
+    courier_id: 1, // Pathao
+    courier_order_id: 'PTH123456789',
+    courier_tracking_id: 'PTH123456789',
+    courier_status: 'delivered',
+    shipping_address: '123 Main Street, Apartment 4B',
+    shipping_city: 'Dhaka',
+    shipping_post_code: '1000',
+    shipping_phone: '+8801712345678',
     created_at: new Date('2023-06-15')
   },
   {
@@ -19,6 +27,14 @@ const ordersSeed = [
     user_id: 1,
     status: 'shipped',
     total: 24.96,
+    courier_id: 2, // Sundarban Courier
+    courier_order_id: 'SCS789012345',
+    courier_tracking_id: 'SCS789012345',
+    courier_status: 'in_transit',
+    shipping_address: '456 Park Avenue, Building C',
+    shipping_city: 'Chittagong',
+    shipping_post_code: '4000',
+    shipping_phone: '+8801812345678',
     created_at: new Date('2023-06-17')
   },
   // Additional orders
@@ -62,6 +78,14 @@ const ordersSeed = [
     user_id: 2,
     status: 'shipped',
     total: 45.96,
+    courier_id: 3, // eCourier
+    courier_order_id: 'EC456789012',
+    courier_tracking_id: 'EC456789012',
+    courier_status: 'picked',
+    shipping_address: '789 Lake View Road',
+    shipping_city: 'Sylhet',
+    shipping_post_code: '3100',
+    shipping_phone: '+8801912345678',
     created_at: new Date('2023-07-25')
   },
   {

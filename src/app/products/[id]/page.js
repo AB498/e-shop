@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 
 // This is a Server Component that fetches data
 export default async function ProductDetailPage({ params }) {
+  await params;
   const { id } = params;
 
   return (

@@ -9,30 +9,43 @@ export function CartProvider({ children }) {
   const [cartCount, setCartCount] = useState(0);
   const [cartTotal, setCartTotal] = useState(0);
 
-  // Load cart from localStorage on initial render
+  // Load cart from localStorage on initial render (client-side only)
   useEffect(() => {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-      try {
-        const parsedCart = JSON.parse(storedCart);
-        setCart(parsedCart);
-      } catch (error) {
-        console.error('Failed to parse cart from localStorage:', error);
-        setCart([]);
+    // Only run in browser environment
+    if (typeof window !== 'undefined') {
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        try {
+          const parsedCart = JSON.parse(storedCart);
+          setCart(parsedCart);
+        } catch (error) {
+          console.error('Failed to parse cart from localStorage:', error);
+          setCart([]);
+        }
       }
     }
   }, []);
 
   // Update localStorage and cart metrics whenever cart changes
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    
-    // Calculate cart count and total
-    const count = cart.reduce((total, item) => total + item.quantity, 0);
-    const total = cart.reduce((total, item) => total + (parseFloat(item.price) * item.quantity), 0);
-    
-    setCartCount(count);
-    setCartTotal(total);
+    // Only run in browser environment
+    if (typeof window !== 'undefined') {
+      // Save to localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      // Calculate cart count and total in one pass to optimize
+      let count = 0;
+      let total = 0;
+
+      for (const item of cart) {
+        count += item.quantity;
+        total += parseFloat(item.price || 0) * item.quantity;
+      }
+
+      // Batch state updates
+      setCartCount(count);
+      setCartTotal(total);
+    }
   }, [cart]);
 
   // Add item to cart
@@ -40,7 +53,7 @@ export function CartProvider({ children }) {
     setCart(prevCart => {
       // Check if product already exists in cart
       const existingItemIndex = prevCart.findIndex(item => item.id === product.id);
-      
+
       if (existingItemIndex >= 0) {
         // Update quantity if product already exists
         const updatedCart = [...prevCart];
@@ -64,7 +77,7 @@ export function CartProvider({ children }) {
   // Update item quantity
   const updateQuantity = (productId, quantity) => {
     if (quantity < 1) return;
-    
+
     setCart(prevCart => {
       return prevCart.map(item => {
         if (item.id === productId) {
@@ -77,7 +90,17 @@ export function CartProvider({ children }) {
 
   // Clear cart
   const clearCart = () => {
+    // Clear cart items
     setCart([]);
+
+    // Reset cart metrics directly to avoid potential race conditions
+    setCartCount(0);
+    setCartTotal(0);
+
+    // Clear localStorage if in browser environment
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('cart');
+    }
   };
 
   return (

@@ -11,7 +11,8 @@ export const metadata = {
   description: 'An error occurred during authentication',
 };
 
-export default function AuthErrorPage({ searchParams }) {
+export default async function AuthErrorPage({ searchParams }) {
+  await searchParams;
   const error = searchParams?.error || 'An unknown error occurred';
 
   const getErrorMessage = (errorCode) => {

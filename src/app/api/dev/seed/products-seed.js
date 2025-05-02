@@ -1,7 +1,7 @@
 // Expanded product seed data with Unsplash images
 const productsSeed = [
   // Fruits (Category 1)
-  { id: 1, name: 'Organic Bananas', sku: 'FRUIT-001', category_id: 1, price: 2.99, stock: 150, description: 'Fresh organic bananas from local farms.', image: 'https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=500&auto=format&fit=crop&q=60' },
+  { id: 1, name: 'Organic Bananas', sku: 'FRUIT-001', category_id: 1, price: 2.99, stock: 150, weight: 0.8, description: 'Fresh organic bananas from local farms.', image: 'https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=500&auto=format&fit=crop&q=60' },
   { id: 2, name: 'Fresh Strawberries', sku: 'FRUIT-002', category_id: 1, price: 4.99, stock: 100, description: 'Sweet and juicy strawberries, perfect for desserts.', image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500&auto=format&fit=crop&q=60' },
   { id: 3, name: 'Avocado', sku: 'FRUIT-003', category_id: 1, price: 1.99, stock: 75, description: 'Ripe avocados, ready to eat.', image: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500&auto=format&fit=crop&q=60' },
   { id: 11, name: 'Red Apples', sku: 'FRUIT-004', category_id: 1, price: 3.49, stock: 200, description: 'Crisp and sweet red apples.', image: 'https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=500&auto=format&fit=crop&q=60' },

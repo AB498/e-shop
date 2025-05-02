@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   ChartBarIcon,
   ShoppingBagIcon,
@@ -13,21 +14,33 @@ import {
   Bars3Icon,
   XMarkIcon,
   BellIcon,
-  UserCircleIcon
+  UserCircleIcon,
+  TruckIcon
 } from "@heroicons/react/24/outline";
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
 
-  const navigation = [
-    { name: 'Dashboard', href: '/admin', icon: ChartBarIcon, current: true },
-    { name: 'Products', href: '/admin/products', icon: TagIcon, current: false },
-    { name: 'Orders', href: '/admin/orders', icon: ShoppingBagIcon, current: false },
-    { name: 'Customers', href: '/admin/customers', icon: UserGroupIcon, current: false },
-    { name: 'Analytics', href: '/admin/analytics', icon: ChartBarIcon, current: false },
-    { name: 'Inventory', href: '/admin/inventory', icon: ClipboardDocumentListIcon, current: false },
-    { name: 'Settings', href: '/admin/settings', icon: CogIcon, current: false },
+  const navigationItems = [
+    { name: 'Dashboard', href: '/admin', icon: ChartBarIcon },
+    { name: 'Products', href: '/admin/products', icon: TagIcon },
+    { name: 'Categories', href: '/admin/categories', icon: TagIcon },
+    { name: 'Orders', href: '/admin/orders', icon: ShoppingBagIcon },
+    { name: 'Courier Orders', href: '/admin/courier-orders', icon: TruckIcon },
+    { name: 'Store Locations', href: '/admin/store-locations', icon: TruckIcon },
+    { name: 'Customers', href: '/admin/customers', icon: UserGroupIcon },
+    { name: 'Files', href: '/admin/files', icon: ClipboardDocumentListIcon },
+    { name: 'Analytics', href: '/admin/analytics', icon: ChartBarIcon },
+    { name: 'Settings', href: '/admin/settings', icon: CogIcon },
   ];
+
+  // Add current property based on the current pathname
+  const navigation = navigationItems.map(item => ({
+    ...item,
+    current: pathname === item.href ||
+             (item.href !== '/admin' && pathname.startsWith(item.href))
+  }));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,7 +51,7 @@ export default function AdminLayout({ children }) {
         />
 
         <div className={`relative flex-1 flex flex-col max-w-xs w-full bg-white transition ease-in-out duration-300 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="absolute top-0 right-0 -mr-12 pt-2">
+          <div className="absolute top-0 right-0 -mr-12 pt-2 z-10">
             <button
               type="button"
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -100,7 +113,7 @@ export default function AdminLayout({ children }) {
       </div>
 
       {/* Static sidebar for desktop */}
-      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-10">
         <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <div className="flex items-center flex-shrink-0 px-4">

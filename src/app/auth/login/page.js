@@ -12,7 +12,8 @@ export const metadata = {
   description: 'Login to your Thai Bangla Store account',
 };
 
-export default function LoginPage({ searchParams }) {
+export default async function LoginPage({ searchParams }) {
+  await searchParams;
   const registered = searchParams?.registered === 'true';
 
   return (

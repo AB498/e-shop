@@ -4,13 +4,13 @@ import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 
-// Import expanded seed data
+// Import only independent table seed data
 import categoriesSeed from './categories-seed';
 import productsSeed from './products-seed';
 import usersSeed from './users-seed';
-import ordersSeed from './orders-seed';
-import orderItemsSeed from './order-items-seed';
 import filesSeed from './files-seed';
+import couriersSeed from './couriers-seed';
+import storeLocationsSeed from './store-locations-seed';
 
 export async function POST() {
   try {
@@ -22,14 +22,18 @@ export async function POST() {
     console.log('Dropping existing tables if they exist...');
     try {
       // Drop tables in reverse order of dependencies using direct pool queries
+      await pool.query('DROP TABLE IF EXISTS store_locations CASCADE');
+      await pool.query('DROP TABLE IF EXISTS courier_tracking CASCADE');
       await pool.query('DROP TABLE IF EXISTS order_items CASCADE');
       await pool.query('DROP TABLE IF EXISTS orders CASCADE');
       await pool.query('DROP TABLE IF EXISTS products CASCADE');
       await pool.query('DROP TABLE IF EXISTS categories CASCADE');
+      await pool.query('DROP TABLE IF EXISTS couriers CASCADE');
       await pool.query('DROP TABLE IF EXISTS users CASCADE');
       await pool.query('DROP TABLE IF EXISTS files CASCADE');
       await pool.query('DROP TYPE IF EXISTS user_role CASCADE');
       await pool.query('DROP TYPE IF EXISTS order_status CASCADE');
+      await pool.query('DROP TYPE IF EXISTS courier_status CASCADE');
     } catch (error) {
       console.error('Error dropping tables:', error);
       // Continue anyway, as some tables might not exist yet
@@ -41,6 +45,7 @@ export async function POST() {
       // Create enum types first
       await pool.query("CREATE TYPE user_role AS ENUM ('admin', 'customer')");
       await pool.query("CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled')");
+      await pool.query("CREATE TYPE courier_status AS ENUM ('pending', 'picked', 'in_transit', 'delivered', 'returned', 'cancelled')");
 
       // Create tables
       await pool.query(`
@@ -90,8 +95,20 @@ export async function POST() {
           category_id INTEGER REFERENCES categories(id),
           price DECIMAL(10, 2) NOT NULL,
           stock INTEGER NOT NULL DEFAULT 0,
+          weight DECIMAL(5, 2) DEFAULT 0.5,
           description TEXT,
           image TEXT,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+
+      await pool.query(`
+        CREATE TABLE couriers (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          description TEXT,
+          is_active BOOLEAN NOT NULL DEFAULT TRUE,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )
@@ -103,6 +120,17 @@ export async function POST() {
           user_id INTEGER REFERENCES users(id),
           status order_status NOT NULL DEFAULT 'pending',
           total DECIMAL(10, 2) NOT NULL,
+          courier_id INTEGER REFERENCES couriers(id),
+          courier_order_id TEXT,
+          courier_tracking_id TEXT,
+          courier_status courier_status,
+          shipping_address TEXT,
+          shipping_city TEXT,
+          shipping_post_code TEXT,
+          shipping_phone TEXT,
+          shipping_area TEXT,
+          shipping_landmark TEXT,
+          shipping_instructions TEXT,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )
@@ -116,6 +144,40 @@ export async function POST() {
           quantity INTEGER NOT NULL,
           price DECIMAL(10, 2) NOT NULL,
           created_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+
+      await pool.query(`
+        CREATE TABLE courier_tracking (
+          id SERIAL PRIMARY KEY,
+          order_id INTEGER REFERENCES orders(id),
+          courier_id INTEGER REFERENCES couriers(id),
+          tracking_id TEXT NOT NULL,
+          status courier_status NOT NULL,
+          details TEXT,
+          location TEXT,
+          timestamp TIMESTAMP DEFAULT NOW(),
+          created_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+
+      // Create store_locations table
+      await pool.query(`
+        CREATE TABLE store_locations (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          contact_name TEXT NOT NULL,
+          contact_number TEXT NOT NULL,
+          secondary_contact TEXT,
+          address TEXT NOT NULL,
+          city_id INTEGER NOT NULL,
+          zone_id INTEGER NOT NULL,
+          area_id INTEGER NOT NULL,
+          is_default BOOLEAN DEFAULT FALSE,
+          pathao_store_id TEXT,
+          is_active BOOLEAN DEFAULT TRUE,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
         )
       `);
     } catch (error) {
@@ -180,22 +242,22 @@ export async function POST() {
         await db.insert(schema.products).values(product);
       }
 
-      // Insert orders using Drizzle ORM
-      console.log('Inserting orders...');
-      for (const order of ordersSeed) {
-        await db.insert(schema.orders).values(order);
-      }
-
-      // Insert order items using Drizzle ORM
-      console.log('Inserting order items...');
-      for (const item of orderItemsSeed) {
-        await db.insert(schema.orderItems).values(item);
+      // Insert couriers using Drizzle ORM
+      console.log('Inserting couriers...');
+      for (const courier of couriersSeed) {
+        await db.insert(schema.couriers).values(courier);
       }
 
       // Insert files using Drizzle ORM
       console.log('Inserting files...');
       for (const file of filesSeed) {
         await db.insert(schema.files).values(file);
+      }
+
+      // Insert store locations using Drizzle ORM
+      console.log('Inserting store locations...');
+      for (const location of storeLocationsSeed) {
+        await db.insert(schema.storeLocations).values(location);
       }
     } catch (error) {
       console.error('Error inserting sample data:', error);
@@ -206,14 +268,14 @@ export async function POST() {
 
     return NextResponse.json({
       success: true,
-      message: 'Database seeded successfully with sample data!',
+      message: 'Database seeded successfully with independent table data!',
       stats: {
         products: productsSeed.length,
         categories: categoriesSeed.length,
         users: usersSeed.length,
-        orders: ordersSeed.length,
-        orderItems: orderItemsSeed.length,
-        files: filesSeed.length
+        files: filesSeed.length,
+        couriers: couriersSeed.length,
+        storeLocations: storeLocationsSeed.length
       }
     });
   } catch (error) {
