@@ -5,9 +5,7 @@
  */
 
 // Constants
-const PATHAO_API_BASE_URL = process.env.NODE_ENV === 'production'
-  ? 'https://api-hermes.pathao.com'
-  : 'https://courier-api-sandbox.pathao.com';
+const PATHAO_API_BASE_URL = process.env.PATHAO_BASE_URL;
 
 // API endpoints based on Pathao documentation
 const PATHAO_TOKEN_ENDPOINT = `${PATHAO_API_BASE_URL}/aladdin/api/v1/issue-token`;

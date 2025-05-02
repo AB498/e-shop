@@ -48,9 +48,7 @@ export default function DevPage() {
                 </p>
                 <div className="mt-2 bg-gray-100 p-3 rounded-md">
                   <code className="text-sm text-indigo-600">
-                    {process.env.NODE_ENV === 'production'
-                      ? 'https://thai-bangla-store.vercel.app/api/webhooks/pathao/status-update'
-                      : 'http://localhost:3000/api/webhooks/pathao/status-update'}
+                    {process.env.PATHAO_WEBHOOK_URL}
                   </code>
                 </div>
                 <p className="mt-3 text-sm text-gray-500">

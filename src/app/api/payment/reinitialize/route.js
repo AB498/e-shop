@@ -189,9 +189,7 @@ export async function POST(request) {
     console.log('Cancel URL:', sslParams.cancel_url);
 
     // Determine API endpoint based on environment
-    const apiEndpoint = process.env.NODE_ENV === 'production'
-      ? 'https://securepay.sslcommerz.com/gwprocess/v4/api.php'
-      : 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php';
+    const apiEndpoint = process.env.SSLCOMMERZ_API_URL;
 
     // Call SSL Commerz API to initialize payment
     const response = await fetch(apiEndpoint, {

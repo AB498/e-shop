@@ -51,7 +51,7 @@ export async function authenticateUser(email, password) {
 export async function createUser(userData) {
   try {
     // Only log in development mode
-    if (process.env.NODE_ENV === 'development') {
+    if (1) {
       console.log('Creating user with data:', userData);
     }
 
@@ -63,13 +63,13 @@ export async function createUser(userData) {
       .limit(1);
 
     // Only log in development mode
-    if (process.env.NODE_ENV === 'development') {
+    if (1) {
       console.log('Existing user check result:', existingUser);
     }
 
     if (existingUser && existingUser.length > 0) {
       // Only log in development mode
-      if (process.env.NODE_ENV === 'development') {
+      if (1) {
         console.log('User with this email already exists');
       }
       return { error: 'User with this email already exists' };
@@ -80,7 +80,7 @@ export async function createUser(userData) {
 
     // Create user
     // Only log in development mode
-    if (process.env.NODE_ENV === 'development') {
+    if (1) {
       console.log('Attempting to create user with hashed password');
     }
 
@@ -100,7 +100,7 @@ export async function createUser(userData) {
     };
 
     // Only log in development mode
-    if (process.env.NODE_ENV === 'development') {
+    if (1) {
       console.log('User values to insert:', userValues);
     }
 

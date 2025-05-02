@@ -74,7 +74,7 @@ async function handlePaymentSuccess(request, isPost = false) {
 
     // For SSL Commerz sandbox testing, we might not always get a val_id or status
     // So we'll make this check more lenient in development
-    if (process.env.NODE_ENV === 'production' && (!valId || status !== 'VALID')) {
+    if ((!valId || status !== 'VALID')) {
       console.error('Invalid payment response:', { orderId, valId, status });
       try {
         const errorRedirectUrl = `${baseUrl}/payment/error?message=Invalid payment response`;
@@ -89,11 +89,9 @@ async function handlePaymentSuccess(request, isPost = false) {
     }
 
     // In development mode, we might skip validation for testing
-    if (process.env.NODE_ENV === 'production' || (valId && status === 'VALID')) {
+    if ( (valId && status === 'VALID')) {
       // Validate the payment with SSL Commerz
-      const validationEndpoint = process.env.NODE_ENV === 'production'
-        ? 'https://securepay.sslcommerz.com/validator/api/validationserverAPI.php'
-        : 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php';
+      const validationEndpoint = process.env.SSLCOMMERZ_VALIDATION_ENDPOINT;
 
       const validationParams = new URLSearchParams({
         val_id: valId || '',
@@ -126,7 +124,7 @@ async function handlePaymentSuccess(request, isPost = false) {
         console.error('Error validating payment:', validationError);
 
         // In development, continue anyway for testing purposes
-        if (process.env.NODE_ENV === 'production') {
+        if (1) {
           try {
             const errorRedirectUrl = `${baseUrl}/payment/error?message=Error validating payment`;
             // Validate the URL before redirecting

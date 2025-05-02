@@ -36,9 +36,7 @@ export async function POST(request) {
     }
 
     // Validate the payment with SSL Commerz
-    const validationEndpoint = process.env.NODE_ENV === 'production'
-      ? 'https://securepay.sslcommerz.com/validator/api/validationserverAPI.php'
-      : 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php';
+    const validationEndpoint = process.env.SSLCOMMERZ_VALIDATION_ENDPOINT;
 
     const validationParams = new URLSearchParams({
       val_id: valId,
