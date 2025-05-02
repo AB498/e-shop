@@ -77,15 +77,15 @@ export default function OrderDetailsPage() {
     }
   }, [session, orderId, router]);
 
-  // Function to refresh tracking information
+  // Function to refresh tracking information without altering tracking history
   const refreshTracking = async () => {
     if (!session?.user?.id || !orderId) return;
 
     setIsRefreshing(true);
     setTrackingError(null);
     try {
-      // Call API to update tracking
-      const response = await fetch('/api/orders/update-tracking', {
+      // Call API to refresh tracking without altering history
+      const response = await fetch('/api/orders/refresh-tracking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,11 +95,11 @@ export default function OrderDetailsPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update tracking information');
+        throw new Error(errorData.error || 'Failed to refresh tracking information');
       }
 
-      // Fetch updated tracking information
-      const trackingData = await getOrderTracking(orderId, session.user.id);
+      // Get the tracking data directly from the response
+      const trackingData = await response.json();
       if (trackingData) {
         setTracking(trackingData);
       } else {

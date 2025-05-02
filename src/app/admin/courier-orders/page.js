@@ -49,12 +49,13 @@ export default function CourierOrdersPage() {
     }
   };
 
-  // Refresh tracking for a specific order
+  // Refresh tracking for a specific order without altering tracking history
   const refreshTracking = async (orderId) => {
     try {
       setRefreshing(true);
 
-      const response = await fetch(`/api/admin/courier-orders/${orderId}/refresh-tracking`, {
+      // Use the view-tracking endpoint that doesn't alter tracking history
+      const response = await fetch(`/api/admin/courier-orders/${orderId}/view-tracking`, {
         method: 'POST',
       });
 
@@ -199,9 +200,10 @@ export default function CourierOrdersPage() {
                         onClick={() => refreshTracking(order.id)}
                         disabled={refreshing}
                         className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        title="View latest tracking information without altering tracking history"
                       >
                         <ArrowPathIcon className={`-ml-0.5 mr-1 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                        Update
+                        View Latest
                       </button>
                       <Link
                         href={`/admin/orders/tracking/${order.id}`}

@@ -517,37 +517,17 @@ export async function updateOrderFromWebhook(webhookData) {
       })
       .where(eq(orders.id, order.id));
 
-    // Check if a tracking entry with the same status already exists
-    const existingEntries = await db
-      .select({ id: courierTracking.id })
-      .from(courierTracking)
-      .where(
-        and(
-          eq(courierTracking.order_id, order.id),
-          eq(courierTracking.tracking_id, webhookData.consignmentId),
-          eq(courierTracking.status, webhookData.courierStatus),
-          eq(courierTracking.details, webhookData.details)
-        )
-      )
-      .limit(1);
-
-    let trackingEntry;
-
-    // Only create a new entry if one doesn't already exist with the same status and details
-    if (existingEntries.length === 0) {
-      trackingEntry = await db.insert(courierTracking).values({
-        order_id: order.id,
-        courier_id: order.courier_id,
-        tracking_id: webhookData.consignmentId,
-        status: webhookData.courierStatus,
-        details: webhookData.details,
-        location: 'Pathao Courier',
-        timestamp: webhookData.timestamp ? new Date(webhookData.timestamp) : new Date(),
-      }).returning();
-    } else {
-      // Return the existing entry
-      trackingEntry = existingEntries;
-    }
+    // Always create a new tracking entry for webhook events
+    // This ensures that the tracking history is properly updated with each webhook event
+    const trackingEntry = await db.insert(courierTracking).values({
+      order_id: order.id,
+      courier_id: order.courier_id,
+      tracking_id: webhookData.consignmentId,
+      status: webhookData.courierStatus,
+      details: webhookData.details,
+      location: 'Pathao Courier',
+      timestamp: webhookData.timestamp ? new Date(webhookData.timestamp) : new Date(),
+    }).returning();
 
     return trackingEntry.length ? trackingEntry[0] : null;
   } catch (error) {

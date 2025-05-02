@@ -465,62 +465,71 @@ export async function processWebhookEvent(webhookData) {
       details = 'Order created with courier';
     } else if (eventType === 'order.updated') {
       courierStatus = 'pending';
-      details = 'Order updated';
+      details = 'Order updated with courier';
     } else if (eventType === 'order.pickup-requested') {
       courierStatus = 'pending';
-      details = 'Pickup requested';
+      details = 'Pickup requested from merchant';
     } else if (eventType === 'order.assigned-for-pickup') {
       courierStatus = 'pending';
-      details = 'Assigned for pickup';
+      details = 'Courier assigned for pickup from merchant';
     } else if (eventType === 'order.picked' || eventType === 'order.pickup') {
       courierStatus = 'picked';
-      details = 'Order picked up';
+      details = 'Order picked up from merchant';
     } else if (eventType === 'order.pickup-failed') {
       courierStatus = 'pending';
-      details = 'Pickup failed';
+      details = 'Pickup failed - courier could not collect package';
     } else if (eventType === 'order.pickup-cancelled') {
       courierStatus = 'cancelled';
-      details = 'Pickup cancelled';
+      details = 'Pickup cancelled by merchant or courier';
     } else if (eventType === 'order.at-the-sorting-hub') {
       courierStatus = 'in_transit';
-      details = 'At sorting hub';
+      details = 'Package arrived at sorting hub';
     } else if (eventType === 'order.in-transit') {
       courierStatus = 'in_transit';
-      details = 'In transit';
+      details = 'Package in transit to delivery location';
     } else if (eventType === 'order.received-at-last-mile-hub') {
       courierStatus = 'in_transit';
-      details = 'Received at last mile hub';
+      details = 'Package received at last mile delivery hub';
     } else if (eventType === 'order.assigned-for-delivery') {
       courierStatus = 'in_transit';
-      details = 'Assigned for delivery';
+      details = 'Courier assigned for delivery to customer';
     } else if (eventType === 'order.delivered') {
       courierStatus = 'delivered';
-      details = 'Order delivered';
+      details = 'Order successfully delivered to customer';
     } else if (eventType === 'order.partial-delivery') {
       courierStatus = 'delivered';
-      details = 'Order partially delivered';
+      details = 'Order partially delivered to customer';
     } else if (eventType === 'order.returned') {
       courierStatus = 'returned';
-      details = 'Order returned';
+      details = 'Order returned to merchant';
     } else if (eventType === 'order.delivery-failed') {
       courierStatus = 'in_transit';
-      details = 'Delivery failed';
+      details = 'Delivery attempt failed - courier could not deliver package';
     } else if (eventType === 'order.on-hold') {
       courierStatus = 'in_transit';
-      details = 'Order on hold';
+      details = 'Order placed on hold during delivery process';
     } else if (eventType === 'order.paid') {
       courierStatus = 'delivered';
-      details = 'Payment received';
+      details = 'Payment received for cash-on-delivery order';
     } else if (eventType === 'order.paid-return') {
       courierStatus = 'returned';
-      details = 'Paid return';
+      details = 'Paid return processed';
     } else if (eventType === 'order.exchanged') {
       courierStatus = 'returned';
-      details = 'Order exchanged';
+      details = 'Order exchanged with replacement item';
     } else {
       // For any other event, log it but use default values
       console.warn(`Unknown event type: ${eventType}`);
       details = `Unknown event: ${eventType}`;
+    }
+
+    // Add timestamp information to the details if available
+    if (webhookData.timestamp) {
+      const timestamp = new Date(webhookData.timestamp);
+      details += ` at ${timestamp.toLocaleString()}`;
+    } else if (webhookData.updated_at) {
+      const timestamp = new Date(webhookData.updated_at);
+      details += ` at ${timestamp.toLocaleString()}`;
     }
 
     return {

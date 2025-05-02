@@ -12,6 +12,7 @@ export default function TrackingInfo({ tracking, trackingError, isRefreshing, re
             onClick={refreshTracking}
             className="bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors flex items-center"
             disabled={isRefreshing}
+            title="Refresh tracking information without altering tracking history"
           >
             {isRefreshing ? (
               <span className="inline-block mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -64,7 +65,7 @@ export default function TrackingInfo({ tracking, trackingError, isRefreshing, re
           </div>
 
           <h3 className="text-md font-semibold text-[#253D4E] mb-4">Tracking History</h3>
-          
+
           {tracking.tracking.length === 0 ? (
             <div className="bg-gray-50 p-4 rounded-md text-center">
               <p className="text-[#7E7E7E]">No tracking updates available yet.</p>
@@ -73,7 +74,7 @@ export default function TrackingInfo({ tracking, trackingError, isRefreshing, re
             <div className="relative">
               {/* Timeline line */}
               <div className="absolute left-3 top-5 bottom-5 w-0.5 bg-gray-200"></div>
-              
+
               {/* Timeline events */}
               <div className="space-y-6">
                 {tracking.tracking.map((event, index) => (
