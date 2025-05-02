@@ -43,10 +43,10 @@ async function handlePaymentCancel(request, isPost = false) {
     }
 
     // Ensure we have a valid app URL
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
     // Make sure appUrl is not null or undefined before using it
     // Always default to localhost if appUrl is falsy
-    const baseUrl = appUrl ? (appUrl.endsWith('/') ? appUrl.slice(0, -1) : appUrl) : 'http://localhost:3000';
+    const baseUrl = appUrl ? (appUrl.endsWith('/') ? appUrl.slice(0, -1) : appUrl) : process.env.NEXT_PUBLIC_APP_URL;
 
     // Log the baseUrl for debugging
     console.log('Base URL for redirects:', baseUrl);
@@ -61,7 +61,7 @@ async function handlePaymentCancel(request, isPost = false) {
       } catch (urlError) {
         console.error('Invalid error redirect URL:', urlError);
         // Fallback to a hardcoded URL if there's an issue
-        return NextResponse.redirect(`http://localhost:3000/payment/error?message=Invalid order reference`, { status: 303 });
+        return NextResponse.redirect(`${baseUrl}/payment/error?message=Invalid order reference`, { status: 303 });
       }
     }
 
@@ -93,17 +93,17 @@ async function handlePaymentCancel(request, isPost = false) {
     } catch (urlError) {
       console.error('Invalid redirect URL:', urlError);
       // Fallback to a hardcoded URL if there's an issue
-      return NextResponse.redirect(`http://localhost:3000/payment/cancelled?order_id=${orderId}`, { status: 303 });
+      return NextResponse.redirect(`${baseUrl}/payment/cancelled?order_id=${orderId}`, { status: 303 });
     }
 
   } catch (error) {
     console.error('Payment cancellation error:', error);
 
     // Ensure we have a valid app URL even in the catch block
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
     // Make sure appUrl is not null or undefined before using it
     // Always default to localhost if appUrl is falsy
-    const baseUrl = appUrl ? (appUrl.endsWith('/') ? appUrl.slice(0, -1) : appUrl) : 'http://localhost:3000';
+    const baseUrl = appUrl ? (appUrl.endsWith('/') ? appUrl.slice(0, -1) : appUrl) : process.env.NEXT_PUBLIC_APP_URL;
 
     // Log the baseUrl for debugging
     console.log('Base URL for redirects (in catch block):', baseUrl);
@@ -120,7 +120,7 @@ async function handlePaymentCancel(request, isPost = false) {
     } catch (urlError) {
       console.error('Invalid error redirect URL:', urlError);
       // Fallback to a hardcoded URL if there's an issue
-      return NextResponse.redirect(`http://localhost:3000/payment/error?message=An unexpected error occurred`, { status: 303 });
+      return NextResponse.redirect(`${baseUrl}/payment/error?message=An unexpected error occurred`, { status: 303 });
     }
   }
 }
