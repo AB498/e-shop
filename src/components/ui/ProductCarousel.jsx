@@ -7,6 +7,8 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import ProductCarouselSkeleton from "./ProductCarouselSkeleton";
+import { useProductQuickView } from "@/context/ProductQuickViewContext";
+import { usePathname } from "next/navigation";
 
 // Import Swiper styles
 import "swiper/css";
@@ -49,6 +51,11 @@ export default function ProductCarousel({
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { openQuickView } = useProductQuickView();
+  const pathname = usePathname();
+
+  // Check if we're on the landing page
+  const isLandingPage = pathname === "/";
 
   // Set loading to false after Swiper is initialized
   useEffect(() => {
@@ -166,36 +173,65 @@ export default function ProductCarousel({
               {products.map((product) => (
                 <SwiperSlide key={product.id}>
                   <div className="bg-white rounded-lg shadow-md overflow-hidden relative h-full max-h-[360px]">
-                    {/* Product Image with Link */}
-                    <Link href={`/products/${product.id}`} className="block">
-                      <div className="aspect-square relative">
-                        <Image
-                          src={product.image || "/images/product-image.png"}
-                          alt={product.name}
-                          width={240}
-                          height={240}
-                          className="w-full h-full object-cover rounded-[10px] transition-transform duration-300 hover:scale-105"
+                    {/* Product Image with Link or Quick View */}
+                    {isLandingPage ? (
+                      <div
+                        className="block cursor-pointer"
+                        onClick={() => openQuickView(product)}
+                      >
+                        <div className="aspect-square relative">
+                          <Image
+                            src={product.image || "/images/product-image.png"}
+                            alt={product.name}
+                            width={240}
+                            height={240}
+                            className="w-full h-full object-cover rounded-[10px] transition-transform duration-300 hover:scale-105"
                           />
 
-                        {/* Discount tag */}
-                        <div className="absolute top-2 left-2">
-                          <div className="bg-[#006B51] text-white px-2 py-1 rounded-lg text-xs font-semibold">
-                            -10%
+                          {/* Quick view overlay */}
+                          <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                            <span className="bg-white text-black px-4 py-2 rounded-full font-medium text-sm">View</span>
+                          </div>
+
+                          {/* Discount tag */}
+                          <div className="absolute top-2 left-2">
+                            <div className="bg-[#006B51] text-white px-2 py-1 rounded-lg text-xs font-semibold">
+                              -10%
+                            </div>
                           </div>
                         </div>
-
-                        {/* Wishlist icon */}
-                        <div className="absolute top-2 right-2">
-                          <Image
-                            src="/images/beauty-makeup/wishlist-icon.png"
-                            alt="Add to wishlist"
-                            width={24}
-                            height={24}
-                            className="cursor-pointer"
-                          />
-                        </div>
                       </div>
-                    </Link>
+                    ) : (
+                      <Link href={`/products/${product.id}`} className="block">
+                        <div className="aspect-square relative">
+                          <Image
+                            src={product.image || "/images/product-image.png"}
+                            alt={product.name}
+                            width={240}
+                            height={240}
+                            className="w-full h-full object-cover rounded-[10px] transition-transform duration-300 hover:scale-105"
+                          />
+
+                          {/* Discount tag */}
+                          <div className="absolute top-2 left-2">
+                            <div className="bg-[#006B51] text-white px-2 py-1 rounded-lg text-xs font-semibold">
+                              -10%
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    )}
+
+                    {/* Wishlist icon */}
+                    <div className="absolute top-2 right-2">
+                      <Image
+                        src="/images/beauty-makeup/wishlist-icon.png"
+                        alt="Add to wishlist"
+                        width={24}
+                        height={24}
+                        className="cursor-pointer"
+                      />
+                    </div>
 
                     {/* Product Info */}
                     <div className="p-3 text-center">

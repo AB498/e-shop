@@ -1,61 +1,69 @@
+'use client';
+
 import Topbar from "../components/layout/Topbar";
 import Navigation from "../components/layout/Navigation";
 import Hero from "../components/layout/Hero";
 import FeatureIcons from "../components/layout/FeatureIcons";
 import PopularCategories from "../components/categories/PopularCategories";
 import BannerSection from "../components/landing/BannerSection";
-import BeautyMakeupSection from "../components/categories/BeautyMakeupSection";
 import ProductShowcase from "../components/landing/ProductShowcase";
 import Footer from "../components/layout/Footer";
 import Copyright from "../components/layout/Copyright";
-import WeeklyDiscounts from "@/components/categories/WeeklyDiscounts";
 import FeaturedCarousel from "@/components/layout/FeaturedCarousel";
 import DealsOfTheDay from "@/components/deals/DealsOfTheDay";
-import VegetableAndFruits from "@/components/categories/VegetableAndFruits";
+import WeeklyDiscountsClient from "@/components/categories/WeeklyDiscountsClient";
+import VegetableAndFruitsClient from "@/components/categories/VegetableAndFruitsClient";
+import BeautyMakeupSectionClient from "@/components/categories/BeautyMakeupSectionClient";
+import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
+import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
 
 export default function LandingPage() {
     return (
-        <div className="w-full">
-            {/* Topbar - Full width at the top */}
-            <Topbar />
+        <ProductQuickViewProvider>
+            <div className="w-full">
+                {/* Topbar - Full width at the top */}
+                <Topbar />
 
-            {/* Navigation */}
-            <Navigation />
+                {/* Navigation */}
+                <Navigation />
 
+                <div className="container mx-auto">
+                    {/* Hero Section */}
+                    <Hero />
 
-            <div className="container mx-auto">
-                {/* Hero Section */}
-                <Hero />
+                    {/* Feature Icons */}
+                    <FeatureIcons />
 
-                {/* Feature Icons */}
-                <FeatureIcons />
+                    {/* Popular Categories */}
+                    <PopularCategories />
 
-                {/* Popular Categories */}
-                <PopularCategories />
+                    <FeaturedCarousel />
 
-                <FeaturedCarousel />
+                    {/* Discounted Products */}
+                    <WeeklyDiscountsClient />
+                    {/* Discounted Products */}
+                    <VegetableAndFruitsClient />
 
-                {/* Discounted Products */}
-                <WeeklyDiscounts />
-                {/* Discounted Products */}
-                <VegetableAndFruits />
+                    {/* Banner Section */}
+                    <BannerSection />
 
-                {/* Banner Section */}
-                <BannerSection />
+                    {/* Beauty & Makeup Section */}
+                    <BeautyMakeupSectionClient />
 
-                {/* Beauty & Makeup Section */}
-                <BeautyMakeupSection />
+                    <DealsOfTheDay />
 
-                <DealsOfTheDay />
+                    {/* Product Showcase */}
+                    <ProductShowcase />
+                </div>
+                {/* Footer */}
+                <Footer />
 
-                {/* Product Showcase */}
-                <ProductShowcase />
+                {/* Copyright */}
+                <Copyright />
+
+                {/* Product Quick View Modal */}
+                <ProductQuickViewModal />
             </div>
-            {/* Footer */}
-            <Footer />
-
-            {/* Copyright */}
-            <Copyright />
-        </div>
+        </ProductQuickViewProvider>
     );
 }

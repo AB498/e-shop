@@ -35,15 +35,10 @@ export default function RootLayout({ children }) {
         <SessionProvider>
           <CartProvider>
             <div className="flex w-full">
-              {/* Sidebar - Fixed at the left */}
               <div className="flex-none">
                 <Sidebar />
               </div>
-
-              {/* Main Content - Adjusts based on sidebar width */}
-              <div
-                className="flex-grow min-h-screen transition-all duration-300"
-              >
+              <div className="flex-grow min-h-screen transition-all duration-300">
                 {children}
               </div>
             </div>
