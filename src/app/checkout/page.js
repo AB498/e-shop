@@ -114,6 +114,11 @@ export default function CheckoutPage() {
       }
     }
 
+    // Area/Zone validation - must be at least 10 characters
+    if (formData.area && formData.area.length < 10) {
+      newErrors.area = 'Area/Zone must be at least 10 characters long';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -434,12 +439,13 @@ export default function CheckoutPage() {
                     name="area"
                     value={formData.area}
                     onChange={handleChange}
-                    placeholder="Enter Your Area or Zone"
+                    placeholder="Enter Your Area or Zone (min 10 characters)"
                     className={`w-full p-3 border ${errors.area ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                   />
                   {errors.area && (
                     <p className="text-red-500 text-sm mt-1">{errors.area}</p>
                   )}
+                  <p className="text-gray-500 text-xs mt-1">Please provide a detailed area description with at least 10 characters for accurate delivery.</p>
                 </div>
 
                 {/* Landmark */}

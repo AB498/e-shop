@@ -11,31 +11,72 @@ async function handlePaymentSuccess(request, isPost = false) {
     console.log(`Payment success callback URL (${isPost ? 'POST' : 'GET'}):`, request.url);
 
     // Get parameters from either query string or form data
-    let orderId, valId, status;
+    let orderId, valId, status, orderIdInt;
 
     if (isPost) {
-      // For POST requests, try to get data from form data
+      // For POST requests, get the content type to determine how to parse the body
+      const contentType = request.headers.get('content-type') || '';
+      console.log('Content-Type:', contentType);
+
+      // Clone the request to avoid consuming the body stream
+      const clonedRequest = request.clone();
+
+      // Try to get the raw text of the request body for debugging
       try {
-        const formData = await request.formData();
-        console.log('Payment success POST data:', Object.fromEntries(formData.entries()));
+        const rawBody = await clonedRequest.text();
+        console.log('Raw request body:', rawBody);
 
-        orderId = formData.get('order_id');
-        valId = formData.get('val_id');
-        status = formData.get('status');
-      } catch (formError) {
-        console.error('Error parsing form data, trying JSON:', formError);
+        // SSLCommerz typically sends form-urlencoded data, not JSON
+        if (contentType.includes('application/x-www-form-urlencoded')) {
+          // Parse the form data manually
+          const formData = new URLSearchParams(rawBody);
+          const formDataObj = Object.fromEntries(formData.entries());
+          console.log('Parsed form data:', formDataObj);
 
-        // If form data fails, try JSON
-        try {
-          const jsonData = await request.json();
-          console.log('Payment success POST JSON data:', jsonData);
+          // Try value_a, order_id, or tran_id fields for the order ID
+          orderId = formDataObj.value_a || formDataObj.order_id || formDataObj.tran_id;
+          valId = formDataObj.val_id;
+          status = formDataObj.status;
 
-          orderId = jsonData.order_id;
-          valId = jsonData.val_id;
-          status = jsonData.status;
-        } catch (jsonError) {
-          console.error('Error parsing JSON, falling back to URL params:', jsonError);
+          // Log transaction ID for debugging
+          console.log('Transaction ID:', formDataObj.tran_id);
         }
+        // If it's JSON content type
+        else if (contentType.includes('application/json')) {
+          try {
+            const jsonData = JSON.parse(rawBody);
+            console.log('Parsed JSON data:', jsonData);
+
+            // SSLCommerz stores the order_id in value_a field
+            orderId = jsonData.value_a || jsonData.order_id || jsonData.tran_id;
+            valId = jsonData.val_id;
+            status = jsonData.status;
+
+            // Log transaction ID for debugging
+            console.log('Transaction ID:', jsonData.tran_id);
+          } catch (jsonParseError) {
+            console.error('Error parsing JSON:', jsonParseError);
+          }
+        }
+        // If we couldn't determine the content type or it's something else
+        else {
+          console.log('Unknown content type, attempting to parse as form data');
+          // Try to parse as form data anyway
+          const formData = new URLSearchParams(rawBody);
+          const formDataObj = Object.fromEntries(formData.entries());
+          console.log('Attempted form data parse:', formDataObj);
+
+          orderId = formDataObj.value_a || formDataObj.order_id || formDataObj.tran_id;
+          valId = formDataObj.val_id;
+          status = formDataObj.status;
+
+          // Log transaction ID for debugging
+          console.log('Transaction ID:', formDataObj.tran_id);
+        }
+
+        console.log('Extracted from request body:', { orderId, valId, status });
+      } catch (bodyError) {
+        console.error('Error reading request body:', bodyError);
       }
     }
 
@@ -47,6 +88,8 @@ async function handlePaymentSuccess(request, isPost = false) {
       orderId = searchParams.get('order_id');
       valId = searchParams.get('val_id');
       status = searchParams.get('status');
+
+      console.log('Extracted from URL params:', { orderId, valId, status });
     }
 
     // Ensure we have a valid app URL
@@ -72,9 +115,12 @@ async function handlePaymentSuccess(request, isPost = false) {
       }
     }
 
-    // For SSL Commerz sandbox testing, we might not always get a val_id or status
-    // So we'll make this check more lenient in development
-    if ((!valId || status !== 'VALID')) {
+    // For SSL Commerz, we need to check if we have a valid payment
+    // Always require both val_id and status to be VALID
+    console.log('Environment: Production (strict validation)');
+
+    // Always validate the payment
+    if (!valId || status !== 'VALID') {
       console.error('Invalid payment response:', { orderId, valId, status });
       try {
         const errorRedirectUrl = `${baseUrl}/payment/error?message=Invalid payment response`;
@@ -88,8 +134,9 @@ async function handlePaymentSuccess(request, isPost = false) {
       }
     }
 
-    // In development mode, we might skip validation for testing
-    if ( (valId && status === 'VALID')) {
+    // Always validate with SSL Commerz
+    // We've already checked that val_id and status are valid above, so this will always run
+    {
       // Validate the payment with SSL Commerz
       const validationEndpoint = process.env.SSLCOMMERZ_VALIDATION_ENDPOINT;
 
@@ -123,55 +170,65 @@ async function handlePaymentSuccess(request, isPost = false) {
       } catch (validationError) {
         console.error('Error validating payment:', validationError);
 
-        // In development, continue anyway for testing purposes
-        if (1) {
-          try {
-            const errorRedirectUrl = `${baseUrl}/payment/error?message=Error validating payment`;
-            // Validate the URL before redirecting
-            new URL(errorRedirectUrl); // This will throw if the URL is invalid
-            return NextResponse.redirect(errorRedirectUrl, { status: 303 });
-          } catch (urlError) {
-            console.error('Invalid error redirect URL:', urlError);
-            // Fallback to a hardcoded URL if there's an issue
-            return NextResponse.redirect(`${baseUrl}/payment/error?message=Error validating payment`, { status: 303 });
-          }
+        // Always redirect to error page on validation error
+        try {
+          const errorRedirectUrl = `${baseUrl}/payment/error?message=Error validating payment`;
+          // Validate the URL before redirecting
+          new URL(errorRedirectUrl); // This will throw if the URL is invalid
+          return NextResponse.redirect(errorRedirectUrl, { status: 303 });
+        } catch (urlError) {
+          console.error('Invalid error redirect URL:', urlError);
+          // Fallback to a hardcoded URL if there's an issue
+          return NextResponse.redirect(`${baseUrl}/payment/error?message=Error validating payment`, { status: 303 });
         }
       }
-    } else {
-      console.log('Skipping payment validation in development mode');
     }
 
     // Update order status to processing and create courier order
     try {
-      console.log(`Updating order ${orderId} status to 'processing'`);
+      // Ensure we have a valid order ID
+      if (!orderId) {
+        throw new Error('Missing order ID for database update');
+      }
+
+      // Parse the order ID to an integer
+      const orderIdInt = parseInt(orderId, 10);
+      if (isNaN(orderIdInt)) {
+        throw new Error(`Invalid order ID format: ${orderId}`);
+      }
+
+      console.log(`Updating order ${orderIdInt} status to 'processing'`);
       await db.update(orders)
         .set({
           status: 'processing',
           updated_at: new Date()
         })
-        .where(eq(orders.id, parseInt(orderId)));
-      console.log(`Order ${orderId} status updated successfully`);
+        .where(eq(orders.id, orderIdInt));
+      console.log(`Order ${orderIdInt} status updated successfully`);
 
       // Automatically create a courier order with Pathao
-      console.log(`Creating automatic courier order for order ${orderId}`);
-      const courierResult = await createAutomaticCourierOrder(parseInt(orderId));
+      console.log(`Creating automatic courier order for order ${orderIdInt}`);
+      const courierResult = await createAutomaticCourierOrder(orderIdInt);
 
       if (courierResult) {
-        console.log(`Courier order created successfully for order ${orderId}`, {
+        console.log(`Courier order created successfully for order ${orderIdInt}`, {
           consignment_id: courierResult.consignment_id
         });
       } else {
-        console.error(`Failed to create courier order for order ${orderId}`);
+        console.error(`Failed to create courier order for order ${orderIdInt}`);
         // Continue anyway, as we still want to show the success page
       }
     } catch (dbError) {
       console.error('Error updating order status or creating courier order:', dbError);
+      console.error('Error details:', dbError.message);
       // Continue anyway, as we still want to show the success page
     }
 
     // Redirect to success page
     try {
-      const redirectUrl = `${baseUrl}/payment/success?order_id=${orderId}`;
+      // Use the orderIdInt if available, otherwise fall back to the original orderId
+      const finalOrderId = orderIdInt || orderId;
+      const redirectUrl = `${baseUrl}/payment/success?order_id=${finalOrderId}`;
       console.log(`Redirecting to success page: ${redirectUrl}`);
 
       // Validate the URL before redirecting
@@ -182,11 +239,13 @@ async function handlePaymentSuccess(request, isPost = false) {
     } catch (urlError) {
       console.error('Invalid redirect URL:', urlError);
       // Fallback to a hardcoded URL if there's an issue
-      return NextResponse.redirect(`${baseUrl}/payment/success?order_id=${orderId}`, { status: 303 });
+      return NextResponse.redirect(`${baseUrl}/payment/success?order_id=${orderId || ''}`, { status: 303 });
     }
 
   } catch (error) {
     console.error('Payment success error:', error);
+    console.error('Error details:', error.message);
+    console.error('Error stack:', error.stack);
 
     // Ensure we have a valid app URL even in the catch block
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
@@ -198,7 +257,9 @@ async function handlePaymentSuccess(request, isPost = false) {
     console.log('Base URL for redirects (in catch block):', baseUrl);
 
     try {
-      const errorRedirectUrl = `${baseUrl}/payment/error?message=An unexpected error occurred`;
+      // Include error message in the redirect for better debugging
+      const errorMessage = encodeURIComponent(error.message || 'An unexpected error occurred');
+      const errorRedirectUrl = `${baseUrl}/payment/error?message=${errorMessage}`;
       console.log(`Redirecting to error page: ${errorRedirectUrl}`);
 
       // Validate the URL before redirecting
