@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db';
 import { couriers, orders, courierTracking } from '@/db/schema';
-import { eq, desc, sql } from 'drizzle-orm';
+import { eq, desc, sql, and } from 'drizzle-orm';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
 
 /**
@@ -251,16 +251,37 @@ export async function updateCourierTracking(orderId) {
       })
       .where(eq(orders.id, orderId));
 
-    // Create tracking entry
-    const trackingEntry = await db.insert(courierTracking).values({
-      order_id: orderId,
-      courier_id: order.courier_id,
-      tracking_id: order.courier_tracking_id,
-      status: courierStatus,
-      details: trackingInfo.data.order_status_text || trackingInfo.data.order_status,
-      location: trackingInfo.data.current_location || 'Unknown',
-      timestamp: new Date(trackingInfo.data.updated_at) || new Date(),
-    }).returning();
+    // Check if a tracking entry with the same status already exists
+    const existingEntries = await db
+      .select({ id: courierTracking.id })
+      .from(courierTracking)
+      .where(
+        and(
+          eq(courierTracking.order_id, orderId),
+          eq(courierTracking.tracking_id, order.courier_tracking_id),
+          eq(courierTracking.status, courierStatus),
+          eq(courierTracking.details, trackingInfo.data.order_status_text || trackingInfo.data.order_status)
+        )
+      )
+      .limit(1);
+
+    let trackingEntry;
+
+    // Only create a new entry if one doesn't already exist with the same status and details
+    if (existingEntries.length === 0) {
+      trackingEntry = await db.insert(courierTracking).values({
+        order_id: orderId,
+        courier_id: order.courier_id,
+        tracking_id: order.courier_tracking_id,
+        status: courierStatus,
+        details: trackingInfo.data.order_status_text || trackingInfo.data.order_status,
+        location: trackingInfo.data.current_location || 'Unknown',
+        timestamp: new Date(trackingInfo.data.updated_at) || new Date(),
+      }).returning();
+    } else {
+      // Return the existing entry
+      trackingEntry = existingEntries;
+    }
 
     return trackingEntry.length ? trackingEntry[0] : null;
   } catch (error) {
@@ -441,16 +462,37 @@ export async function updateOrderFromWebhook(webhookData) {
       })
       .where(eq(orders.id, order.id));
 
-    // Create tracking entry
-    const trackingEntry = await db.insert(courierTracking).values({
-      order_id: order.id,
-      courier_id: order.courier_id,
-      tracking_id: webhookData.consignmentId,
-      status: webhookData.courierStatus,
-      details: webhookData.details,
-      location: 'Pathao Courier',
-      timestamp: new Date(webhookData.timestamp),
-    }).returning();
+    // Check if a tracking entry with the same status already exists
+    const existingEntries = await db
+      .select({ id: courierTracking.id })
+      .from(courierTracking)
+      .where(
+        and(
+          eq(courierTracking.order_id, order.id),
+          eq(courierTracking.tracking_id, webhookData.consignmentId),
+          eq(courierTracking.status, webhookData.courierStatus),
+          eq(courierTracking.details, webhookData.details)
+        )
+      )
+      .limit(1);
+
+    let trackingEntry;
+
+    // Only create a new entry if one doesn't already exist with the same status and details
+    if (existingEntries.length === 0) {
+      trackingEntry = await db.insert(courierTracking).values({
+        order_id: order.id,
+        courier_id: order.courier_id,
+        tracking_id: webhookData.consignmentId,
+        status: webhookData.courierStatus,
+        details: webhookData.details,
+        location: 'Pathao Courier',
+        timestamp: new Date(webhookData.timestamp),
+      }).returning();
+    } else {
+      // Return the existing entry
+      trackingEntry = existingEntries;
+    }
 
     return trackingEntry.length ? trackingEntry[0] : null;
   } catch (error) {

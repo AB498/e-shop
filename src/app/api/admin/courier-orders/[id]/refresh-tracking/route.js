@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { orders, courierTracking } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
@@ -63,16 +63,43 @@ export async function POST(request, { params }) {
       })
       .where(eq(orders.id, orderId));
 
-    // Create tracking entry
-    const trackingEntry = await db.insert(courierTracking).values({
-      order_id: orderId,
-      courier_id: order.courier_id,
-      tracking_id: order.courier_tracking_id,
-      status: courierStatus,
-      details: trackingInfo.data.order_status_text || trackingInfo.data.order_status,
-      location: trackingInfo.data.current_location || 'Unknown',
-      timestamp: new Date(trackingInfo.data.updated_at) || new Date(),
-    }).returning();
+    // Check if a tracking entry with the same status already exists
+    const existingEntries = await db
+      .select({
+        id: courierTracking.id,
+        status: courierTracking.status,
+        details: courierTracking.details,
+        location: courierTracking.location,
+        timestamp: courierTracking.timestamp
+      })
+      .from(courierTracking)
+      .where(
+        and(
+          eq(courierTracking.order_id, orderId),
+          eq(courierTracking.tracking_id, order.courier_tracking_id),
+          eq(courierTracking.status, courierStatus),
+          eq(courierTracking.details, trackingInfo.data.order_status_text || trackingInfo.data.order_status)
+        )
+      )
+      .limit(1);
+
+    let trackingEntry;
+
+    // Only create a new entry if one doesn't already exist with the same status and details
+    if (existingEntries.length === 0) {
+      trackingEntry = await db.insert(courierTracking).values({
+        order_id: orderId,
+        courier_id: order.courier_id,
+        tracking_id: order.courier_tracking_id,
+        status: courierStatus,
+        details: trackingInfo.data.order_status_text || trackingInfo.data.order_status,
+        location: trackingInfo.data.current_location || 'Unknown',
+        timestamp: new Date(trackingInfo.data.updated_at) || new Date(),
+      }).returning();
+    } else {
+      // Return the existing entry
+      trackingEntry = existingEntries;
+    }
 
     return NextResponse.json({
       success: true,

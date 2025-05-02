@@ -21,7 +21,6 @@ export async function middleware(request) {
   const protectedRoutes = [
     '/profile',
     '/checkout',
-    '/orders',
   ];
 
   // Define auth routes
@@ -60,7 +59,6 @@ export const config = {
   matcher: [
     '/profile/:path*',
     '/checkout/:path*',
-    '/orders/:path*',
     '/auth/:path*',
   ],
 };

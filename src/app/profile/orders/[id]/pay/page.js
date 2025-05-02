@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Topbar from '@/components/layout/Topbar';
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
@@ -10,15 +10,15 @@ import Copyright from '@/components/layout/Copyright';
 import Link from 'next/link';
 import { getOrderDetails } from '@/lib/actions/orders';
 
-export default async function ContinuePaymentPage({ params }) {
+export default function ContinuePaymentPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const params = useParams();
+  const orderId = params?.id;
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
-  await params;
-  const orderId = params.id;
 
   // Redirect if not logged in
   useEffect(() => {
@@ -57,7 +57,7 @@ export default async function ContinuePaymentPage({ params }) {
       }
     }
 
-    if (session?.user) {
+    if (session?.user && orderId) {
       fetchOrderDetails();
     }
   }, [session, orderId, router]);

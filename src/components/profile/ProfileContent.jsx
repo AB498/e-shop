@@ -5,8 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getUserOrders } from '@/lib/actions/orders';
 
-const ProfileContent = ({ user }) => {
-  const [activeTab, setActiveTab] = useState('account');
+const ProfileContent = ({ user, defaultTab = 'account' }) => {
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -228,7 +228,7 @@ const ProfileContent = ({ user }) => {
 
                               {order.courier_tracking_id && (
                                 <Link
-                                  href={`/profile/orders/${order.id}/track`}
+                                  href={`/profile/orders/${order.id}`}
                                   className="text-orange-600 hover:text-orange-900"
                                 >
                                   Track Order
