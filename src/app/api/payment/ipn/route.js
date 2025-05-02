@@ -57,7 +57,8 @@ export async function POST(request) {
       const orderId = parseInt(valueA);
       console.log(`Processing IPN for order ID: ${orderId}`);
 
-      if (validationData.status === 'VALID') {
+      // VALID / FAILED / CANCELLED
+      if (validationData.status === 'VALID' || validationData.status === 'VALIDATED') {
         console.log(`Updating order ${orderId} status to 'processing'`);
         await db.update(orders)
           .set({

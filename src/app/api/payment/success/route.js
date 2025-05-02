@@ -116,11 +116,12 @@ async function handlePaymentSuccess(request, isPost = false) {
     }
 
     // For SSL Commerz, we need to check if we have a valid payment
-    // Always require both val_id and status to be VALID
+    // Always require both val_id and status to be VALID or VALIDATED
     console.log('Environment: Production (strict validation)');
 
     // Always validate the payment
-    if (!valId || status !== 'VALID') {
+    // VALID / FAILED / CANCELLED
+    if (!valId || (status !== 'VALID' && status !== 'VALIDATED')) {
       console.error('Invalid payment response:', { orderId, valId, status });
       try {
         const errorRedirectUrl = `${baseUrl}/payment/error?message=Invalid payment response`;
@@ -154,7 +155,8 @@ async function handlePaymentSuccess(request, isPost = false) {
 
         console.log('Payment validation response:', validationData);
 
-        if (validationData.status !== 'VALID') {
+        // VALID / FAILED / CANCELLED
+        if (validationData.status !== 'VALID' && validationData.status !== 'VALIDATED') {
           console.error('Payment validation failed:', validationData);
           try {
             const errorRedirectUrl = `${baseUrl}/payment/error?message=Payment validation failed`;
