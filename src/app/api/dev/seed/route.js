@@ -32,7 +32,6 @@ export async function POST() {
       await pool.query('DROP TABLE IF EXISTS users CASCADE');
       await pool.query('DROP TABLE IF EXISTS files CASCADE');
       await pool.query('DROP TYPE IF EXISTS user_role CASCADE');
-      await pool.query('DROP TYPE IF EXISTS order_status CASCADE');
     } catch (error) {
       console.error('Error dropping tables:', error);
       // Continue anyway, as some tables might not exist yet
@@ -43,7 +42,6 @@ export async function POST() {
     try {
       // Create enum types first
       await pool.query("CREATE TYPE user_role AS ENUM ('admin', 'customer')");
-      await pool.query("CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled')");
 
       // Create tables
       await pool.query(`
@@ -116,7 +114,7 @@ export async function POST() {
         CREATE TABLE orders (
           id SERIAL PRIMARY KEY,
           user_id INTEGER REFERENCES users(id),
-          status order_status NOT NULL DEFAULT 'pending',
+          status TEXT NOT NULL DEFAULT 'pending',
           total DECIMAL(10, 2) NOT NULL,
           courier_id INTEGER REFERENCES couriers(id),
           courier_order_id TEXT,
