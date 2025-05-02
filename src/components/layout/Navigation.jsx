@@ -10,6 +10,8 @@ const Navigation = () => {
   const { cartCount } = useCart();
   const { data: session, status } = useSession();
 
+  const isAdmin = status === 'authenticated' && session?.user?.role === 'admin';
+
   // Function to toggle the sidebar
   const toggleSidebar = () => {
     console.log('Navigation: toggleSidebar called');
@@ -50,18 +52,40 @@ const Navigation = () => {
               </div>
             </button>
 
-            <Link href="/profile" className="relative">
-              <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
-                <div className="relative w-5 h-5">
-                  <Image
-                    src="/images/topbar/user.png"
-                    alt="User"
-                    fill
-                    className="object-contain"
-                  />
+            <div className="relative">
+              <Link href="/profile" className="relative">
+                <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
+                  <div className="relative w-5 h-5">
+                    <Image
+                      src="/images/topbar/user.png"
+                      alt="User"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  {isAdmin && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
+                      <span className="text-[8px] text-white font-bold">A</span>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </Link>
+              </Link>
+
+              {isAdmin && (
+                <div className="absolute top-12 right-0 flex space-x-1">
+                  <Link href="/admin">
+                    <div className="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center">
+                      <span className="text-[8px] text-white font-bold">A</span>
+                    </div>
+                  </Link>
+                  <Link href="/dev">
+                    <div className="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center">
+                      <span className="text-[8px] text-white font-bold">D</span>
+                    </div>
+                  </Link>
+                </div>
+              )}
+            </div>
 
             <Link href="/cart" className="relative">
               <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
@@ -147,6 +171,7 @@ const Navigation = () => {
                   {status === 'authenticated' && session?.user?.firstName
                     ? `Hi, ${session.user.firstName}`
                     : 'My Account'}
+                  {isAdmin && <span className="ml-1 text-xs text-emerald-600 font-semibold">(Admin)</span>}
                 </span>
               </div>
             </Link>

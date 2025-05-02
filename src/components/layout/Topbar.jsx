@@ -9,6 +9,7 @@ const Topbar = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const isAuthenticated = status === 'authenticated';
+  const isAdmin = isAuthenticated && session?.user?.role === 'admin';
 
   const handleSignOut = async () => {
     await signOut({ redirect: true, callbackUrl: '/' });
@@ -52,6 +53,7 @@ const Topbar = () => {
                 <Image src="/images/topbar/user.png" alt="User" width={16} height={16} />
                 <span className="text-[#616161] text-sm">
                   {session.user.firstName || 'My Account'}
+                  {isAdmin && <span className="ml-1 text-xs text-emerald-600 font-semibold">(Admin)</span>}
                 </span>
                 <Image src="/images/topbar/chevron-down.png" alt="Dropdown" width={12} height={12} />
               </button>
@@ -72,6 +74,28 @@ const Topbar = () => {
                   >
                     My Orders
                   </Link>
+
+                  {isAdmin && (
+                    <>
+                      <div className="border-t border-gray-200 my-1"></div>
+                      <Link
+                        href="/admin"
+                        className="block px-4 py-2 text-sm text-emerald-600 hover:bg-gray-100"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        Admin Panel
+                      </Link>
+                      <Link
+                        href="/dev"
+                        className="block px-4 py-2 text-sm text-emerald-600 hover:bg-gray-100"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        Dev Tools
+                      </Link>
+                    </>
+                  )}
+
+                  <div className="border-t border-gray-200 my-1"></div>
                   <button
                     onClick={handleSignOut}
                     className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
