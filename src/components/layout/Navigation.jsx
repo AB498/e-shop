@@ -156,26 +156,6 @@ const Navigation = () => {
               </div>
             </Link>
 
-            {/* User Profile Link */}
-            <Link href="/profile">
-              <div className="flex items-center space-x-2 cursor-pointer">
-                <div className="relative w-5 h-5">
-                  <Image
-                    src="/images/topbar/user.png"
-                    alt="User"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <span className="text-base text-[#333333] font-medium">
-                  {status === 'authenticated' && session?.user?.firstName
-                    ? `Hi, ${session.user.firstName}`
-                    : 'My Account'}
-                  {isAdmin && <span className="ml-1 text-xs text-emerald-600 font-semibold">(Admin)</span>}
-                </span>
-              </div>
-            </Link>
-
             <div className="flex items-center space-x-2 cursor-pointer">
               <div className="relative w-5 h-5">
                 <Image

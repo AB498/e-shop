@@ -18,7 +18,13 @@ const Topbar = () => {
   return (
     <div className="border-b border-[#E3E3E3]">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-        <span className="text-[#616161] text-sm">About Us   |   Contact Us   |   Delivery</span>
+        <div className="text-[#616161] text-sm">
+          <Link href="/about" className="hover:text-[#3BB77E] transition-colors">About Us</Link>
+          <span className="mx-2"> | </span>
+          <Link href="/contact" className="hover:text-[#3BB77E] transition-colors">Contact Us</Link>
+          <span className="mx-2"> | </span>
+          <Link href="/delivery" className="hover:text-[#3BB77E] transition-colors">Delivery</Link>
+        </div>
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
