@@ -34,11 +34,11 @@ export default function RootLayout({ children }) {
         </style>
         <SessionProvider>
           <CartProvider>
-            <div className="flex w-full">
-              <div className="flex-none">
+            <div className="flex w-full relative">
+              <div className="flex-none translate-0 relative z-10">
                 <Sidebar />
               </div>
-              <div className="flex-grow min-h-screen transition-all duration-300">
+              <div className="z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
                 {children}
               </div>
             </div>

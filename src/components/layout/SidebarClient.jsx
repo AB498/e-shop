@@ -142,7 +142,7 @@ const SidebarClient = ({ categories = [] }) => {
       {/* fake div to make the sidebar occupy width */}
       <div
         className="transition-all duration-300"
-        style={{ width: collapsed ? '70px' : '16rem' }}
+        style={{ width: collapsed ? '70px' : '70px' }}
       ></div>
       <div
         className={`${collapsed ? 'w-[70px]' : 'w-64'} h-screen bg-white border-r border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}

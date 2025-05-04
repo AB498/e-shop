@@ -7,6 +7,8 @@ const FeaturedCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(1); // Start with slide 1 active
   const totalSlides = 3;
   const autoPlayRef = useRef(null);
+  const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
   const intervalTime = 5000; // 5 seconds
 
   // Define slides with actual images (16:9 aspect ratio)
@@ -42,6 +44,24 @@ const FeaturedCarousel = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Update container width on mount and resize
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+
+    // Initial measurement
+    updateWidth();
+
+    // Add resize listener
+    window.addEventListener('resize', updateWidth);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
   };
@@ -65,8 +85,8 @@ const FeaturedCarousel = () => {
 
     // Base styles
     const baseZIndex = 10;
-    const baseScale = 0.85;
-    const activeScale = 1.0;
+    const baseScale = 0.9;
+    const activeScale = 1.1;
     const baseOpacity = 0.7;
 
     // Calculate final values based on distance
@@ -80,8 +100,10 @@ const FeaturedCarousel = () => {
       scale = 0;
     }
 
-    // Position cards horizontally
-    const translateX = distance * 350; // Wider spacing for 16:9 images
+    // Position cards horizontally - responsive calculation
+    // Use a percentage of container width or fallback to a reasonable default
+    const slideWidth = containerWidth ? containerWidth / 3 : 350; // Each slide takes ~1/3 of container
+    const translateX = distance * slideWidth;
 
     return {
       zIndex,
@@ -94,12 +116,12 @@ const FeaturedCarousel = () => {
   return (
     <div className="relative w-full h-[440px] mb-10 mt-6 overflow-visible">
       {/* Carousel Container */}
-      <div className="absolute inset-0 flex items-center justify-center w-full" >
+      <div ref={containerRef} className="absolute inset-0 flex items-center justify-center w-full" >
         {/* All Slides */}
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className="absolute w-1/2 aspect-video"
+            className="absolute w-1/3 aspect-video"
             style={getSlideStyle(index)}
           >
             <div

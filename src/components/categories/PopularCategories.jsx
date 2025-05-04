@@ -223,11 +223,11 @@ const PopularCategories = () => {
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="flex bg-white rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow flex-shrink-0"
+                className="basis-[25%] flex bg-white rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow flex-none"
                 style={{ width: `calc((100% / ${visibleCategories}) - ${(visibleCategories - 1) * 6 / visibleCategories}px)` }}
               >
                 {/* Category Image */}
-                <div className="relative w-1/3 min-w-[120px]">
+                <div className="relative w-1/3">
                   <div className="absolute inset-0 bg-[#B74B4B] rounded-[10px]"></div>
                   <div className="relative w-full h-full min-h-[200px]">
                     <Image
