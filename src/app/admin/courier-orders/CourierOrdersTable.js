@@ -64,7 +64,7 @@ export default function CourierOrdersTable({
           <p className="text-sm font-medium text-indigo-600 truncate">
             Order #{order.id}
           </p>
-          <p className="ml-2 text-sm text-gray-500 truncate">
+          <p className="ml-2 text-sm text-gray-500 truncate whitespace-nowrap">
             (ID: {order.courier_order_id})
           </p>
           <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -111,27 +111,29 @@ export default function CourierOrdersTable({
       key: 'customer',
       label: 'Customer Info',
       render: (order) => (
-        <div>
-          <p className="text-sm text-gray-500">
-            <span className="font-medium">Customer:</span> {order.customer_name}
-          </p>
-          <p className="text-sm text-gray-500">
-            <span className="font-medium">Phone:</span> {order.shipping_phone}
-          </p>
+        <div className="flex flex-col">
+          <div className="text-sm font-medium text-gray-900">{order.customer_name}</div>
+          <div className="text-xs text-gray-500">{order.shipping_phone}</div>
           {order.courier_tracking_id && (
-            <p className="text-sm text-gray-500">
-              <span className="font-medium">Tracking ID:</span> {order.courier_tracking_id}
-            </p>
+            <div className="text-xs text-gray-500 mt-1">
+              <span className="inline-block px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 whitespace-nowrap">
+                ID: {order.courier_tracking_id}
+              </span>
+            </div>
           )}
           {order.delivery_person_name && (
-            <p className="text-sm text-gray-500">
-              <span className="font-medium">Delivery Person:</span> {order.delivery_person_name}
-            </p>
+            <div className="text-xs text-gray-500 mt-1">
+              <span className="inline-block px-1.5 py-0.5 bg-emerald-50 rounded text-emerald-700">
+                {order.delivery_person_name}
+              </span>
+            </div>
           )}
           {order.shipping_instructions && order.shipping_instructions.includes('Delivery Fee:') && (
-            <p className="text-sm text-gray-500">
-              <span className="font-medium">{order.shipping_instructions}</span>
-            </p>
+            <div className="text-xs text-gray-500 mt-1">
+              <span className="inline-block px-1.5 py-0.5 bg-blue-50 rounded text-blue-700">
+                {order.shipping_instructions}
+              </span>
+            </div>
           )}
         </div>
       )
@@ -140,42 +142,39 @@ export default function CourierOrdersTable({
       key: 'actions',
       label: 'Actions',
       render: (order) => (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex items-center justify-end space-x-2">
           {order.courier_type === 'internal' && (
             <>
               <button
                 onClick={() => onAssignDeliveryPerson(order)}
-                className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                className="text-emerald-600 hover:text-emerald-900 inline-block"
                 title="Assign to delivery person"
               >
-                <UserGroupIcon className="-ml-0.5 mr-1 h-4 w-4" />
-                Assign
+                <UserGroupIcon className="h-5 w-5" />
               </button>
               <button
                 onClick={() => onUpdateStatus(order)}
-                className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="text-blue-600 hover:text-blue-900 inline-block"
                 title="Update delivery status"
               >
-                <ArrowUpCircleIcon className="-ml-0.5 mr-1 h-4 w-4" />
-                Update Status
+                <ArrowUpCircleIcon className="h-5 w-5" />
               </button>
             </>
           )}
           <button
             onClick={() => onRefreshTracking(order.id)}
             disabled={refreshing}
-            className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            title="View latest tracking information without altering tracking history"
+            className="text-indigo-600 hover:text-indigo-900 inline-block"
+            title="View latest tracking information"
           >
-            <ArrowPathIcon className={`-ml-0.5 mr-1 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-            View Latest
+            <ArrowPathIcon className={`h-5 w-5 ${refreshing ? 'animate-spin' : ''}`} />
           </button>
           <Link
             href={`/admin/orders/tracking/${order.id}`}
-            className="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="text-emerald-600 hover:text-emerald-900 inline-block"
+            title="View tracking details"
           >
-            <EyeIcon className="-ml-0.5 mr-1 h-4 w-4" />
-            Details
+            <EyeIcon className="h-5 w-5" />
           </Link>
         </div>
       )

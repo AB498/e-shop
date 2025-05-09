@@ -130,6 +130,14 @@ export async function getDashboardStats() {
       ? 100
       : ((currentMonthCustomers - previousMonthCustomers) / previousMonthCustomers) * 100;
 
+    // Get pending orders count for notifications
+    const pendingOrdersResult = await db
+      .select({ count: sql`COUNT(*)` })
+      .from(orders)
+      .where(eq(orders.status, 'pending'));
+
+    const pendingOrdersCount = pendingOrdersResult[0]?.count || 0;
+
     return {
       totalRevenue,
       totalOrders,
@@ -137,7 +145,8 @@ export async function getDashboardStats() {
       conversionRate,
       revenueGrowth,
       ordersGrowth,
-      customersGrowth
+      customersGrowth,
+      pendingOrdersCount
     };
   } catch (error) {
     console.error('Error fetching dashboard stats:', error);
@@ -148,7 +157,8 @@ export async function getDashboardStats() {
       conversionRate: 0,
       revenueGrowth: 0,
       ordersGrowth: 0,
-      customersGrowth: 0
+      customersGrowth: 0,
+      pendingOrdersCount: 0
     };
   }
 }
