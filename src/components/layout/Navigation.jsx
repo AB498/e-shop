@@ -78,11 +78,6 @@ const Navigation = () => {
                       <span className="text-[8px] text-white font-bold">A</span>
                     </div>
                   </Link>
-                  <Link href="/dev">
-                    <div className="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center">
-                      <span className="text-[8px] text-white font-bold">D</span>
-                    </div>
-                  </Link>
                 </div>
               )}
             </div>

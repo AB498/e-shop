@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "../components/layout/Sidebar";
-import Topbar from "../components/layout/Topbar";
+import AuthProvider from "../components/layout/AuthProvider";
 import SessionProvider from "../components/providers/SessionProvider";
 import { CartProvider } from "../context/CartContext";
 
@@ -39,6 +39,7 @@ export default function RootLayout({ children }) {
                 <Sidebar />
               </div>
               <div className="z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
+                <AuthProvider />
                 {children}
               </div>
             </div>

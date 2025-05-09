@@ -2,7 +2,7 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
-import Topbar from '@/components/layout/Topbar';
+
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Copyright from '@/components/layout/Copyright';
@@ -18,15 +18,14 @@ export const metadata = {
 export default async function ProfilePage() {
   // Get the session
   const session = await getServerSession(authOptions);
-  
+
   // Redirect to login if not authenticated
   if (!session) {
     redirect('/auth/login');
   }
-  
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Topbar />
       <Navigation />
 
       {/* Breadcrumb */}

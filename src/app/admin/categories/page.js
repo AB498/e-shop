@@ -22,11 +22,8 @@ export default function CategoriesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch categories on component mount if authenticated
   useEffect(() => {
-    if (status === 'authenticated') {
-      fetchCategories();
-    }
+    fetchCategories();
   }, []);
 
   // Fetch categories from API
@@ -127,7 +124,7 @@ export default function CategoriesPage() {
   };
 
   // Filter categories based on search term
-  const filteredCategories = categories.filter(category => 
+  const filteredCategories = categories.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     category.slug.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -143,9 +140,9 @@ export default function CategoriesPage() {
   return (
     <div className="p-8">
       {/* Page Header */}
-      <PageHeader 
-        title="Categories" 
-        onAddClick={() => setShowAddModal(true)} 
+      <PageHeader
+        title="Categories"
+        onAddClick={() => setShowAddModal(true)}
       />
 
       {/* Error Message */}
@@ -158,9 +155,9 @@ export default function CategoriesPage() {
 
       {/* Search and Refresh */}
       <div className="flex justify-between items-center mb-6">
-        <SearchBar 
-          searchTerm={searchTerm} 
-          setSearchTerm={setSearchTerm} 
+        <SearchBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
         <button
           onClick={fetchCategories}
@@ -173,7 +170,7 @@ export default function CategoriesPage() {
       </div>
 
       {/* Categories Table */}
-      <CategoriesTable 
+      <CategoriesTable
         categories={filteredCategories}
         onEdit={(category) => {
           setCurrentCategory(category);
@@ -184,14 +181,14 @@ export default function CategoriesPage() {
       />
 
       {/* Add Category Modal */}
-      <AddCategoryModal 
+      <AddCategoryModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSubmit={handleAddCategory}
       />
 
       {/* Edit Category Modal */}
-      <EditCategoryModal 
+      <EditCategoryModal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         onSubmit={handleEditCategory}

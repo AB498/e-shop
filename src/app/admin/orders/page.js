@@ -1,9 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MagnifyingGlassIcon, FunnelIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import {
+  MagnifyingGlassIcon,
+  ArrowPathIcon,
+  ClipboardDocumentCheckIcon,
+  TruckIcon,
+  UserGroupIcon
+} from '@heroicons/react/24/outline';
 import AssignDeliveryPersonModal from './AssignDeliveryPersonModal';
 import OrdersTable from './OrdersTable';
+import { createAutomaticCourierOrder } from '@/lib/services/auto-courier';
 
 export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,7 +49,7 @@ export default function OrdersPage() {
             const existingOrder = ordersMap.get(order.id);
             // If the new order has courier info and the existing one doesn't, or if the new one is more recent
             if ((order.courier_id && !existingOrder.courier_id) ||
-                (new Date(order.updated_at) > new Date(existingOrder.updated_at))) {
+              (new Date(order.updated_at) > new Date(existingOrder.updated_at))) {
               ordersMap.set(order.id, order);
             }
           } else {
@@ -123,21 +130,8 @@ export default function OrdersPage() {
         orderToUpdate.isProcessingCourier = true;
       }
 
-      const response = await fetch('/api/dev/test-courier-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orderId }),
-      });
+      const data = await createAutomaticCourierOrder(orderId)
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create courier order');
-      }
-
-      // Log the full response data for debugging
       console.log('Courier order created successfully:', JSON.stringify(data, null, 2));
 
       // Show success message with additional info if available
@@ -289,8 +283,8 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                               ${selectedOrder.status === 'Delivered' ? 'bg-green-100 text-green-800' :
                                 selectedOrder.status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
-                                selectedOrder.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                                'bg-yellow-100 text-yellow-800'}`}>
+                                  selectedOrder.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
+                                    'bg-yellow-100 text-yellow-800'}`}>
                               {selectedOrder.status}
                             </span>
                           </dd>
@@ -322,8 +316,8 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                     ${selectedOrder.courier_status === 'delivered' ? 'bg-green-100 text-green-800' :
                                       selectedOrder.courier_status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
-                                      selectedOrder.courier_status === 'cancelled' || selectedOrder.courier_status === 'returned' ? 'bg-red-100 text-red-800' :
-                                      'bg-yellow-100 text-yellow-800'}`}>
+                                        selectedOrder.courier_status === 'cancelled' || selectedOrder.courier_status === 'returned' ? 'bg-red-100 text-red-800' :
+                                          'bg-yellow-100 text-yellow-800'}`}>
                                     Status: {selectedOrder.courier_status ?
                                       (typeof selectedOrder.courier_status === 'string' ?
                                         selectedOrder.courier_status.replace('_', ' ').charAt(0).toUpperCase() +

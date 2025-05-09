@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useCart } from '@/context/CartContext';
-import Topbar from '@/components/layout/Topbar';
+
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Copyright from '@/components/layout/Copyright';
@@ -18,7 +18,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Topbar />
       <Navigation />
 
       <div className="container mx-auto border border-[rgba(0,0,0,0.1)] rounded-lg p-8 mt-8 bg-white">

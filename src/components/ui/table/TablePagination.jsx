@@ -58,8 +58,18 @@ export default function TablePagination({ pageSizeOptions = [10, 25, 50, 100] })
   const pageNumbers = getPageNumbers();
 
   // Calculate range of visible items
-  const startItem = pageIndex * pageSize + 1;
+  const startItem = rawData.length === 0 ? 0 : pageIndex * pageSize + 1;
   const endItem = Math.min((pageIndex + 1) * pageSize, rawData.length);
+
+  // Debug information
+  console.log('Pagination:', {
+    pageIndex,
+    pageSize,
+    pageCount,
+    dataLength: rawData.length,
+    startItem,
+    endItem
+  });
 
   return (
     <div className="px-4 py-3 border-t border-gray-200 sm:px-6">
@@ -67,9 +77,15 @@ export default function TablePagination({ pageSizeOptions = [10, 25, 50, 100] })
         {/* Item count display */}
         <div className="flex-shrink-0">
           <p className="text-sm text-gray-700 whitespace-nowrap">
-            Showing <span className="font-medium">{startItem}</span> to{' '}
-            <span className="font-medium">{endItem}</span> of{' '}
-            <span className="font-medium">{rawData.length}</span> results
+            {rawData.length === 0 ? (
+              <span>No results found</span>
+            ) : (
+              <>
+                Showing <span className="font-medium">{startItem}</span> to{' '}
+                <span className="font-medium">{endItem}</span> of{' '}
+                <span className="font-medium">{rawData.length}</span> results
+              </>
+            )}
           </p>
         </div>
 
@@ -83,7 +99,7 @@ export default function TablePagination({ pageSizeOptions = [10, 25, 50, 100] })
               id="pageSize"
               value={pageSize}
               onChange={(e) => setPageSize(Number(e.target.value))}
-              className="block w-20 pl-3 pr-10 py-1 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
+              className="block w-20 pl-3 pr-5 py-1 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
             >
               {pageSizeOptions.map((size) => (
                 <option key={size} value={size}>
@@ -142,9 +158,9 @@ export default function TablePagination({ pageSizeOptions = [10, 25, 50, 100] })
             {/* Next page button */}
             <button
               onClick={() => goToPage(Math.min(pageCount - 1, pageIndex + 1))}
-              disabled={pageIndex === pageCount - 1}
+              disabled={pageIndex >= pageCount - 1 || endItem >= rawData.length}
               className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${
-                pageIndex === pageCount - 1
+                pageIndex >= pageCount - 1 || endItem >= rawData.length
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   : 'bg-white text-gray-500 hover:bg-gray-50'
               }`}

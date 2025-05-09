@@ -3,13 +3,20 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
-const Topbar = () => {
-  const { data: session, status } = useSession();
+const Topbar = ({ serverSession, serverAuthStatus }) => {
+  // Use server-provided auth state as initial values, then use client-side session for updates
+  const { data: clientSession, status } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const isAuthenticated = status === 'authenticated';
-  const isAdmin = isAuthenticated && session?.user?.role === 'admin';
+  // Prioritize client-side session if available (for real-time updates), otherwise use server session
+  const session = clientSession || serverSession;
+
+  // Use client-side auth status if available, otherwise use server-provided status
+  const isAuthenticated = status === 'authenticated' || serverAuthStatus?.isAuthenticated;
+  const isAdmin = (status === 'authenticated' && clientSession?.user?.role === 'admin') ||
+    serverAuthStatus?.isAdmin;
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -32,6 +39,12 @@ const Topbar = () => {
   const handleSignOut = async () => {
     await signOut({ redirect: true, callbackUrl: '/' });
   };
+
+  const pathname = usePathname();
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <div className="border-b border-[#E3E3E3]">
@@ -95,13 +108,6 @@ const Topbar = () => {
                             onClick={() => setShowUserMenu(false)}
                           >
                             Admin Panel
-                          </Link>
-                          <Link
-                            href="/dev"
-                            className="block px-3 py-2 text-xs text-emerald-600 hover:bg-gray-100"
-                            onClick={() => setShowUserMenu(false)}
-                          >
-                            Dev Tools
                           </Link>
                         </>
                       )}
@@ -203,13 +209,6 @@ const Topbar = () => {
                           onClick={() => setShowUserMenu(false)}
                         >
                           Admin Panel
-                        </Link>
-                        <Link
-                          href="/dev"
-                          className="block px-4 py-2 text-sm text-emerald-600 hover:bg-gray-100"
-                          onClick={() => setShowUserMenu(false)}
-                        >
-                          Dev Tools
                         </Link>
                       </>
                     )}

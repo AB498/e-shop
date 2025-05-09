@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Topbar from '@/components/layout/Topbar';
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Copyright from '@/components/layout/Copyright';
@@ -9,12 +8,10 @@ import AboutHeader from '@/components/about/AboutHeader';
 import AboutIntro from '@/components/about/AboutIntro';
 import AboutCEO from '@/components/about/AboutCEO';
 import AboutQuote from '@/components/about/AboutQuote';
-import NewsletterSection from '@/components/contact/NewsletterSection';
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
-      <Topbar />
       <Navigation />
 
       {/* Header with Breadcrumb */}

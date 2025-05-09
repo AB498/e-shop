@@ -1,6 +1,6 @@
 'use client';
 
-import Topbar from "../components/layout/Topbar";
+
 import Navigation from "../components/layout/Navigation";
 import Hero from "../components/layout/Hero";
 import FeatureIcons from "../components/layout/FeatureIcons";
@@ -21,9 +21,6 @@ export default function LandingPage() {
     return (
         <ProductQuickViewProvider>
             <div className="w-full">
-                {/* Topbar - Full width at the top */}
-                <Topbar />
-
                 {/* Navigation */}
                 <Navigation />
 

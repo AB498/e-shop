@@ -3,7 +3,7 @@
 /**
  * Test Order Creation Script
  *
- * This script creates a test order using existing products and users.
+ * This script creates test orders using existing products and users.
  * It simulates the process of adding products to cart, checking out, and processing payment.
  *
  * Usage:
@@ -15,6 +15,8 @@
  *   --quantities <numbers>  Comma-separated list of quantities for each product (default: random 1-3)
  *   --status <status>       Order status (default: pending)
  *                           Valid values: pending, processing, in_transit, shipped, delivered, cancelled
+ *   --count <number>        Number of test orders to create (default: 1)
+ *   --parallel <number>     Maximum number of orders to process in parallel (default: 5)
  *   --help                  Show this help message
  *
  * Examples:
@@ -22,6 +24,7 @@
  *   node scripts/test-order.js --user customer@example.com
  *   node scripts/test-order.js --products 1,2,3 --quantities 2,1,3
  *   node scripts/test-order.js --status processing
+ *   node scripts/test-order.js --count 10 --parallel 3
  *   node scripts/test-order.js --user 5 --products ABC123,XYZ789 --quantities 1,2 --status shipped
  *
  * Requirements:
@@ -34,6 +37,7 @@ import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import chalk from 'chalk';
+import { performance } from 'perf_hooks';
 
 // Load environment variables first - must happen before any database connections
 dotenv.config();
@@ -61,7 +65,9 @@ function parseArgs() {
     user: null,
     products: null,
     quantities: null,
-    status: 'pending'
+    status: 'pending',
+    count: 1,
+    parallel: 5
   };
 
   // Check for help flag
@@ -69,7 +75,7 @@ function parseArgs() {
     console.log(chalk.cyan('Test Order Creation Script'));
     console.log(chalk.cyan('========================='));
     console.log('');
-    console.log('This script creates a test order using existing products and users.');
+    console.log('This script creates test orders using existing products and users.');
     console.log('');
     console.log(chalk.cyan('Options:'));
     console.log('  --user <id|email>       Specify user by ID or email (default: first customer in database)');
@@ -77,6 +83,8 @@ function parseArgs() {
     console.log('  --quantities <numbers>  Comma-separated list of quantities for each product (default: random 1-3)');
     console.log('  --status <status>       Order status (default: pending)');
     console.log('                           Valid values: pending, processing, in_transit, shipped, delivered, cancelled');
+    console.log('  --count <number>        Number of test orders to create (default: 1)');
+    console.log('  --parallel <number>     Maximum number of orders to process in parallel (default: 5)');
     console.log('  --help                  Show this help message');
     console.log('');
     console.log(chalk.cyan('Examples:'));
@@ -84,6 +92,7 @@ function parseArgs() {
     console.log('  node scripts/test-order.js --user customer@example.com');
     console.log('  node scripts/test-order.js --products 1,2,3 --quantities 2,1,3');
     console.log('  node scripts/test-order.js --status processing');
+    console.log('  node scripts/test-order.js --count 10 --parallel 3');
     console.log('  node scripts/test-order.js --user 5 --products ABC123,XYZ789 --quantities 1,2 --status shipped');
     process.exit(0);
   }
@@ -109,6 +118,26 @@ function parseArgs() {
       }
 
       options.status = status;
+    } else if (arg === '--count' && i + 1 < args.length) {
+      const count = parseInt(args[++i], 10);
+
+      if (isNaN(count) || count < 1) {
+        console.error(chalk.red(`Invalid count: ${args[i]}`));
+        console.error(chalk.red('Count must be a positive integer'));
+        process.exit(1);
+      }
+
+      options.count = count;
+    } else if (arg === '--parallel' && i + 1 < args.length) {
+      const parallel = parseInt(args[++i], 10);
+
+      if (isNaN(parallel) || parallel < 1) {
+        console.error(chalk.red(`Invalid parallel value: ${args[i]}`));
+        console.error(chalk.red('Parallel must be a positive integer'));
+        process.exit(1);
+      }
+
+      options.parallel = parallel;
     }
   }
 
@@ -124,9 +153,16 @@ const db = drizzle(pool);
 import * as schema from '../src/db/schema.js';
 
 // Main function to create a test order
-async function createTestOrder(options) {
-  console.log(chalk.blue('Starting test order creation process...'));
-  console.log(chalk.blue('Using options:'), options);
+async function createTestOrder(options, orderIndex = 1) {
+  // Use the batch database connection if provided, otherwise use the global one
+  const orderDb = options.batchDb || db;
+
+  const orderPrefix = orderIndex ? `[Order ${orderIndex}/${options.count}] ` : '';
+  console.log(chalk.blue(`${orderPrefix}Starting test order creation process...`));
+
+  if (!orderIndex) {
+    console.log(chalk.blue('Using options:'), options);
+  }
 
   try {
     // Check if DATABASE_URL is set
@@ -134,20 +170,22 @@ async function createTestOrder(options) {
       throw new Error('DATABASE_URL environment variable is not set. Please check your .env file.');
     }
 
-    // Test database connection
-    try {
-      console.log(chalk.blue('Testing database connection...'));
-      console.log(`Connecting to: ${process.env.DATABASE_URL.replace(/:[^:]*@/, ':****@')}`);
-      const result = await pool.query('SELECT NOW() as current_time');
-      console.log(chalk.green(`Database connection successful! Server time: ${result.rows[0].current_time}`));
-    } catch (error) {
-      console.error(chalk.red('Database connection failed!'));
-      console.error(chalk.red('Error details:'), error.message);
-      throw new Error('Failed to connect to the database. See above for details.');
+    // Test database connection only for single order mode
+    if (!options.batchDb) {
+      try {
+        console.log(chalk.blue('Testing database connection...'));
+        console.log(`Connecting to: ${process.env.DATABASE_URL.replace(/:[^:]*@/, ':****@')}`);
+        const result = await pool.query('SELECT NOW() as current_time');
+        console.log(chalk.green(`Database connection successful! Server time: ${result.rows[0].current_time}`));
+      } catch (error) {
+        console.error(chalk.red('Database connection failed!'));
+        console.error(chalk.red('Error details:'), error.message);
+        throw new Error('Failed to connect to the database. See above for details.');
+      }
     }
 
     // Step 1: Get the specified user or a default test user
-    console.log(chalk.blue('Finding user...'));
+    console.log(chalk.blue(`${orderPrefix}Finding user...`));
     let testUser;
 
     if (options.user) {
@@ -157,7 +195,7 @@ async function createTestOrder(options) {
         ? eq(schema.users.email, options.user)
         : eq(schema.users.id, parseInt(options.user, 10));
 
-      const users = await db
+      const users = await orderDb
         .select()
         .from(schema.users)
         .where(query)
@@ -170,7 +208,7 @@ async function createTestOrder(options) {
       testUser = users[0];
     } else {
       // Get the first customer in the database (default behavior)
-      const users = await db
+      const users = await orderDb
         .select()
         .from(schema.users)
         .where(eq(schema.users.role, 'customer'))
@@ -183,10 +221,10 @@ async function createTestOrder(options) {
       testUser = users[0];
     }
 
-    console.log(chalk.green(`Found user: ${testUser.first_name} ${testUser.last_name} (${testUser.email})`));
+    console.log(chalk.green(`${orderPrefix}Found user: ${testUser.first_name} ${testUser.last_name} (${testUser.email})`));
 
     // Step 2: Get the specified products or random products
-    console.log(chalk.blue('Finding products...'));
+    console.log(chalk.blue(`${orderPrefix}Finding products...`));
     let products = [];
 
     if (options.products && options.products.length > 0) {
@@ -198,7 +236,7 @@ async function createTestOrder(options) {
           ? eq(schema.products.id, parseInt(productIdentifier, 10))
           : eq(schema.products.sku, productIdentifier);
 
-        const productResults = await db
+        const productResults = await orderDb
           .select()
           .from(schema.products)
           .where(query)
@@ -212,7 +250,7 @@ async function createTestOrder(options) {
       }
     } else {
       // Get random products (default behavior)
-      products = await db
+      products = await orderDb
         .select()
         .from(schema.products)
         .limit(3);
@@ -222,13 +260,17 @@ async function createTestOrder(options) {
       }
     }
 
-    console.log(chalk.green(`Found ${products.length} products for the test order`));
-    products.forEach(product => {
-      console.log(chalk.green(`- ${product.name} (${product.sku}) - $${product.price}`));
-    });
+    console.log(chalk.green(`${orderPrefix}Found ${products.length} products for the test order`));
+
+    // Only show detailed product info for single orders to reduce log noise
+    if (!orderIndex || orderIndex === 1) {
+      products.forEach(product => {
+        console.log(chalk.green(`${orderPrefix}- ${product.name} (${product.sku}) - $${product.price}`));
+      });
+    }
 
     // Step 3: Create an order
-    console.log(chalk.blue('Creating order...'));
+    console.log(chalk.blue(`${orderPrefix}Creating order...`));
 
     // Calculate total
     let total = 0;
@@ -253,7 +295,7 @@ async function createTestOrder(options) {
     });
 
     // Insert order
-    const [order] = await db.insert(schema.orders).values({
+    const [order] = await orderDb.insert(schema.orders).values({
       user_id: testUser.id,
       status: options.status,
       total: total.toFixed(2),
@@ -263,14 +305,14 @@ async function createTestOrder(options) {
       shipping_phone: testUser.phone || '+8801712345678'
     }).returning();
 
-    console.log(chalk.green(`Created order #${order.id} with total $${order.total}`));
+    console.log(chalk.green(`${orderPrefix}Created order #${order.id} with total $${order.total}`));
 
     // Step 4: Create order items
-    console.log(chalk.blue('Adding items to order...'));
+    console.log(chalk.blue(`${orderPrefix}Adding items to order...`));
     const items = [];
 
     for (const item of orderItems) {
-      const [orderItem] = await db.insert(schema.orderItems).values({
+      const [orderItem] = await orderDb.insert(schema.orderItems).values({
         order_id: order.id,
         product_id: item.product_id,
         quantity: item.quantity,
@@ -288,35 +330,45 @@ async function createTestOrder(options) {
       });
     }
 
-    console.log(chalk.green(`Added ${items.length} items to order #${order.id}`));
-    items.forEach(item => {
-      console.log(chalk.green(`- ${item.quantity}x ${item.name} @ $${item.price} each`));
-    });
+    console.log(chalk.green(`${orderPrefix}Added ${items.length} items to order #${order.id}`));
+
+    // Only show detailed item info for single orders to reduce log noise
+    if (!orderIndex || orderIndex === 1) {
+      items.forEach(item => {
+        console.log(chalk.green(`${orderPrefix}- ${item.quantity}x ${item.name} @ $${item.price} each`));
+      });
+    }
 
     // Step 5: Update product stock
-    console.log(chalk.blue('Updating product stock...'));
+    console.log(chalk.blue(`${orderPrefix}Updating product stock...`));
 
     for (const item of orderItems) {
       const product = products.find(p => p.id === item.product_id);
       const newStock = parseInt(product.stock) - item.quantity;
 
-      await db.update(schema.products)
+      await orderDb.update(schema.products)
         .set({ stock: newStock })
         .where(eq(schema.products.id, item.product_id));
 
-      console.log(chalk.green(`Updated stock for ${product.name}: ${product.stock} → ${newStock}`));
+      // Only show detailed stock updates for single orders to reduce log noise
+      if (!orderIndex || orderIndex === 1) {
+        console.log(chalk.green(`${orderPrefix}Updated stock for ${product.name}: ${product.stock} → ${newStock}`));
+      }
     }
 
-    console.log(chalk.green.bold('\nTest order created successfully!'));
-    console.log(chalk.yellow('Order Summary:'));
-    console.log(chalk.yellow(`Order ID: ${order.id}`));
-    console.log(chalk.yellow(`Customer: ${testUser.first_name} ${testUser.last_name}`));
-    console.log(chalk.yellow(`Total: $${order.total}`));
-    console.log(chalk.yellow(`Status: ${order.status}`));
-    console.log(chalk.yellow(`Items: ${items.length}`));
+    console.log(chalk.green.bold(`\n${orderPrefix}Test order created successfully!`));
+    console.log(chalk.yellow(`${orderPrefix}Order Summary:`));
+    console.log(chalk.yellow(`${orderPrefix}Order ID: ${order.id}`));
+    console.log(chalk.yellow(`${orderPrefix}Customer: ${testUser.first_name} ${testUser.last_name}`));
+    console.log(chalk.yellow(`${orderPrefix}Total: $${order.total}`));
+    console.log(chalk.yellow(`${orderPrefix}Status: ${order.status}`));
+    console.log(chalk.yellow(`${orderPrefix}Items: ${items.length}`));
 
-    // Close the database connection
-    await pool.end();
+    // Don't close the database connection here if we're processing multiple orders
+    // It will be closed by the parent function
+    if (!options.batchDb) {
+      await pool.end();
+    }
 
     return {
       success: true,
@@ -325,18 +377,128 @@ async function createTestOrder(options) {
       items
     };
   } catch (error) {
-    console.error(chalk.red('Error creating test order:'), error);
+    console.error(chalk.red(`${orderPrefix}Error creating test order:`), error);
 
-    // Close the database connection
-    try {
-      await pool.end();
-    } catch (err) {
-      console.error(chalk.red('Error closing database connection:'), err);
+    // Close the database connection if not in batch mode
+    if (!options.batchDb) {
+      try {
+        await pool.end();
+      } catch (err) {
+        console.error(chalk.red('Error closing database connection:'), err);
+      }
     }
 
-    process.exit(1);
+    throw error;
   }
 }
 
-// Run the function with the parsed options
-createTestOrder(options);
+// Function to create multiple test orders in parallel
+async function createMultipleTestOrders(options) {
+  const startTime = performance.now();
+  console.log(chalk.blue(`Starting creation of ${options.count} test orders...`));
+  console.log(chalk.blue(`Processing up to ${options.parallel} orders in parallel`));
+
+  // Create an array of order indices to process
+  const orderIndices = Array.from({ length: options.count }, (_, i) => i + 1);
+  const results = [];
+  const errors = [];
+
+  // Process orders in batches to limit concurrency
+  for (let i = 0; i < orderIndices.length; i += options.parallel) {
+    const batch = orderIndices.slice(i, i + options.parallel);
+    console.log(chalk.blue(`Processing batch ${Math.floor(i / options.parallel) + 1} of ${Math.ceil(orderIndices.length / options.parallel)} (${batch.length} orders)...`));
+
+    // Create a new database connection pool for each batch
+    const batchPool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
+
+    const batchDb = drizzle(batchPool);
+
+    try {
+      // Process orders in this batch concurrently
+      const batchPromises = batch.map(async (index) => {
+        // Clone options for this specific order
+        const orderOptions = { ...options, batchDb };
+
+        // Add a unique identifier to each order for logging
+        console.log(chalk.blue(`Starting order ${index}/${options.count}...`));
+
+        try {
+          const result = await createTestOrder(orderOptions, index);
+          console.log(chalk.green(`✓ Completed order ${index}/${options.count}`));
+          results.push(result);
+          return result;
+        } catch (error) {
+          console.error(chalk.red(`✗ Failed order ${index}/${options.count}:`), error);
+          errors.push({ index, error });
+          return null;
+        }
+      });
+
+      await Promise.all(batchPromises);
+
+      // Close the batch pool
+      await batchPool.end();
+    } catch (error) {
+      console.error(chalk.red(`Error processing batch ${Math.floor(i / options.parallel) + 1}:`), error);
+
+      // Close the batch pool
+      try {
+        await batchPool.end();
+      } catch (err) {
+        console.error(chalk.red('Error closing batch database connection:'), err);
+      }
+    }
+  }
+
+  const endTime = performance.now();
+  const duration = ((endTime - startTime) / 1000).toFixed(2);
+
+  console.log(chalk.green.bold(`\nTest order creation completed!`));
+  console.log(chalk.yellow(`Created ${results.length} of ${options.count} orders in ${duration} seconds`));
+  console.log(chalk.yellow(`Average time per order: ${(duration / results.length).toFixed(2)} seconds`));
+
+  if (errors.length > 0) {
+    console.log(chalk.red(`Failed to create ${errors.length} orders`));
+  }
+
+  return {
+    success: results.length > 0,
+    totalOrders: options.count,
+    successfulOrders: results.length,
+    failedOrders: errors.length,
+    duration: parseFloat(duration),
+    results
+  };
+}
+
+
+
+// Run the appropriate function based on the count parameter
+if (options.count === 1) {
+  // For a single order, use the original function
+  createTestOrder(options)
+    .then(() => {
+      // Database connection is closed in the function
+      console.log(chalk.green('Database connection closed.'));
+    })
+    .catch(error => {
+      console.error(chalk.red('Error creating test order:'), error);
+      process.exit(1);
+    });
+} else {
+  // For multiple orders, use the parallel processing function
+  createMultipleTestOrders(options)
+    .then(() => {
+      // All database connections are closed in the function
+      console.log(chalk.green('All database connections closed.'));
+    })
+    .catch(error => {
+      console.error(chalk.red('Error creating multiple test orders:'), error);
+      process.exit(1);
+    });
+}

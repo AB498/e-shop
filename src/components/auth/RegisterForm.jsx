@@ -88,40 +88,6 @@ const RegisterForm = () => {
           <p className="text-sm mt-2">
             Please check your information and try again. If the problem persists, contact support.
           </p>
-
-          {/* Special handling for duplicate key errors */}
-          {serverError.includes('duplicate key') && (
-            <div className="mt-4 border-t border-red-200 pt-4">
-              <p className="font-semibold">Technical Issue:</p>
-              <p className="text-sm">
-                There appears to be a database sequence issue. Please try one of these solutions:
-              </p>
-              <ul className="list-disc list-inside text-sm mt-2">
-                <li>Try registering with a different email address</li>
-                <li>
-                  <button
-                    onClick={async () => {
-                      try {
-                        const response = await fetch('/api/dev/reset-sequence', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ table: 'users' }),
-                        });
-                        if (response.ok) {
-                          setServerError('Sequence reset successful. Please try registering again.');
-                        }
-                      } catch (error) {
-                        console.error('Error resetting sequence:', error);
-                      }
-                    }}
-                    className="text-blue-600 underline"
-                  >
-                    Click here to fix the database sequence
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
         </div>
       )}
 

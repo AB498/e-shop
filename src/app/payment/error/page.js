@@ -2,7 +2,7 @@
 
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Topbar from '@/components/layout/Topbar';
+
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Copyright from '@/components/layout/Copyright';
@@ -15,7 +15,6 @@ function ErrorContent() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Topbar />
       <Navigation />
 
       <div className="container mx-auto px-4 py-16 flex-grow">
@@ -66,7 +65,6 @@ function ErrorContent() {
 function ErrorPageSkeleton() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Topbar />
       <Navigation />
       <div className="container mx-auto px-4 py-16 flex-grow">
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8 text-center">

@@ -1,6 +1,6 @@
 import React from 'react';
 import RegisterForm from '@/components/auth/RegisterForm';
-import Topbar from '@/components/layout/Topbar';
+
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Copyright from '@/components/layout/Copyright';
@@ -15,7 +15,6 @@ export const metadata = {
 export default function RegisterPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Topbar />
       <Navigation />
 
       {/* Breadcrumb */}

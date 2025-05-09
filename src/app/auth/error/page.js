@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Topbar from '@/components/layout/Topbar';
+
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Copyright from '@/components/layout/Copyright';
@@ -32,7 +32,6 @@ export default async function AuthErrorPage({ searchParams }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Topbar />
       <Navigation />
 
       {/* Breadcrumb */}
@@ -54,14 +53,14 @@ export default async function AuthErrorPage({ searchParams }) {
             <h2 className="text-2xl font-bold mb-4">Authentication Error</h2>
             <p className="mb-6">{errorMessage}</p>
             <div className="flex justify-center space-x-4">
-              <Link 
-                href="/auth/login" 
+              <Link
+                href="/auth/login"
                 className="bg-[#006B51] text-white font-bold py-3 px-6 rounded-md hover:bg-[#005541] transition-colors"
               >
                 Back to Login
               </Link>
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="bg-gray-200 text-gray-800 font-bold py-3 px-6 rounded-md hover:bg-gray-300 transition-colors"
               >
                 Go to Homepage

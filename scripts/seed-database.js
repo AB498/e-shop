@@ -109,6 +109,7 @@ async function importSeedData(filename) {
 
 // Main function to seed the database
 async function seedDatabase() {
+  const startTime = Date.now();
   console.log('Starting database seeding process...');
 
   try {
@@ -138,32 +139,49 @@ async function seedDatabase() {
       throw new Error('Failed to connect to the database. See above for details.');
     }
 
-    // Import seed data
-    console.log('Importing seed data...');
-    const categoriesSeed = await importSeedData('categories-seed.js');
-    const productsSeed = await importSeedData('products-seed.js');
-    const usersSeed = await importSeedData('users-seed.js');
-    const filesSeed = await importSeedData('files-seed.js');
-    const couriersSeed = await importSeedData('couriers-seed.js');
-    const storeLocationsSeed = await importSeedData('store-locations-seed.js');
-    const deliveryPersonsSeed = await importSeedData('delivery-persons-seed.js');
+    // Import seed data in parallel
+    console.log('Importing seed data in parallel...');
+    const [
+      categoriesSeed,
+      productsSeed,
+      usersSeed,
+      filesSeed,
+      couriersSeed,
+      storeLocationsSeed,
+      deliveryPersonsSeed
+    ] = await Promise.all([
+      importSeedData('categories-seed.js'),
+      importSeedData('products-seed.js'),
+      importSeedData('users-seed.js'),
+      importSeedData('files-seed.js'),
+      importSeedData('couriers-seed.js'),
+      importSeedData('store-locations-seed.js'),
+      importSeedData('delivery-persons-seed.js')
+    ]);
 
     // Drop existing tables if they exist (for clean seeding)
     console.log('Dropping existing tables if they exist...');
     try {
       // Drop tables in reverse order of dependencies using direct pool queries
-      await pool.query('DROP TABLE IF EXISTS store_locations CASCADE');
-      await pool.query('DROP TABLE IF EXISTS courier_tracking CASCADE');
-      await pool.query('DROP TABLE IF EXISTS order_items CASCADE');
-      await pool.query('DROP TABLE IF EXISTS orders CASCADE');
-      await pool.query('DROP TABLE IF EXISTS products CASCADE');
-      await pool.query('DROP TABLE IF EXISTS categories CASCADE');
-      await pool.query('DROP TABLE IF EXISTS delivery_persons CASCADE');
-      await pool.query('DROP TABLE IF EXISTS couriers CASCADE');
-      await pool.query('DROP TABLE IF EXISTS users CASCADE');
-      await pool.query('DROP TABLE IF EXISTS files CASCADE');
-      await pool.query('DROP TYPE IF EXISTS user_role CASCADE');
-      await pool.query('DROP TYPE IF EXISTS order_status CASCADE');
+      const dropQueries = [
+        'DROP TABLE IF EXISTS store_locations CASCADE',
+        'DROP TABLE IF EXISTS courier_tracking CASCADE',
+        'DROP TABLE IF EXISTS order_items CASCADE',
+        'DROP TABLE IF EXISTS orders CASCADE',
+        'DROP TABLE IF EXISTS products CASCADE',
+        'DROP TABLE IF EXISTS categories CASCADE',
+        'DROP TABLE IF EXISTS delivery_persons CASCADE',
+        'DROP TABLE IF EXISTS couriers CASCADE',
+        'DROP TABLE IF EXISTS users CASCADE',
+        'DROP TABLE IF EXISTS files CASCADE',
+        'DROP TYPE IF EXISTS user_role CASCADE',
+        'DROP TYPE IF EXISTS order_status CASCADE'
+      ];
+
+      // Execute drop queries in sequence to maintain dependency order
+      for (const query of dropQueries) {
+        await pool.query(query);
+      }
     } catch (error) {
       console.error('Error dropping tables:', error);
       console.log('Continuing anyway, as some tables might not exist yet...');
@@ -176,18 +194,16 @@ async function seedDatabase() {
       await pool.query("CREATE TYPE user_role AS ENUM ('admin', 'customer')");
       await pool.query("CREATE TYPE order_status AS ENUM ('pending', 'processing', 'in_transit', 'shipped', 'delivered', 'cancelled')");
 
-      // Create tables
-      await pool.query(`
-        CREATE TABLE files (
+      // Define table creation queries
+      const tableQueries = [
+        // Independent tables (no foreign key dependencies)
+        `CREATE TABLE files (
           id SERIAL PRIMARY KEY,
           key TEXT NOT NULL,
           url TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
-
-      await pool.query(`
-        CREATE TABLE users (
+        )`,
+        `CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           first_name TEXT NOT NULL,
           last_name TEXT NOT NULL,
@@ -202,20 +218,48 @@ async function seedDatabase() {
           role user_role NOT NULL DEFAULT 'customer',
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
-
-      await pool.query(`
-        CREATE TABLE categories (
+        )`,
+        `CREATE TABLE categories (
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
           slug TEXT NOT NULL UNIQUE,
           image TEXT,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
+        )`,
+        `CREATE TABLE couriers (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          description TEXT,
+          courier_type TEXT DEFAULT 'external' NOT NULL,
+          is_active BOOLEAN NOT NULL DEFAULT TRUE,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )`,
+        `CREATE TABLE delivery_persons (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          phone TEXT NOT NULL,
+          email TEXT,
+          address TEXT,
+          city TEXT,
+          area TEXT,
+          status TEXT DEFAULT 'active' NOT NULL,
+          current_orders INTEGER DEFAULT 0 NOT NULL,
+          total_orders INTEGER DEFAULT 0 NOT NULL,
+          rating DECIMAL(3, 2) DEFAULT 5.00,
+          profile_image TEXT,
+          notes TEXT,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )`
+      ];
 
+      // Execute independent table creation queries in parallel
+      await Promise.all(tableQueries.map(query => pool.query(query)));
+
+      // Create dependent tables in sequence (respecting foreign key dependencies)
+      // Products depends on categories
       await pool.query(`
         CREATE TABLE products (
           id SERIAL PRIMARY KEY,
@@ -232,38 +276,7 @@ async function seedDatabase() {
         )
       `);
 
-      await pool.query(`
-        CREATE TABLE couriers (
-          id SERIAL PRIMARY KEY,
-          name TEXT NOT NULL,
-          description TEXT,
-          courier_type TEXT DEFAULT 'external' NOT NULL,
-          is_active BOOLEAN NOT NULL DEFAULT TRUE,
-          created_at TIMESTAMP DEFAULT NOW(),
-          updated_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
-
-      await pool.query(`
-        CREATE TABLE delivery_persons (
-          id SERIAL PRIMARY KEY,
-          name TEXT NOT NULL,
-          phone TEXT NOT NULL,
-          email TEXT,
-          address TEXT,
-          city TEXT,
-          area TEXT,
-          status TEXT DEFAULT 'active' NOT NULL,
-          current_orders INTEGER DEFAULT 0 NOT NULL,
-          total_orders INTEGER DEFAULT 0 NOT NULL,
-          rating DECIMAL(3, 2) DEFAULT 5.00,
-          profile_image TEXT,
-          notes TEXT,
-          created_at TIMESTAMP DEFAULT NOW(),
-          updated_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
-
+      // Orders depends on users, couriers, and delivery_persons
       await pool.query(`
         CREATE TABLE orders (
           id SERIAL PRIMARY KEY,
@@ -290,19 +303,17 @@ async function seedDatabase() {
         )
       `);
 
-      await pool.query(`
-        CREATE TABLE order_items (
+      // These tables depend on orders
+      const orderDependentTables = [
+        `CREATE TABLE order_items (
           id SERIAL PRIMARY KEY,
           order_id INTEGER REFERENCES orders(id),
           product_id INTEGER REFERENCES products(id),
           quantity INTEGER NOT NULL,
           price DECIMAL(10, 2) NOT NULL,
           created_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
-
-      await pool.query(`
-        CREATE TABLE courier_tracking (
+        )`,
+        `CREATE TABLE courier_tracking (
           id SERIAL PRIMARY KEY,
           order_id INTEGER REFERENCES orders(id),
           courier_id INTEGER REFERENCES couriers(id),
@@ -312,9 +323,13 @@ async function seedDatabase() {
           location TEXT,
           timestamp TIMESTAMP DEFAULT NOW(),
           created_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
+        )`
+      ];
 
+      // Execute order-dependent table creation queries in parallel
+      await Promise.all(orderDependentTables.map(query => pool.query(query)));
+
+      // Store locations table (independent)
       await pool.query(`
         CREATE TABLE store_locations (
           id SERIAL PRIMARY KEY,
@@ -341,15 +356,42 @@ async function seedDatabase() {
     // Insert sample data
     console.log('Inserting sample data...');
     try {
-      // Insert categories using Drizzle ORM
-      console.log('Inserting categories...');
-      for (const category of categoriesSeed) {
-        await db.insert(schema.categories).values(category);
+      // Helper function to insert data with progress tracking
+      async function insertData(tableName, schemaTable, data, transformFn = null) {
+        console.log(`Inserting ${data.length} records into ${tableName}...`);
+        const startTime = Date.now();
+
+        // If transformFn is provided, use it to transform the data before insertion
+        if (transformFn) {
+          const promises = data.map(async (item) => {
+            try {
+              const transformedItem = await transformFn(item);
+              if (transformedItem) {
+                await db.insert(schemaTable).values(transformedItem);
+              }
+            } catch (error) {
+              console.error(`Error inserting into ${tableName}:`, error);
+            }
+          });
+
+          await Promise.all(promises);
+        } else {
+          // Batch insert for better performance
+          const batchSize = 50;
+          for (let i = 0; i < data.length; i += batchSize) {
+            const batch = data.slice(i, i + batchSize);
+            await Promise.all(batch.map(item => db.insert(schemaTable).values(item).catch(error => {
+              console.error(`Error inserting into ${tableName}:`, error);
+            })));
+          }
+        }
+
+        const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+        console.log(`✓ Completed inserting ${data.length} records into ${tableName} in ${duration}s`);
       }
 
-      // Insert users using Drizzle ORM with password hashing
-      console.log('Inserting users...');
-      for (const user of usersSeed) {
+      // Transform function for users to handle password hashing
+      async function transformUser(user) {
         try {
           // Check if user already exists
           const existingUser = await db
@@ -360,14 +402,14 @@ async function seedDatabase() {
 
           if (existingUser && existingUser.length > 0) {
             console.log(`User ${user.email} already exists, skipping...`);
-            continue;
+            return null;
           }
 
           // Hash the password
           const hashedPassword = await bcrypt.hash(user.password, 10);
 
           // Create user object with hashed password - don't specify ID
-          const userToInsert = {
+          return {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
@@ -380,50 +422,35 @@ async function seedDatabase() {
             region: user.region || null,
             role: user.role
           };
-
-          console.log(`Inserting user: ${user.email}`);
-          await db.insert(schema.users).values(userToInsert);
         } catch (error) {
-          console.error(`Error inserting user ${user.email}:`, error);
-          // Continue with other users even if one fails
+          console.error(`Error processing user ${user.email}:`, error);
+          return null;
         }
       }
 
-      // Insert products using Drizzle ORM
-      console.log('Inserting products...');
-      for (const product of productsSeed) {
-        await db.insert(schema.products).values(product);
-      }
+      // Insert independent tables in parallel
+      await Promise.all([
+        insertData('categories', schema.categories, categoriesSeed),
+        insertData('users', schema.users, usersSeed, transformUser),
+        insertData('files', schema.files, filesSeed),
+        insertData('couriers', schema.couriers, couriersSeed),
+        insertData('delivery_persons', schema.deliveryPersons, deliveryPersonsSeed),
+        insertData('store_locations', schema.storeLocations, storeLocationsSeed)
+      ]);
 
-      // Insert couriers using Drizzle ORM
-      console.log('Inserting couriers...');
-      for (const courier of couriersSeed) {
-        await db.insert(schema.couriers).values(courier);
-      }
-
-      // Insert files using Drizzle ORM
-      console.log('Inserting files...');
-      for (const file of filesSeed) {
-        await db.insert(schema.files).values(file);
-      }
-
-      // Insert store locations using Drizzle ORM
-      console.log('Inserting store locations...');
-      for (const location of storeLocationsSeed) {
-        await db.insert(schema.storeLocations).values(location);
-      }
-
-      // Insert delivery persons using Drizzle ORM
-      console.log('Inserting delivery persons...');
-      for (const person of deliveryPersonsSeed) {
-        await db.insert(schema.deliveryPersons).values(person);
-      }
+      // Insert dependent tables in sequence
+      await insertData('products', schema.products, productsSeed);
     } catch (error) {
       console.error('Error inserting sample data:', error);
       throw error;
     }
 
+    // Calculate execution time
+    const endTime = Date.now();
+    const totalDuration = ((endTime - startTime) / 1000).toFixed(2);
+
     console.log('Database seeding completed successfully!');
+    console.log(`Total execution time: ${totalDuration} seconds`);
     console.log('Stats:');
     console.log(`  Products: ${productsSeed.length}`);
     console.log(`  Categories: ${categoriesSeed.length}`);
@@ -438,7 +465,7 @@ async function seedDatabase() {
 
     return {
       success: true,
-      message: 'Database seeded successfully with independent table data!',
+      message: `Database seeded successfully in ${totalDuration}s!`,
       stats: {
         products: productsSeed.length,
         categories: categoriesSeed.length,

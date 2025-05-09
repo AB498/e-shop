@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
 
 const TableContext = createContext(null);
 
@@ -13,11 +13,15 @@ export function TableProvider({
   serverSide = false,
   isLoading = false,
 }) {
+  // Calculate initial pageCount
+  const initialPageSize = initialState.pageSize || 10;
+  const initialPageCount = initialState.pageCount || Math.max(1, Math.ceil(data.length / initialPageSize));
+
   // Pagination state
   const [pagination, setPagination] = useState({
     pageIndex: initialState.pageIndex || 0,
-    pageSize: initialState.pageSize || 10,
-    pageCount: initialState.pageCount || Math.ceil(data.length / (initialState.pageSize || 10)),
+    pageSize: initialPageSize,
+    pageCount: initialPageCount,
     ...initialState.pagination,
   });
 
@@ -38,6 +42,28 @@ export function TableProvider({
   // Loading state - use the prop value directly instead of state
   // This ensures the loading state is controlled by the parent component
   const [loadingState, setLoadingState] = useState(false);
+
+  // Update pageCount when data changes
+  useEffect(() => {
+    if (!serverSide) {
+      setPagination(prev => {
+        const newPageCount = Math.max(1, Math.ceil(data.length / prev.pageSize));
+        if (newPageCount !== prev.pageCount) {
+          const newState = {
+            ...prev,
+            pageCount: newPageCount,
+            // Ensure pageIndex is still valid with the new pageCount
+            pageIndex: Math.min(prev.pageIndex, newPageCount - 1)
+          };
+          if (onStateChange) {
+            onStateChange({ ...initialState, pagination: newState });
+          }
+          return newState;
+        }
+        return prev;
+      });
+    }
+  }, [data.length, serverSide, initialState, onStateChange]);
 
   // Computed data (if not server-side)
   const processedData = useMemo(() => {
@@ -90,7 +116,9 @@ export function TableProvider({
   // Pagination handlers
   const goToPage = useCallback((pageIndex) => {
     setPagination(prev => {
-      const newState = { ...prev, pageIndex };
+      // Ensure pageIndex is valid and within bounds
+      const validPageIndex = Math.max(0, Math.min(prev.pageCount - 1, pageIndex));
+      const newState = { ...prev, pageIndex: validPageIndex };
       if (onStateChange) {
         onStateChange({ ...initialState, pagination: newState });
       }
@@ -100,10 +128,12 @@ export function TableProvider({
 
   const setPageSize = useCallback((pageSize) => {
     setPagination(prev => {
+      // Calculate pageCount, ensuring it's at least 1 even when there's no data
+      const pageCount = data.length === 0 ? 1 : Math.ceil(data.length / pageSize);
       const newState = {
         ...prev,
         pageSize,
-        pageCount: Math.ceil(data.length / pageSize),
+        pageCount,
         pageIndex: 0, // Reset to first page when changing page size
       };
       if (onStateChange) {

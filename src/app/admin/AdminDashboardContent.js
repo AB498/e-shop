@@ -51,6 +51,8 @@ import ChartCard from './components/ChartCard';
 import RecentOrdersCard from './components/RecentOrdersCard';
 import AlertCard from './components/AlertCard';
 import DonutChart from './components/DonutChart';
+import AdminCard from './components/AdminCard';
+import DashboardHeader from './components/DashboardHeader';
 
 export default function AdminDashboardContent() {
   const [dashboardData, setDashboardData] = useState({
@@ -351,8 +353,32 @@ export default function AdminDashboardContent() {
   return (
     <div className="py-6 bg-gray-50 min-h-screen">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Dashboard Header */}
+        <DashboardHeader onRefresh={() => {
+          setIsLoading(true);
+          // Re-fetch dashboard data
+          const fetchData = async () => {
+            try {
+              // Fetch dashboard stats
+              const statsResponse = await fetch('/api/admin/dashboard-stats');
+              if (!statsResponse.ok) throw new Error('Failed to fetch dashboard stats');
+              const statsData = await statsResponse.json();
+
+              // Update state with new data
+              // ... (similar to the useEffect code)
+              setIsLoading(false);
+            } catch (err) {
+              console.error('Error refreshing dashboard data:', err);
+              setError(err?.message || 'An error occurred while refreshing dashboard data');
+              setIsLoading(false);
+            }
+          };
+
+          fetchData();
+        }} />
+
         {/* Stats Cards */}
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {dashboardData.stats.map((stat, index) => (
             <StatCard
               key={index}
@@ -369,106 +395,176 @@ export default function AdminDashboardContent() {
 
         {/* Charts Section */}
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <ChartCard title="Sales Overview" color="primary" icon={BsGraphUp}>
+          <AdminCard
+            title="Sales Overview"
+            color="primary"
+            icon={BsGraphUp}
+            className="h-full"
+          >
             {dashboardData.salesChartData && dashboardData.salesChartData.datasets && dashboardData.salesChartData.datasets.length > 0 ? (
-              <Line options={salesChartOptions} data={dashboardData.salesChartData} />
+              <div className="h-80">
+                <Line options={salesChartOptions} data={dashboardData.salesChartData} />
+              </div>
             ) : (
-              <div className="flex items-center justify-center h-full">
+              <div className="flex items-center justify-center h-80">
                 <p className="text-gray-500">No sales data available</p>
               </div>
             )}
-          </ChartCard>
+          </AdminCard>
 
-          <ChartCard title="Category Sales" color="primary" icon={ChartBarIcon}>
+          <AdminCard
+            title="Category Sales"
+            color="primary"
+            icon={ChartBarIcon}
+            className="h-full"
+          >
             {dashboardData.categoryChartData && dashboardData.categoryChartData.datasets && dashboardData.categoryChartData.datasets.length > 0 ? (
-              <DonutChart data={dashboardData.categoryChartData} options={categoryChartOptions} />
+              <div className="h-80">
+                <DonutChart data={dashboardData.categoryChartData} options={categoryChartOptions} />
+              </div>
             ) : (
-              <div className="flex items-center justify-center h-full">
+              <div className="flex items-center justify-center h-80">
                 <p className="text-gray-500">No category data available</p>
               </div>
             )}
-          </ChartCard>
+          </AdminCard>
         </div>
 
         {/* Orders and Inventory Section */}
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Recent Orders */}
-          <RecentOrdersCard
+          <AdminCard
             title="Recent Orders"
-            orders={dashboardData.recentOrders}
-            isLoading={isLoading}
+            icon={ShoppingBagIcon}
+            color="primary"
             footerLink="/admin/orders"
             footerText="View all orders"
-          />
+          >
+            {dashboardData.recentOrders && dashboardData.recentOrders.length > 0 ? (
+              <div className="overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {dashboardData.recentOrders.slice(0, 5).map((order) => (
+                      <tr key={order.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-emerald-600">#{order.id}</td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{order.customer}</td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                            ${order.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                              order.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
+                              order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-gray-100 text-gray-800'}`}>
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">${order.total}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-gray-500">No recent orders</div>
+            )}
+          </AdminCard>
 
           {/* Low Stock Products */}
-          <AlertCard
+          <AdminCard
             title="Low Stock Products"
-            items={dashboardData.lowStockProducts}
             icon={BellAlertIcon}
             color="red"
             footerLink="/admin/products"
             footerText="View all products"
-          />
-        </div>
-
-        {/* Additional Metrics Section - Optional */}
-        <div className="mt-8 mb-8">
-          <div className="relative overflow-hidden rounded-xl bg-white shadow-md">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#006B51] to-[#008B6A]"></div>
-            <div className="p-6">
-              <div className="mb-4 flex items-center">
-                <SparklesIcon className="mr-2 h-5 w-5 text-[#006B51]" />
-                <h3 className="text-lg font-medium text-gray-900 font-['Poppins']">Performance Metrics</h3>
-              </div>
-
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700 font-['Poppins']">Customer Satisfaction</span>
-                      <span className="text-sm font-medium text-[#006B51] font-['Poppins']">92%</span>
+          >
+            {dashboardData.lowStockProducts && dashboardData.lowStockProducts.length > 0 ? (
+              <div className="space-y-4">
+                {dashboardData.lowStockProducts.slice(0, 5).map((item, index) => (
+                  <div key={index} className="rounded-lg bg-gray-50 p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <div className="font-medium text-gray-800">{item.name}</div>
+                      <div className="rounded-full px-2 py-1 text-xs font-semibold text-red-600 bg-red-100">
+                        {item.value}
+                      </div>
                     </div>
                     <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#006B51] to-[#008B6A] rounded-full" style={{ width: '92%' }}></div>
+                      <div
+                        className={`h-full ${item.value <= item.threshold ? 'bg-red-500' : 'bg-yellow-500'}`}
+                        style={{ width: `${Math.min(100, (item.value / item.max) * 100)}%` }}
+                      ></div>
+                    </div>
+                    <div className="mt-2 text-xs text-gray-500">
+                      Threshold: {item.threshold}
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-gray-500">No low stock products</div>
+            )}
+          </AdminCard>
+        </div>
 
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700 font-['Poppins']">Order Fulfillment</span>
-                      <span className="text-sm font-medium text-[#006B51] font-['Poppins']">87%</span>
-                    </div>
-                    <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#006B51] to-[#008B6A] rounded-full" style={{ width: '87%' }}></div>
-                    </div>
+        {/* Additional Metrics Section */}
+        <div className="mt-8 mb-8">
+          <AdminCard
+            title="Performance Metrics"
+            icon={SparklesIcon}
+            color="primary"
+          >
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Customer Satisfaction</span>
+                    <span className="text-sm font-medium text-[#006B51]">92%</span>
+                  </div>
+                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#006B51] to-[#008B6A] rounded-full" style={{ width: '92%' }}></div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700 font-['Poppins']">Website Traffic</span>
-                      <span className="text-sm font-medium text-[#006B51] font-['Poppins']">78%</span>
-                    </div>
-                    <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#006B51] to-[#008B6A] rounded-full" style={{ width: '78%' }}></div>
-                    </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Order Fulfillment</span>
+                    <span className="text-sm font-medium text-[#006B51]">87%</span>
                   </div>
+                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#006B51] to-[#008B6A] rounded-full" style={{ width: '87%' }}></div>
+                  </div>
+                </div>
+              </div>
 
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700 font-['Poppins']">Inventory Turnover</span>
-                      <span className="text-sm font-medium text-[#006B51] font-['Poppins']">65%</span>
-                    </div>
-                    <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#006B51] to-[#008B6A] rounded-full" style={{ width: '65%' }}></div>
-                    </div>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Website Traffic</span>
+                    <span className="text-sm font-medium text-[#006B51]">78%</span>
+                  </div>
+                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#006B51] to-[#008B6A] rounded-full" style={{ width: '78%' }}></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Inventory Turnover</span>
+                    <span className="text-sm font-medium text-[#006B51]">65%</span>
+                  </div>
+                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#006B51] to-[#008B6A] rounded-full" style={{ width: '65%' }}></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </AdminCard>
         </div>
       </div>
     </div>

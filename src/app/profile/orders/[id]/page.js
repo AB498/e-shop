@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
-import Topbar from '@/components/layout/Topbar';
+
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Copyright from '@/components/layout/Copyright';
@@ -117,7 +117,6 @@ export default function OrderDetailsPage() {
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Topbar />
         <Navigation />
         <div className="container mx-auto px-4 py-8 flex-grow flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#006B51]"></div>
@@ -140,7 +139,6 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Topbar />
       <Navigation />
 
       <div className="container mx-auto px-4 py-8">

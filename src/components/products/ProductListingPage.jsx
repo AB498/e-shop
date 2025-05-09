@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import Topbar from '../layout/Topbar';
+
 import Navigation from '../layout/Navigation';
 import ProductBreadcrumb from './ProductBreadcrumb';
 import ProductLeftBarWrapper from './ProductLeftBarWrapper';
@@ -34,7 +34,6 @@ export default async function ProductListingPage({ searchParams }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Topbar />
       <Navigation />
 
       <ProductBreadcrumb categoryId={categoryId} />
