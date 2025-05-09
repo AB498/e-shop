@@ -17,7 +17,7 @@ export async function uploadFile(file) {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    
+
     const command = new PutObjectCommand({
       Bucket: BUCKET_NAME,
       Key: file.name,
@@ -68,16 +68,49 @@ export async function listFiles(prefix = '') {
     const command = new ListObjectsV2Command({
       Bucket: BUCKET_NAME,
       Prefix: prefix,
+      Delimiter: '/',
     });
 
     const response = await s3Client.send(command);
-    return { 
-      success: true, 
+
+    return {
+      success: true,
       files: response.Contents?.map(file => ({
         name: file.Key,
         size: file.Size,
         lastModified: file.LastModified,
-      })) || []
+        type: 'file',
+      })) || [],
+      prefixes: response.CommonPrefixes?.map(prefix => ({
+        name: prefix.Prefix,
+        type: 'directory',
+      })) || [],
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+// Get the directory structure of the bucket
+export async function getDirectoryStructure(prefix = '') {
+  try {
+    const { success, files, prefixes, error } = await listFiles(prefix);
+
+    if (!success) {
+      return { success: false, error };
+    }
+
+    // Filter out files that are actually just empty "directory markers"
+    const actualFiles = files.filter(file => {
+      // Skip files that end with '/' as they are directory markers
+      return !file.name.endsWith('/') || file.size > 0;
+    });
+
+    return {
+      success: true,
+      path: prefix,
+      directories: prefixes,
+      files: actualFiles,
     };
   } catch (error) {
     return { success: false, error: error.message };
@@ -99,4 +132,21 @@ export async function uploadFromBuffer(buffer, fileName, contentType) {
   } catch (error) {
     return { success: false, error: error.message };
   }
+}
+
+// Get file type based on file extension
+export function getFileType(fileName) {
+  const extension = fileName.split('.').pop().toLowerCase();
+
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp', 'ico'];
+  const documentExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf', 'csv'];
+  const videoExtensions = ['mp4', 'webm', 'mov', 'avi', 'wmv', 'flv', 'mkv'];
+  const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac'];
+
+  if (imageExtensions.includes(extension)) return 'image';
+  if (documentExtensions.includes(extension)) return 'document';
+  if (videoExtensions.includes(extension)) return 'video';
+  if (audioExtensions.includes(extension)) return 'audio';
+
+  return 'other';
 }

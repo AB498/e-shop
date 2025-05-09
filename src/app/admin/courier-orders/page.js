@@ -11,7 +11,11 @@ import {
   XCircleIcon,
   ClockIcon,
   EyeIcon,
+  UserGroupIcon,
+  ArrowUpCircleIcon,
 } from '@heroicons/react/24/outline';
+import AssignDeliveryPersonModal from './AssignDeliveryPersonModal';
+import UpdateDeliveryStatusModal from './UpdateDeliveryStatusModal';
 
 export default function CourierOrdersPage() {
   const { data: session, status } = useSession();
@@ -20,6 +24,10 @@ export default function CourierOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [filterType, setFilterType] = useState('all'); // 'all', 'internal', 'external'
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState(null);
 
   // Check authentication and redirect if not admin
   useEffect(() => {
@@ -114,14 +122,48 @@ export default function CourierOrdersPage() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Pathao Courier Orders</h1>
-        <button
-          onClick={fetchCourierOrders}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
+        <h1 className="text-2xl font-bold text-gray-900">Courier Orders</h1>
+        <div className="flex items-center space-x-4">
+          <div className="flex rounded-md shadow-sm">
+            <button
+              onClick={() => setFilterType('all')}
+              className={`px-4 py-2 text-sm font-medium rounded-l-md ${
+                filterType === 'all'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50'
+              } border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setFilterType('internal')}
+              className={`px-4 py-2 text-sm font-medium ${
+                filterType === 'internal'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50'
+              } border-t border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+            >
+              Internal
+            </button>
+            <button
+              onClick={() => setFilterType('external')}
+              className={`px-4 py-2 text-sm font-medium rounded-r-md ${
+                filterType === 'external'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50'
+              } border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+            >
+              External
+            </button>
+          </div>
+          <button
+            onClick={fetchCourierOrders}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -141,13 +183,22 @@ export default function CourierOrdersPage() {
           <TruckIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900">No courier orders found</h3>
           <p className="mt-1 text-sm text-gray-500">
-            There are no Pathao courier orders in the system yet.
+            There are no courier orders in the system yet.
           </p>
         </div>
       ) : (
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul className="divide-y divide-gray-200">
-            {orders.map((order) => (
+            {orders
+              .filter(order => {
+                if (filterType === 'all') return true;
+
+                // Get courier type from the order's courier
+                const courierType = order.courier_type || 'external';
+
+                return filterType === courierType;
+              })
+              .map((order) => (
               <li key={order.id}>
                 <div className="px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
@@ -158,6 +209,13 @@ export default function CourierOrdersPage() {
                       <p className="ml-2 text-sm text-gray-500 truncate">
                         (ID: {order.courier_order_id})
                       </p>
+                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        order.courier_type === 'internal'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        {order.courier_type === 'internal' ? 'Internal' : 'External'}
+                      </span>
                     </div>
                     <div className="ml-2 flex-shrink-0 flex">
                       <StatusBadge status={order.courier_status} />
@@ -189,6 +247,11 @@ export default function CourierOrdersPage() {
                           <span className="font-medium">Tracking ID:</span> {order.courier_tracking_id}
                         </p>
                       )}
+                      {order.delivery_person_name && (
+                        <p className="text-sm text-gray-500">
+                          <span className="font-medium">Delivery Person:</span> {order.delivery_person_name}
+                        </p>
+                      )}
                       {order.shipping_instructions && order.shipping_instructions.includes('Delivery Fee:') && (
                         <p className="text-sm text-gray-500">
                           <span className="font-medium">{order.shipping_instructions}</span>
@@ -196,6 +259,32 @@ export default function CourierOrdersPage() {
                       )}
                     </div>
                     <div className="flex space-x-2">
+                      {order.courier_type === 'internal' && (
+                        <>
+                          <button
+                            onClick={() => {
+                              setCurrentOrder(order);
+                              setShowAssignModal(true);
+                            }}
+                            className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                            title="Assign to delivery person"
+                          >
+                            <UserGroupIcon className="-ml-0.5 mr-1 h-4 w-4" />
+                            Assign
+                          </button>
+                          <button
+                            onClick={() => {
+                              setCurrentOrder(order);
+                              setShowStatusModal(true);
+                            }}
+                            className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            title="Update delivery status"
+                          >
+                            <ArrowUpCircleIcon className="-ml-0.5 mr-1 h-4 w-4" />
+                            Update Status
+                          </button>
+                        </>
+                      )}
                       <button
                         onClick={() => refreshTracking(order.id)}
                         disabled={refreshing}
@@ -219,6 +308,29 @@ export default function CourierOrdersPage() {
             ))}
           </ul>
         </div>
+      )}
+
+      {/* Modals */}
+      {showAssignModal && currentOrder && (
+        <AssignDeliveryPersonModal
+          order={currentOrder}
+          onClose={() => setShowAssignModal(false)}
+          onAssign={() => {
+            setShowAssignModal(false);
+            fetchCourierOrders();
+          }}
+        />
+      )}
+
+      {showStatusModal && currentOrder && (
+        <UpdateDeliveryStatusModal
+          order={currentOrder}
+          onClose={() => setShowStatusModal(false)}
+          onUpdate={() => {
+            setShowStatusModal(false);
+            fetchCourierOrders();
+          }}
+        />
       )}
     </div>
   );

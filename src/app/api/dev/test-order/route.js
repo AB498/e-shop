@@ -105,6 +105,9 @@ export async function POST() {
       shipping_city: testUser.city || 'Dhaka',
       shipping_post_code: testUser.post_code || '1000',
       shipping_phone: shippingPhone,
+      delivery_otp: null,
+      delivery_otp_verified: false,
+      delivery_otp_sent_at: null,
       created_at: new Date(),
       updated_at: new Date()
     };

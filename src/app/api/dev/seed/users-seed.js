@@ -111,6 +111,20 @@ const usersSeed = [
     country: 'Bangladesh',
     region: 'Dhaka Division',
     role: 'admin'
+  },
+  {
+    id: 8,
+    first_name: 'AB',
+    last_name: 'CD',
+    email: 'abcd49800@gmail.com',
+    password: 'Password123!',
+    phone: '+8801827829617',
+    address: '505 Support Ave',
+    city: 'Dhaka',
+    post_code: '1000',
+    country: 'Bangladesh',
+    region: 'Dhaka Division',
+    role: 'customer'
   }
 ];
 

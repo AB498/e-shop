@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MagnifyingGlassIcon, FunnelIcon, EyeIcon, TruckIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, FunnelIcon, EyeIcon, TruckIcon, ArrowPathIcon, UserGroupIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
+import AssignDeliveryPersonModal from './AssignDeliveryPersonModal';
 
 export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,6 +16,8 @@ export default function OrdersPage() {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [isCreatingCourier, setIsCreatingCourier] = useState(false);
   const [updatedOrderId, setUpdatedOrderId] = useState(null);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [orderToAssign, setOrderToAssign] = useState(null);
 
   // Fetch orders data
   useEffect(() => {
@@ -160,6 +163,20 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
         orderToUpdate.isProcessingCourier = false;
       }
     }
+  };
+
+  // Handle opening the assign delivery person modal
+  const handleAssignDeliveryPerson = (order) => {
+    setOrderToAssign(order);
+    setShowAssignModal(true);
+  };
+
+  // Handle successful assignment
+  const handleAssignmentComplete = () => {
+    setShowAssignModal(false);
+    setOrderToAssign(null);
+    // Refresh the orders list
+    setUpdatedOrderId(Date.now()); // Use timestamp to force refresh
   };
 
   return (
@@ -323,18 +340,31 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {order.courier_id ? (
                         <div>
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                            ${order.courier_status === 'delivered' ? 'bg-green-100 text-green-800' :
-                              order.courier_status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
-                              order.courier_status === 'cancelled' || order.courier_status === 'returned' ? 'bg-red-100 text-red-800' :
-                              'bg-yellow-100 text-yellow-800'}`}>
-                            {order.courier_status ?
-                              (typeof order.courier_status === 'string' ?
-                                order.courier_status.replace('_', ' ').charAt(0).toUpperCase() +
-                                order.courier_status.replace('_', ' ').slice(1) :
-                                'Pending') :
-                              'Pending'}
-                          </span>
+                          <div className="flex items-center space-x-1 mb-1">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                              ${order.courier_status === 'delivered' ? 'bg-green-100 text-green-800' :
+                                order.courier_status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
+                                order.courier_status === 'cancelled' || order.courier_status === 'returned' ? 'bg-red-100 text-red-800' :
+                                'bg-yellow-100 text-yellow-800'}`}>
+                              {order.courier_status ?
+                                (typeof order.courier_status === 'string' ?
+                                  order.courier_status.replace('_', ' ').charAt(0).toUpperCase() +
+                                  order.courier_status.replace('_', ' ').slice(1) :
+                                  'Pending') :
+                                'Pending'}
+                            </span>
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                              ${order.courier_type === 'internal' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}`}>
+                              {order.courier_type === 'internal' ? 'Internal' : 'External'}
+                            </span>
+                          </div>
+
+                          {order.courier_type === 'internal' && order.delivery_person_name && (
+                            <div className="text-xs text-gray-700 mt-1">
+                              <span className="font-medium">Delivery Person:</span> {order.delivery_person_name}
+                            </div>
+                          )}
+
                           {order.courier_tracking_id && (
                             <div className="text-xs text-gray-500 mt-1">
                               ID: {order.courier_tracking_id}
@@ -356,18 +386,28 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                           <EyeIcon className="h-5 w-5" />
                         </button>
                         {order.status !== 'delivered' && order.status !== 'cancelled' && !order.courier_id && (
-                          <button
-                            onClick={() => handleCreateCourierOrder(order.id)}
-                            className="text-blue-600 hover:text-blue-900"
-                            title="Auto-Order Courier"
-                            disabled={order.isProcessingCourier || isLoading}
-                          >
-                            {order.isProcessingCourier ? (
-                              <ArrowPathIcon className="h-5 w-5 animate-spin" />
-                            ) : (
-                              <TruckIcon className="h-5 w-5" />
-                            )}
-                          </button>
+                          <>
+                            <button
+                              onClick={() => handleCreateCourierOrder(order.id)}
+                              className="text-blue-600 hover:text-blue-900"
+                              title="Auto-Order External Courier"
+                              disabled={order.isProcessingCourier || isLoading}
+                            >
+                              {order.isProcessingCourier ? (
+                                <ArrowPathIcon className="h-5 w-5 animate-spin" />
+                              ) : (
+                                <TruckIcon className="h-5 w-5" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => handleAssignDeliveryPerson(order)}
+                              className="text-emerald-600 hover:text-emerald-900"
+                              title="Assign Internal Delivery Person"
+                              disabled={isLoading}
+                            >
+                              <UserGroupIcon className="h-5 w-5" />
+                            </button>
+                          </>
                         )}
                       </div>
                     </td>
@@ -437,18 +477,41 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                             <dt className="text-sm font-medium text-gray-500">Courier Information</dt>
                             <dd className="mt-1 text-sm text-gray-900">
                               <div className="flex flex-col space-y-2">
-                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full w-fit
-                                  ${selectedOrder.courier_status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                    selectedOrder.courier_status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
-                                    selectedOrder.courier_status === 'cancelled' || selectedOrder.courier_status === 'returned' ? 'bg-red-100 text-red-800' :
-                                    'bg-yellow-100 text-yellow-800'}`}>
-                                  Status: {selectedOrder.courier_status ?
-                                    (typeof selectedOrder.courier_status === 'string' ?
-                                      selectedOrder.courier_status.replace('_', ' ').charAt(0).toUpperCase() +
-                                      selectedOrder.courier_status.replace('_', ' ').slice(1) :
-                                      'Pending') :
-                                    'Pending'}
-                                </span>
+                                <div className="flex flex-wrap gap-2">
+                                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    ${selectedOrder.courier_status === 'delivered' ? 'bg-green-100 text-green-800' :
+                                      selectedOrder.courier_status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
+                                      selectedOrder.courier_status === 'cancelled' || selectedOrder.courier_status === 'returned' ? 'bg-red-100 text-red-800' :
+                                      'bg-yellow-100 text-yellow-800'}`}>
+                                    Status: {selectedOrder.courier_status ?
+                                      (typeof selectedOrder.courier_status === 'string' ?
+                                        selectedOrder.courier_status.replace('_', ' ').charAt(0).toUpperCase() +
+                                        selectedOrder.courier_status.replace('_', ' ').slice(1) :
+                                        'Pending') :
+                                      'Pending'}
+                                  </span>
+                                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    ${selectedOrder.courier_type === 'internal' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}`}>
+                                    Type: {selectedOrder.courier_type === 'internal' ? 'Internal' : 'External'}
+                                  </span>
+                                </div>
+
+                                {selectedOrder.courier_name && (
+                                  <span className="text-sm">Courier: {selectedOrder.courier_name}</span>
+                                )}
+
+                                {selectedOrder.courier_type === 'internal' && selectedOrder.delivery_person_name && (
+                                  <div>
+                                    <span className="text-sm font-medium">Delivery Person:</span>
+                                    <div className="ml-2">
+                                      <div className="text-sm">{selectedOrder.delivery_person_name}</div>
+                                      {selectedOrder.delivery_person_phone && (
+                                        <div className="text-sm">Phone: {selectedOrder.delivery_person_phone}</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+
                                 {selectedOrder.courier_tracking_id && (
                                   <span className="text-sm">Tracking ID: {selectedOrder.courier_tracking_id}</span>
                                 )}
@@ -514,31 +577,64 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                         </div>
                       )}
 
+                      {/* OTP Verification Link */}
+                      {selectedOrder.delivery_person_id && selectedOrder.courier_type === 'internal' && !selectedOrder.delivery_otp_verified && (
+                        <div className="mt-6">
+                          <h4 className="text-sm font-medium text-gray-500">Delivery Verification</h4>
+                          <div className="mt-2">
+                            <p className="text-sm text-gray-600 mb-2">
+                              Share this link with the delivery person to verify the delivery using OTP:
+                            </p>
+                            <a
+                              href={`/delivery?orderId=${selectedOrder.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                              <ClipboardDocumentCheckIcon className="-ml-1 mr-2 h-4 w-4" />
+                              Open OTP Verification Page
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Create Courier Order */}
                       {selectedOrder.status !== 'delivered' && selectedOrder.status !== 'cancelled' && !selectedOrder.courier_id && (
                         <div className="mt-6">
                           <h4 className="text-sm font-medium text-gray-500">Courier Service</h4>
                           <div className="mt-2">
-                            <button
-                              onClick={() => {
-                                handleCreateCourierOrder(selectedOrder.id);
-                                setShowOrderDetails(false);
-                              }}
-                              disabled={isCreatingCourier}
-                              className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
-                            >
-                              {isCreatingCourier ? (
-                                <>
-                                  <ArrowPathIcon className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                                  Creating Courier Order...
-                                </>
-                              ) : (
-                                <>
-                                  <TruckIcon className="-ml-1 mr-2 h-4 w-4" />
-                                  Auto-Order Courier
-                                </>
-                              )}
-                            </button>
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => {
+                                  handleCreateCourierOrder(selectedOrder.id);
+                                  setShowOrderDetails(false);
+                                }}
+                                disabled={isCreatingCourier}
+                                className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                              >
+                                {isCreatingCourier ? (
+                                  <>
+                                    <ArrowPathIcon className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                                    Creating Courier Order...
+                                  </>
+                                ) : (
+                                  <>
+                                    <TruckIcon className="-ml-1 mr-2 h-4 w-4" />
+                                    Auto-Order External Courier
+                                  </>
+                                )}
+                              </button>
+                              <button
+                                onClick={() => {
+                                  handleAssignDeliveryPerson(selectedOrder);
+                                  setShowOrderDetails(false);
+                                }}
+                                className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                              >
+                                <UserGroupIcon className="-ml-1 mr-2 h-4 w-4" />
+                                Assign Internal Delivery
+                              </button>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -558,6 +654,15 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
             </div>
           </div>
         </div>
+      )}
+
+      {/* Assign Delivery Person Modal */}
+      {showAssignModal && orderToAssign && (
+        <AssignDeliveryPersonModal
+          order={orderToAssign}
+          onClose={() => setShowAssignModal(false)}
+          onAssign={handleAssignmentComplete}
+        />
       )}
     </div>
   );

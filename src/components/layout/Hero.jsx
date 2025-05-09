@@ -9,8 +9,8 @@ const Hero = () => {
                 alt="Thai Bangla Background"
                 className=" w-full h-full object-contain opacity-90"
             />
-            <div className="absolute top-1/2 left-[5%] flex flex-col h-1/2 pt-3">
-                {/* Subtitle with shape */}
+            <div className="absolute top-1/2 w-1/2 left-[5%] flex flex-col h-1/2 pt-3 break-words">
+            {/* Subtitle with shape */}
                 <div className="flex items-center mb-3 max-w-[520px]">
                     <img
                         src="/images/hero/shape2.png"

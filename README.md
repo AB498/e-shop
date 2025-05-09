@@ -2,7 +2,28 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ installed
+- PostgreSQL database running
+- `.env` file with `DATABASE_URL` environment variable set
+
+### Database Setup
+
+Before running the application, you need to set up the database. You can do this in two ways:
+
+1. **Using the Dev UI:**
+   - Start the development server: `npm run dev`
+   - Navigate to the Dev UI at [http://localhost:3000/dev](http://localhost:3000/dev)
+   - Use the Database Seeder component to seed the database
+
+2. **Using the Terminal Script:**
+   - Run the database seeding script: `npm run seed`
+   - This will create all necessary tables and populate them with sample data
+
+### Running the Development Server
+
+After setting up the database, run the development server:
 
 ```bash
 npm run dev

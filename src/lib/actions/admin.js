@@ -1,8 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { orders, orderItems, products, users, categories } from '@/db/schema';
-import { eq, desc, sql, and, gte, lte } from 'drizzle-orm';
+import { orders, orderItems, products, users, categories, couriers, deliveryPersons } from '@/db/schema';
+import { eq, desc, sql, and, gte, lte, inArray } from 'drizzle-orm';
 
 /**
  * Get dashboard statistics
@@ -520,12 +520,55 @@ export async function getAllOrders() {
         shippingPhone: orders.shipping_phone,
         shippingInstructions: orders.shipping_instructions,
         courierId: orders.courier_id,
+        deliveryPersonId: orders.delivery_person_id,
         courierOrderId: orders.courier_order_id,
         courierTrackingId: orders.courier_tracking_id,
         courierStatus: orders.courier_status
       })
       .from(orders)
       .orderBy(desc(orders.created_at));
+
+    // Get courier information for orders with couriers
+    const courierIds = ordersData.filter(order => order.courierId).map(order => order.courierId);
+    let couriersData = [];
+
+    if (courierIds.length > 0) {
+      couriersData = await db
+        .select({
+          id: couriers.id,
+          name: couriers.name,
+          courierType: couriers.courier_type
+        })
+        .from(couriers)
+        .where(inArray(couriers.id, courierIds));
+    }
+
+    // Create a map of courier id to courier data for quick lookup
+    const courierMap = couriersData.reduce((map, courier) => {
+      map[courier.id] = courier;
+      return map;
+    }, {});
+
+    // Get delivery person information for orders with delivery persons
+    const deliveryPersonIds = ordersData.filter(order => order.deliveryPersonId).map(order => order.deliveryPersonId);
+    let deliveryPersonsData = [];
+
+    if (deliveryPersonIds.length > 0) {
+      deliveryPersonsData = await db
+        .select({
+          id: deliveryPersons.id,
+          name: deliveryPersons.name,
+          phone: deliveryPersons.phone
+        })
+        .from(deliveryPersons)
+        .where(inArray(deliveryPersons.id, deliveryPersonIds));
+    }
+
+    // Create a map of delivery person id to delivery person data for quick lookup
+    const deliveryPersonMap = deliveryPersonsData.reduce((map, person) => {
+      map[person.id] = person;
+      return map;
+    }, {});
 
     // Get customer names for each order
     const ordersWithCustomers = await Promise.all(
@@ -551,6 +594,14 @@ export async function getAllOrders() {
 
         const itemsCount = itemsResult[0]?.count || 0;
 
+        // Get courier information if available
+        const courier = order.courierId ? courierMap[order.courierId] : null;
+        const courierType = courier ? courier.courierType : null;
+        const courierName = courier ? courier.name : null;
+
+        // Get delivery person information if available
+        const deliveryPerson = order.deliveryPersonId ? deliveryPersonMap[order.deliveryPersonId] : null;
+
         return {
           id: order.id,
           customer,
@@ -566,6 +617,11 @@ export async function getAllOrders() {
           shippingPhone: order.shippingPhone,
           shippingInstructions: order.shippingInstructions,
           courier_id: order.courierId,
+          courier_name: courierName,
+          courier_type: courierType,
+          delivery_person_id: order.deliveryPersonId,
+          delivery_person_name: deliveryPerson ? deliveryPerson.name : null,
+          delivery_person_phone: deliveryPerson ? deliveryPerson.phone : null,
           courier_order_id: order.courierOrderId,
           courier_tracking_id: order.courierTrackingId,
           courier_status: order.courierStatus

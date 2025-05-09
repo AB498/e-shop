@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import { PhotoIcon } from '@heroicons/react/24/outline';
 
 export default function EditCategoryModal({ isOpen, onClose, onSubmit, category }) {
   const [formData, setFormData] = useState({
@@ -11,6 +13,9 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   // Update form data when category changes
   useEffect(() => {
@@ -20,6 +25,7 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
         slug: category.slug || '',
         image: category.image || '',
       });
+      setImagePreview(category.image || null);
     }
   }, [category]);
 
@@ -33,7 +39,7 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
 
     // Auto-generate slug from name if slug field is empty or if name is changed and slug matches the old name
     if (name === 'name' && (
-      !formData.slug || 
+      !formData.slug ||
       (category && formData.slug === category.slug)
     )) {
       const slug = value
@@ -45,6 +51,53 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
         slug,
       }));
     }
+
+    // If image URL changes manually, update the preview
+    if (name === 'image' && value) {
+      setImagePreview(value);
+    } else if (name === 'image' && !value) {
+      setImagePreview(null);
+    }
+  };
+
+  // Handle image upload
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    if (!validTypes.includes(file.type)) {
+      setError('Please upload a valid image file (JPEG, PNG, GIF, WEBP, SVG)');
+      return;
+    }
+
+    // Check file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      setError('Image size should be less than 2MB');
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+      setError(null);
+
+      // Create a temporary object URL for preview
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl);
+
+      // Store the file in the form data for later submission
+      setFormData(prev => ({
+        ...prev,
+        imageFile: file,
+        // Keep the existing image URL if any
+        image: prev.image
+      }));
+    } catch (err) {
+      setError(err.message || 'Failed to process image');
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   // Handle form submission
@@ -54,7 +107,34 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
     setError(null);
 
     try {
-      await onSubmit(category.id, formData);
+      // If we have a new image file, upload it first
+      if (formData.imageFile) {
+        // Create form data for upload
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', formData.imageFile);
+        uploadFormData.append('folder', 'categories');
+
+        // Upload the image
+        const response = await fetch('/api/s3-upload', {
+          method: 'POST',
+          body: uploadFormData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to upload image');
+        }
+
+        const data = await response.json();
+
+        // Update form data with the image URL
+        formData.image = data.url;
+      }
+
+      // Remove the imageFile property before submitting
+      const { imageFile, ...submitData } = formData;
+
+      await onSubmit(category.id, submitData);
       onClose();
     } catch (err) {
       setError(err.message || 'Failed to update category');
@@ -121,19 +201,66 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
 
                     <div className="mb-4">
                       <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-                        Image URL
+                        Category Image
                       </label>
-                      <input
-                        type="text"
-                        name="image"
-                        id="image"
-                        value={formData.image}
-                        onChange={handleInputChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                      />
-                      <p className="mt-1 text-xs text-gray-500">
-                        Enter a URL for the category image.
-                      </p>
+
+                      {/* Image Preview */}
+                      {imagePreview && (
+                        <div className="mt-2 relative w-full h-48 border rounded-md overflow-hidden">
+                          <Image
+                            src={imagePreview}
+                            alt="Category preview"
+                            fill
+                            style={{ objectFit: 'contain' }}
+                            unoptimized={true}
+                          />
+                        </div>
+                      )}
+
+                      {/* Image Upload */}
+                      <div className="mt-2">
+                        <div className="flex items-center justify-center w-full">
+                          <label
+                            htmlFor="file-upload-edit"
+                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                          >
+                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                              <PhotoIcon className="w-8 h-8 mb-3 text-gray-400" />
+                              <p className="mb-2 text-sm text-gray-500">
+                                <span className="font-semibold">Click to upload</span> or drag and drop
+                              </p>
+                              <p className="text-xs text-gray-500">PNG, JPG, GIF or WEBP (MAX. 2MB)</p>
+                            </div>
+                            <input
+                              id="file-upload-edit"
+                              type="file"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={handleImageUpload}
+                              ref={fileInputRef}
+                              disabled={uploadingImage}
+                            />
+                          </label>
+                        </div>
+                        {uploadingImage && (
+                          <p className="mt-2 text-sm text-emerald-600">Uploading image...</p>
+                        )}
+                      </div>
+
+                      {/* Manual URL Input */}
+                      <div className="mt-3">
+                        <label htmlFor="image-url-edit" className="block text-xs font-medium text-gray-700">
+                          Or enter image URL manually:
+                        </label>
+                        <input
+                          type="text"
+                          name="image"
+                          id="image-url-edit"
+                          value={formData.image}
+                          onChange={handleInputChange}
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                        />
+                      </div>
                     </div>
                   </form>
                 </div>

@@ -57,6 +57,10 @@ export async function POST(request) {
       shipping_area: body.customer.area,
       shipping_landmark: body.customer.landmark,
       shipping_instructions: body.customer.specialInstructions,
+      // Initialize OTP fields as null since they'll be set when a delivery person is assigned
+      delivery_otp: null,
+      delivery_otp_verified: false,
+      delivery_otp_sent_at: null,
     };
 
     // Log user ID for debugging

@@ -138,6 +138,9 @@ export async function POST() {
           shipping_area TEXT,
           shipping_landmark TEXT,
           shipping_instructions TEXT,
+          delivery_otp TEXT,
+          delivery_otp_verified BOOLEAN DEFAULT FALSE,
+          delivery_otp_sent_at TIMESTAMP,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )
@@ -374,6 +377,9 @@ export async function POST() {
         shipping_area: 'Gulshan',
         shipping_landmark: 'Near City Park',
         shipping_instructions: 'Please call before delivery',
+        delivery_otp: null,
+        delivery_otp_verified: false,
+        delivery_otp_sent_at: null,
         created_at: new Date(),
         updated_at: new Date()
       };

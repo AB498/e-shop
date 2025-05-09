@@ -1,8 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { couriers, orders, courierTracking } from '@/db/schema';
-import { eq, desc, sql, and } from 'drizzle-orm';
+import { couriers, orders, courierTracking, deliveryPersons } from '@/db/schema';
+import { eq, desc, sql, and, isNull } from 'drizzle-orm';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
 import { mapCourierStatusToOrderStatus } from '@/lib/utils/status-mapping';
 
@@ -17,6 +17,7 @@ export async function getAllCouriers() {
         id: couriers.id,
         name: couriers.name,
         description: couriers.description,
+        courier_type: couriers.courier_type,
         is_active: couriers.is_active,
         created_at: couriers.created_at,
         updated_at: couriers.updated_at,
@@ -43,6 +44,7 @@ export async function getCourierById(id) {
         id: couriers.id,
         name: couriers.name,
         description: couriers.description,
+        courier_type: couriers.courier_type,
         is_active: couriers.is_active,
         created_at: couriers.created_at,
         updated_at: couriers.updated_at,
@@ -68,6 +70,7 @@ export async function createCourier(courierData) {
     const result = await db.insert(couriers).values({
       name: courierData.name,
       description: courierData.description,
+      courier_type: courierData.courier_type || 'external',
       is_active: courierData.is_active ?? true,
     }).returning();
 
@@ -90,6 +93,7 @@ export async function updateCourier(id, courierData) {
       .set({
         name: courierData.name,
         description: courierData.description,
+        courier_type: courierData.courier_type,
         is_active: courierData.is_active,
         updated_at: new Date(),
       })
@@ -558,12 +562,46 @@ export async function initializePathaoCourier() {
     const result = await db.insert(couriers).values({
       name: 'Pathao',
       description: 'Pathao Courier Service',
+      courier_type: 'external',
       is_active: true,
     }).returning();
 
     return result.length ? result[0] : null;
   } catch (error) {
     console.error('Error initializing Pathao courier:', error);
+    return null;
+  }
+}
+
+/**
+ * Initialize internal courier in the database
+ * @returns {Promise<object|null>} - Created courier
+ */
+export async function initializeInternalCourier() {
+  try {
+    // Check if internal courier already exists
+    const existingCourier = await db
+      .select({ id: couriers.id })
+      .from(couriers)
+      .where(eq(couriers.name, 'Internal Delivery'))
+      .limit(1);
+
+    if (existingCourier.length) {
+      console.log('Internal courier already exists');
+      return existingCourier[0];
+    }
+
+    // Create internal courier
+    const result = await db.insert(couriers).values({
+      name: 'Internal Delivery',
+      description: 'Our own delivery service',
+      courier_type: 'internal',
+      is_active: true,
+    }).returning();
+
+    return result.length ? result[0] : null;
+  } catch (error) {
+    console.error('Error initializing internal courier:', error);
     return null;
   }
 }

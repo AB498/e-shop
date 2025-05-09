@@ -1,5 +1,6 @@
 'use client'
 import React, { Suspense } from 'react';
+import { usePathname } from 'next/navigation';
 import SidebarClient from './SidebarClient';
 
 // Fallback component to show while SidebarClient is loading
@@ -20,6 +21,12 @@ const SidebarFallback = () => {
 
 // Wrapper component that adds Suspense boundary
 const SidebarWrapper = ({ categories }) => {
+  const pathname = usePathname();
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <Suspense fallback={<SidebarFallback />}>
       <SidebarClient categories={categories} />

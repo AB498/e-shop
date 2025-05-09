@@ -11,6 +11,7 @@ import usersSeed from './users-seed';
 import filesSeed from './files-seed';
 import couriersSeed from './couriers-seed';
 import storeLocationsSeed from './store-locations-seed';
+import deliveryPersonsSeed from './delivery-persons-seed';
 
 export async function POST() {
   try {
@@ -28,6 +29,7 @@ export async function POST() {
       await pool.query('DROP TABLE IF EXISTS orders CASCADE');
       await pool.query('DROP TABLE IF EXISTS products CASCADE');
       await pool.query('DROP TABLE IF EXISTS categories CASCADE');
+      await pool.query('DROP TABLE IF EXISTS delivery_persons CASCADE');
       await pool.query('DROP TABLE IF EXISTS couriers CASCADE');
       await pool.query('DROP TABLE IF EXISTS users CASCADE');
       await pool.query('DROP TABLE IF EXISTS files CASCADE');
@@ -104,7 +106,28 @@ export async function POST() {
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
           description TEXT,
+          courier_type TEXT DEFAULT 'external' NOT NULL,
           is_active BOOLEAN NOT NULL DEFAULT TRUE,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+
+      await pool.query(`
+        CREATE TABLE delivery_persons (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          phone TEXT NOT NULL,
+          email TEXT,
+          address TEXT,
+          city TEXT,
+          area TEXT,
+          status TEXT DEFAULT 'active' NOT NULL,
+          current_orders INTEGER DEFAULT 0 NOT NULL,
+          total_orders INTEGER DEFAULT 0 NOT NULL,
+          rating DECIMAL(3, 2) DEFAULT 5.00,
+          profile_image TEXT,
+          notes TEXT,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )
@@ -117,6 +140,7 @@ export async function POST() {
           status TEXT NOT NULL DEFAULT 'pending',
           total DECIMAL(10, 2) NOT NULL,
           courier_id INTEGER REFERENCES couriers(id),
+          delivery_person_id INTEGER REFERENCES delivery_persons(id),
           courier_order_id TEXT,
           courier_tracking_id TEXT,
           courier_status TEXT,
@@ -255,6 +279,12 @@ export async function POST() {
       for (const location of storeLocationsSeed) {
         await db.insert(schema.storeLocations).values(location);
       }
+
+      // Insert delivery persons using Drizzle ORM
+      console.log('Inserting delivery persons...');
+      for (const person of deliveryPersonsSeed) {
+        await db.insert(schema.deliveryPersons).values(person);
+      }
     } catch (error) {
       console.error('Error inserting sample data:', error);
       throw error;
@@ -271,7 +301,8 @@ export async function POST() {
         users: usersSeed.length,
         files: filesSeed.length,
         couriers: couriersSeed.length,
-        storeLocations: storeLocationsSeed.length
+        storeLocations: storeLocationsSeed.length,
+        deliveryPersons: deliveryPersonsSeed.length
       }
     });
   } catch (error) {

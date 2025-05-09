@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { orders, users, couriers } from '@/db/schema';
+import { orders, users, couriers, deliveryPersons } from '@/db/schema';
 import { eq, isNotNull, inArray } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
@@ -21,6 +21,7 @@ export async function GET() {
         status: orders.status,
         total: orders.total,
         courier_id: orders.courier_id,
+        // Removed delivery_person_id as it might not exist in the database yet
         courier_order_id: orders.courier_order_id,
         courier_tracking_id: orders.courier_tracking_id,
         courier_status: orders.courier_status,
@@ -42,10 +43,13 @@ export async function GET() {
     const orderIds = courierOrders.map(order => order.id);
     const userIds = courierOrders.map(order => order.user_id);
     const courierIds = courierOrders.map(order => order.courier_id);
+    // Since delivery_person_id might not exist in the database yet, we'll skip this part
+    const deliveryPersonIds = [];
 
-    // Initialize empty arrays for user and courier data
+    // Initialize empty arrays for user, courier, and delivery person data
     let usersData = [];
     let couriersData = [];
+    let deliveryPersonsData = [];
 
     // Get user information if there are any users
     if (userIds.length > 0) {
@@ -74,12 +78,31 @@ export async function GET() {
             id: couriers.id,
             name: couriers.name,
             description: couriers.description,
+            courier_type: couriers.courier_type,
           })
           .from(couriers)
           .where(inArray(couriers.id, courierIds));
       } catch (courierError) {
         console.error('Error fetching courier data:', courierError);
         // Continue with empty couriers data
+      }
+    }
+
+    // Get delivery person information if there are any delivery persons
+    if (deliveryPersonIds.length > 0) {
+      try {
+        deliveryPersonsData = await db
+          .select({
+            id: deliveryPersons.id,
+            name: deliveryPersons.name,
+            phone: deliveryPersons.phone,
+            status: deliveryPersons.status,
+          })
+          .from(deliveryPersons)
+          .where(inArray(deliveryPersons.id, deliveryPersonIds));
+      } catch (deliveryPersonError) {
+        console.error('Error fetching delivery person data:', deliveryPersonError);
+        // Continue with empty delivery persons data
       }
     }
 
@@ -94,6 +117,11 @@ export async function GET() {
       courierMap[courier.id] = courier;
     });
 
+    const deliveryPersonMap = {};
+    deliveryPersonsData.forEach(person => {
+      deliveryPersonMap[person.id] = person;
+    });
+
     // Enrich orders with user and courier information
     const enrichedOrders = courierOrders.map(order => ({
       ...order,
@@ -102,6 +130,11 @@ export async function GET() {
         : 'Unknown Customer',
       customer_email: userMap[order.user_id]?.email || 'unknown@example.com',
       courier_name: courierMap[order.courier_id]?.name || 'Unknown Courier',
+      courier_type: courierMap[order.courier_id]?.courier_type || 'external',
+      // Since delivery_person_id might not exist in the database yet, we'll set these to null
+      delivery_person_name: null,
+      delivery_person_phone: null,
+      delivery_person_status: null,
       // Format the courier status for display
       courier_status_display: order.courier_status
         ? order.courier_status.charAt(0).toUpperCase() + order.courier_status.slice(1).replace('_', ' ')

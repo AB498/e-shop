@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, PhotoIcon } from '@heroicons/react/24/outline';
 
 export default function CategoriesTable({ categories, onEdit, onDelete, isLoading }) {
   // Format date to a readable format
@@ -58,18 +58,26 @@ export default function CategoriesTable({ categories, onEdit, onDelete, isLoadin
               categories.map((category) => (
                 <tr key={category.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex-shrink-0 h-10 w-10 relative">
+                    <div className="flex-shrink-0 h-12 w-12 relative">
                       {category.image ? (
-                        <Image
-                          src={category.image}
-                          alt={category.name}
-                          width={40}
-                          height={40}
-                          className="rounded-md object-cover"
-                        />
+                        <>
+                          <img
+                            src={category.image}
+                            alt={category.name}
+                            className="rounded-md object-cover w-12 h-12 border border-gray-200"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.nextElementSibling.style.display = 'flex';
+                            }}
+                            loading="lazy"
+                          />
+                          <div className="hidden h-12 w-12 rounded-md bg-gray-100 items-center justify-center text-gray-500 border border-gray-200">
+                            <PhotoIcon className="h-6 w-6 text-gray-400" />
+                          </div>
+                        </>
                       ) : (
-                        <div className="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center text-gray-500">
-                          No img
+                        <div className="h-12 w-12 rounded-md bg-gray-100 flex items-center justify-center text-gray-500 border border-gray-200">
+                          <PhotoIcon className="h-6 w-6 text-gray-400" />
                         </div>
                       )}
                     </div>

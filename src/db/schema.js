@@ -1,4 +1,4 @@
-const { pgTable, serial, text, timestamp, integer, decimal, boolean, json, jsonb, varchar, pgEnum } = require('drizzle-orm/pg-core')
+import { pgTable, serial, text, timestamp, integer, decimal, boolean, json, jsonb, varchar, pgEnum } from 'drizzle-orm/pg-core'
 
 // Files table for storing uploaded files
 const files = pgTable('files', {
@@ -62,7 +62,27 @@ const couriers = pgTable('couriers', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
   description: text('description'),
+  courier_type: text('courier_type').default('external').notNull(), // 'internal' or 'external'
   is_active: boolean('is_active').default(true).notNull(),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
+// Delivery persons table for internal delivery staff
+const deliveryPersons = pgTable('delivery_persons', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  phone: text('phone').notNull(),
+  email: text('email'),
+  address: text('address'),
+  city: text('city'),
+  area: text('area'),
+  status: text('status').default('active').notNull(), // 'active', 'inactive', 'on_delivery'
+  current_orders: integer('current_orders').default(0).notNull(),
+  total_orders: integer('total_orders').default(0).notNull(),
+  rating: decimal('rating', { precision: 3, scale: 2 }).default('5.00'),
+  profile_image: text('profile_image'),
+  notes: text('notes'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
 })
@@ -74,6 +94,7 @@ const orders = pgTable('orders', {
   status: orderStatusEnum('status').default('pending').notNull(),
   total: decimal('total', { precision: 10, scale: 2 }).notNull(),
   courier_id: integer('courier_id').references(() => couriers.id),
+  delivery_person_id: integer('delivery_person_id').references(() => deliveryPersons.id),
   courier_order_id: text('courier_order_id'),
   courier_tracking_id: text('courier_tracking_id'),
   courier_status: text('courier_status'),
@@ -84,6 +105,9 @@ const orders = pgTable('orders', {
   shipping_area: text('shipping_area'),
   shipping_landmark: text('shipping_landmark'),
   shipping_instructions: text('shipping_instructions'),
+  delivery_otp: text('delivery_otp'),
+  delivery_otp_verified: boolean('delivery_otp_verified').default(false),
+  delivery_otp_sent_at: timestamp('delivery_otp_sent_at'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
 })
@@ -139,6 +163,7 @@ export {
   couriers,
   courierTracking,
   storeLocations,
+  deliveryPersons,
   userRoleEnum,
   orderStatusEnum
 }

@@ -27,6 +27,8 @@ export default function AdminLayout({ children }) {
     { name: 'Products', href: '/admin/products', icon: TagIcon },
     { name: 'Categories', href: '/admin/categories', icon: TagIcon },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingBagIcon },
+    { name: 'Courier Management', href: '/admin/couriers', icon: TruckIcon },
+    { name: 'Delivery Persons', href: '/admin/delivery-persons', icon: UserGroupIcon },
     { name: 'Courier Orders', href: '/admin/courier-orders', icon: TruckIcon },
     { name: 'Store Locations', href: '/admin/store-locations', icon: TruckIcon },
     { name: 'Customers', href: '/admin/customers', icon: UserGroupIcon },
