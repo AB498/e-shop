@@ -1,50 +1,53 @@
 'use client';
 
-import { 
-  EyeIcon, 
-  TruckIcon, 
-  ArrowPathIcon, 
-  UserGroupIcon 
+import {
+  EyeIcon,
+  TruckIcon,
+  ArrowPathIcon,
+  UserGroupIcon,
+  CreditCardIcon
 } from '@heroicons/react/24/outline';
 import Table from '@/components/ui/table';
 
-export default function OrdersTable({ 
-  orders, 
-  isLoading, 
-  onViewOrder, 
-  onCreateCourierOrder, 
-  onAssignDeliveryPerson 
+export default function OrdersTable({
+  orders,
+  isLoading,
+  onViewOrder,
+  onCreateCourierOrder,
+  onAssignDeliveryPerson,
+  onShowPaymentPage,
+  internalCourierEnabled = true
 }) {
   // Define table columns
   const columns = [
-    { 
-      key: 'id', 
-      label: 'Order ID', 
+    {
+      key: 'id',
+      label: 'Order ID',
       sortable: true,
       render: (order) => (
         <div className="text-sm font-medium text-blue-600">#{order.id}</div>
       )
     },
-    { 
-      key: 'customer', 
-      label: 'Customer', 
+    {
+      key: 'customer',
+      label: 'Customer',
       sortable: true,
       render: (order) => (
         <div className="text-sm text-gray-900">{order.customer}</div>
       )
     },
-    { 
-      key: 'date', 
-      label: 'Date', 
+    {
+      key: 'date',
+      label: 'Date',
       sortable: true,
       responsive: 'md',
       render: (order) => (
         <div className="text-sm text-gray-500">{order.date}</div>
       )
     },
-    { 
-      key: 'status', 
-      label: 'Status', 
+    {
+      key: 'status',
+      label: 'Status',
       sortable: true,
       render: (order) => (
         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -56,26 +59,26 @@ export default function OrdersTable({
         </span>
       )
     },
-    { 
-      key: 'total', 
-      label: 'Total', 
+    {
+      key: 'total',
+      label: 'Total',
       sortable: true,
       render: (order) => (
         <div className="text-sm text-gray-900">{order.total}</div>
       )
     },
-    { 
-      key: 'itemsCount', 
-      label: 'Items', 
+    {
+      key: 'itemsCount',
+      label: 'Items',
       sortable: true,
       responsive: 'lg',
       render: (order) => (
         <div className="text-sm text-gray-900">{order.itemsCount}</div>
       )
     },
-    { 
-      key: 'courier', 
-      label: 'Courier', 
+    {
+      key: 'courier',
+      label: 'Courier',
       sortable: true,
       render: (order) => (
         order.courier_id ? (
@@ -142,14 +145,26 @@ export default function OrdersTable({
                   <TruckIcon className="h-5 w-5" />
                 )}
               </button>
-              <button
-                onClick={() => onAssignDeliveryPerson(order)}
-                className="text-emerald-600 hover:text-emerald-900"
-                title="Assign Internal Delivery Person"
-              >
-                <UserGroupIcon className="h-5 w-5" />
-              </button>
+              {/* Only show the Assign Internal Delivery Person button if internal courier is enabled */}
+              {internalCourierEnabled && (
+                <button
+                  onClick={() => onAssignDeliveryPerson(order)}
+                  className="text-emerald-600 hover:text-emerald-900"
+                  title="Assign Internal Delivery Person"
+                >
+                  <UserGroupIcon className="h-5 w-5" />
+                </button>
+              )}
             </>
+          )}
+          {order.status.toLowerCase() === 'pending' && (
+            <button
+              onClick={() => onShowPaymentPage(order.id)}
+              className="text-amber-600 hover:text-amber-900"
+              title="Show Payment Page"
+            >
+              <CreditCardIcon className="h-5 w-5" />
+            </button>
           )}
         </div>
       )

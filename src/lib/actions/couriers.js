@@ -596,7 +596,7 @@ export async function initializeInternalCourier() {
       name: 'Internal Delivery',
       description: 'Our own delivery service',
       courier_type: 'internal',
-      is_active: true,
+      is_active: false, // Disabled by default as per requirements
     }).returning();
 
     return result.length ? result[0] : null;

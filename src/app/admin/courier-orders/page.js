@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { isInternalCourierActive } from '@/lib/actions/admin';
 import AssignDeliveryPersonModal from './AssignDeliveryPersonModal';
 import UpdateDeliveryStatusModal from './UpdateDeliveryStatusModal';
 import CourierOrdersTable from './CourierOrdersTable';
@@ -19,6 +20,7 @@ export default function CourierOrdersPage() {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
+  const [internalCourierEnabled, setInternalCourierEnabled] = useState(true);
 
   // Fetch courier orders
   const fetchCourierOrders = async () => {
@@ -67,6 +69,22 @@ export default function CourierOrdersPage() {
     }
   };
 
+  // Check if internal courier system is active
+  useEffect(() => {
+    async function checkInternalCourier() {
+      try {
+        const isActive = await isInternalCourierActive();
+        setInternalCourierEnabled(isActive);
+      } catch (err) {
+        console.error('Error checking internal courier status:', err);
+        // Default to true in case of error to avoid breaking functionality
+        setInternalCourierEnabled(true);
+      }
+    }
+
+    checkInternalCourier();
+  }, []);
+
   // Initial fetch
   useEffect(() => {
     fetchCourierOrders();
@@ -98,11 +116,13 @@ export default function CourierOrdersPage() {
               All
             </button>
             <button
-              onClick={() => setFilterType('internal')}
+              onClick={() => internalCourierEnabled && setFilterType('internal')}
               className={`px-4 py-2 text-sm font-medium ${filterType === 'internal'
                   ? 'bg-indigo-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-50'
-                } border-t border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                } border-t border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${!internalCourierEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={!internalCourierEnabled}
+              title={!internalCourierEnabled ? 'Internal courier system is disabled' : 'Show internal courier orders'}
             >
               Internal
             </button>
@@ -147,6 +167,7 @@ export default function CourierOrdersPage() {
           setCurrentOrder(order);
           setShowStatusModal(true);
         }}
+        internalCourierEnabled={internalCourierEnabled}
       />
 
       {/* Modals */}

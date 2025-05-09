@@ -166,6 +166,7 @@ async function seedDatabase() {
     try {
       // Drop tables in reverse order of dependencies using direct pool queries
       const dropQueries = [
+        'DROP TABLE IF EXISTS payment_transactions CASCADE',
         'DROP TABLE IF EXISTS wishlist_items CASCADE',
         'DROP TABLE IF EXISTS store_locations CASCADE',
         'DROP TABLE IF EXISTS courier_tracking CASCADE',
@@ -361,6 +362,37 @@ async function seedDatabase() {
           created_at TIMESTAMP DEFAULT NOW()
         )
       `);
+
+      // Payment transactions table (depends on orders)
+      await pool.query(`
+        CREATE TABLE payment_transactions (
+          id SERIAL PRIMARY KEY,
+          order_id INTEGER REFERENCES orders(id),
+          transaction_id TEXT NOT NULL,
+          val_id TEXT,
+          amount DECIMAL(10, 2) NOT NULL,
+          status TEXT NOT NULL,
+          currency TEXT NOT NULL,
+          tran_date TIMESTAMP,
+          card_type TEXT,
+          card_no TEXT,
+          bank_tran_id TEXT,
+          card_issuer TEXT,
+          card_brand TEXT,
+          card_issuer_country TEXT,
+          card_issuer_country_code TEXT,
+          store_amount DECIMAL(10, 2),
+          verify_sign TEXT,
+          verify_key TEXT,
+          risk_level TEXT,
+          risk_title TEXT,
+          payment_method TEXT,
+          gateway_url TEXT,
+          response_data JSONB,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
     } catch (error) {
       console.error('Error creating schema:', error);
       throw error;
@@ -476,6 +508,7 @@ async function seedDatabase() {
     console.log(`  Store Locations: ${storeLocationsSeed.length}`);
     console.log(`  Delivery Persons: ${deliveryPersonsSeed.length}`);
     console.log(`  Wishlist Items: ${wishlistItemsSeed.length}`);
+    console.log(`  Payment Transactions: 0 (table created but no seed data)`);
 
     // Close the database connection
     await pool.end();
@@ -491,7 +524,8 @@ async function seedDatabase() {
         couriers: couriersSeed.length,
         storeLocations: storeLocationsSeed.length,
         deliveryPersons: deliveryPersonsSeed.length,
-        wishlistItems: wishlistItemsSeed.length
+        wishlistItems: wishlistItemsSeed.length,
+        paymentTransactions: 0
       }
     };
   } catch (error) {

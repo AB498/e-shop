@@ -679,3 +679,28 @@ export async function updateOrderStatus(orderId, status) {
     return null;
   }
 }
+
+/**
+ * Check if the internal courier system is active
+ * @returns {Promise<boolean>} - True if internal courier is active, false otherwise
+ */
+export async function isInternalCourierActive() {
+  try {
+    const internalCourier = await db
+      .select({
+        is_active: couriers.is_active
+      })
+      .from(couriers)
+      .where(and(
+        eq(couriers.name, 'Internal Delivery'),
+        eq(couriers.courier_type, 'internal')
+      ))
+      .limit(1);
+
+    // Return true if internal courier exists and is active, false otherwise
+    return internalCourier.length > 0 && internalCourier[0].is_active;
+  } catch (error) {
+    console.error('Error checking internal courier status:', error);
+    return false;
+  }
+}

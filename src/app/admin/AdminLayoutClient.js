@@ -17,9 +17,10 @@ import {
   ArrowLeftIcon,
   PhotoIcon,
   MapPinIcon,
-  ArchiveBoxIcon
+  ArchiveBoxIcon,
+  CurrencyDollarIcon
 } from "@heroicons/react/24/outline";
-import { FiPackage, FiTruck, FiShoppingCart, FiUsers, FiSettings } from "react-icons/fi";
+import { FiPackage, FiTruck, FiShoppingCart, FiUsers, FiSettings, FiDollarSign } from "react-icons/fi";
 
 // Icon mapping object
 const iconComponents = {
@@ -31,7 +32,8 @@ const iconComponents = {
   TruckIcon,
   PhotoIcon,
   MapPinIcon,
-  ArchiveBoxIcon
+  ArchiveBoxIcon,
+  CurrencyDollarIcon
 };
 
 // Custom icon mapping object
@@ -40,7 +42,8 @@ const customIconComponents = {
   FiTruck: () => <FiTruck className="w-5 h-5" />,
   FiShoppingCart: () => <FiShoppingCart className="w-5 h-5" />,
   FiUsers: () => <FiUsers className="w-5 h-5" />,
-  FiSettings: () => <FiSettings className="w-5 h-5" />
+  FiSettings: () => <FiSettings className="w-5 h-5" />,
+  FiDollarSign: () => <FiDollarSign className="w-5 h-5" />
 };
 
 export default function AdminLayoutClient({

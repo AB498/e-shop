@@ -44,7 +44,8 @@ export default function CourierOrdersTable({
   onRefreshTracking,
   onAssignDeliveryPerson,
   onUpdateStatus,
-  filterType = 'all'
+  filterType = 'all',
+  internalCourierEnabled = true
 }) {
   // Filter orders based on courier type
   const filteredOrders = orders ? orders.filter(order => {
@@ -143,7 +144,8 @@ export default function CourierOrdersTable({
       label: 'Actions',
       render: (order) => (
         <div className="flex items-center justify-end space-x-2">
-          {order.courier_type === 'internal' && (
+          {/* Only show internal delivery actions if internal courier is enabled and this is an internal courier order */}
+          {internalCourierEnabled && order.courier_type === 'internal' && (
             <>
               <button
                 onClick={() => onAssignDeliveryPerson(order)}

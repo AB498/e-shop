@@ -11,7 +11,7 @@ const couriersSeed = [
     name: 'Internal Delivery',
     description: 'Our own delivery service - Managed by our internal team',
     courier_type: 'internal',
-    is_active: true,
+    is_active: false, // Disabled by default as per requirements
     created_at: new Date(),
     updated_at: new Date(),
   }

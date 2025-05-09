@@ -1,7 +1,7 @@
 import React from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getDashboardStats } from "@/lib/actions/admin";
+import { getDashboardStats, isInternalCourierActive } from "@/lib/actions/admin";
 import AdminLayoutClient from "./AdminLayoutClient";
 
 export default async function AdminLayout({ children }) {
@@ -10,6 +10,9 @@ export default async function AdminLayout({ children }) {
 
   // Fetch notification count and other dashboard stats
   const dashboardStats = await getDashboardStats();
+
+  // Check if internal courier system is active
+  const internalCourierEnabled = await isInternalCourierActive();
 
   // Get pending orders count for notifications
   const pendingOrdersCount = dashboardStats?.pendingOrdersCount || 0;
@@ -53,12 +56,13 @@ export default async function AdminLayout({ children }) {
       iconName: 'TruckIcon',
       customIconName: 'FiTruck'
     },
-    {
+    // Only show Delivery Persons navigation item if internal courier is active
+    ...(internalCourierEnabled ? [{
       name: 'Delivery Persons',
       href: '/admin/delivery-persons',
       iconName: 'UserGroupIcon',
       customIconName: 'FiUsers'
-    },
+    }] : []),
     {
       name: 'Courier Orders',
       href: '/admin/courier-orders',
@@ -85,6 +89,12 @@ export default async function AdminLayout({ children }) {
       name: 'Analytics',
       href: '/admin/analytics',
       iconName: 'ChartBarIcon'
+    },
+    {
+      name: 'Payments',
+      href: '/admin/payments',
+      iconName: 'CurrencyDollarIcon',
+      customIconName: 'FiDollarSign'
     },
     {
       name: 'Settings',

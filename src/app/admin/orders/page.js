@@ -6,8 +6,11 @@ import {
   ArrowPathIcon,
   ClipboardDocumentCheckIcon,
   TruckIcon,
-  UserGroupIcon
+  UserGroupIcon,
+  CreditCardIcon
 } from '@heroicons/react/24/outline';
+import { initializePaymentForAdmin } from '@/lib/actions/payment';
+import { isInternalCourierActive } from '@/lib/actions/admin';
 import AssignDeliveryPersonModal from './AssignDeliveryPersonModal';
 import OrdersTable from './OrdersTable';
 import { createAutomaticCourierOrder } from '@/lib/services/auto-courier';
@@ -26,6 +29,25 @@ export default function OrdersPage() {
   const [updatedOrderId, setUpdatedOrderId] = useState(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [orderToAssign, setOrderToAssign] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentOrderId, setPaymentOrderId] = useState(null);
+  const [internalCourierEnabled, setInternalCourierEnabled] = useState(true);
+
+  // Check if internal courier system is active
+  useEffect(() => {
+    async function checkInternalCourier() {
+      try {
+        const isActive = await isInternalCourierActive();
+        setInternalCourierEnabled(isActive);
+      } catch (err) {
+        console.error('Error checking internal courier status:', err);
+        // Default to true in case of error to avoid breaking functionality
+        setInternalCourierEnabled(true);
+      }
+    }
+
+    checkInternalCourier();
+  }, []);
 
   // Fetch orders data
   useEffect(() => {
@@ -174,6 +196,48 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
     setUpdatedOrderId(Date.now()); // Use timestamp to force refresh
   };
 
+  // Handle showing payment page
+  const handleShowPaymentPage = async (orderId) => {
+    try {
+      setPaymentOrderId(orderId);
+      setShowPaymentModal(true);
+    } catch (err) {
+      console.error('Error preparing payment page:', err);
+      setError(err.message);
+    }
+  };
+
+  // Handle payment initialization
+  const handleInitializePayment = async () => {
+    if (!paymentOrderId) return;
+
+    try {
+      setError(null);
+      console.log('Initializing payment for order ID:', paymentOrderId);
+
+      // Use the server action to initialize payment
+      const result = await initializePaymentForAdmin(paymentOrderId);
+      console.log('Payment initialization result:', result);
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      // Redirect to payment gateway
+      if (result.redirectUrl) {
+        console.log('Redirecting to payment gateway:', result.redirectUrl);
+        window.open(result.redirectUrl, '_blank');
+        setShowPaymentModal(false);
+      } else {
+        throw new Error('No redirect URL received from payment gateway');
+      }
+    } catch (err) {
+      console.error('Payment initialization error:', err);
+      setError(err.message);
+      alert(`Payment initialization failed: ${err.message}`);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="sm:flex sm:items-center sm:justify-between">
@@ -251,6 +315,8 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
           onViewOrder={handleViewOrder}
           onCreateCourierOrder={handleCreateCourierOrder}
           onAssignDeliveryPerson={handleAssignDeliveryPerson}
+          onShowPaymentPage={handleShowPaymentPage}
+          internalCourierEnabled={internalCourierEnabled}
         />
       </div>
 
@@ -459,17 +525,39 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                                   </>
                                 )}
                               </button>
-                              <button
-                                onClick={() => {
-                                  handleAssignDeliveryPerson(selectedOrder);
-                                  setShowOrderDetails(false);
-                                }}
-                                className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-                              >
-                                <UserGroupIcon className="-ml-1 mr-2 h-4 w-4" />
-                                Assign Internal Delivery
-                              </button>
+                              {/* Only show the Assign Internal Delivery button if internal courier is enabled */}
+                              {internalCourierEnabled && (
+                                <button
+                                  onClick={() => {
+                                    handleAssignDeliveryPerson(selectedOrder);
+                                    setShowOrderDetails(false);
+                                  }}
+                                  className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                                >
+                                  <UserGroupIcon className="-ml-1 mr-2 h-4 w-4" />
+                                  Assign Internal Delivery
+                                </button>
+                              )}
                             </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Payment Option */}
+                      {selectedOrder.status.toLowerCase() === 'pending' && (
+                        <div className="mt-6">
+                          <h4 className="text-sm font-medium text-gray-500">Payment</h4>
+                          <div className="mt-2">
+                            <button
+                              onClick={() => {
+                                handleShowPaymentPage(selectedOrder.id);
+                                setShowOrderDetails(false);
+                              }}
+                              className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            >
+                              <CreditCardIcon className="-ml-1 mr-2 h-4 w-4" />
+                              Show Payment Page
+                            </button>
                           </div>
                         </div>
                       )}
@@ -498,6 +586,53 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
           onClose={() => setShowAssignModal(false)}
           onAssign={handleAssignmentComplete}
         />
+      )}
+
+      {/* Payment Modal */}
+      {showPaymentModal && paymentOrderId && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={() => setShowPaymentModal(false)}></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <CreditCardIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />
+                  </div>
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      Process Payment for Order #{paymentOrderId}
+                    </h3>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        This will open the payment gateway in a new tab. The customer can use this page to complete their payment.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  onClick={handleInitializePayment}
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Open Payment Page
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowPaymentModal(false)}
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

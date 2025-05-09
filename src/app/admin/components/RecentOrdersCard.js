@@ -31,7 +31,7 @@ export default function RecentOrdersCard({
       <div className="px-4 py-5 sm:px-6 bg-white border-b border-gray-100">
         <div className="flex items-center">
           <ShoppingBagIcon className="mr-2 h-5 w-5 text-[#006B51]" />
-          <h3 className="text-lg font-medium leading-6 text-gray-900 font-['Poppins']">{title}</h3>
+          <h3 className="text-lg font-medium leading-6 text-gray-900 ">{title}</h3>
         </div>
       </div>
 
@@ -120,7 +120,7 @@ export default function RecentOrdersCard({
           <div className="text-sm">
             <Link
               href={footerLink}
-              className="font-medium text-[#006B51] hover:text-[#008B6A] transition-colors duration-150 font-['Poppins']"
+              className="font-medium text-[#006B51] hover:text-[#008B6A] transition-colors duration-150 "
             >
               {footerText}
             </Link>

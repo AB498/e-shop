@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { orders } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { createAutomaticCourierOrder } from '@/lib/services/auto-courier';
+import { storePaymentTransaction } from '@/lib/actions/payments';
 
 // Common handler function for both GET and POST requests
 async function handlePaymentSuccess(request, isPost = false) {
@@ -158,6 +159,37 @@ async function handlePaymentSuccess(request, isPost = false) {
         // VALID / FAILED / CANCELLED
         if (validationData.status !== 'VALID' && validationData.status !== 'VALIDATED') {
           console.error('Payment validation failed:', validationData);
+
+          // Store the failed transaction data
+          try {
+            await storePaymentTransaction({
+              order_id: parseInt(orderId),
+              transaction_id: validationData.tran_id || 'unknown',
+              val_id: validationData.val_id || valId,
+              amount: validationData.amount || 0,
+              status: validationData.status || 'FAILED',
+              currency: validationData.currency || 'BDT',
+              tran_date: validationData.tran_date,
+              card_type: validationData.card_type,
+              card_no: validationData.card_no,
+              bank_tran_id: validationData.bank_tran_id,
+              card_issuer: validationData.card_issuer,
+              card_brand: validationData.card_brand,
+              card_issuer_country: validationData.card_issuer_country,
+              card_issuer_country_code: validationData.card_issuer_country_code,
+              store_amount: validationData.store_amount,
+              verify_sign: validationData.verify_sign,
+              verify_key: validationData.verify_key,
+              risk_level: validationData.risk_level,
+              risk_title: validationData.risk_title,
+              payment_method: validationData.card_type,
+              response_data: validationData,
+            });
+            console.log('Failed transaction data stored successfully');
+          } catch (storeError) {
+            console.error('Error storing failed transaction data:', storeError);
+          }
+
           try {
             const errorRedirectUrl = `${baseUrl}/payment/error?message=Payment validation failed`;
             // Validate the URL before redirecting
@@ -168,6 +200,37 @@ async function handlePaymentSuccess(request, isPost = false) {
             // Fallback to a hardcoded URL if there's an issue
             return NextResponse.redirect(`${baseUrl}/payment/error?message=Payment validation failed`, { status: 303 });
           }
+        }
+
+        // Store the successful transaction data
+        try {
+          await storePaymentTransaction({
+            order_id: parseInt(orderId),
+            transaction_id: validationData.tran_id,
+            val_id: validationData.val_id,
+            amount: validationData.amount,
+            status: validationData.status,
+            currency: validationData.currency,
+            tran_date: validationData.tran_date,
+            card_type: validationData.card_type,
+            card_no: validationData.card_no,
+            bank_tran_id: validationData.bank_tran_id,
+            card_issuer: validationData.card_issuer,
+            card_brand: validationData.card_brand,
+            card_issuer_country: validationData.card_issuer_country,
+            card_issuer_country_code: validationData.card_issuer_country_code,
+            store_amount: validationData.store_amount,
+            verify_sign: validationData.verify_sign,
+            verify_key: validationData.verify_key,
+            risk_level: validationData.risk_level,
+            risk_title: validationData.risk_title,
+            payment_method: validationData.card_type,
+            response_data: validationData,
+          });
+          console.log('Transaction data stored successfully');
+        } catch (storeError) {
+          console.error('Error storing transaction data:', storeError);
+          // Continue anyway, as we still want to show the success page
         }
       } catch (validationError) {
         console.error('Error validating payment:', validationError);

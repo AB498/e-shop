@@ -161,6 +161,35 @@ const wishlistItems = pgTable('wishlist_items', {
   created_at: timestamp('created_at').defaultNow(),
 })
 
+// Payment transactions table for SSLCommerz
+const paymentTransactions = pgTable('payment_transactions', {
+  id: serial('id').primaryKey(),
+  order_id: integer('order_id').references(() => orders.id),
+  transaction_id: text('transaction_id').notNull(),
+  val_id: text('val_id'),
+  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+  status: text('status').notNull(),
+  currency: text('currency').notNull(),
+  tran_date: timestamp('tran_date'),
+  card_type: text('card_type'),
+  card_no: text('card_no'),
+  bank_tran_id: text('bank_tran_id'),
+  card_issuer: text('card_issuer'),
+  card_brand: text('card_brand'),
+  card_issuer_country: text('card_issuer_country'),
+  card_issuer_country_code: text('card_issuer_country_code'),
+  store_amount: decimal('store_amount', { precision: 10, scale: 2 }),
+  verify_sign: text('verify_sign'),
+  verify_key: text('verify_key'),
+  risk_level: text('risk_level'),
+  risk_title: text('risk_title'),
+  payment_method: text('payment_method'),
+  gateway_url: text('gateway_url'),
+  response_data: jsonb('response_data'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
 export {
   files,
   users,
@@ -173,6 +202,7 @@ export {
   storeLocations,
   deliveryPersons,
   wishlistItems,
+  paymentTransactions,
   userRoleEnum,
   orderStatusEnum
 }
