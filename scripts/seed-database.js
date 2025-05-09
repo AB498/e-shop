@@ -148,7 +148,8 @@ async function seedDatabase() {
       filesSeed,
       couriersSeed,
       storeLocationsSeed,
-      deliveryPersonsSeed
+      deliveryPersonsSeed,
+      wishlistItemsSeed
     ] = await Promise.all([
       importSeedData('categories-seed.js'),
       importSeedData('products-seed.js'),
@@ -156,7 +157,8 @@ async function seedDatabase() {
       importSeedData('files-seed.js'),
       importSeedData('couriers-seed.js'),
       importSeedData('store-locations-seed.js'),
-      importSeedData('delivery-persons-seed.js')
+      importSeedData('delivery-persons-seed.js'),
+      importSeedData('wishlist-seed.js')
     ]);
 
     // Drop existing tables if they exist (for clean seeding)
@@ -164,6 +166,7 @@ async function seedDatabase() {
     try {
       // Drop tables in reverse order of dependencies using direct pool queries
       const dropQueries = [
+        'DROP TABLE IF EXISTS wishlist_items CASCADE',
         'DROP TABLE IF EXISTS store_locations CASCADE',
         'DROP TABLE IF EXISTS courier_tracking CASCADE',
         'DROP TABLE IF EXISTS order_items CASCADE',
@@ -348,6 +351,16 @@ async function seedDatabase() {
           updated_at TIMESTAMP DEFAULT NOW()
         )
       `);
+
+      // Wishlist items table (depends on users and products)
+      await pool.query(`
+        CREATE TABLE wishlist_items (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id) NOT NULL,
+          product_id INTEGER REFERENCES products(id) NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
     } catch (error) {
       console.error('Error creating schema:', error);
       throw error;
@@ -440,6 +453,9 @@ async function seedDatabase() {
 
       // Insert dependent tables in sequence
       await insertData('products', schema.products, productsSeed);
+
+      // Insert wishlist items after products and users are inserted
+      await insertData('wishlist_items', schema.wishlistItems, wishlistItemsSeed);
     } catch (error) {
       console.error('Error inserting sample data:', error);
       throw error;
@@ -459,6 +475,7 @@ async function seedDatabase() {
     console.log(`  Couriers: ${couriersSeed.length}`);
     console.log(`  Store Locations: ${storeLocationsSeed.length}`);
     console.log(`  Delivery Persons: ${deliveryPersonsSeed.length}`);
+    console.log(`  Wishlist Items: ${wishlistItemsSeed.length}`);
 
     // Close the database connection
     await pool.end();
@@ -473,7 +490,8 @@ async function seedDatabase() {
         files: filesSeed.length,
         couriers: couriersSeed.length,
         storeLocations: storeLocationsSeed.length,
-        deliveryPersons: deliveryPersonsSeed.length
+        deliveryPersons: deliveryPersonsSeed.length,
+        wishlistItems: wishlistItemsSeed.length
       }
     };
   } catch (error) {

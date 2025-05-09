@@ -3,11 +3,17 @@ import React from 'react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { toast } from 'react-hot-toast';
 
 const ProductInfo = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(product?.defaultSize || '60g');
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+  // Check if product is in wishlist
+  const productInWishlist = isInWishlist(product?.id);
 
   // Handle quantity change
   const decreaseQuantity = () => {
@@ -144,6 +150,7 @@ const ProductInfo = ({ product }) => {
                 size: selectedSize
               };
               addToCart(cartItem, quantity);
+              toast.success('Added to cart');
             }}
             className={`${
               product?.stock > 0
@@ -158,6 +165,40 @@ const ProductInfo = ({ product }) => {
               <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             Add to cart
+          </button>
+
+          <button
+            onClick={() => {
+              if (productInWishlist) {
+                removeFromWishlist(product.id).then(result => {
+                  if (result.success) {
+                    toast.success('Removed from wishlist');
+                  } else {
+                    toast.error(result.message || 'Failed to remove from wishlist');
+                  }
+                });
+              } else {
+                addToWishlist(product).then(result => {
+                  if (result.success) {
+                    toast.success('Added to wishlist');
+                  } else {
+                    toast.error(result.message || 'Failed to add to wishlist');
+                  }
+                });
+              }
+            }}
+            className={`border ${productInWishlist ? 'border-[#006B51] bg-[#F0F7F5]' : 'border-[#ECECEC]'} rounded-[40px] px-4 flex items-center justify-center hover:bg-[#F0F7F5] transition-colors`}
+          >
+            <Image
+              src={productInWishlist ? "/images/popup/wishlist-icon.svg" : "/images/products/wishlist-icon.png"}
+              alt="Wishlist"
+              width={24}
+              height={24}
+              className="mr-2"
+            />
+            <span className={`font-semibold ${productInWishlist ? 'text-[#006B51]' : 'text-[#7E7E7E]'}`}>
+              {productInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
+            </span>
           </button>
         </div>
       </div>

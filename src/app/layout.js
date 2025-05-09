@@ -4,6 +4,8 @@ import Sidebar from "../components/layout/Sidebar";
 import AuthProvider from "../components/layout/AuthProvider";
 import SessionProvider from "../components/providers/SessionProvider";
 import { CartProvider } from "../context/CartContext";
+import { WishlistProvider } from "../context/WishlistContext";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,15 +36,18 @@ export default function RootLayout({ children }) {
         </style>
         <SessionProvider>
           <CartProvider>
-            <div className="flex w-full relative">
-              <div className="flex-none translate-0 relative z-10">
-                <Sidebar />
+            <WishlistProvider>
+              <div className="flex w-full relative">
+                <div className="flex-none translate-0 relative z-10">
+                  <Sidebar />
+                </div>
+                <div className="z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
+                  <AuthProvider />
+                  {children}
+                </div>
               </div>
-              <div className="z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
-                <AuthProvider />
-                {children}
-              </div>
-            </div>
+              <Toaster position="top-center" />
+            </WishlistProvider>
           </CartProvider>
         </SessionProvider>
       </body>

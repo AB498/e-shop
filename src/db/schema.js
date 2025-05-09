@@ -153,6 +153,14 @@ const storeLocations = pgTable('store_locations', {
   updated_at: timestamp('updated_at').defaultNow(),
 })
 
+// Wishlist items table
+const wishlistItems = pgTable('wishlist_items', {
+  id: serial('id').primaryKey(),
+  user_id: integer('user_id').references(() => users.id).notNull(),
+  product_id: integer('product_id').references(() => products.id).notNull(),
+  created_at: timestamp('created_at').defaultNow(),
+})
+
 export {
   files,
   users,
@@ -164,6 +172,7 @@ export {
   courierTracking,
   storeLocations,
   deliveryPersons,
+  wishlistItems,
   userRoleEnum,
   orderStatusEnum
 }

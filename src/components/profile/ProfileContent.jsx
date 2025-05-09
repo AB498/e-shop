@@ -4,11 +4,15 @@ import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getUserOrders } from '@/lib/actions/orders';
+import { useWishlist } from '@/context/WishlistContext';
+import WishlistItem from '@/components/wishlist/WishlistItem';
+import EmptyWishlist from '@/components/wishlist/EmptyWishlist';
 
 const ProfileContent = ({ user, defaultTab = 'account' }) => {
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { wishlist, wishlistCount, isLoading: isWishlistLoading } = useWishlist();
 
   // Fetch user orders when the component mounts or when the user changes
   useEffect(() => {
@@ -257,17 +261,54 @@ const ProfileContent = ({ user, defaultTab = 'account' }) => {
 
           {activeTab === 'wishlist' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-[#253D4E]">My Wishlist</h2>
-
-              <div className="bg-gray-50 p-8 rounded-md text-center">
-                <p className="text-[#7E7E7E] mb-4">Your wishlist is empty.</p>
-                <Link
-                  href="/products"
-                  className="bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors inline-block"
-                >
-                  Discover Products
-                </Link>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                <h2 className="text-2xl font-bold text-[#253D4E] mb-4 md:mb-0">
+                  My Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+                </h2>
+                {wishlistCount > 0 && (
+                  <Link
+                    href="/wishlist"
+                    className="text-[#006B51] hover:text-[#005541] transition-colors inline-flex items-center gap-2 text-sm font-medium"
+                  >
+                    <span>View Full Wishlist</span>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </Link>
+                )}
               </div>
+
+              {isWishlistLoading ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="w-12 h-12 border-4 border-[#006B51] border-t-transparent rounded-full animate-spin"></div>
+                  <p className="mt-4 text-[#7E7E7E]">Loading your wishlist...</p>
+                </div>
+              ) : wishlist.length === 0 ? (
+                <EmptyWishlist />
+              ) : (
+                <div>
+                  <div className="w-full h-px bg-[#EEEEEE] mb-6"></div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {wishlist.slice(0, 6).map((item) => (
+                      <WishlistItem key={item.id} item={item} />
+                    ))}
+                  </div>
+
+                  {wishlist.length > 6 && (
+                    <div className="mt-6 text-center">
+                      <Link
+                        href="/wishlist"
+                        className="bg-[#006B51] text-white px-6 py-3 rounded-md hover:bg-[#005541] transition-colors inline-flex items-center justify-center gap-2"
+                      >
+                        <span>View All {wishlist.length} Items</span>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

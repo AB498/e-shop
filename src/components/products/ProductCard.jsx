@@ -3,10 +3,16 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { toast } from 'react-hot-toast';
 
 const ProductCard = ({ product, showAddToCart = true }) => {
   const { id, name, price, image, category, discountPrice } = product;
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+  // Check if product is in wishlist
+  const productInWishlist = isInWishlist(id);
 
   // Calculate discount percentage
   const discountPercentage = Math.round((1 - (parseFloat(discountPrice) / parseFloat(price))) * 100);
@@ -35,13 +41,40 @@ const ProductCard = ({ product, showAddToCart = true }) => {
         )}
 
         <div className="absolute top-2 right-2">
-          <Image
-            src="/images/products/wishlist-icon.png"
-            alt="Wishlist"
-            width={24}
-            height={24}
-            className="cursor-pointer hover:opacity-80 transition-opacity"
-          />
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (productInWishlist) {
+                removeFromWishlist(id).then(result => {
+                  if (result.success) {
+                    toast.success('Removed from wishlist');
+                  } else {
+                    toast.error(result.message || 'Failed to remove from wishlist');
+                  }
+                });
+              } else {
+                addToWishlist(product).then(result => {
+                  if (result.success) {
+                    toast.success('Added to wishlist');
+                  } else {
+                    toast.error(result.message || 'Failed to add to wishlist');
+                  }
+                });
+              }
+            }}
+            className="bg-white rounded-full p-1 shadow-sm hover:shadow-md transition-all"
+          >
+            <Image
+              src={productInWishlist
+                ? "/images/popup/wishlist-icon.svg"
+                : "/images/products/wishlist-icon.png"}
+              alt="Wishlist"
+              width={24}
+              height={24}
+              className={`cursor-pointer transition-opacity ${productInWishlist ? 'filter-none' : 'opacity-70 hover:opacity-100'}`}
+            />
+          </button>
         </div>
       </div>
 

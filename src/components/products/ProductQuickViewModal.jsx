@@ -3,6 +3,8 @@ import React from 'react';
 import Image from 'next/image';
 import { useProductQuickView } from '@/context/ProductQuickViewContext';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { toast } from 'react-hot-toast';
 
 const ProductQuickViewModal = () => {
   const {
@@ -17,6 +19,10 @@ const ProductQuickViewModal = () => {
   } = useProductQuickView();
 
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+  // Check if product is in wishlist
+  const productInWishlist = product ? isInWishlist(product.id) : false;
 
   if (!isOpen || !product) return null;
 
@@ -140,9 +146,30 @@ const ProductQuickViewModal = () => {
 
                 {/* Wishlist and Share buttons */}
                 <div className="flex flex-wrap gap-3 md:gap-4 mt-4">
-                  <button className="flex items-center justify-center gap-2 border border-[#B1AEA9] rounded-full py-3 px-4 md:px-6 font-bold tracking-wider text-sm md:text-base flex-1 md:flex-none">
+                  <button
+                    onClick={() => {
+                      if (productInWishlist) {
+                        removeFromWishlist(product.id).then(result => {
+                          if (result.success) {
+                            toast.success('Removed from wishlist');
+                          } else {
+                            toast.error(result.message || 'Failed to remove from wishlist');
+                          }
+                        });
+                      } else {
+                        addToWishlist(product).then(result => {
+                          if (result.success) {
+                            toast.success('Added to wishlist');
+                          } else {
+                            toast.error(result.message || 'Failed to add to wishlist');
+                          }
+                        });
+                      }
+                    }}
+                    className={`flex items-center justify-center gap-2 border ${productInWishlist ? 'border-[#006B51] bg-[#F0F7F5]' : 'border-[#B1AEA9]'} rounded-full py-3 px-4 md:px-6 font-bold tracking-wider text-sm md:text-base flex-1 md:flex-none`}
+                  >
                     <img src="/images/popup/wishlist-icon.svg" alt="Wishlist" className="w-5 h-5 md:w-6 md:h-6" />
-                    Wishlist
+                    {productInWishlist ? 'In Wishlist' : 'Wishlist'}
                   </button>
                   <button className="flex items-center justify-center gap-2 border border-[#B1AEA9] rounded-full py-3 px-4 md:px-6 font-bold tracking-wider text-sm md:text-base flex-1 md:flex-none">
                     <img src="/images/popup/share-icon.svg" alt="Share" className="w-5 h-5 md:w-6 md:h-6" />

@@ -4,13 +4,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import SearchBarWrapper from './SearchBarWrapper';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 const Navigation = () => {
   const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
   const { data: session, status } = useSession();
+  const pathname = usePathname();
 
   const isAdmin = status === 'authenticated' && session?.user?.role === 'admin';
+  const isWishlistPage = pathname === '/wishlist';
 
   // Function to toggle the sidebar
   const toggleSidebar = () => {
@@ -81,6 +86,24 @@ const Navigation = () => {
                 </div>
               )}
             </div>
+
+            <Link href="/wishlist" className="relative">
+              <div className={`w-10 h-10 rounded-full ${isWishlistPage ? 'bg-[#3BB77E]' : 'bg-[#006B51]'} flex items-center justify-center`}>
+                <div className="relative w-5 h-5">
+                  <Image
+                    src="/images/topbar/wishlist.png"
+                    alt="Wishlist"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+              {wishlistCount > 0 && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#DD2222] flex items-center justify-center">
+                  <span className="text-[10px] text-white font-bold">{wishlistCount}</span>
+                </div>
+              )}
+            </Link>
 
             <Link href="/cart" className="relative">
               <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">

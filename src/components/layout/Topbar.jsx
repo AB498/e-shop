@@ -4,11 +4,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
+import { useWishlist } from '@/context/WishlistContext';
 
 const Topbar = ({ serverSession, serverAuthStatus }) => {
   // Use server-provided auth state as initial values, then use client-side session for updates
   const { data: clientSession, status } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const { wishlistCount } = useWishlist();
+  const pathname = usePathname();
 
   // Prioritize client-side session if available (for real-time updates), otherwise use server session
   const session = clientSession || serverSession;
@@ -17,6 +20,9 @@ const Topbar = ({ serverSession, serverAuthStatus }) => {
   const isAuthenticated = status === 'authenticated' || serverAuthStatus?.isAuthenticated;
   const isAdmin = (status === 'authenticated' && clientSession?.user?.role === 'admin') ||
     serverAuthStatus?.isAdmin;
+
+  // Check if current page is wishlist
+  const isWishlistPage = pathname === '/wishlist';
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -39,8 +45,6 @@ const Topbar = ({ serverSession, serverAuthStatus }) => {
   const handleSignOut = async () => {
     await signOut({ redirect: true, callbackUrl: '/' });
   };
-
-  const pathname = usePathname();
 
   if (pathname.startsWith('/admin')) {
     return null;
@@ -160,9 +164,21 @@ const Topbar = ({ serverSession, serverAuthStatus }) => {
               </div>
             </div>
             <div className="w-px h-4 bg-[#D5D5D5]"></div>
-            <Link href="/wishlist" className="flex items-center space-x-2 hover:text-[#3BB77E] transition-colors">
-              <Image src="/images/topbar/wishlist.png" alt="Wishlist" width={16} height={16} />
-              <span className="text-[#616161] text-sm">Wishlist</span>
+            <Link
+              href="/wishlist"
+              className={`flex items-center space-x-2 transition-colors ${isWishlistPage ? 'text-[#3BB77E]' : 'hover:text-[#3BB77E]'}`}
+            >
+              <div className="relative">
+                <Image src="/images/topbar/wishlist.png" alt="Wishlist" width={16} height={16} />
+                {wishlistCount > 0 && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-[#DD2222] flex items-center justify-center">
+                    <span className="text-[8px] text-white font-bold">{wishlistCount}</span>
+                  </div>
+                )}
+              </div>
+              <span className={`text-sm ${isWishlistPage ? 'text-[#3BB77E] font-semibold' : 'text-[#616161]'}`}>
+                Wishlist
+              </span>
             </Link>
             <div className="w-px h-4 bg-[#D5D5D5]"></div>
 

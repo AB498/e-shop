@@ -12,6 +12,7 @@ import filesSeed from './files-seed';
 import couriersSeed from './couriers-seed';
 import storeLocationsSeed from './store-locations-seed';
 import deliveryPersonsSeed from './delivery-persons-seed';
+import wishlistItemsSeed from './wishlist-seed';
 
 export async function POST() {
   try {
@@ -23,6 +24,7 @@ export async function POST() {
     console.log('Dropping existing tables if they exist...');
     try {
       // Drop tables in reverse order of dependencies using direct pool queries
+      await pool.query('DROP TABLE IF EXISTS wishlist_items CASCADE');
       await pool.query('DROP TABLE IF EXISTS store_locations CASCADE');
       await pool.query('DROP TABLE IF EXISTS courier_tracking CASCADE');
       await pool.query('DROP TABLE IF EXISTS order_items CASCADE');
@@ -200,6 +202,16 @@ export async function POST() {
           updated_at TIMESTAMP DEFAULT NOW()
         )
       `);
+
+      // Create wishlist_items table
+      await pool.query(`
+        CREATE TABLE wishlist_items (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id) NOT NULL,
+          product_id INTEGER REFERENCES products(id) NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
     } catch (error) {
       console.error('Error creating schema:', error);
       throw error;
@@ -285,6 +297,12 @@ export async function POST() {
       for (const person of deliveryPersonsSeed) {
         await db.insert(schema.deliveryPersons).values(person);
       }
+
+      // Insert wishlist items using Drizzle ORM
+      console.log('Inserting wishlist items...');
+      for (const item of wishlistItemsSeed) {
+        await db.insert(schema.wishlistItems).values(item);
+      }
     } catch (error) {
       console.error('Error inserting sample data:', error);
       throw error;
@@ -302,7 +320,8 @@ export async function POST() {
         files: filesSeed.length,
         couriers: couriersSeed.length,
         storeLocations: storeLocationsSeed.length,
-        deliveryPersons: deliveryPersonsSeed.length
+        deliveryPersons: deliveryPersonsSeed.length,
+        wishlistItems: wishlistItemsSeed.length
       }
     });
   } catch (error) {
