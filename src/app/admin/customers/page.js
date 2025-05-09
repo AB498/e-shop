@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MagnifyingGlassIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import CustomersTable from './CustomersTable';
 
 export default function CustomersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -142,100 +143,11 @@ export default function CustomersPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Orders
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Total Spent
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Last Order
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {isLoading ? (
-                // Loading skeleton
-                [...Array(5)].map((_, index) => (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-8 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-5 bg-gray-200 rounded-full w-5 animate-pulse"></div>
-                    </td>
-                  </tr>
-                ))
-              ) : filteredCustomers.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="px-6 py-4 text-center text-sm text-gray-500">
-                    No customers found
-                  </td>
-                </tr>
-              ) : (
-                filteredCustomers.map((customer) => (
-                  <tr key={customer.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{customer.name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{customer.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.orders}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{customer.totalSpent}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.lastOrder}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                        ${customer.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                        {customer.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleViewCustomer(customer)}
-                        className="text-emerald-600 hover:text-emerald-900"
-                        disabled={isLoading}
-                      >
-                        <EyeIcon className="h-5 w-5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <CustomersTable
+          customers={filteredCustomers}
+          isLoading={isLoading}
+          onViewCustomer={handleViewCustomer}
+        />
       </div>
 
       {/* Customer Details Modal */}

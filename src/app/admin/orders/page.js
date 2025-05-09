@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MagnifyingGlassIcon, FunnelIcon, EyeIcon, TruckIcon, ArrowPathIcon, UserGroupIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, FunnelIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import AssignDeliveryPersonModal from './AssignDeliveryPersonModal';
+import OrdersTable from './OrdersTable';
 
 export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -250,173 +251,13 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Order ID
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Total
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Items
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Courier
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {isLoading ? (
-                // Loading skeleton
-                [...Array(5)].map((_, index) => (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-8 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex space-x-3">
-                        <div className="h-5 bg-gray-200 rounded-full w-5 animate-pulse"></div>
-                        <div className="h-5 bg-gray-200 rounded-full w-5 animate-pulse"></div>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : filteredOrders.length === 0 ? (
-                <tr>
-                  <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
-                    No orders found
-                  </td>
-                </tr>
-              ) : (
-                filteredOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">#{order.id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.customer}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.date}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                        ${order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                          order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
-                          order.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                          'bg-yellow-100 text-yellow-800'}`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.total}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.itemsCount}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {order.courier_id ? (
-                        <div>
-                          <div className="flex items-center space-x-1 mb-1">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                              ${order.courier_status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                order.courier_status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
-                                order.courier_status === 'cancelled' || order.courier_status === 'returned' ? 'bg-red-100 text-red-800' :
-                                'bg-yellow-100 text-yellow-800'}`}>
-                              {order.courier_status ?
-                                (typeof order.courier_status === 'string' ?
-                                  order.courier_status.replace('_', ' ').charAt(0).toUpperCase() +
-                                  order.courier_status.replace('_', ' ').slice(1) :
-                                  'Pending') :
-                                'Pending'}
-                            </span>
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                              ${order.courier_type === 'internal' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}`}>
-                              {order.courier_type === 'internal' ? 'Internal' : 'External'}
-                            </span>
-                          </div>
-
-                          {order.courier_type === 'internal' && order.delivery_person_name && (
-                            <div className="text-xs text-gray-700 mt-1">
-                              <span className="font-medium">Delivery Person:</span> {order.delivery_person_name}
-                            </div>
-                          )}
-
-                          {order.courier_tracking_id && (
-                            <div className="text-xs text-gray-500 mt-1">
-                              ID: {order.courier_tracking_id}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-gray-500 text-xs">Not assigned</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-3">
-                        <button
-                          onClick={() => handleViewOrder(order)}
-                          className="text-emerald-600 hover:text-emerald-900"
-                          title="View Order"
-                          disabled={isLoading}
-                        >
-                          <EyeIcon className="h-5 w-5" />
-                        </button>
-                        {order.status !== 'delivered' && order.status !== 'cancelled' && !order.courier_id && (
-                          <>
-                            <button
-                              onClick={() => handleCreateCourierOrder(order.id)}
-                              className="text-blue-600 hover:text-blue-900"
-                              title="Auto-Order External Courier"
-                              disabled={order.isProcessingCourier || isLoading}
-                            >
-                              {order.isProcessingCourier ? (
-                                <ArrowPathIcon className="h-5 w-5 animate-spin" />
-                              ) : (
-                                <TruckIcon className="h-5 w-5" />
-                              )}
-                            </button>
-                            <button
-                              onClick={() => handleAssignDeliveryPerson(order)}
-                              className="text-emerald-600 hover:text-emerald-900"
-                              title="Assign Internal Delivery Person"
-                              disabled={isLoading}
-                            >
-                              <UserGroupIcon className="h-5 w-5" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <OrdersTable
+          orders={filteredOrders}
+          isLoading={isLoading}
+          onViewOrder={handleViewOrder}
+          onCreateCourierOrder={handleCreateCourierOrder}
+          onAssignDeliveryPerson={handleAssignDeliveryPerson}
+        />
       </div>
 
       {/* Order Details Modal */}

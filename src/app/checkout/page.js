@@ -52,7 +52,7 @@ export default function CheckoutPage() {
         email: session.user.email || '',
       }));
     }
-  }, [session]);
+  }, []);
 
   // Redirect if cart is empty
   useEffect(() => {

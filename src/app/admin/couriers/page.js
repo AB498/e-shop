@@ -7,9 +7,9 @@ import {
   ArrowPathIcon,
   PlusIcon,
   TruckIcon,
-  ArrowsUpDownIcon,
 } from '@heroicons/react/24/outline';
 import AddCourierModal from './AddCourierModal';
+import CouriersTable from './CouriersTable';
 
 export default function CouriersPage() {
   const { data: session, status } = useSession();
@@ -126,10 +126,8 @@ export default function CouriersPage() {
 
   // Initial fetch
   useEffect(() => {
-    if (session?.user?.role === 'admin') {
-      fetchCouriers();
-    }
-  }, [session]);
+    fetchCouriers();
+  }, []);
 
   return (
     <div className="p-8">
@@ -173,83 +171,16 @@ export default function CouriersPage() {
             </p>
           </div>
 
-          {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <ArrowPathIcon className="h-8 w-8 text-indigo-500 animate-spin" />
-              <span className="ml-2 text-gray-600">Loading couriers...</span>
-            </div>
-          ) : couriers.length === 0 ? (
-            <div className="p-6 text-center">
-              <p className="text-gray-500">No couriers found</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Type
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {couriers.map(courier => (
-                    <tr key={courier.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{courier.name}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500">{courier.description}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          courier.courier_type === 'internal'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-purple-100 text-purple-800'
-                        }`}>
-                          {courier.courier_type === 'internal' ? 'Internal' : 'External'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          courier.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {courier.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex justify-end">
-                          <button
-                            onClick={() => handleToggleCourierStatus(courier)}
-                            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white ${
-                              courier.is_active
-                                ? 'bg-red-600 hover:bg-red-700'
-                                : 'bg-green-600 hover:bg-green-700'
-                            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                          >
-                            <ArrowsUpDownIcon className="-ml-0.5 mr-1 h-4 w-4" />
-                            {courier.is_active ? 'Deactivate' : 'Activate'}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <CouriersTable
+            couriers={couriers}
+            isLoading={loading}
+            onToggleStatus={(courierId) => {
+              const courier = couriers.find(c => c.id === courierId);
+              if (courier) {
+                handleToggleCourierStatus(courier);
+              }
+            }}
+          />
         </div>
       </div>
 

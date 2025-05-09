@@ -4,13 +4,11 @@ import { useState, useEffect } from 'react';
 import {
   PlusIcon,
   MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
   FunnelIcon,
   ArrowPathIcon
 } from '@heroicons/react/24/outline';
-import { DataGrid } from '@mui/x-data-grid';
 import { getAllProductsWithInventory, updateProductStock } from '@/lib/actions/admin';
+import ProductsTable from './ProductsTable';
 
 // Helper function to process product data
 const processProductData = (data) => {
@@ -168,79 +166,7 @@ export default function ProductsPage() {
     }
   };
 
-  // DataGrid columns
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Product Name', width: 200 },
-    { field: 'sku', headerName: 'SKU', width: 100 },
-    { field: 'category', headerName: 'Category', width: 120 },
-    {
-      field: 'price',
-      headerName: 'Price',
-      width: 100,
-      renderCell: (params) => (
-        <div className="font-medium">${params.value.toFixed(2)}</div>
-      ),
-    },
-    {
-      field: 'stock',
-      headerName: 'Stock',
-      width: 80,
-      renderCell: (params) => (
-        <div className={params.value === 0 ? 'text-red-500 font-medium' : 'font-medium'}>
-          {params.value}
-        </div>
-      ),
-    },
-    {
-      field: 'threshold',
-      headerName: 'Threshold',
-      width: 100,
-    },
-    {
-      field: 'stockStatus',
-      headerName: 'Stock Status',
-      width: 120,
-      renderCell: (params) => (
-        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
-          ${params.value === 'In Stock' ? 'bg-green-100 text-green-800' :
-            params.value === 'Low Stock' ? 'bg-yellow-100 text-yellow-800' :
-            'bg-red-100 text-red-800'}`}>
-          {params.value}
-        </span>
-      ),
-    },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 180,
-      renderCell: (params) => (
-        <div className="flex space-x-2">
-          <button
-            onClick={() => handleEditProduct(params.row)}
-            className="text-blue-600 hover:text-blue-900"
-            title="Edit Product"
-          >
-            <PencilIcon className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => handleAddStock(params.row)}
-            className="text-emerald-600 hover:text-emerald-900"
-            title="Add Stock"
-          >
-            <PlusIcon className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => handleDeleteProduct(params.row.id)}
-            className="text-red-600 hover:text-red-900"
-            title="Delete Product"
-          >
-            <TrashIcon className="h-5 w-5" />
-          </button>
-        </div>
-      ),
-    },
-  ];
+  // No need for columns definition here as it's moved to ProductsTable component
 
   return (
     <div className="space-y-6">
@@ -356,24 +282,15 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {isLoading ? (
-          <div className="flex justify-center items-center h-96">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
-          </div>
-        ) : (
-          <div style={{ height: 600, width: '100%' }}>
-            <DataGrid
-              rows={filteredProducts}
-              columns={columns}
-              pageSize={10}
-              rowsPerPageOptions={[10, 25, 50]}
-              checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={handleSelectionChange}
-              selectionModel={selectedProducts}
-            />
-          </div>
-        )}
+        <ProductsTable
+          products={filteredProducts}
+          isLoading={isLoading}
+          onEdit={handleEditProduct}
+          onDelete={handleDeleteProduct}
+          onAddStock={handleAddStock}
+          onSelectionChange={handleSelectionChange}
+          selectedProducts={selectedProducts}
+        />
 
         {selectedProducts.length > 0 && (
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
