@@ -20,13 +20,6 @@ export default function DeliveryPersonsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currentDeliveryPerson, setCurrentDeliveryPerson] = useState(null);
 
-  // Check authentication and redirect if not admin
-  useEffect(() => {
-    if (status === 'unauthenticated' || (session && session.user.role !== 'admin')) {
-      router.push('/login');
-    }
-  }, [session, status, router]);
-
   // Fetch delivery persons
   const fetchDeliveryPersons = async () => {
     try {

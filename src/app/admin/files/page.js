@@ -22,21 +22,12 @@ export default function FilesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check authentication and redirect if not admin
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session.user.role !== 'admin') {
-      router.push('/');
-    }
-  }, [status, session, router]);
-
   // Fetch files on component mount if authenticated
   useEffect(() => {
     if (status === 'authenticated') {
       fetchDirectoryStructure();
     }
-  }, [status]);
+  }, []);
 
   // Fetch directory structure from API
   const fetchDirectoryStructure = async (path = '') => {

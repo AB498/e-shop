@@ -10,16 +10,20 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ### Database Setup
 
-Before running the application, you need to set up the database. You can do this in two ways:
+Before running the application, you need to set up the database:
 
-1. **Using the Dev UI:**
-   - Start the development server: `npm run dev`
-   - Navigate to the Dev UI at [http://localhost:3000/dev](http://localhost:3000/dev)
-   - Use the Database Seeder component to seed the database
+- Run the database seeding script: `npm run seed`
+- This will create all necessary tables and populate them with sample data
 
-2. **Using the Terminal Script:**
-   - Run the database seeding script: `npm run seed`
-   - This will create all necessary tables and populate them with sample data
+### Development Scripts
+
+The project includes several utility scripts for development:
+
+- `npm run seed` - Seed the database with sample data
+- `npm run test-order` - Create a test order
+- `npm run test-webhook <order_id> <event_type>` - Test Pathao webhook events
+- `npm run migrate-courier` - Convert courier status fields to TEXT type
+- `npm run reset-sequence <table_name> [value]` - Reset database sequence
 
 ### Running the Development Server
 

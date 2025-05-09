@@ -22,21 +22,12 @@ export default function CategoriesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check authentication and redirect if not admin
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session.user.role !== 'admin') {
-      router.push('/');
-    }
-  }, [status, session, router]);
-
   // Fetch categories on component mount if authenticated
   useEffect(() => {
     if (status === 'authenticated') {
       fetchCategories();
     }
-  }, [status]);
+  }, []);
 
   // Fetch categories from API
   const fetchCategories = async () => {

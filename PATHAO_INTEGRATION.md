@@ -31,11 +31,11 @@ The integration uses the following Pathao API endpoints:
 
 ## Testing
 
-You can test the Pathao integration using the developer tools:
+You can test the Pathao integration using the command-line scripts:
 
-1. Go to `/dev` in your application
-2. Find the "Test Pathao courier order creation" section
-3. Enter an order ID and click "Create Courier Order"
+1. Create a test order: `npm run test-order`
+2. Test webhook events: `npm run test-webhook <order_id> order.pickup`
+3. Test other status updates: `npm run test-webhook <order_id> order.delivered`
 
 ## Monitoring
 
@@ -82,7 +82,7 @@ Our implementation automatically formats phone numbers to meet these requirement
 
 If you're seeing this error, check that the phone number formatting is working correctly in:
 - `src/lib/services/pathao-courier.js` - `formatBangladeshPhoneNumber` function
-- `src/app/api/dev/reset-and-create-order/route.js` - Regular user creation
+- `scripts/test-order.js` - Test order creation
 
 ## References
 

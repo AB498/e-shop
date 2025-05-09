@@ -2,7 +2,7 @@
  * Database utility functions
  */
 
-import { pool } from '@/lib/db';
+import { pool } from '../../lib/db.js';
 
 /**
  * Resets the auto-increment sequence for a table to the maximum ID + 1

@@ -32,22 +32,11 @@ export default function StoreLocationsPage() {
   const [loadingZones, setLoadingZones] = useState(false);
   const [loadingAreas, setLoadingAreas] = useState(false);
 
-  // Check authentication and redirect if not admin
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session.user.role !== 'admin') {
-      router.push('/');
-    }
-  }, [status, session, router]);
-
   // Fetch store locations on component mount if authenticated
   useEffect(() => {
-    if (status === 'authenticated') {
-      fetchStoreLocations();
-      fetchPathaoCities();
-    }
-  }, [status]);
+    fetchStoreLocations();
+    fetchPathaoCities();
+  }, []);
 
   // Fetch Pathao zones when city is selected
   useEffect(() => {

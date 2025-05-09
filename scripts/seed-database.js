@@ -47,7 +47,7 @@ const __dirname = dirname(__filename);
 // Function to import seed data
 async function importSeedData(filename) {
   try {
-    const filePath = join(__dirname, '..', 'src', 'app', 'api', 'dev', 'seed', filename);
+    const filePath = join(__dirname, '..', 'scripts', 'seed', filename);
     const fileContent = await fs.readFile(filePath, 'utf8');
 
     // Extract the default export from the file content

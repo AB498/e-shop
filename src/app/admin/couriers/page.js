@@ -20,13 +20,6 @@ export default function CouriersPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [initializing, setInitializing] = useState(false);
 
-  // Check authentication and redirect if not admin
-  useEffect(() => {
-    if (status === 'unauthenticated' || (session && session.user.role !== 'admin')) {
-      router.push('/login');
-    }
-  }, [session, status, router]);
-
   // Fetch couriers
   const fetchCouriers = async () => {
     try {
