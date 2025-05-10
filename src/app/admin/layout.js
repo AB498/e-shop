@@ -86,6 +86,11 @@ export default async function AdminLayout({ children }) {
       iconName: 'PhotoIcon'
     },
     {
+      name: 'Promotions',
+      href: '/admin/promotions',
+      iconName: 'SparklesIcon'
+    },
+    {
       name: 'Analytics',
       href: '/admin/analytics',
       iconName: 'ChartBarIcon'

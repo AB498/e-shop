@@ -3,7 +3,7 @@ import { getResponsiveTextClass } from '@/utils/responsiveUtils';
 
 /**
  * A reusable star rating component that displays stars based on a rating value
- * 
+ *
  * @param {Object} props - Component props
  * @param {number} props.rating - Rating value (0-5)
  * @param {number} props.reviewCount - Number of reviews (optional)
@@ -11,15 +11,15 @@ import { getResponsiveTextClass } from '@/utils/responsiveUtils';
  * @param {boolean} props.showCount - Whether to show the review count
  * @returns {JSX.Element}
  */
-const StarRating = ({ 
-  rating = 0, 
-  reviewCount = 0, 
-  size = 'md', 
-  showCount = true 
+const StarRating = ({
+  rating = 0,
+  reviewCount = 0,
+  size = 'md',
+  showCount = true
 }) => {
   // Ensure rating is between 0 and 5
-  const normalizedRating = Math.min(5, Math.max(0, rating));
-  
+  const normalizedRating = Math.min(5, Math.max(0, parseFloat(rating) || 0));
+
   // Determine star size based on the size prop
   const starSizes = {
     'xs': { width: 12, height: 12 },
@@ -27,9 +27,12 @@ const StarRating = ({
     'md': { width: 16, height: 16 },
     'lg': { width: 20, height: 20 }
   };
-  
+
   const { width, height } = starSizes[size] || starSizes.md;
-  
+
+  // Generate a unique ID for this instance's gradient
+  const gradientId = React.useId ? React.useId() + '-half-fill' : `half-fill-${Math.random().toString(36).substring(2, 9)}`;
+
   // Generate 5 stars
   const stars = Array.from({ length: 5 }).map((_, index) => {
     // Determine if star should be filled, half-filled, or empty
@@ -37,9 +40,9 @@ const StarRating = ({
     if (index + 1 <= normalizedRating) {
       fill = '#FDC040'; // Fully filled
     } else if (index + 0.5 <= normalizedRating) {
-      fill = 'url(#half-fill)'; // Half filled
+      fill = `url(#${gradientId})`; // Half filled with unique gradient ID
     }
-    
+
     return (
       <svg
         key={index}
@@ -53,12 +56,14 @@ const StarRating = ({
         strokeLinejoin="round"
         className="mr-0.5"
       >
-        <defs>
-          <linearGradient id="half-fill" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="50%" stopColor="#FDC040" />
-            <stop offset="50%" stopColor="transparent" />
-          </linearGradient>
-        </defs>
+        {index === 0 && ( // Only include the gradient definition in the first star
+          <defs>
+            <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="50%" stopColor="#FDC040" />
+              <stop offset="50%" stopColor="transparent" />
+            </linearGradient>
+          </defs>
+        )}
         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
       </svg>
     );
@@ -66,10 +71,10 @@ const StarRating = ({
 
   return (
     <div className="flex items-center gap-1 sm:gap-2">
-      <div className="flex">{stars}</div>
-      {showCount && reviewCount > 0 && (
+      <div className="flex items-center">{stars}</div>
+      {showCount && (
         <span className={`text-[#B6B6B6] ${getResponsiveTextClass('xs')}`}>
-          ({normalizedRating.toFixed(1)})
+          {reviewCount > 0 ? `(${reviewCount})` : `(${normalizedRating.toFixed(1)})`}
         </span>
       )}
     </div>

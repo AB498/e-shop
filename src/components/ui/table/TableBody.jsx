@@ -34,7 +34,7 @@ export default function TableBody({
             )}
             {columns.map((column) => (
               <td
-                key={`loading-cell-${column.key}-${rowIndex}`}
+                key={`loading-cell-${column.id || column.key}-${rowIndex}`}
                 className="px-6 py-4"
               >
                 <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
@@ -119,13 +119,13 @@ export default function TableBody({
 
               return (
                 <td
-                  key={`cell-${column.key}-${rowIndex}`}
+                  key={`cell-${column.id || column.key}-${rowIndex}`}
                   className={`px-3 sm:px-6 py-4 text-sm ${textHandlingClass} ${responsiveClasses} ${column.cellClassName || ''}`}
                   style={cellStyle}
                   title={column.truncate && typeof row[column.key] === 'string' ? row[column.key] : undefined}
                 >
                   <div className={column.truncate ? 'truncate' : ''}>
-                    {column.render ? column.render(row, rowIndex) : row[column.key]}
+                    {column.cell ? column.cell({ row, rowIndex }) : (column.render ? column.render(row, rowIndex) : row[column.key])}
                   </div>
                 </td>
               );

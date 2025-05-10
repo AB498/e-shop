@@ -9,7 +9,7 @@ export default function WeeklyDiscountsClient() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch('/api/products?categoryId=3,4,5,6,7,8,9,10,11,12&limit=10');
+        const response = await fetch('/api/products?categoryId=3,4,5,6,7,8&limit=10');
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

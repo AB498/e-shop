@@ -18,7 +18,8 @@ import {
   PhotoIcon,
   MapPinIcon,
   ArchiveBoxIcon,
-  CurrencyDollarIcon
+  CurrencyDollarIcon,
+  SparklesIcon
 } from "@heroicons/react/24/outline";
 import { FiPackage, FiTruck, FiShoppingCart, FiUsers, FiSettings, FiDollarSign } from "react-icons/fi";
 
@@ -33,7 +34,8 @@ const iconComponents = {
   PhotoIcon,
   MapPinIcon,
   ArchiveBoxIcon,
-  CurrencyDollarIcon
+  CurrencyDollarIcon,
+  SparklesIcon
 };
 
 // Custom icon mapping object

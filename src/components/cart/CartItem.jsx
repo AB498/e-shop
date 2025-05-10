@@ -16,13 +16,13 @@ const CartItem = ({ item }) => {
   return (
     <div className="flex items-center gap-4 py-4">
       {/* Product Image */}
-      <div className="w-24 h-24 bg-[#F0EEED] rounded-lg flex items-center justify-center flex-shrink-0">
+      <div className="w-24 h-24 bg-[#F0EEED] rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden">
         <Image
-          src={image || "/images/product-image.png"}
-          alt={name}
-          width={80}
-          height={80}
-          className="object-contain"
+          src={image || "/images/product-image.png"} // fallback image
+          alt={name} // alt tag for accessibility
+          fill // this tells Next.js to fill the parent container
+          className="object-cover" // maintain aspect ratio and cover box
+          sizes="96px" // 24 * 4 = 96px, helps optimize image size
         />
       </div>
 

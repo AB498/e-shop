@@ -2,33 +2,85 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { getActivePromotions } from '@/lib/actions/promotions';
 
-const FeaturedCarousel = () => {
+const FeaturedCarousel = ({ initialPromotions = [] }) => {
   const [currentSlide, setCurrentSlide] = useState(1); // Start with slide 1 active
-  const totalSlides = 3;
+  const [slides, setSlides] = useState(initialPromotions);
+  const totalSlides = slides.length;
   const autoPlayRef = useRef(null);
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
   const intervalTime = 5000; // 5 seconds
 
-  // Define slides with actual images (16:9 aspect ratio)
-  const slides = [
-    {
-      id: 0,
-      image: '/images/carousel/slide-1.png',
-      alt: 'Featured Slide 1'
-    },
-    {
-      id: 1,
-      image: '/images/carousel/slide-2.png',
-      alt: 'Featured Slide 2'
-    },
-    {
-      id: 2,
-      image: '/images/carousel/slide-3.png',
-      alt: 'Featured Slide 3'
-    }
-  ];
+  // Fetch promotions if none were provided
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        // Check if we have initial promotions
+        if (initialPromotions && initialPromotions.length > 0) {
+          console.log('Using server-provided promotions:', initialPromotions);
+          setSlides(initialPromotions);
+          return;
+        }
+
+        // If no initial promotions, fetch from client side
+        console.log('No initial promotions, fetching from client side');
+        const promotions = await getActivePromotions('carousel', 'home', 5);
+
+        if (promotions && promotions.length > 0) {
+          console.log('Fetched promotions from client side:', promotions);
+          setSlides(promotions);
+        } else {
+          console.log('No promotions found, using default slides');
+          // Fallback to default slides if no promotions found
+          setSlides([
+            {
+              id: 0,
+              title: 'Featured Slide 1',
+              image_url: '/images/carousel/slide-1.png',
+            },
+            {
+              id: 1,
+              title: 'Featured Slide 2',
+              image_url: '/images/carousel/slide-2.png',
+            },
+            {
+              id: 2,
+              title: 'Featured Slide 3',
+              image_url: '/images/carousel/slide-3.png',
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching promotions:', error);
+        // Fallback to default slides on error
+        setSlides([
+          {
+            id: 0,
+            title: 'Featured Slide 1',
+            image_url: '/images/carousel/slide-1.png',
+          },
+          {
+            id: 1,
+            title: 'Featured Slide 2',
+            image_url: '/images/carousel/slide-2.png',
+          },
+          {
+            id: 2,
+            title: 'Featured Slide 3',
+            image_url: '/images/carousel/slide-3.png',
+          }
+        ]);
+      }
+    };
+
+    fetchPromotions();
+  }, [initialPromotions]);
 
   // Auto play functionality
   useEffect(() => {
@@ -44,22 +96,24 @@ const FeaturedCarousel = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Update container width on mount and resize
+  // Update container width and check device type on mount and resize
   useEffect(() => {
-    const updateWidth = () => {
+    const updateDimensions = () => {
       if (containerRef.current) {
         setContainerWidth(containerRef.current.offsetWidth);
       }
+      // Check if we're on a mobile device (width less than 640px - sm breakpoint in Tailwind)
+      setIsMobile(window.innerWidth < 640);
     };
 
     // Initial measurement
-    updateWidth();
+    updateDimensions();
 
     // Add resize listener
-    window.addEventListener('resize', updateWidth);
+    window.addEventListener('resize', updateDimensions);
 
     // Cleanup
-    return () => window.removeEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
   const nextSlide = () => {
@@ -72,6 +126,31 @@ const FeaturedCarousel = () => {
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
+  };
+
+  // Handle touch events for swipe functionality
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > 50) {
+      // Swipe left, go to next slide
+      nextSlide();
+    }
+
+    if (touchStart - touchEnd < -50) {
+      // Swipe right, go to previous slide
+      prevSlide();
+    }
+
+    // Reset values
+    setTouchStart(0);
+    setTouchEnd(0);
   };
 
   // Calculate positions for all slides
@@ -89,6 +168,31 @@ const FeaturedCarousel = () => {
     const activeScale = 1.1;
     const baseOpacity = 0.7;
 
+    // Mobile view - show only one slide at a time with animation
+    if (isMobile) {
+      // For non-current slides, position them off-screen based on their distance
+      if (!isCurrent) {
+        // Position slides to the left or right based on their distance from current
+        const direction = distance > 0 ? 1 : -1;
+        return {
+          zIndex: 10 - Math.abs(distance),
+          opacity: 0.1, // Keep slight opacity for animation effect
+          transform: `translateX(${direction * 100}%)`, // Move off-screen
+          transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease',
+          pointerEvents: 'none' // Prevent interaction with hidden slides
+        };
+      }
+
+      // Current slide takes full width on mobile with animation
+      return {
+        zIndex: 20,
+        opacity: 1,
+        transform: 'translateX(0)',
+        transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease'
+      };
+    }
+
+    // Desktop view - show multiple slides
     // Calculate final values based on distance
     const zIndex = baseZIndex + (10 * (3 - Math.abs(distance)));
     let scale = isCurrent ? activeScale : baseScale;
@@ -109,19 +213,25 @@ const FeaturedCarousel = () => {
       zIndex,
       opacity,
       transform: `translateX(${translateX}px) scale(${scale})`,
-      transition: 'all 0.5s ease-in-out'
+      transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease'
     };
   };
 
   return (
     <div className="relative w-full mb-10 mt-6 overflow-visible">
       {/* Carousel Container */}
-      <div ref={containerRef} className="w-full aspect-video max-h-[480px] inset-0 flex items-center justify-center w-full" >
+      <div
+        ref={containerRef}
+        className="w-full aspect-video max-h-[480px] inset-0 flex items-center justify-center relative"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* All Slides */}
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className="absolute w-[40%] aspect-video"
+            className={`absolute ${isMobile ? 'w-full' : 'w-[40%]'} aspect-video`}
             style={getSlideStyle(index)}
           >
             <div
@@ -129,9 +239,12 @@ const FeaturedCarousel = () => {
               className="relative w-full h-full rounded-lg shadow-lg overflow-hidden cursor-pointer"
               aria-label={`Go to slide ${index + 1}`}
             >
+              {slide.link_url && (
+                <Link href={slide.link_url} className="absolute inset-0 z-20" aria-label={slide.title || `Promotion ${index + 1}`} />
+              )}
               <Image
-                src={slide.image}
-                alt={slide.alt}
+                src={slide.image_url}
+                alt={slide.title || 'Promotional slide'}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 480px"
@@ -149,20 +262,20 @@ const FeaturedCarousel = () => {
       {/* Navigation Arrows - Positioned outside the component */}
       <button
         onClick={prevSlide}
-        className="hidden sm:flex absolute -left-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+        className="flex absolute left-2 sm:-left-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-8 h-8 sm:w-12 sm:h-12 rounded-full items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
         aria-label="Previous slide"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
       <button
         onClick={nextSlide}
-        className="hidden sm:flex absolute -right-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+        className="flex absolute right-2 sm:-right-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-8 h-8 sm:w-12 sm:h-12 rounded-full items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
         aria-label="Next slide"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>

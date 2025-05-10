@@ -20,7 +20,7 @@ export default function AboutPage() {
       </div>
 
       {/* Additional Content Section */}
-      <section className="mt-10">
+      <section className="mt-6 md:mt-10">
         <div className="container mx-auto px-4">
           <div className="max-w-[1095px] mx-auto">
             <div className="text-[14px] leading-[1.7] text-[#202435] space-y-6">

@@ -161,6 +161,24 @@ const wishlistItems = pgTable('wishlist_items', {
   created_at: timestamp('created_at').defaultNow(),
 })
 
+// Promotions table for banners and marketing content
+const promotions = pgTable('promotions', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  description: text('description'),
+  image_url: text('image_url').notNull(),
+  link_url: text('link_url'),
+  type: text('type').default('banner').notNull(), // 'banner', 'carousel', 'deal', etc.
+  position: text('position').default('home'), // 'home', 'category', 'product', etc.
+  start_date: timestamp('start_date'),
+  end_date: timestamp('end_date'),
+  is_active: boolean('is_active').default(true),
+  priority: integer('priority').default(0), // For ordering promotions
+  discount: text('discount'), // Discount percentage for deals
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
 // Payment transactions table for SSLCommerz
 const paymentTransactions = pgTable('payment_transactions', {
   id: serial('id').primaryKey(),
@@ -202,6 +220,7 @@ export {
   storeLocations,
   deliveryPersons,
   wishlistItems,
+  promotions,
   paymentTransactions,
   userRoleEnum,
   orderStatusEnum

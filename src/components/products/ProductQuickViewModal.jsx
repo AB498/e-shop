@@ -6,6 +6,8 @@ import { useWishlist } from '@/context/WishlistContext';
 import ModalProductImages from './ModalProductImages';
 import ModalProductDetails from './ModalProductDetails';
 import ModalRelatedProducts from './ModalRelatedProducts';
+import RelatedProducts from './RelatedProducts';
+import { GridCloseIcon } from '@mui/x-data-grid';
 
 const ProductQuickViewModal = () => {
   const {
@@ -71,21 +73,23 @@ const ProductQuickViewModal = () => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen p-4 md:p-6">
+      <div className="flex items-center justify-center min-h-screen p-2 sm:p-3 md:p-6">
         {/* Backdrop */}
         <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={closeQuickView}></div>
 
         {/* Modal Container */}
-        <div className="relative w-full max-w-7xl mx-auto">
+        <div className="relative w-full max-w-[95%] sm:max-w-[90%] md:max-w-7xl mx-auto">
           {/* Modal Content */}
-          <div className="flex flex-col bg-[#E0DCD6] rounded-md overflow-hidden relative">
+          <div className="flex flex-col bg-[#E0DCD6] rounded-md overflow-hidden relative p-4">
             {/* Close button */}
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 z-10">
               <button
                 onClick={closeQuickView}
-                className="bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors"
+                className="bg-white rounded-full p-1.5 sm:p-2 shadow-md hover:bg-gray-100 transition-colors"
               >
-                <img src="/images/popup/close-icon.svg" alt="Close" className="w-4 h-4" />
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1L13 13M1 13L13 1" stroke="#666666" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
               </button>
             </div>
 
@@ -110,12 +114,13 @@ const ProductQuickViewModal = () => {
               />
             </div>
 
-            {/* Related Products Section - Spans full width */}
-            <ModalRelatedProducts
-              products={relatedProducts}
-              isLoading={isLoadingRelated}
-              formatPrice={formatPrice}
-            />
+            <div className="w-full p-2 sm:p-3 md:p-5">
+              {/* Related Products Section - Spans full width */}
+              <RelatedProducts
+                products={relatedProducts}
+                category={product.category}
+              />
+            </div>
           </div>
         </div>
       </div>

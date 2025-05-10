@@ -149,7 +149,8 @@ async function seedDatabase() {
       couriersSeed,
       storeLocationsSeed,
       deliveryPersonsSeed,
-      wishlistItemsSeed
+      wishlistItemsSeed,
+      promotionsSeed
     ] = await Promise.all([
       importSeedData('categories-seed.js'),
       importSeedData('products-seed.js'),
@@ -158,7 +159,8 @@ async function seedDatabase() {
       importSeedData('couriers-seed.js'),
       importSeedData('store-locations-seed.js'),
       importSeedData('delivery-persons-seed.js'),
-      importSeedData('wishlist-seed.js')
+      importSeedData('wishlist-seed.js'),
+      importSeedData('promotions-seed.js')
     ]);
 
     // Drop existing tables if they exist (for clean seeding)
@@ -174,6 +176,7 @@ async function seedDatabase() {
         'DROP TABLE IF EXISTS orders CASCADE',
         'DROP TABLE IF EXISTS products CASCADE',
         'DROP TABLE IF EXISTS categories CASCADE',
+        'DROP TABLE IF EXISTS promotions CASCADE',
         'DROP TABLE IF EXISTS delivery_persons CASCADE',
         'DROP TABLE IF EXISTS couriers CASCADE',
         'DROP TABLE IF EXISTS users CASCADE',
@@ -363,6 +366,26 @@ async function seedDatabase() {
         )
       `);
 
+      // Promotions table
+      await pool.query(`
+        CREATE TABLE promotions (
+          id SERIAL PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          image_url TEXT NOT NULL,
+          link_url TEXT,
+          type TEXT DEFAULT 'banner' NOT NULL,
+          position TEXT DEFAULT 'home',
+          start_date TIMESTAMP,
+          end_date TIMESTAMP,
+          is_active BOOLEAN DEFAULT TRUE,
+          priority INTEGER DEFAULT 0,
+          discount TEXT,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+
       // Payment transactions table (depends on orders)
       await pool.query(`
         CREATE TABLE payment_transactions (
@@ -473,14 +496,36 @@ async function seedDatabase() {
         }
       }
 
+      // Transform function for categories to handle local image paths
+      async function transformCategory(category) {
+        try {
+          // If the image path starts with '/images/categories/', it's a local image
+          if (category.image && category.image.startsWith('/images/categories/')) {
+            // Keep the path as is - it's already in the correct format for the frontend
+            console.log(`Using local image for category ${category.name}: ${category.image}`);
+          }
+
+          return {
+            id: category.id,
+            name: category.name,
+            slug: category.slug,
+            image: category.image
+          };
+        } catch (error) {
+          console.error(`Error processing category ${category.name}:`, error);
+          return null;
+        }
+      }
+
       // Insert independent tables in parallel
       await Promise.all([
-        insertData('categories', schema.categories, categoriesSeed),
+        insertData('categories', schema.categories, categoriesSeed, transformCategory),
         insertData('users', schema.users, usersSeed, transformUser),
         insertData('files', schema.files, filesSeed),
         insertData('couriers', schema.couriers, couriersSeed),
         insertData('delivery_persons', schema.deliveryPersons, deliveryPersonsSeed),
-        insertData('store_locations', schema.storeLocations, storeLocationsSeed)
+        insertData('store_locations', schema.storeLocations, storeLocationsSeed),
+        insertData('promotions', schema.promotions, promotionsSeed)
       ]);
 
       // Insert dependent tables in sequence
@@ -508,6 +553,7 @@ async function seedDatabase() {
     console.log(`  Store Locations: ${storeLocationsSeed.length}`);
     console.log(`  Delivery Persons: ${deliveryPersonsSeed.length}`);
     console.log(`  Wishlist Items: ${wishlistItemsSeed.length}`);
+    console.log(`  Promotions: ${promotionsSeed.length}`);
     console.log(`  Payment Transactions: 0 (table created but no seed data)`);
 
     // Close the database connection
@@ -525,6 +571,7 @@ async function seedDatabase() {
         storeLocations: storeLocationsSeed.length,
         deliveryPersons: deliveryPersonsSeed.length,
         wishlistItems: wishlistItemsSeed.length,
+        promotions: promotionsSeed.length,
         paymentTransactions: 0
       }
     };

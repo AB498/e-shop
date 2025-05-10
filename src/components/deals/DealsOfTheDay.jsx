@@ -106,7 +106,7 @@ const DealsOfTheDay = () => {
       {/* Deals Grid */}
       <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
         {displayProducts.map((product, index) => (
-          <div key={product.id || index} className="bg-white rounded-[15px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div key={product.id || index} className="bg-white rounded-[15px] overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
             {/* Product Image */}
             <Link href={`/products/${product.id}`}>
               <div className="relative h-48 xs:h-52 sm:h-56 md:h-64">
@@ -140,7 +140,7 @@ const DealsOfTheDay = () => {
             </Link>
 
             {/* Product Details */}
-            <div className="p-3 sm:p-4 md:p-5 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] rounded-[10px] -mt-4 sm:-mt-5 mx-3 sm:mx-4 bg-white relative">
+            <div className="p-3 sm:p-4 md:p-5 grow shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] rounded-[10px] -mt-4 sm:-mt-5 mb-4 mx-3 sm:mx-4 bg-white relative">
               <Link href={`/products/${product.id}`}>
                 <h3 className={`text-[#253D4E] ${getResponsiveTextClass('sm')} font-bold leading-tight mb-1 sm:mb-2`}>
                   {product.name}

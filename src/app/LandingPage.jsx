@@ -4,11 +4,13 @@
 import Hero from "../components/layout/Hero";
 import FeatureIcons from "../components/layout/FeatureIcons";
 import PopularCategories from "../components/categories/PopularCategories";
+import PopularCategoriesServer from "../components/categories/PopularCategoriesServer";
 import BannerSection from "../components/landing/BannerSection";
 import ProductShowcase from "../components/landing/ProductShowcase";
 import Footer from "../components/layout/Footer";
 import Copyright from "../components/layout/Copyright";
 import FeaturedCarousel from "@/components/layout/FeaturedCarousel";
+import WeeklyDeals from "@/components/layout/WeeklyDeals";
 import DealsOfTheDay from "@/components/deals/DealsOfTheDay";
 import WeeklyDiscountsClient from "@/components/categories/WeeklyDiscountsClient";
 import VegetableAndFruitsClient from "@/components/categories/VegetableAndFruitsClient";
@@ -22,21 +24,21 @@ import ResponsiveContainer from "@/components/ui/ResponsiveContainer";
  *
  * @returns {JSX.Element}
  */
-export default function LandingPage() {
+export default function LandingPage({ featuredCarouselComponent, weeklyDealsComponent, popularCategoriesComponent }) {
     return (
-        <ProductQuickViewProvider>
+        <>
+            {/* Hero Section */}
+            <Hero />
             <div className="relative z-0 w-full px-6 md:px-12 container mx-auto">
-                {/* Hero Section */}
-                <Hero />
 
                 {/* Feature Icons */}
                 <FeatureIcons />
 
                 {/* Popular Categories */}
-                <PopularCategories />
+                {popularCategoriesComponent || <PopularCategories categories={[]} />}
 
                 {/* Featured Carousel */}
-                <FeaturedCarousel />
+                {featuredCarouselComponent || <FeaturedCarousel />}
 
                 {/* Discounted Products */}
                 <WeeklyDiscountsClient />
@@ -58,13 +60,12 @@ export default function LandingPage() {
 
 
                 {/* Product Quick View Modal */}
-                <ProductQuickViewModal />
             </div>
             {/* Footer */}
             <Footer />
 
             {/* Copyright */}
             <Copyright />
-        </ProductQuickViewProvider>
+        </>
     );
 }

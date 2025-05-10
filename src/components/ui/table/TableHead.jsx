@@ -33,7 +33,8 @@ export default function TableHead({ enableSorting = true, enableSelection = fals
 
         {/* Data columns */}
         {columns.map((column) => {
-          const isSorted = sorting.sortBy === column.key;
+          const columnKey = column.key || column.id;
+          const isSorted = sorting.sortBy === columnKey;
           const sortDirection = isSorted ? sorting.sortDirection : null;
 
           // Determine if this column is sortable
@@ -54,7 +55,7 @@ export default function TableHead({ enableSorting = true, enableSelection = fals
 
           return (
             <th
-              key={column.key}
+              key={columnKey}
               className={`
                 px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
                 ${isSortable ? 'cursor-pointer select-none' : ''}
@@ -62,10 +63,10 @@ export default function TableHead({ enableSorting = true, enableSelection = fals
                 ${column.className || ''}
               `}
               style={headerStyle}
-              onClick={() => isSortable && handleSort(column.key)}
+              onClick={() => isSortable && handleSort(columnKey)}
             >
               <div className="flex items-center space-x-1">
-                <span className="truncate">{column.label}</span>
+                <span className="truncate">{column.label || column.header || columnKey}</span>
 
                 {isSortable && (
                   <span className="inline-flex flex-col flex-shrink-0">

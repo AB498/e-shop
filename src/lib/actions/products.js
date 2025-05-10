@@ -400,3 +400,80 @@ export async function getAllCategories() {
     return [];
   }
 }
+
+/**
+ * Fetch new products sorted by creation date
+ * @param {number} limit - Maximum number of products to return
+ * @returns {Promise<Array>} - Array of new products
+ */
+export async function getNewProducts(limit = 3) {
+  try {
+    // Fetch products sorted by creation date (newest first)
+    const productData = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        price: products.price,
+        image: products.image,
+        categoryId: products.category_id,
+        createdAt: products.created_at,
+        sku: products.sku,
+      })
+      .from(products)
+      .where(sql`${products.image} IS NOT NULL`)  // Only get products with images
+      .orderBy(desc(products.created_at))
+      .limit(limit);
+
+    // If no products with images found, try again without the image filter
+    if (productData.length === 0) {
+      console.log('No products with images found, fetching any products');
+      const fallbackProductData = await db
+        .select({
+          id: products.id,
+          name: products.name,
+          price: products.price,
+          image: products.image,
+          categoryId: products.category_id,
+          createdAt: products.created_at,
+          sku: products.sku,
+        })
+        .from(products)
+        .orderBy(desc(products.created_at))
+        .limit(limit);
+
+      if (fallbackProductData.length > 0) {
+        productData.push(...fallbackProductData);
+      }
+    }
+
+    // Fetch all categories to map category IDs to names
+    const categoryData = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+      })
+      .from(categories);
+
+    // Create a map of category IDs to names
+    const categoryMap = categoryData.reduce((map, category) => {
+      map[category.id] = category.name;
+      return map;
+    }, {});
+
+    // Add category name to each product and calculate discount price
+    const productsWithCategory = productData.map(product => ({
+      ...product,
+      category: categoryMap[product.categoryId] || 'Unknown',
+      // Calculate a 10% discount for display purposes
+      discountPrice: (parseFloat(product.price) * 0.9).toFixed(2),
+      // Add mock rating and review count for display
+      rating: (Math.random() * 2 + 3).toFixed(1), // Random rating between 3.0 and 5.0
+      reviewCount: Math.floor(Math.random() * 20) + 1, // Random review count between 1 and 20
+    }));
+
+    return productsWithCategory;
+  } catch (error) {
+    console.error('Error fetching new products:', error);
+    return [];
+  }
+}

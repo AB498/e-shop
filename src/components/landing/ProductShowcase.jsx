@@ -4,8 +4,8 @@ import Link from 'next/link';
 const ProductShowcase = () => {
   // Define the category IDs for the showcase products
   const showcaseCategories = {
-    fashion: [6, 7], // Meat and Seafood categories
-    lifestyle: [3, 4], // Dairy and Bakery categories
+    fashion: [6, 7], // Makeup and Perfume categories
+    lifestyle: [3, 4], // Health and Beauty and Hot Offers categories
   };
 
   // Create query strings for the categories

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { toast } from 'react-hot-toast';
+import StarRating from '@/components/ui/StarRating';
 
 const ProductInfo = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
@@ -44,10 +45,12 @@ const ProductInfo = ({ product }) => {
       </h1>
 
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex">
-          <Image src="/images/star-rating.png" alt="Rating" width={100} height={20} className="object-contain" />
-        </div>
-        <span className="text-[#B6B6B6] text-sm">({product?.reviewCount || 0} reviews)</span>
+        <StarRating
+          rating={product?.rating || 4.5}
+          reviewCount={product?.reviewCount || 0}
+          size="lg"
+          showCount={true}
+        />
       </div>
 
       <div className="flex items-center gap-3 mb-6">

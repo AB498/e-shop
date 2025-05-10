@@ -135,7 +135,7 @@ export default function ProductCarousel({
 
           {enableSwiping && (
             <>
-              <div className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden sm:block">
+              <div className="absolute top-1/2 transform -translate-x-1/2 -translate-y-full z-10 hidden sm:block">
                 <button
                   ref={prevRef}
                   className="bg-white left-0 rounded-lg p-2 sm:p-3 shadow-lg hover:bg-gray-50 transition-colors"
@@ -151,7 +151,7 @@ export default function ProductCarousel({
                 </button>
               </div>
 
-              <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 z-10 hidden sm:block">
+              <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-full z-10 hidden sm:block">
                 <button
                   ref={nextRef}
                   className="bg-white rounded-lg p-2 sm:p-3 shadow-lg hover:bg-gray-50 transition-colors"

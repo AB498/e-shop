@@ -1,53 +1,11 @@
 import SidebarWrapper from './SidebarWrapper';
+import { getAllCategories } from '@/lib/actions/categories';
 
-// This is a Server Component that defines the main categories
+// This is a Server Component that fetches categories from the database
 export default async function SidebarServer() {
-  // Define the main categories based on the Figma design
-  const mainCategories = [
-    {
-      id: 1,
-      name: 'Vegetables & Fruits',
-      slug: 'vegetables-fruits',
-      image: '/images/sidebar/vegetables-fruits-icon.png',
-    },
-    {
-      id: 2,
-      name: 'Bakery',
-      slug: 'bakery',
-      image: '/images/sidebar/bakery-icon.png',
-    },
-    {
-      id: 3,
-      name: 'Beverages',
-      slug: 'beverages',
-      image: '/images/sidebar/beverages-icon.png',
-    },
-    {
-      id: 4,
-      name: 'Dairy',
-      slug: 'dairy',
-      image: '/images/sidebar/dairy-icon.png',
-    },
-    {
-      id: 5,
-      name: 'Seafood',
-      slug: 'seafood',
-      image: '/images/sidebar/seafood-icon.png',
-    },
-    {
-      id: 6,
-      name: 'Meat',
-      slug: 'meat',
-      image: '/images/sidebar/meat-icon.png',
-    },
-    {
-      id: 7,
-      name: 'Discount',
-      slug: 'discount',
-      image: '/images/sidebar/discount-icon.png',
-    }
-  ];
+  // Fetch categories from the database
+  const categories = await getAllCategories();
 
-  // Pass the main categories to the wrapper component with Suspense boundary
-  return <SidebarWrapper categories={mainCategories} />;
+  // Pass the categories to the wrapper component with Suspense boundary
+  return <SidebarWrapper categories={categories} />;
 }

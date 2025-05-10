@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const SidebarClient = ({ categories = [] }) => {
   // Initialize with collapsed state (true = collapsed, false = expanded)
@@ -53,27 +54,11 @@ const SidebarClient = ({ categories = [] }) => {
     // Get the current category IDs as an array
     const currentIds = currentCategoryId.split(',').map(id => parseInt(id.trim(), 10));
 
-    // Category mapping to determine which sidebar item should be active
-    const categoryMapping = {
-      'vegetables-fruits': [1, 2], // Fruits and Vegetables categories
-      'bakery': [4], // Bakery category
-      'beverages': [8, 9], // Beverages categories
-      'dairy': [3], // Dairy category
-      'seafood': [7], // Seafood category
-      'meat': [6], // Meat category
-    };
-
     // Find the index of the category that matches the current IDs
     for (let i = 0; i < categories.length; i++) {
       const category = categories[i];
-      const mappedIds = categoryMapping[category.slug] || [];
 
-      // Check if any of the current IDs match the mapped IDs for this category
-      if (mappedIds.some(id => currentIds.includes(id))) {
-        return i;
-      }
-
-      // Also check if the category ID itself matches
+      // Check if the category ID matches any of the current IDs
       if (currentIds.includes(category.id)) {
         return i;
       }
@@ -91,6 +76,12 @@ const SidebarClient = ({ categories = [] }) => {
       collapsed ? '5rem' : '16rem'
     );
 
+    // Dispatch a custom event to notify other components of the sidebar state change
+    const event = new CustomEvent('sidebarStateChanged', {
+      detail: { collapsed: collapsed }
+    });
+    window.dispatchEvent(event);
+
     // Add a small delay to allow transitions to complete
     const timer = setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
@@ -101,17 +92,6 @@ const SidebarClient = ({ categories = [] }) => {
 
   // Function to create the URL for category filtering
   const getCategoryUrl = (category) => {
-    // Map the main categories to the actual database category IDs
-    const categoryMapping = {
-      'vegetables-fruits': [1, 2], // Fruits and Vegetables categories
-      'bakery': [4], // Bakery category
-      'beverages': [8, 9], // Beverages categories
-      'dairy': [3], // Dairy category
-      'seafood': [7], // Seafood category
-      'meat': [6], // Meat category
-      'discount': [] // Special case for discount items
-    };
-
     const params = new URLSearchParams(searchParams);
 
     // Special case for discount items
@@ -119,16 +99,6 @@ const SidebarClient = ({ categories = [] }) => {
       // For discount, we might want to show all products with discounts
       // This would depend on how discounts are implemented in your system
       return '/products?discount=true&page=1';
-    }
-
-    // Get the mapped category IDs
-    const mappedIds = categoryMapping[category.slug] || [];
-
-    if (mappedIds.length > 0) {
-      // If we have multiple IDs, join them with commas
-      params.set('categoryId', mappedIds.join(','));
-      params.set('page', '1'); // Reset to page 1 when changing category
-      return `/products?${params.toString()}`;
     }
 
     // Fallback to using the category ID directly
@@ -141,12 +111,11 @@ const SidebarClient = ({ categories = [] }) => {
     <>
       {/* fake div to make the sidebar occupy width */}
       <div
-        className="transition-all duration-300"
-        style={{ width: collapsed ? '50px' : '50px' }}
+        className="transition-all duration-300 w-[0px] sm:w-[60px]"
       ></div>
       <div
-        className={`${collapsed ? 'w-[50px]' : 'w-64'} h-screen bg-white border-r border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
-        style={{ width: collapsed ? '50px' : '16rem' }}
+        className={`${collapsed ? 'w-[0px] sm:w-[60px]' : 'w-[16rem]'} h-screen bg-white border-r border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
+
       >
         {/* Menu Toggle Button */}
         <div className="px-3 py-6 flex items-center justify-start">
@@ -156,10 +125,12 @@ const SidebarClient = ({ categories = [] }) => {
             onClick={toggleSidebar}
             title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
-            <div className={`relative flex items-center justify-center duration-300 ${collapsed ? 'rotate-180' : ''}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-[15px] w-[15px] text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+            <div className="relative flex items-center justify-center duration-300">
+              {collapsed ? (
+                <Bars3Icon className="h-[20px] w-[20px] text-white" />
+              ) : (
+                <XMarkIcon className="h-[20px] w-[20px] text-white" />
+              )}
             </div>
           </button>
         </div>

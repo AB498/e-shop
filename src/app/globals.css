@@ -33,6 +33,9 @@
 
   /* Container widths - more compact on mobile */
   --container-padding: clamp(0.75rem, 0.6rem + 0.75vw, 2rem);
+
+  /* Sidebar width */
+  --sidebar-width: 4rem;
 }
 
 body {

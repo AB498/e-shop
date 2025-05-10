@@ -1,12 +1,16 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import Sidebar from "../components/layout/Sidebar";
+import SidebarClient from "../components/layout/SidebarClient";
 import AuthProvider from "../components/layout/AuthProvider";
 import SessionProvider from "../components/providers/SessionProvider";
 import { CartProvider } from "../context/CartContext";
 import { WishlistProvider } from "../context/WishlistContext";
 import { Toaster } from "react-hot-toast";
 import Navigation from "@/components/layout/Navigation";
+import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
+import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,23 +39,28 @@ export default function RootLayout({ children }) {
             font-family: 'Poppins', sans-serif;
           }`}
         </style>
-        <SessionProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <div className="flex w-full h-screen relative">
-                <div className="flex-none translate-0 relative z-10">
-                  <Sidebar />
+        <ProductQuickViewProvider>
+          <SessionProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <div className="flex w-full h-screen relative">
+                  <div className="flex-none translate-0 relative z-10">
+                    <Suspense fallback={<SidebarClient categories={[]} />}>
+                      <Sidebar />
+                    </Suspense>
+                  </div>
+                  <div className="relative z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
+                    <AuthProvider />
+                    <Navigation />
+                    {children}
+                    <ProductQuickViewModal />
+                  </div>
                 </div>
-                <div className="relative z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
-                  <AuthProvider />
-                  <Navigation />
-                  {children}
-                </div>
-              </div>
-              <Toaster position="top-center" />
-            </WishlistProvider>
-          </CartProvider>
-        </SessionProvider>
+                <Toaster position="top-center" />
+              </WishlistProvider>
+            </CartProvider>
+          </SessionProvider>
+        </ProductQuickViewProvider>
       </body>
     </html>
   );

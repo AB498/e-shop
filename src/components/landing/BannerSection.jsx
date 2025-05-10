@@ -4,7 +4,7 @@ const BannerSection = () => {
   return (
     <section className="container mx-auto py-6 md:py-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-6 md:mt-10">
       {/* Promo Banner */}
-      <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-lg overflow-hidden bg-emerald-300">
+      <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-lg overflow-visible bg-emerald-300">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/images/banner-background.png')" }}
@@ -13,7 +13,7 @@ const BannerSection = () => {
           <img
             src="/images/banners/gluta-product.png"
             alt="Sanil Gluta Product"
-            className="absolute right-[-20px] sm:right-0 bottom-0 h-[100%] sm:h-[110%] md:h-[120%] object-contain z-10"
+            className="absolute right-0 bottom-0 w-1/2 h-[100%] h-[110%] md:h-[120%] object-contain z-10"
           />
           <div className="max-w-[70%] sm:max-w-[60%] z-20">
             <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-semibold leading-tight mb-2 md:mb-4">
@@ -31,7 +31,7 @@ const BannerSection = () => {
       {/* Free Delivery Banner */}
       <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-lg overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-right"
           style={{ backgroundImage: "url('/images/banners/delivery-bg.png')" }}
         />
         <div className="absolute inset-0 flex flex-col justify-center p-4 md:p-8">

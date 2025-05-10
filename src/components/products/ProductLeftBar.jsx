@@ -1,14 +1,41 @@
 'use client'
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PriceRangeFilterWrapper from './PriceRangeFilterWrapper';
 import CheckboxFilterWrapper from './CheckboxFilterWrapper';
+import StarRating from '@/components/ui/StarRating';
 
 const ProductLeftBar = ({ categories = [], isMobile = false }) => {
     const searchParams = useSearchParams();
     const currentCategoryId = searchParams.get('categoryId');
+
+    // State for new products
+    const [newProducts, setNewProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Fetch new products on component mount
+    useEffect(() => {
+        const fetchNewProducts = async () => {
+            try {
+                setIsLoading(true);
+                const response = await fetch('/api/products/new?limit=3');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch new products');
+                }
+                const data = await response.json();
+                setNewProducts(data.products || []);
+            } catch (error) {
+                console.error('Error fetching new products:', error);
+                setNewProducts([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchNewProducts();
+    }, []);
 
     // Array of SVG icons to cycle through for categories
     const categoryIcons = [
@@ -157,53 +184,55 @@ const ProductLeftBar = ({ categories = [], isMobile = false }) => {
                         <div className="w-12 h-1 bg-[#BCE3C9] mb-2"></div>
                     </div>
 
-                    {/* Product Item 1 */}
-                    <div className="border-b border-dashed border-[rgba(0,0,0,0.15)] pb-4 mb-4">
-                        <div className="flex gap-3">
-                            <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
-                                <Image src="/images/product-image.png" alt="Cosrx Salicylic Acid" width={70} height={70} className="object-contain" />
-                            </div>
-                            <div>
-                                <h4 className="text-[#3BB77E] font-bold text-base mb-1">Cosrx Salicylic Acid Daily</h4>
-                                <p className="text-[#7E7E7E] text-base">$99.50</p>
-                                <div className="flex mt-1">
-                                    <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
+                    {isLoading ? (
+                        <div className="py-4 text-center text-[#7E7E7E]">Loading new products...</div>
+                    ) : newProducts.length === 0 ? (
+                        <div className="py-4 text-center text-[#7E7E7E]">No new products found</div>
+                    ) : (
+                        <>
+                            {newProducts.map((product, index) => (
+                                <div
+                                    key={product.id}
+                                    className={`${
+                                        index < newProducts.length - 1
+                                            ? "border-b border-dashed border-[rgba(0,0,0,0.15)] pb-4 mb-4"
+                                            : ""
+                                    }`}
+                                >
+                                    <div className="flex gap-3">
+                                        <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
+                                            <Image
+                                                src={product.image || "/images/product-image.png"}
+                                                alt={product.name}
+                                                width={70}
+                                                height={70}
+                                                className="object-contain"
+                                                unoptimized={product.image && product.image.startsWith('http')}
+                                                onError={(e) => {
+                                                    e.target.src = "/images/product-image.png";
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Link href={`/products/${product.id}`}>
+                                                <h4 className="text-[#3BB77E] font-bold text-base mb-1 hover:underline">
+                                                    {product.name}
+                                                </h4>
+                                            </Link>
+                                            <p className="text-[#7E7E7E] text-base">${parseFloat(product.price).toFixed(2)}</p>
+                                            <div className="flex mt-1">
+                                                <StarRating
+                                                    rating={parseFloat(product.rating) || 4.0}
+                                                    reviewCount={product.reviewCount || 0}
+                                                    size="sm"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Product Item 2 */}
-                    <div className="border-b border-dashed border-[rgba(0,0,0,0.15)] pb-4 mb-4">
-                        <div className="flex gap-3">
-                            <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
-                                <Image src="/images/product-image.png" alt="Snail Truecica" width={70} height={70} className="object-contain" />
-                            </div>
-                            <div>
-                                <h4 className="text-[#3BB77E] font-bold text-base mb-1">Snail Truecica Miracle Repair</h4>
-                                <p className="text-[#7E7E7E] text-base">$89.50</p>
-                                <div className="flex mt-1">
-                                    <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Product Item 3 */}
-                    <div>
-                        <div className="flex gap-3">
-                            <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
-                                <Image src="/images/product-image.png" alt="Tocobo Mint" width={70} height={70} className="object-contain" />
-                            </div>
-                            <div>
-                                <h4 className="text-[#3BB77E] font-bold text-base mb-1">Tocobo Mint Cooling Lip Mask</h4>
-                                <p className="text-[#7E7E7E] text-base">$25</p>
-                                <div className="flex mt-1">
-                                    <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            ))}
+                        </>
+                    )}
                 </div>
             )}
         </div>
