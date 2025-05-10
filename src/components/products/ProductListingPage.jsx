@@ -37,8 +37,11 @@ export default async function ProductListingPage({ searchParams }) {
     <div className="min-h-screen flex flex-col">
 
 
-      <div className="container mx-auto px-4 py-4 md:py-6 flex flex-col md:flex-row gap-6">
+      <div className="container mx-auto px-4 py-4 md:py-6">
         <ProductBreadcrumb categoryId={categoryId} />
+      </div>
+
+      <div className="container mx-auto px-4 py-4 md:py-6 flex flex-col md:flex-row gap-6">
         {/* Left Sidebar */}
         <div className="w-full md:w-64 flex-shrink-0">
           <ProductLeftBarWrapper categories={categories} />
