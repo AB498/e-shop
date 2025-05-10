@@ -7,6 +7,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
+import { getResponsiveTextClass } from '@/utils/responsiveUtils';
 
 const Navigation = () => {
   const { cartCount } = useCart();
@@ -92,7 +93,7 @@ const Navigation = () => {
               </div>
               {wishlistCount > 0 && (
                 <div className="absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#DD2222] flex items-center justify-center">
-                  <span className="text-[8px] sm:text-[10px] text-white font-bold">{wishlistCount}</span>
+                  <span className="text-[7px] sm:text-[8px] text-white font-bold">{wishlistCount}</span>
                 </div>
               )}
             </Link>
@@ -110,7 +111,7 @@ const Navigation = () => {
               </div>
               {cartCount > 0 && (
                 <div className="absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#DD2222] flex items-center justify-center">
-                  <span className="text-[8px] sm:text-[10px] text-white font-bold">{cartCount}</span>
+                  <span className="text-[7px] sm:text-[8px] text-white font-bold">{cartCount}</span>
                 </div>
               )}
             </Link>
@@ -146,7 +147,7 @@ const Navigation = () => {
                 className="object-contain"
               />
             </div>
-            <span className="text-sm lg:text-base font-medium">All Categories</span>
+            <span className={getResponsiveTextClass('sm', { additionalClasses: 'font-medium' })}>All Categories</span>
           </button>
 
           {/* Search Bar */}
@@ -166,7 +167,7 @@ const Navigation = () => {
                     className="object-contain"
                   />
                 </div>
-                <span className="text-sm lg:text-base text-[#333333] font-medium">Products</span>
+                <span className={getResponsiveTextClass('sm', { additionalClasses: 'text-[#333333] font-medium' })}>Products</span>
               </div>
             </Link>
 
@@ -179,7 +180,7 @@ const Navigation = () => {
                   className="object-contain"
                 />
               </div>
-              <span className="text-sm lg:text-base text-[#333333] font-medium">Get 1 Hour Delivery</span>
+              <span className={getResponsiveTextClass('sm', { additionalClasses: 'text-[#333333] font-medium' })}>Get 1 Hour Delivery</span>
             </div>
 
             <div className="hidden xl:flex items-center space-x-2 cursor-pointer">
@@ -191,7 +192,7 @@ const Navigation = () => {
                   className="object-contain"
                 />
               </div>
-              <span className="text-sm lg:text-base text-[#333333] font-medium">Weekly Offer</span>
+              <span className={getResponsiveTextClass('sm', { additionalClasses: 'text-[#333333] font-medium' })}>Weekly Offer</span>
             </div>
           </div>
 
@@ -209,7 +210,7 @@ const Navigation = () => {
             </div>
             {cartCount > 0 && (
               <div className="absolute -top-1 -right-1 w-4 h-4 lg:w-5 lg:h-5 rounded-full bg-[#DD2222] flex items-center justify-center">
-                <span className="text-[10px] lg:text-xs text-white font-bold">{cartCount}</span>
+                <span className="text-[8px] lg:text-[10px] text-white font-bold">{cartCount}</span>
               </div>
             )}
           </Link>

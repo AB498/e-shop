@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import { getResponsiveTextClass } from '@/utils/responsiveUtils';
 
 const PopularCategories = () => {
   const containerRef = useRef(null);
@@ -10,6 +11,8 @@ const PopularCategories = () => {
   // Track if we're at the beginning or end of the carousel
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
+  // Track screen width for responsive design
+  const [screenWidth, setScreenWidth] = useState(0);
   // Number of cards to scroll at once (can be adjusted for smoother or faster scrolling)
   const scrollStep = 1; // Scroll one card at a time
 
@@ -47,12 +50,24 @@ const PopularCategories = () => {
   // Update visible categories based on screen size
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setVisibleCategories(1);
-      } else if (window.innerWidth < 1024) {
+      const width = window.innerWidth;
+      setScreenWidth(width);
+
+      if (width < 480) {
+        // Show just 1 category on small mobile
+        setVisibleCategories(1.2);
+      } else if (width < 640) {
+        // Show 1.5 categories on medium mobile
+        setVisibleCategories(1.5);
+      } else if (width < 768) {
+        // Show 2 categories on larger mobile devices
         setVisibleCategories(2);
-      } else {
+      } else if (width < 1024) {
+        // Show 3 categories on tablets
         setVisibleCategories(3);
+      } else {
+        // Show 4 categories on desktop
+        setVisibleCategories(4);
       }
 
       // Reset scroll position when window is resized to avoid invalid states
@@ -62,14 +77,17 @@ const PopularCategories = () => {
       }
     };
 
-    // Initial call
-    handleResize();
+    // Set initial screen width
+    if (typeof window !== 'undefined') {
+      // Initial call
+      handleResize();
 
-    // Add event listener
-    window.addEventListener('resize', handleResize);
+      // Add event listener
+      window.addEventListener('resize', handleResize);
 
-    // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
+      // Cleanup
+      return () => window.removeEventListener('resize', handleResize);
+    }
   }, []);
 
   // Add scroll event listener to track scroll position
@@ -199,10 +217,10 @@ const PopularCategories = () => {
   };
 
   return (
-    <section className="container mx-auto px-4 py-10">
+    <section className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-10">
       {/* Section title */}
-      <div className="flex items-center justify-start mb-6 relative h-10 gap-4">
-        <h2 className="text-2xl font-semibold">Popular Categories</h2>
+      <div className="flex items-center justify-start mb-3 sm:mb-4 md:mb-6 relative h-7 sm:h-8 md:h-10 gap-2 md:gap-4">
+        <h2 className={getResponsiveTextClass('xl', { weight: 'font-semibold' })}>Popular Categories</h2>
       </div>
 
       {/* Categories Container with Overflow Hidden */}
@@ -210,12 +228,12 @@ const PopularCategories = () => {
         {/* Scrollable Container */}
         <div
           ref={scrollContainerRef}
-          className="relative w-full left-0 p-2 overflow-x-scroll webkit-scrollbar-hidden"
+          className="relative w-full left-0 p-0.5 xs:p-1 sm:p-2 overflow-x-scroll webkit-scrollbar-hidden"
         >
           {/* Categories Flex Container */}
           <div
             ref={containerRef}
-            className="flex gap-6 flex-nowrap w-full"
+            className="flex gap-2 xs:gap-3 sm:gap-4 md:gap-6 flex-nowrap w-full"
             style={{
               width: `calc(${totalCategories} * (100% / ${visibleCategories}))`,
             }}
@@ -223,35 +241,40 @@ const PopularCategories = () => {
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="basis-[25%] flex bg-white rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow flex-none"
-                style={{ width: `calc((100% / ${visibleCategories}) - ${(visibleCategories - 1) * 6 / visibleCategories}px)` }}
+                className="basis-[25%] flex flex-row bg-white rounded-[8px] xs:rounded-[10px] sm:rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow flex-none"
+                style={{ width: `calc((100% / ${visibleCategories}) - ${(visibleCategories - 1) * 3 / visibleCategories}px)` }}
               >
                 {/* Category Image */}
                 <div className="relative w-1/3">
-                  <div className="absolute inset-0 bg-[#B74B4B] rounded-[10px]"></div>
-                  <div className="relative w-full h-full min-h-[200px]">
+                  <div className="absolute inset-0 bg-[#B74B4B] rounded-[8px] sm:rounded-[10px]"></div>
+                  <div className="relative w-full h-full min-h-[120px] xs:min-h-[140px] sm:min-h-[180px] md:min-h-[200px]">
                     <Image
                       src={category.image}
                       alt={category.name}
                       fill
-                      className="object-cover rounded-[10px]"
-                      sizes="(max-width: 768px) 33vw, 25vw"
+                      className="object-cover rounded-[8px] sm:rounded-[10px]"
+                      sizes="(max-width: 480px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 15vw"
                     />
                   </div>
                 </div>
 
                 {/* Category Content */}
-                <div className="p-5 flex-grow">
-                  <h3 className="font-semibold text-lg mb-3 ">{category.name}</h3>
-                  <ul className="space-y-1.5">
-                    {category.subcategories.map((subcategory, index) => (
+                <div className="p-2 xs:p-3 sm:p-4 md:p-5 flex-grow">
+                  <h3 className={getResponsiveTextClass('base', { weight: 'font-semibold' }) + ' mb-1 sm:mb-2 md:mb-3'}>{category.name}</h3>
+                  <ul className="space-y-0.5 sm:space-y-1 md:space-y-1.5">
+                    {category.subcategories.slice(0, screenWidth < 480 ? 3 : category.subcategories.length).map((subcategory, index) => (
                       <li
                         key={index}
-                        className="text-[#535353] text-base hover:text-black transition-colors cursor-pointer "
+                        className={getResponsiveTextClass('xs', { color: 'text-[#535353]' }) + ' hover:text-black transition-colors cursor-pointer'}
                       >
                         {subcategory}
                       </li>
                     ))}
+                    {screenWidth > 0 && screenWidth < 480 && category.subcategories.length > 3 && (
+                      <li className={getResponsiveTextClass('xs', { color: 'text-[#B74B4B]', weight: 'font-medium' }) + ' cursor-pointer'}>
+                        + {category.subcategories.length - 3} more
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -262,7 +285,7 @@ const PopularCategories = () => {
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[7px] w-10 h-10 flex items-center justify-center shadow-md transition-colors ${
+          className={`absolute left-0 top-1/2 transform -translate-x-1/3 sm:-translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${
             isAtStart ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
           }`}
           aria-label="Previous categories"
@@ -271,15 +294,15 @@ const PopularCategories = () => {
           <Image
             src="/images/categories/popular/chevron-left.png"
             alt="Previous"
-            width={20}
-            height={20}
-            className={isAtStart ? 'opacity-50' : ''}
+            width={16}
+            height={16}
+            className={`sm:w-5 sm:h-5 ${isAtStart ? 'opacity-50' : ''}`}
           />
         </button>
 
         <button
           onClick={nextSlide}
-          className={`absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[7px] w-10 h-10 flex items-center justify-center shadow-md transition-colors ${
+          className={`absolute right-0 top-1/2 transform translate-x-1/3 sm:translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${
             isAtEnd ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
           }`}
           aria-label="Next categories"
@@ -288,9 +311,9 @@ const PopularCategories = () => {
           <Image
             src="/images/categories/popular/chevron-right.png"
             alt="Next"
-            width={20}
-            height={20}
-            className={isAtEnd ? 'opacity-50' : ''}
+            width={16}
+            height={16}
+            className={`sm:w-5 sm:h-5 ${isAtEnd ? 'opacity-50' : ''}`}
           />
         </button>
       </div>

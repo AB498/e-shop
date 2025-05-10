@@ -142,22 +142,22 @@ const SidebarClient = ({ categories = [] }) => {
       {/* fake div to make the sidebar occupy width */}
       <div
         className="transition-all duration-300"
-        style={{ width: collapsed ? '60px' : '60px' }}
+        style={{ width: collapsed ? '50px' : '50px' }}
       ></div>
       <div
-        className={`${collapsed ? 'w-[60px]' : 'w-64'} h-screen bg-white border-r border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
-        style={{ width: collapsed ? '60px' : '16rem' }}
+        className={`${collapsed ? 'w-[50px]' : 'w-64'} h-screen bg-white border-r border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
+        style={{ width: collapsed ? '50px' : '16rem' }}
       >
         {/* Menu Toggle Button */}
         <div className="px-3 py-6 flex items-center justify-start">
           <button
             type="button"
-            className="w-8 aspect-square rounded-full bg-[#372B86] flex items-center justify-center cursor-pointer hover:shadow-md transition-shadow"
+            className="p-2 aspect-square rounded-full bg-[#372B86] flex items-center justify-center cursor-pointer  "
             onClick={toggleSidebar}
             title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             <div className={`relative flex items-center justify-center duration-300 ${collapsed ? 'rotate-180' : ''}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-[20px] w-[20px] text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-[15px] w-[15px] text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </div>
@@ -166,7 +166,7 @@ const SidebarClient = ({ categories = [] }) => {
 
         {/* Categories */}
         <nav className="relative">
-          <ul className="space-y-3 px-2 flex flex-col">
+          <ul className="px-2 flex flex-col">
             {/* All Products option */}
             <li
               className={`
@@ -180,8 +180,8 @@ const SidebarClient = ({ categories = [] }) => {
                 href="/products"
                 className="flex items-center w-full"
               >
-                <div className={`w-10 aspect-square h-10 p-2 shrink-0 relative rounded-md overflow-hidden shadow-sm flex-shrink-0 hover:shadow-md transition-shadow`}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div className={`p-2 aspect-square h-10 p-2 shrink-0 relative rounded-md overflow-hidden  flex-shrink-0  `}>
+                  <svg className="h-[px] w-[px] text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10 3H3V10H10V3Z" stroke="#3BB77E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M21 3H14V10H21V3Z" stroke="#3BB77E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M21 14H14V21H21V14Z" stroke="#3BB77E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -210,7 +210,7 @@ const SidebarClient = ({ categories = [] }) => {
                   href={getCategoryUrl(category)}
                   className="flex items-center w-full"
                 >
-                  <div className={`w-10 aspect-square h-10 p-2 shrink-0 relative rounded-md overflow-hidden shadow-sm flex-shrink-0 hover:shadow-md transition-shadow`}>
+                  <div className={`p-2 aspect-square h-10 p-2 shrink-0 relative rounded-md overflow-hidden  flex-shrink-0  `}>
                     <Image
                       src={category.image}
                       alt={category.name}

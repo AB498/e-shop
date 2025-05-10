@@ -13,7 +13,7 @@ const ProductShowcase = () => {
   const lifestyleQueryString = `categoryId=${showcaseCategories.lifestyle.join(',')}&page=1`;
 
   return (
-    <section className="container mx-auto px-4 py-12">
+    <section className="container mx-auto py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* First Product Image */}
         <Link href={`/products?${fashionQueryString}`} className="block">

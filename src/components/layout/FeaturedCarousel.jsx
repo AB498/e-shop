@@ -114,14 +114,14 @@ const FeaturedCarousel = () => {
   };
 
   return (
-    <div className="relative w-full h-[440px] mb-10 mt-6 overflow-visible">
+    <div className="relative w-full mb-10 mt-6 overflow-visible">
       {/* Carousel Container */}
-      <div ref={containerRef} className="absolute inset-0 flex items-center justify-center w-full" >
+      <div ref={containerRef} className="w-full aspect-video max-h-[480px] inset-0 flex items-center justify-center w-full" >
         {/* All Slides */}
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className="absolute w-1/3 aspect-video"
+            className="absolute w-[40%] aspect-video"
             style={getSlideStyle(index)}
           >
             <div

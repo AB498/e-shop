@@ -14,19 +14,20 @@ const ProductImageGallery = ({ image, name, discountPercentage = 0 }) => {
   ];
 
   return (
-    <div className="w-full md:w-1/2 lg:w-2/5">
+    <div className="w-full md:w-1/2 lg:w-2/5 fluid-p">
       {/* Main Product Image */}
-      <div className="relative h-[400px] mb-4 border border-[#ECECEC] rounded-[15px] overflow-hidden bg-white">
+      <div className="relative aspect-square mb-4 border border-[#ECECEC] rounded-[15px] overflow-hidden bg-white">
         <Image
           src={productImage}
           alt={name || "Product"}
           fill
           className="object-contain"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority
         />
         {discountPercentage > 0 && (
           <div className="absolute top-4 left-4">
-            <div className="bg-[#E12625] text-white text-sm font-bold py-1 px-3 rounded-[5px]">
+            <div className="bg-[#E12625] text-white text-responsive-xs font-bold py-1 px-3 rounded-[5px]">
               {discountPercentage}% Off
             </div>
           </div>
@@ -34,22 +35,26 @@ const ProductImageGallery = ({ image, name, discountPercentage = 0 }) => {
       </div>
 
       {/* Thumbnail Images */}
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="flex fluid-gap overflow-x-auto pb-2 justify-center md:justify-start">
         {thumbnails.map((thumbnail) => (
           <div
             key={thumbnail.id}
-            className={`relative w-24 h-24 border rounded-[10px] overflow-hidden flex-shrink-0 ${
+            className={`relative border rounded-[10px] overflow-hidden flex-shrink-0 ${
               thumbnail.active
                 ? 'border-[#3BB77E] shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)]'
                 : 'border-[#ECECEC]'
             }`}
+            style={{
+              width: 'clamp(60px, 15vw, 96px)',
+              height: 'clamp(60px, 15vw, 96px)'
+            }}
           >
             <Image
               src={thumbnail.src}
               alt={`${name || "Product"} Thumbnail ${thumbnail.id}`}
               fill
               className="object-contain"
-              sizes="96px"
+              sizes="(max-width: 768px) 15vw, 96px"
             />
           </div>
         ))}

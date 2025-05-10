@@ -1,7 +1,6 @@
 'use client';
 
-
-import Navigation from "../components/layout/Navigation";
+// Navigation is imported in the layout.js file
 import Hero from "../components/layout/Hero";
 import FeatureIcons from "../components/layout/FeatureIcons";
 import PopularCategories from "../components/categories/PopularCategories";
@@ -16,48 +15,56 @@ import VegetableAndFruitsClient from "@/components/categories/VegetableAndFruits
 import BeautyMakeupSectionClient from "@/components/categories/BeautyMakeupSectionClient";
 import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
 import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
+import ResponsiveContainer from "@/components/ui/ResponsiveContainer";
 
+/**
+ * Landing page component that uses responsive design system
+ *
+ * @returns {JSX.Element}
+ */
 export default function LandingPage() {
     return (
         <ProductQuickViewProvider>
-            <div className="w-full">
-                <div className="container mx-auto">
-                    {/* Hero Section */}
-                    <Hero />
+            <div className="w-full px-4 md:px-12 container mx-auto">
+                {/* Hero Section */}
+                <Hero />
 
-                    {/* Feature Icons */}
-                    <FeatureIcons />
+                {/* Feature Icons */}
+                <FeatureIcons />
 
-                    {/* Popular Categories */}
-                    <PopularCategories />
+                {/* Popular Categories */}
+                <PopularCategories />
 
-                    <FeaturedCarousel />
+                {/* Featured Carousel */}
+                <FeaturedCarousel />
 
-                    {/* Discounted Products */}
-                    <WeeklyDiscountsClient />
-                    {/* Discounted Products */}
-                    <VegetableAndFruitsClient />
+                {/* Discounted Products */}
+                <WeeklyDiscountsClient />
 
-                    {/* Banner Section */}
-                    <BannerSection />
+                {/* Vegetables & Fruits */}
+                <VegetableAndFruitsClient />
 
-                    {/* Beauty & Makeup Section */}
-                    <BeautyMakeupSectionClient />
+                {/* Banner Section */}
+                <BannerSection />
 
-                    <DealsOfTheDay />
+                {/* Beauty & Makeup Section */}
+                <BeautyMakeupSectionClient />
 
-                    {/* Product Showcase */}
-                    <ProductShowcase />
-                </div>
-                {/* Footer */}
-                <Footer />
+                {/* Deals Of The Day */}
+                <DealsOfTheDay />
 
-                {/* Copyright */}
-                <Copyright />
+                {/* Product Showcase */}
+                <ProductShowcase />
+
 
                 {/* Product Quick View Modal */}
                 <ProductQuickViewModal />
             </div>
+            {/* Footer */}
+            <Footer />
+
+            {/* Copyright */}
+            <Copyright />
         </ProductQuickViewProvider>
     );
 }
