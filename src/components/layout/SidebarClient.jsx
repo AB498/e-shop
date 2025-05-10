@@ -166,7 +166,7 @@ const SidebarClient = ({ categories = [] }) => {
 
         {/* Categories */}
         <nav className="relative">
-          <ul className="px-2 flex flex-col">
+          <ul className="px-2 space-y-1 md:space-y-2 flex flex-col">
             {/* All Products option */}
             <li
               className={`

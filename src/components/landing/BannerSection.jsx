@@ -2,7 +2,7 @@
 
 const BannerSection = () => {
   return (
-    <section className="container mx-auto px-4 py-6 md:py-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-6 md:mt-10">
+    <section className="container mx-auto py-6 md:py-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-6 md:mt-10">
       {/* Promo Banner */}
       <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-lg overflow-hidden bg-emerald-300">
         <div
