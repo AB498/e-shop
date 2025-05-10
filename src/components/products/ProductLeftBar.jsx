@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import PriceRangeFilterWrapper from './PriceRangeFilterWrapper';
 import CheckboxFilterWrapper from './CheckboxFilterWrapper';
 
-const ProductLeftBar = ({ categories = [] }) => {
+const ProductLeftBar = ({ categories = [], isMobile = false }) => {
     const searchParams = useSearchParams();
     const currentCategoryId = searchParams.get('categoryId');
 
@@ -61,16 +61,29 @@ const ProductLeftBar = ({ categories = [] }) => {
         return `/products?${params.toString()}`;
     };
 
+    // Determine if we should show the "New Products" section
+    // Hide it on mobile to save space
+    const showNewProducts = !isMobile;
+
+    // Use smaller text and padding for mobile view
+    const sectionClass = isMobile
+        ? "bg-white rounded-[10px] p-3 shadow-sm mb-4"
+        : "bg-white rounded-[15px] p-5 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] mb-6";
+
+    const headingClass = isMobile
+        ? "text-[#253D4E] text-lg font-bold mb-2"
+        : "text-[#253D4E] text-2xl font-bold mb-2";
+
     return (
-        <div className="w-full md:w-72 flex-shrink-0">
+        <div className={`w-full ${isMobile ? "" : "md:w-72"} flex-shrink-0`}>
             {/* Category Section */}
-            <div className="bg-white rounded-[15px] p-5 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] mb-6">
-                <div className="border-b border-[#ECECEC] mb-4">
-                    <h3 className="text-[#253D4E] text-2xl font-bold mb-2">Category</h3>
+            <div className={sectionClass}>
+                <div className="border-b border-[#ECECEC] mb-3">
+                    <h3 className={headingClass}>Category</h3>
                     <div className="w-12 h-1 bg-[#BCE3C9] mb-2"></div>
                 </div>
 
-                <div className="space-y-2">
+                <div className={`${isMobile ? "max-h-40 overflow-y-auto" : ""} space-y-1`}>
                     {categories && categories.length > 0 ? (
                         categories.map((category, index) => (
                             <Link
@@ -82,7 +95,7 @@ const ProductLeftBar = ({ categories = [] }) => {
                             >
                                 <div className="flex items-center justify-between p-2 border border-[#F2F3F4] rounded-md">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-6 h-6 flex items-center justify-center">
+                                        <div className="w-5 h-5 flex items-center justify-center">
                                             {categoryIcons[index % categoryIcons.length]}
                                         </div>
                                         <span className={`text-sm ${
@@ -106,9 +119,9 @@ const ProductLeftBar = ({ categories = [] }) => {
             </div>
 
             {/* Filter by Price Section */}
-            <div className="bg-white rounded-[15px] p-5 mb-6 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)]">
-                <div className="border-b border-[#ECECEC] mb-4">
-                    <h3 className="text-[#253D4E] text-2xl font-bold mb-2">Filter by price</h3>
+            <div className={sectionClass}>
+                <div className="border-b border-[#ECECEC] mb-3">
+                    <h3 className={headingClass}>Filter by price</h3>
                     <div className="w-12 h-1 bg-[#BCE3C9] mb-2"></div>
                 </div>
 
@@ -116,14 +129,14 @@ const ProductLeftBar = ({ categories = [] }) => {
                 <PriceRangeFilterWrapper />
 
                 {/* Color Filter */}
-                <div className="mb-4">
-                    <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-3">Color</h4>
+                <div className="mb-3">
+                    <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-2">Color</h4>
                     <CheckboxFilterWrapper title="Color" type="color" options={colorOptions} />
                 </div>
 
                 {/* Item Condition Filter */}
-                <div className="mb-6">
-                    <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-3">Item Condition</h4>
+                <div className="mb-4">
+                    <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-2">Item Condition</h4>
                     <CheckboxFilterWrapper title="Item Condition" type="condition" options={conditionOptions} />
                 </div>
 
@@ -135,61 +148,64 @@ const ProductLeftBar = ({ categories = [] }) => {
                     CLEAR FILTERS
                 </Link>
             </div>
-            {/* New Products Section */}
-            <div className="bg-white rounded-[15px] p-5 mb-6 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)]">
-                <div className="border-b border-[#ECECEC] mb-4">
-                    <h3 className="text-[#253D4E] text-2xl font-bold mb-2">New products</h3>
-                    <div className="w-12 h-1 bg-[#BCE3C9] mb-2"></div>
-                </div>
 
-                {/* Product Item 1 */}
-                <div className="border-b border-dashed border-[rgba(0,0,0,0.15)] pb-4 mb-4">
-                    <div className="flex gap-3">
-                        <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
-                            <Image src="/images/product-image.png" alt="Cosrx Salicylic Acid" width={70} height={70} className="object-contain" />
+            {/* New Products Section - Only show on desktop */}
+            {showNewProducts && (
+                <div className={sectionClass}>
+                    <div className="border-b border-[#ECECEC] mb-4">
+                        <h3 className={headingClass}>New products</h3>
+                        <div className="w-12 h-1 bg-[#BCE3C9] mb-2"></div>
+                    </div>
+
+                    {/* Product Item 1 */}
+                    <div className="border-b border-dashed border-[rgba(0,0,0,0.15)] pb-4 mb-4">
+                        <div className="flex gap-3">
+                            <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
+                                <Image src="/images/product-image.png" alt="Cosrx Salicylic Acid" width={70} height={70} className="object-contain" />
+                            </div>
+                            <div>
+                                <h4 className="text-[#3BB77E] font-bold text-base mb-1">Cosrx Salicylic Acid Daily</h4>
+                                <p className="text-[#7E7E7E] text-base">$99.50</p>
+                                <div className="flex mt-1">
+                                    <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h4 className="text-[#3BB77E] font-bold text-base mb-1">Cosrx Salicylic Acid Daily</h4>
-                            <p className="text-[#7E7E7E] text-base">$99.50</p>
-                            <div className="flex mt-1">
-                                <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
+                    </div>
+
+                    {/* Product Item 2 */}
+                    <div className="border-b border-dashed border-[rgba(0,0,0,0.15)] pb-4 mb-4">
+                        <div className="flex gap-3">
+                            <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
+                                <Image src="/images/product-image.png" alt="Snail Truecica" width={70} height={70} className="object-contain" />
+                            </div>
+                            <div>
+                                <h4 className="text-[#3BB77E] font-bold text-base mb-1">Snail Truecica Miracle Repair</h4>
+                                <p className="text-[#7E7E7E] text-base">$89.50</p>
+                                <div className="flex mt-1">
+                                    <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Product Item 3 */}
+                    <div>
+                        <div className="flex gap-3">
+                            <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
+                                <Image src="/images/product-image.png" alt="Tocobo Mint" width={70} height={70} className="object-contain" />
+                            </div>
+                            <div>
+                                <h4 className="text-[#3BB77E] font-bold text-base mb-1">Tocobo Mint Cooling Lip Mask</h4>
+                                <p className="text-[#7E7E7E] text-base">$25</p>
+                                <div className="flex mt-1">
+                                    <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                {/* Product Item 2 */}
-                <div className="border-b border-dashed border-[rgba(0,0,0,0.15)] pb-4 mb-4">
-                    <div className="flex gap-3">
-                        <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
-                            <Image src="/images/product-image.png" alt="Snail Truecica" width={70} height={70} className="object-contain" />
-                        </div>
-                        <div>
-                            <h4 className="text-[#3BB77E] font-bold text-base mb-1">Snail Truecica Miracle Repair</h4>
-                            <p className="text-[#7E7E7E] text-base">$89.50</p>
-                            <div className="flex mt-1">
-                                <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Product Item 3 */}
-                <div>
-                    <div className="flex gap-3">
-                        <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
-                            <Image src="/images/product-image.png" alt="Tocobo Mint" width={70} height={70} className="object-contain" />
-                        </div>
-                        <div>
-                            <h4 className="text-[#3BB77E] font-bold text-base mb-1">Tocobo Mint Cooling Lip Mask</h4>
-                            <p className="text-[#7E7E7E] text-base">$25</p>
-                            <div className="flex mt-1">
-                                <Image src="/images/star-rating.png" alt="Rating" width={80} height={15} className="object-contain" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            )}
         </div>
     );
 };

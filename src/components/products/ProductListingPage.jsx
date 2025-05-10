@@ -10,6 +10,7 @@ import Footer from '../layout/Footer';
 import Copyright from '../layout/Copyright';
 import { getAllCategories } from '@/lib/actions/products';
 import BottomBanner from './BottomBanner';
+import MobileFilterButton from './MobileFilterButton';
 
 // This is a Server Component that fetches data
 export default async function ProductListingPage({ searchParams }) {
@@ -35,36 +36,41 @@ export default async function ProductListingPage({ searchParams }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-
-
       <div className="container mx-auto px-4 py-4 md:py-6">
         <ProductBreadcrumb categoryId={categoryId} />
       </div>
 
-      <div className="container mx-auto px-4 py-4 md:py-6 flex flex-col md:flex-row gap-6">
-        {/* Left Sidebar */}
-        <div className="w-full md:w-64 flex-shrink-0">
-          <ProductLeftBarWrapper categories={categories} />
+      <div className="container mx-auto px-4 py-4 md:py-6 relative">
+        {/* Mobile Filter Button - Only visible on mobile */}
+        <div className="md:hidden mb-4">
+          <MobileFilterButton />
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 bg-[#FAF8F5] px-6">
-          {/* Product Listing */}
-          <ProductList
-            page={page}
-            limit={limit}
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-            categoryId={categoryId}
-            search={search}
-            minPrice={minPrice}
-            maxPrice={maxPrice}
-            color={color}
-            condition={condition}
-          />
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Left Sidebar - Hidden by default on mobile, shown via MobileFilterButton */}
+          <div className="hidden md:block md:w-64 flex-shrink-0">
+            <ProductLeftBarWrapper categories={categories} isMobile={false} />
+          </div>
 
-          {/* Deals Of The Day Section */}
-          <DealsOfTheDay />
+          {/* Main Content */}
+          <div className="flex-1 bg-[#FAF8F5] px-0 md:px-6">
+            {/* Product Listing */}
+            <ProductList
+              page={page}
+              limit={limit}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              categoryId={categoryId}
+              search={search}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              color={color}
+              condition={condition}
+            />
+
+            {/* Deals Of The Day Section */}
+            <DealsOfTheDay />
+          </div>
         </div>
       </div>
 

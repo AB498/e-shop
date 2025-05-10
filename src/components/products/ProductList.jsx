@@ -44,27 +44,32 @@ export default async function ProductList({
   });
 
   return (
-    <div>
+    <div className="w-full">
       {/* Product List Controls (Sort and Limit) */}
       <ProductListControlsWrapper totalProducts={pagination.totalProducts} />
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+      {/* Product Grid - Improved mobile responsiveness */}
+      <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 md:gap-5 lg:gap-6 mb-4 md:mb-8 mx-auto">
         {products.length > 0 ? (
           products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              showAddToCart={true}
-            />
+            <div key={product.id} className="flex justify-stretch">
+              <ProductCard
+                product={product}
+                showAddToCart={true}
+              />
+            </div>
           ))
         ) : (
-          <EmptyProductState search={search} />
+          <div className="col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-4">
+            <EmptyProductState search={search} />
+          </div>
         )}
       </div>
 
       {/* Pagination */}
-      <PaginationWrapper pagination={pagination} />
+      <div className="mt-4 md:mt-6">
+        <PaginationWrapper pagination={pagination} />
+      </div>
     </div>
   );
 }

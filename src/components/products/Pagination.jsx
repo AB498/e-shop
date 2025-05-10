@@ -9,9 +9,17 @@ const Pagination = ({ pagination }) => {
 
   const { page, totalPages, hasNextPage, hasPrevPage } = pagination;
 
+  // Adjust maxVisiblePages based on screen size
+  const getMaxVisiblePages = () => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 640 ? 3 : 5;
+    }
+    return 5; // Default for SSR
+  };
+
   // Generate array of page numbers for pagination
   const pageNumbers = [];
-  const maxVisiblePages = 5;
+  const maxVisiblePages = getMaxVisiblePages();
 
   if (totalPages <= maxVisiblePages) {
     // If we have fewer pages than the max visible, show all pages
@@ -23,12 +31,13 @@ const Pagination = ({ pagination }) => {
     pageNumbers.push(1);
 
     // Calculate start and end of visible page range
-    let startPage = Math.max(2, page - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 3);
+    const middlePages = maxVisiblePages - 2; // Subtract first and last page
+    let startPage = Math.max(2, page - Math.floor(middlePages / 2));
+    let endPage = Math.min(totalPages - 1, startPage + middlePages - 1);
 
     // Adjust if we're near the end
-    if (endPage - startPage < maxVisiblePages - 3) {
-      startPage = Math.max(2, endPage - (maxVisiblePages - 3));
+    if (endPage - startPage < middlePages - 1) {
+      startPage = Math.max(2, endPage - (middlePages - 1));
     }
 
     // Add ellipsis if needed
@@ -64,47 +73,51 @@ const Pagination = ({ pagination }) => {
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex justify-center items-center space-x-2 mb-10">
+    <div className="flex justify-center items-center space-x-1 sm:space-x-2 mb-6 sm:mb-10">
       <button
         onClick={() => hasPrevPage && goToPage(page - 1)}
-        className={`w-10 h-10 rounded-full ${
+        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full ${
           hasPrevPage
             ? 'bg-[#F2F3F4] hover:bg-[#E5E7E9] cursor-pointer'
             : 'bg-[#F2F3F4] opacity-50 cursor-not-allowed'
         } flex items-center justify-center transition-colors`}
         disabled={!hasPrevPage}
+        aria-label="Previous page"
       >
-        <Image src="/images/navigation/chevron-left.png" alt="Previous" width={16} height={16} />
+        <Image src="/images/navigation/chevron-left.png" alt="Previous" width={12} height={12} className="sm:w-4 sm:h-4" />
       </button>
 
       {pageNumbers.map((pageNum, index) => (
         pageNum === '...' ? (
-          <span key={`ellipsis-${index}`} className="text-[#7E7E7E] font-bold tracking-widest">...</span>
+          <span key={`ellipsis-${index}`} className="text-[#7E7E7E] font-bold tracking-widest text-xs sm:text-base">...</span>
         ) : (
           <button
             key={`page-${pageNum}`}
             onClick={() => goToPage(pageNum)}
-            className={`w-10 h-10 rounded-full ${
+            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full ${
               pageNum === page
                 ? 'bg-[#006B51] text-white'
                 : 'bg-[#F2F3F4] text-[#7E7E7E] hover:bg-[#E5E7E9]'
             } flex items-center justify-center transition-colors`}
+            aria-label={`Go to page ${pageNum}`}
+            aria-current={pageNum === page ? 'page' : undefined}
           >
-            <span className="font-bold">{pageNum}</span>
+            <span className="font-bold text-xs sm:text-base">{pageNum}</span>
           </button>
         )
       ))}
 
       <button
         onClick={() => hasNextPage && goToPage(page + 1)}
-        className={`w-10 h-10 rounded-full ${
+        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full ${
           hasNextPage
             ? 'bg-[#F2F3F4] hover:bg-[#E5E7E9] cursor-pointer'
             : 'bg-[#F2F3F4] opacity-50 cursor-not-allowed'
         } flex items-center justify-center transition-colors`}
         disabled={!hasNextPage}
+        aria-label="Next page"
       >
-        <Image src="/images/navigation/chevron-right.png" alt="Next" width={16} height={16} />
+        <Image src="/images/navigation/chevron-right.png" alt="Next" width={12} height={12} className="sm:w-4 sm:h-4" />
       </button>
     </div>
   );
