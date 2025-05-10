@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-
-import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Copyright from '@/components/layout/Copyright';
 import ContactHeader from '@/components/contact/ContactHeader';
@@ -10,19 +8,18 @@ import ContactIntro from '@/components/contact/ContactIntro';
 import ContactInfoCards from '@/components/contact/ContactInfoCards';
 import ContactForm from '@/components/contact/ContactForm';
 import NewsletterSection from '@/components/contact/NewsletterSection';
+import ResponsiveContainer from '@/components/ui/ResponsiveContainer';
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
-      
-
       {/* Header with Breadcrumb */}
-      <div className="container mx-auto py-16">
+      <div className="container mx-auto py-4 sm:py-8 md:py-12 lg:py-16 px-4 sm:px-6 md:px-8">
         <ContactHeader />
       </div>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto">
+      <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
         {/* Intro Section */}
         <ContactIntro />
 
@@ -34,13 +31,11 @@ export default function ContactPage() {
       </main>
 
       {/* Footer with Newsletter */}
-      <div className="bg-[url('/images/footer/footer-bg.png')] bg-cover bg-center py-12">
-        <div className="container mx-auto px-4">
-          <NewsletterSection />
-          <Footer />
-        </div>
-        <Copyright />
-      </div>
+      <ResponsiveContainer>
+        <NewsletterSection />
+      </ResponsiveContainer>
+      <Footer />
+      <Copyright />
     </div>
   );
 }

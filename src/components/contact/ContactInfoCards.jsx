@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ContactInfoCard from './ContactInfoCard';
+import ResponsiveContainer from '@/components/ui/ResponsiveContainer';
 
 const ContactInfoCards = () => {
   const contactInfo = [
@@ -23,9 +24,9 @@ const ContactInfoCards = () => {
   ];
 
   return (
-    <section className="py-6">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <section className="py-4 sm:py-5 md:py-6">
+      <ResponsiveContainer>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           {contactInfo.map((info, index) => (
             <ContactInfoCard
               key={index}
@@ -35,7 +36,7 @@ const ContactInfoCards = () => {
             />
           ))}
         </div>
-      </div>
+      </ResponsiveContainer>
     </section>
   );
 };
