@@ -20,7 +20,7 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
+      
 
       {/* Header - Breadcrumb - Title */}
       <div className="bg-[#FAF8F5] py-8 md:py-12">

@@ -18,7 +18,7 @@ export default async function LoginPage({ searchParams }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
+      
 
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4 border-b border-[#ECECEC]">

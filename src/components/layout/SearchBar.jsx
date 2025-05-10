@@ -44,18 +44,19 @@ const SearchBar = ({ placeholder = "Search for products (e.g. eggs, milk, potato
   };
 
   return (
-    <form onSubmit={handleSearch} className="relative flex-grow max-w-2xl">
-      <div className="flex items-center border border-[#D2D2D2] rounded-full px-4 py-2 bg-white">
+    <form onSubmit={handleSearch} className="relative w-full">
+      <div className="flex items-center border border-[#D2D2D2] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 bg-white">
         <input
           type="text"
           placeholder={placeholder}
-          className="flex-grow bg-transparent outline-none text-[#555555] text-base"
+          className="flex-grow bg-transparent outline-none text-[#555555] text-sm sm:text-base"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button
           type="submit"
-          className="relative w-5 h-5 ml-2 cursor-pointer"
+          className="relative w-4 h-4 sm:w-5 sm:h-5 ml-2 cursor-pointer"
+          aria-label="Search"
         >
           <Image
             src="/images/navigation/search.png"

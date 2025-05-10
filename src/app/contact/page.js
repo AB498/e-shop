@@ -14,7 +14,7 @@ import NewsletterSection from '@/components/contact/NewsletterSection';
 export default function ContactPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
-      <Navigation />
+      
 
       {/* Header with Breadcrumb */}
       <div className="container mx-auto py-16">

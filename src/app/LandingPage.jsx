@@ -21,9 +21,6 @@ export default function LandingPage() {
     return (
         <ProductQuickViewProvider>
             <div className="w-full">
-                {/* Navigation */}
-                <Navigation />
-
                 <div className="container mx-auto">
                     {/* Hero Section */}
                     <Hero />

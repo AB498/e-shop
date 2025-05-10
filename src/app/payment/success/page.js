@@ -24,7 +24,7 @@ function SuccessContent() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
+      
 
       <div className="container mx-auto px-4 py-16 flex-grow">
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8 text-center">
@@ -78,7 +78,7 @@ function SuccessContent() {
 function SuccessPageSkeleton() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
+      
       <div className="container mx-auto px-4 py-16 flex-grow">
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8 text-center">
           <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-6 animate-pulse"></div>

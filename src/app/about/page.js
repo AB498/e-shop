@@ -12,7 +12,7 @@ import AboutQuote from '@/components/about/AboutQuote';
 export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
-      <Navigation />
+      
 
       {/* Header with Breadcrumb */}
       <div className="container mx-auto py-8">

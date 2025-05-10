@@ -18,7 +18,7 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
+      
 
       <div className="container mx-auto border border-[rgba(0,0,0,0.1)] rounded-lg p-8 mt-8 bg-white">
         {cart.length > 0 ? (

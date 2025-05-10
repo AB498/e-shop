@@ -6,6 +6,7 @@ import SessionProvider from "../components/providers/SessionProvider";
 import { CartProvider } from "../context/CartContext";
 import { WishlistProvider } from "../context/WishlistContext";
 import { Toaster } from "react-hot-toast";
+import Navigation from "@/components/layout/Navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,12 +38,13 @@ export default function RootLayout({ children }) {
         <SessionProvider>
           <CartProvider>
             <WishlistProvider>
-              <div className="flex w-full relative">
+              <div className="flex w-full h-screen relative">
                 <div className="flex-none translate-0 relative z-10">
                   <Sidebar />
                 </div>
-                <div className="z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
+                <div className="relative z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
                   <AuthProvider />
+                  <Navigation />
                   {children}
                 </div>
               </div>
