@@ -12,6 +12,8 @@ import Navigation from "@/components/layout/Navigation";
 import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
 import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
 
+export const dynamic = 'force-dynamic';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
