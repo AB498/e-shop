@@ -71,7 +71,7 @@ const FeatureIcons = () => {
                 />
               </div>
               <p
-                className="text-center font-semibold text-[14px] sm:text-[16px] md:text-[18px] leading-[1.3] sm:leading-[1.36]"
+                className="text-center font-semibold text-md sm:text-[16px] md:text-[18px] leading-[1.3] sm:leading-[1.36]"
                 style={{ whiteSpace: 'pre-line' }}
               >
                 {feature.text}

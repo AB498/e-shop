@@ -217,7 +217,7 @@ const PopularCategories = () => {
   };
 
   return (
-    <section className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-10">
+    <section className="container mx-auto py-4 sm:py-6 md:py-10">
       {/* Section title */}
       <div className="flex items-center justify-start mb-3 sm:mb-4 md:mb-6 relative h-7 sm:h-8 md:h-10 gap-2 md:gap-4">
         <h2 className={getResponsiveTextClass('xl', { weight: 'font-semibold' })}>Popular Categories</h2>
@@ -285,7 +285,7 @@ const PopularCategories = () => {
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className={`absolute left-0 top-1/2 transform -translate-x-1/3 sm:-translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${
+          className={`hidden sm:flex absolute left-0 top-1/2 transform -translate-x-1/3 sm:-translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${
             isAtStart ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
           }`}
           aria-label="Previous categories"
@@ -302,7 +302,7 @@ const PopularCategories = () => {
 
         <button
           onClick={nextSlide}
-          className={`absolute right-0 top-1/2 transform translate-x-1/3 sm:translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${
+          className={`hidden sm:flex absolute right-0 top-1/2 transform translate-x-1/3 sm:translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${
             isAtEnd ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
           }`}
           aria-label="Next categories"

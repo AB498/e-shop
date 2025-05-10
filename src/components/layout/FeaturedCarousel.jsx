@@ -149,7 +149,7 @@ const FeaturedCarousel = () => {
       {/* Navigation Arrows - Positioned outside the component */}
       <button
         onClick={prevSlide}
-        className="absolute -left-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+        className="hidden sm:flex absolute -left-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
         aria-label="Previous slide"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,7 +159,7 @@ const FeaturedCarousel = () => {
 
       <button
         onClick={nextSlide}
-        className="absolute -right-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+        className="hidden sm:flex absolute -right-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
         aria-label="Next slide"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
