@@ -17,7 +17,7 @@ export default function CartPage() {
   const { cart } = useCart();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col px-4 py-8">
       
 
       <div className="container mx-auto border border-[rgba(0,0,0,0.1)] rounded-lg p-8 mt-8 bg-white">
@@ -53,7 +53,7 @@ export default function CartPage() {
         )}
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto">
         <DealsOfTheDay />
       </div>
 

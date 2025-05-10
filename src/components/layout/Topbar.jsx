@@ -51,7 +51,7 @@ const Topbar = ({ serverSession, serverAuthStatus }) => {
   }
 
   return (
-    <div className="border-b border-[#E3E3E3]">
+    <div className="border-b border-[#E3E3E3] z-30 relative">
       <div className="container mx-auto px-4 py-2">
         {/* Mobile View */}
         <div className="md:hidden flex justify-between items-center">

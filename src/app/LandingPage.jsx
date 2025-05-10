@@ -25,7 +25,7 @@ import ResponsiveContainer from "@/components/ui/ResponsiveContainer";
 export default function LandingPage() {
     return (
         <ProductQuickViewProvider>
-            <div className="w-full px-6 md:px-12 container mx-auto">
+            <div className="relative z-0 w-full px-6 md:px-12 container mx-auto">
                 {/* Hero Section */}
                 <Hero />
 
