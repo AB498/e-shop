@@ -109,12 +109,12 @@ const PopularCategories = () => {
     }
   }, []);
 
-  // Category data based on Figma design
+  // Category data with specific Unsplash images
   const categories = [
     {
       id: 1,
       name: "Hot Offers",
-      image: "/images/categories/popular/hot-offers.png",
+      image: "https://images.unsplash.com/photo-1607082350899-7e105aa886ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600&q=80",
       subcategories: [
         "Offer 1",
         "Offer 2",
@@ -126,7 +126,7 @@ const PopularCategories = () => {
     {
       id: 2,
       name: "Top Brands",
-      image: "/images/categories/popular/top-brands.png",
+      image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600&q=80",
       subcategories: [
         "Brand 1",
         "Brand 2",
@@ -137,7 +137,7 @@ const PopularCategories = () => {
     {
       id: 3,
       name: "Makeup",
-      image: "/images/categories/popular/makeup.png",
+      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600&q=80",
       subcategories: [
         "Lipstick",
         "Foundation",
@@ -150,7 +150,7 @@ const PopularCategories = () => {
     {
       id: 4,
       name: "Health and beauty",
-      image: "/images/categories/popular/health-beauty.png",
+      image: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600&q=80",
       subcategories: [
         "Skincare",
         "Supplements",
@@ -285,36 +285,28 @@ const PopularCategories = () => {
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className={`hidden sm:flex absolute left-0 top-1/2 transform -translate-x-1/3 sm:-translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${
-            isAtStart ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
-          }`}
+          className={`hidden sm:flex absolute left-0 top-1/2 transform -translate-x-1/3 sm:-translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${isAtStart ? 'cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
+            }`}
           aria-label="Previous categories"
           disabled={isAtStart}
         >
-          <Image
-            src="/images/categories/popular/chevron-left.png"
-            alt="Previous"
-            width={16}
-            height={16}
-            className={`sm:w-5 sm:h-5 ${isAtStart ? 'opacity-50' : ''}`}
-          />
+
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
         </button>
 
         <button
           onClick={nextSlide}
-          className={`hidden sm:flex absolute right-0 top-1/2 transform translate-x-1/3 sm:translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${
-            isAtEnd ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
-          }`}
+          className={`hidden sm:flex absolute right-0 top-1/2 transform translate-x-1/3 sm:translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${isAtEnd ? 'cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
+            }`}
           aria-label="Next categories"
           disabled={isAtEnd}
         >
-          <Image
-            src="/images/categories/popular/chevron-right.png"
-            alt="Next"
-            width={16}
-            height={16}
-            className={`sm:w-5 sm:h-5 ${isAtEnd ? 'opacity-50' : ''}`}
-          />
+
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         </button>
       </div>
 

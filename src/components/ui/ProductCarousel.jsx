@@ -141,13 +141,9 @@ export default function ProductCarousel({
                   className="bg-white left-0 rounded-lg p-2 sm:p-3 shadow-lg hover:bg-gray-50 transition-colors"
                   aria-label="Previous slide"
                 >
-                  <Image
-                    src="/images/categories/arrow-right.png"
-                    alt="Previous"
-                    width={12}
-                    height={12}
-                    className="w-3 h-3 sm:w-4 sm:h-4"
-                  />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
                 </button>
               </div>
 
@@ -157,13 +153,9 @@ export default function ProductCarousel({
                   className="bg-white rounded-lg p-2 sm:p-3 shadow-lg hover:bg-gray-50 transition-colors"
                   aria-label="Next slide"
                 >
-                  <Image
-                    src="/images/categories/arrow-left.png"
-                    alt="Next"
-                    width={12}
-                    height={12}
-                    className="w-3 h-3 sm:w-4 sm:h-4"
-                  />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </button>
               </div>
             </>
