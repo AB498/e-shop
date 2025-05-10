@@ -5,9 +5,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import ModalProductImages from './ModalProductImages';
 import ModalProductDetails from './ModalProductDetails';
-import ModalRelatedProducts from './ModalRelatedProducts';
 import RelatedProducts from './RelatedProducts';
-import { GridCloseIcon } from '@mui/x-data-grid';
 
 const ProductQuickViewModal = () => {
   const {
@@ -24,7 +22,6 @@ const ProductQuickViewModal = () => {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [isLoadingRelated, setIsLoadingRelated] = useState(false);
 
   // Check if product is in wishlist
   const productInWishlist = product ? isInWishlist(product.id) : false;
@@ -33,7 +30,6 @@ const ProductQuickViewModal = () => {
   useEffect(() => {
     if (product && product.id && product.categoryId) {
       const fetchRelatedProducts = async () => {
-        setIsLoadingRelated(true);
         try {
           const response = await fetch(`/api/products/related?productId=${product.id}&categoryId=${product.categoryId}&limit=4`);
           if (!response.ok) {
@@ -44,8 +40,6 @@ const ProductQuickViewModal = () => {
         } catch (error) {
           console.error('Error fetching related products:', error);
           setRelatedProducts([]);
-        } finally {
-          setIsLoadingRelated(false);
         }
       };
 
@@ -78,9 +72,9 @@ const ProductQuickViewModal = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={closeQuickView}></div>
 
         {/* Modal Container */}
-        <div className="relative w-full max-w-[95%] sm:max-w-[90%] md:max-w-7xl mx-auto">
+        <div className="relative w-full max-w-[95%] sm:max-w-[90%] md:max-w-5xl lg:max-w-6xl mx-auto">
           {/* Modal Content */}
-          <div className="flex flex-col bg-[#E0DCD6] rounded-md overflow-hidden relative p-4">
+          <div className="flex flex-col bg-[#E0DCD6] rounded-md overflow-hidden relative p-3 sm:p-3.5 md:p-4">
             {/* Close button */}
             <div className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 z-10">
               <button
@@ -94,7 +88,7 @@ const ProductQuickViewModal = () => {
             </div>
 
             {/* Product Info Section */}
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col md:flex-row md:gap-2 lg:gap-4">
               {/* Left side - Product image */}
               <ModalProductImages product={product} />
 
@@ -114,7 +108,7 @@ const ProductQuickViewModal = () => {
               />
             </div>
 
-            <div className="w-full p-2 sm:p-3 md:p-5">
+            <div className="w-full p-2 sm:p-3 md:p-4">
               {/* Related Products Section - Spans full width */}
               <RelatedProducts
                 products={relatedProducts}

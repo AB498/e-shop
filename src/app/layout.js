@@ -45,6 +45,7 @@ export default function RootLayout({ children }) {
               <WishlistProvider>
                 <div className="flex w-full h-screen relative">
                   <div className="flex-none translate-0 relative z-10">
+                    <ProductQuickViewModal />
                     <Suspense fallback={<SidebarClient categories={[]} />}>
                       <Sidebar />
                     </Suspense>
@@ -53,7 +54,6 @@ export default function RootLayout({ children }) {
                     <AuthProvider />
                     <Navigation />
                     {children}
-                    <ProductQuickViewModal />
                   </div>
                 </div>
                 <Toaster position="top-center" />

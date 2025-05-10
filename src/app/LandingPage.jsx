@@ -28,7 +28,10 @@ export default function LandingPage({ featuredCarouselComponent, weeklyDealsComp
     return (
         <>
             {/* Hero Section */}
-            <Hero />
+            <div className="relative z-0 w-full sm:px-12 sm:container sm:mx-auto">
+                <Hero />
+            </div>
+
             <div className="relative z-0 w-full px-6 md:px-12 container mx-auto">
 
                 {/* Feature Icons */}
