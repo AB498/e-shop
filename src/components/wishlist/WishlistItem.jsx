@@ -29,8 +29,11 @@ const WishlistItem = ({ item }) => {
   };
 
   const handleAddToCart = () => {
-    addToCart(product);
-    toast.success('Added to cart');
+    // Pass false to prevent duplicate toast from CartContext
+    addToCart(product, 1, false);
+
+    // Show toast manually to ensure it only happens once
+    toast.success(`${product.name} added to cart!`);
   };
 
   return (

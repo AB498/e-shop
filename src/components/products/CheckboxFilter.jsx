@@ -44,7 +44,12 @@ const CheckboxFilter = ({ type, options }) => {
     // Reset to page 1 when filtering
     params.set('page', '1');
 
+    // Check if we're on a product detail page
+    const pathname = window.location.pathname;
+    const isProductDetail = pathname.startsWith('/products/') && pathname.length > 10;
+
     // Navigate with updated parameters
+    // If we're on a product detail page, redirect to the products listing page
     window.location.href = `/products?${params.toString()}`;
   };
 

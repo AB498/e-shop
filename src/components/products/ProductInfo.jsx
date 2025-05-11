@@ -152,8 +152,8 @@ const ProductInfo = ({ product }) => {
                 quantity,
                 size: selectedSize
               };
+              // Pass false to prevent duplicate toast from CartContext
               addToCart(cartItem, quantity);
-              toast.success('Added to cart');
             }}
             className={`${
               product?.stock > 0

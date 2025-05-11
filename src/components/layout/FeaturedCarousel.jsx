@@ -176,7 +176,7 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
         const direction = distance > 0 ? 1 : -1;
         return {
           zIndex: 10 - Math.abs(distance),
-          opacity: 0.1, // Keep slight opacity for animation effect
+          opacity: 0.0, // Keep slight opacity for animation effect
           transform: `translateX(${direction * 100}%)`, // Move off-screen
           transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease',
           pointerEvents: 'none' // Prevent interaction with hidden slides
@@ -281,7 +281,7 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
       </button>
 
       {/* Pagination Indicators */}
-      <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 z-40 flex space-x-3">
+      <div className="absolute translate-y-full left-1/2 transform -translate-x-1/2 z-40 flex space-x-3">
         {slides.map((_, index) => (
           <button
             key={index}

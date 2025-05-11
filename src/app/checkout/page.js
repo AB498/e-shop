@@ -235,7 +235,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      
+
 
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4 border-b border-[#ECECEC]">
@@ -551,13 +551,12 @@ export default function CheckoutPage() {
               <div className="space-y-4 mb-6">
                 {cart.map((item) => (
                   <div key={item.id} className="flex items-start gap-3">
-                    <div className="w-16 h-16 bg-[#F0EEED] rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="relative overflow-hidden w-16 h-16 bg-[#F0EEED] rounded-lg flex items-center justify-center flex-shrink-0">
                       <Image
                         src={item.image || "/images/product-image.png"}
                         alt={item.name}
-                        width={50}
-                        height={50}
-                        className="object-contain"
+                        fill
+                        className="object-cover"
                       />
                     </div>
                     <div className="flex-1">

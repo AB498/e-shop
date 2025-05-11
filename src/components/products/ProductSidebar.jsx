@@ -2,14 +2,61 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import StarRating from '@/components/ui/StarRating';
+import PriceRangeFilterWrapper from './PriceRangeFilterWrapper';
+import CheckboxFilterWrapper from './CheckboxFilterWrapper';
 
-const ProductSidebar = () => {
+const ProductSidebar = ({ category }) => {
+  // Get search params for filtering
+  const searchParams = useSearchParams();
+  const currentCategoryId = searchParams.get('categoryId');
+
+  // Function to preserve existing query parameters when changing category
+  const getCategoryUrl = (categoryId) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('categoryId', categoryId);
+    params.set('page', '1'); // Reset to page 1 when changing category
+    return `/products?${params.toString()}`;
+  };
+
   // State for categories and new products
   const [categories, setCategories] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+  // If we have a category prop but no categoryId in URL, find the matching category
+  const [matchingCategoryId, setMatchingCategoryId] = useState(null);
+
+  useEffect(() => {
+    if (category && !currentCategoryId && categories.length > 0) {
+      // Find the category ID that matches the category name
+      const matchingCategory = categories.find(cat =>
+        cat.name.toLowerCase() === category.toLowerCase()
+      );
+
+      if (matchingCategory) {
+        setMatchingCategoryId(matchingCategory.id.toString());
+      }
+    }
+  }, [category, categories, currentCategoryId]);
+
+
+
+  // Color filter options
+  const colorOptions = [
+    { value: 'red', label: 'Red', count: 56 },
+    { value: 'green', label: 'Green', count: 78 },
+    { value: 'blue', label: 'Blue', count: 54 }
+  ];
+
+  // Condition filter options
+  const conditionOptions = [
+    { value: 'new', label: 'New', count: 1506 },
+    { value: 'refurbished', label: 'Refurbished', count: 27 },
+    { value: 'thai', label: 'Thai Products', count: 45 }
+  ];
 
   // Fetch categories and new products on component mount
   useEffect(() => {
@@ -102,15 +149,17 @@ const ProductSidebar = () => {
               return (
                 <Link
                   key={category.id}
-                  href={`/products?categoryId=${category.id}`}
+                  href={getCategoryUrl(category.id)}
                   className="block"
                 >
-                  <div className="flex justify-between items-center p-3 border border-[#F2F3F4] rounded-md hover:bg-[#F9F9F9] transition-colors">
+                  <div className={`flex justify-between items-center p-3 border border-[#F2F3F4] rounded-md hover:bg-[#F9F9F9] transition-colors ${currentCategoryId === category.id.toString() || matchingCategoryId === category.id.toString() ? 'bg-[#F9F9F9]' : ''
+                    }`}>
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 flex-shrink-0">
                         {categoryIcons[index % categoryIcons.length]}
                       </div>
-                      <span className="text-[#253D4E] text-sm">{category.name}</span>
+                      <span className={`text-[#253D4E] text-sm ${currentCategoryId === category.id.toString() || matchingCategoryId === category.id.toString() ? 'font-semibold text-[#006B51]' : ''
+                        }`}>{category.name}</span>
                     </div>
                     <div className="bg-[#BCE3C9] text-[#253D4E] text-xs px-2 py-1 rounded-full">
                       {Math.floor(Math.random() * 30) + 5}
@@ -126,65 +175,35 @@ const ProductSidebar = () => {
       {/* Filter by Price */}
       <div className="bg-white rounded-[15px] p-5 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] mb-6 border border-[#ECECEC]">
         <div className="border-b border-[#ECECEC] mb-4">
-          <h3 className="text-[#253D4E] text-2xl font-bold mb-2">Fill by price</h3>
+          <h3 className="text-[#253D4E] text-2xl font-bold mb-2">Filter by price</h3>
           <div className="w-12 h-1 bg-[#BCE3C9] mb-2"></div>
         </div>
 
-        <div className="mb-6">
-          <p className="text-[#7E7E7E] text-sm mb-2">From: $500</p>
-          <p className="text-[#7E7E7E] text-sm mb-4">To: $1,000</p>
-
-          <div className="relative h-2 mb-6">
-            <div className="absolute left-0 right-0 h-2 bg-[#D6D7D9] rounded-full"></div>
-            <div className="absolute left-0 w-3/4 h-2 bg-[#006B51] rounded-full"></div>
-            <div className="absolute left-1/4 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#006B51] rounded-full"></div>
-            <div className="absolute left-3/4 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#006B51] rounded-full"></div>
-          </div>
-
-          <button className="w-full bg-[#006B51] text-white font-bold py-2 px-4 rounded-[40px] tracking-wider uppercase text-xs">
-            Filter
-          </button>
-        </div>
+        {/* Price Range Filter Component */}
+        <PriceRangeFilterWrapper />
 
         {/* Color Filter */}
         <div className="mb-6">
           <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-3">Color</h4>
-
-          <div className="flex items-center mb-2">
-            <div className="w-5 h-5 border-2 border-[#CED4DA] rounded mr-2"></div>
-            <span className="text-[#687188] text-sm">Red (56)</span>
-          </div>
-
-          <div className="flex items-center mb-2">
-            <div className="w-5 h-5 border-2 border-[#CED4DA] rounded mr-2"></div>
-            <span className="text-[#687188] text-sm">Green (78)</span>
-          </div>
-
-          <div className="flex items-center mb-2">
-            <div className="w-5 h-5 border-2 border-[#CED4DA] rounded mr-2"></div>
-            <span className="text-[#687188] text-sm">Blue (54)</span>
-          </div>
+          <CheckboxFilterWrapper title="Color" type="color" options={colorOptions} />
         </div>
 
         {/* Item Condition Filter */}
-        <div>
+        <div className="mb-4">
           <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-3">Item Condition</h4>
-
-          <div className="flex items-center mb-2">
-            <div className="w-5 h-5 border-2 border-[#CED4DA] rounded mr-2"></div>
-            <span className="text-[#687188] text-sm">New (1506)</span>
-          </div>
-
-          <div className="flex items-center mb-2">
-            <div className="w-5 h-5 border-2 border-[#CED4DA] rounded mr-2"></div>
-            <span className="text-[#687188] text-sm">Refurbished (27)</span>
-          </div>
-
-          <div className="flex items-center mb-2">
-            <div className="w-5 h-5 border-2 border-[#CED4DA] rounded mr-2"></div>
-            <span className="text-[#687188] text-sm">Thai Products(45)</span>
-          </div>
+          <CheckboxFilterWrapper title="Item Condition" type="condition" options={conditionOptions} />
         </div>
+
+        {/* Clear All Filters Button */}
+        <Link
+          href={category ? `/products?categoryId=${currentCategoryId || matchingCategoryId || ''}` : '/products'}
+          className="w-full bg-[#006B51] text-white font-bold text-xs tracking-wider py-2 px-4 rounded-full flex items-center justify-center hover:bg-[#005541] transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-2">
+            <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          CLEAR FILTERS
+        </Link>
       </div>
 
 
@@ -204,26 +223,22 @@ const ProductSidebar = () => {
             {newProducts.map((product, index) => (
               <div
                 key={product.id}
-                className={`${
-                  index < newProducts.length - 1
+                className={`${index < newProducts.length - 1
                     ? "border-b border-dashed border-[rgba(0,0,0,0.15)] pb-4 mb-4"
                     : ""
-                }`}
+                  }`}
               >
                 <div className="flex gap-3">
-                  <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
+                  <div className="w-20 h-20 bg-[#F0EEED] rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden">
                     <Image
-                      src={product.image || "/images/product-image.png"}
-                      alt={product.name}
-                      width={70}
-                      height={70}
-                      className="object-contain"
-                      unoptimized={product.image && product.image.startsWith('http')}
-                      onError={(e) => {
-                        e.target.src = "/images/product-image.png";
-                      }}
+                      src={product.image || "/images/product-image.png"} // fallback image
+                      alt={product.name} // alt tag for accessibility
+                      fill // this tells Next.js to fill the parent container
+                      className="object-cover" // maintain aspect ratio and cover box
                     />
                   </div>
+
+
                   <div>
                     <Link href={`/products/${product.id}`}>
                       <h4 className="text-[#3BB77E] font-bold text-base mb-1 hover:underline">

@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 
 const CartContext = createContext();
 
@@ -49,8 +50,9 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   // Add item to cart
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (product, quantity = 1, showToast = true) => {
     setCart(prevCart => {
+      console.log('called add cart')
       // Check if product already exists in cart
       const existingItemIndex = prevCart.findIndex(item => item.id === product.id);
 
@@ -61,9 +63,20 @@ export function CartProvider({ children }) {
           ...updatedCart[existingItemIndex],
           quantity: updatedCart[existingItemIndex].quantity + quantity
         };
+
+        // Show toast notification for updating quantity if showToast is true
+        if (showToast) {
+          toast.success(`Updated ${product.name} quantity to ${updatedCart[existingItemIndex].quantity} in cart!`);
+        }
+
         return updatedCart;
       } else {
         // Add new item if product doesn't exist in cart
+        // Show toast notification for adding new item if showToast is true
+        if (showToast) {
+          toast.success(`${product.name} added to cart!`);
+        }
+
         return [...prevCart, { ...product, quantity }];
       }
     });
@@ -71,7 +84,14 @@ export function CartProvider({ children }) {
 
   // Remove item from cart
   const removeFromCart = (productId) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+    // Find the item before removing it to get its name for the toast
+    setCart(prevCart => {
+      const itemToRemove = prevCart.find(item => item.id === productId);
+      if (itemToRemove) {
+        toast.success(`${itemToRemove.name} removed from cart!`);
+      }
+      return prevCart.filter(item => item.id !== productId);
+    });
   };
 
   // Update item quantity
@@ -79,6 +99,13 @@ export function CartProvider({ children }) {
     if (quantity < 1) return;
 
     setCart(prevCart => {
+      const itemToUpdate = prevCart.find(item => item.id === productId);
+
+      // Show toast notification for quantity update
+      if (itemToUpdate) {
+        toast.success(`Updated ${itemToUpdate.name} quantity to ${quantity}!`);
+      }
+
       return prevCart.map(item => {
         if (item.id === productId) {
           return { ...item, quantity };
@@ -101,6 +128,9 @@ export function CartProvider({ children }) {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('cart');
     }
+
+    // Show toast notification for clearing cart
+    toast.success('Cart has been cleared!');
   };
 
   return (

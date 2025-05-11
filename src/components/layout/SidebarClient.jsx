@@ -114,7 +114,7 @@ const SidebarClient = ({ categories = [] }) => {
         className="transition-all duration-300 w-[0px] sm:w-[60px]"
       ></div>
       <div
-        className={`${collapsed ? 'w-[0px] sm:w-[60px]' : 'w-[16rem]'} h-screen bg-white border-r border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
+        className={`${collapsed ? 'w-[0px] sm:w-[60px]' : 'w-[16rem]'} h-screen bg-white sm:border-r sm:border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
 
       >
         {/* Menu Toggle Button */}

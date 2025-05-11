@@ -61,7 +61,8 @@ const ProductQuickViewModal = () => {
       quantity,
       size: selectedSize
     };
-    addToCart(cartItem);
+    // Use the showToast parameter to control toast notifications
+    addToCart(cartItem, quantity);
     closeQuickView();
   };
 

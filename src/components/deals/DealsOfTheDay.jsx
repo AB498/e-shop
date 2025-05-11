@@ -41,14 +41,14 @@ const DealsOfTheDay = () => {
   }, []);
 
   const handleAddToCart = (product) => {
+    // Pass false to prevent duplicate toast from CartContext
     addToCart({
       id: product.id,
       name: product.name,
       price: product.discountPrice || product.price,
       image: product.image,
       quantity: 1
-    });
-    toast.success(`${product.name} added to cart!`);
+    }, 1);
   };
 
   // Placeholder products for loading state

@@ -100,7 +100,7 @@ const ProductCard = ({ product, showAddToCart = true }) => {
 
         {showAddToCart && (
           <button
-            onClick={() => addToCart(product)}
+            onClick={() => addToCart(product, 1)}
             className="bg-[#006B51] text-white font-semibold rounded-xl md:rounded-2xl flex items-center justify-center w-full hover:bg-[#005541] transition-colors py-1 md:py-2 px-2 md:px-3 text-[10px] xs:text-xs md:text-responsive-xs"
           >
             <Image
