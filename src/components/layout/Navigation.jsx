@@ -70,7 +70,7 @@ const Navigation = () => {
             </Link>
 
             {/* Action Icons */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex gap-2 sm:gap-3">
               {/* All Categories Button */}
               <button
                 onClick={toggleSidebar}

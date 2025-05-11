@@ -233,33 +233,25 @@ const PopularCategories = () => {
           {/* Categories Flex Container */}
           <div
             ref={containerRef}
-            className="flex gap-2 xs:gap-3 sm:gap-4 md:gap-6 flex-nowrap w-full"
-            style={{
-              width: `calc(${totalCategories} * (100% / ${visibleCategories}))`,
-            }}
+            className={`flex gap-2 xs:gap-3 sm:gap-4 md:gap-6 flex-nowrap w-full`}
           >
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="basis-[25%] flex flex-row bg-white rounded-[8px] xs:rounded-[10px] sm:rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow flex-none"
-                style={{ width: `calc((100% / ${visibleCategories}) - ${(visibleCategories - 1) * 3 / visibleCategories}px)` }}
+                className="flex w-[240px] sm:w-[360px] aspect-video bg-white rounded-[8px] xs:rounded-[10px] sm:rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow flex-none"
               >
                 {/* Category Image */}
-                <div className="relative w-1/3">
-                  <div className="absolute inset-0 bg-[#B74B4B] rounded-[8px] sm:rounded-[10px]"></div>
-                  <div className="relative w-full h-full min-h-[120px] xs:min-h-[140px] sm:min-h-[180px] md:min-h-[200px]">
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      fill
-                      className="object-cover rounded-[8px] sm:rounded-[10px]"
-                      sizes="(max-width: 480px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 15vw"
-                    />
-                  </div>
+                <div className="relative w-1/3 h-full min-h-[120px] xs:min-h-[140px] sm:min-h-[180px] md:min-h-[200px]">
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    fill
+                    className="object-cover rounded-[8px] sm:rounded-[10px]"
+                  />
                 </div>
 
                 {/* Category Content */}
-                <div className="p-2 xs:p-3 sm:p-4 md:p-5 flex-grow">
+                <div className="p-2 xs:p-3 sm:p-4 md:p-5 grow">
                   <h3 className={getResponsiveTextClass('base', { weight: 'font-semibold' }) + ' mb-1 sm:mb-2 md:mb-3'}>{category.name}</h3>
                   <ul className="space-y-0.5 sm:space-y-1 md:space-y-1.5">
                     {category.subcategories.slice(0, screenWidth < 480 ? 3 : category.subcategories.length).map((subcategory, index) => (

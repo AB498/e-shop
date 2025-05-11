@@ -2,10 +2,10 @@
 
 const Footer = () => {
   return (
-    <footer className="relative w-full bg-[#115343] text-white">
+    <footer className="relative w-full text-white">
       {/* Background Image */}
       <div
-        className="absolute inset-0 w-full h-full opacity-20 z-0"
+        className="absolute inset-0 w-full h-full opacity-100 z-0"
         style={{
           backgroundImage: "url('/images/footer/footer-bg.png')",
           backgroundSize: "cover",
@@ -31,23 +31,21 @@ const Footer = () => {
               your doorstep.
             </p>
             <address className="not-italic text-sm mb-8 leading-relaxed">
-              House: 06, Road: 3/B, Sector: 09, Uttara, Dhaka<br />
-              +880 1407-016740<br />
-              info@thaibanglastore.com
+              <div className="flex items-center mb-2">
+                <i className="fas fa-map-marker-alt text-[#25AA8A] mr-2"></i>
+                <span>House: 06, Road: 3/B, Sector: 09, Uttara, Dhaka</span>
+              </div>
+              <div className="flex items-center mb-2">
+                <i className="fas fa-phone-alt text-[#25AA8A] mr-2"></i>
+                <span>+880 1407-016740</span>
+              </div>
+              <div className="flex items-center">
+                <i className="fas fa-envelope text-[#25AA8A] mr-2"></i>
+                <span>info@thaibanglastore.com</span>
+              </div>
             </address>
 
-            {/* Social Media */}
-            <div className="flex space-x-4">
-              <a href="#" className="block hover:opacity-80 transition-opacity">
-                <img src="/images/footer/social-1.png" alt="Social Media" className="h-6 w-6" />
-              </a>
-              <a href="#" className="block hover:opacity-80 transition-opacity">
-                <img src="/images/footer/social-2.png" alt="Social Media" className="h-6 w-6" />
-              </a>
-              <a href="#" className="block hover:opacity-80 transition-opacity">
-                <img src="/images/footer/social-3.png" alt="Social Media" className="h-6 w-6" />
-              </a>
-            </div>
+
           </div>
 
           {/* Column 2 - Categories */}
@@ -139,15 +137,15 @@ const Footer = () => {
                 Stay connected with Thai Bangla Store and never miss an update!
               </p>
 
-              <div className="flex flex-col md:flex-row max-w-xl">
-                <div className="flex-grow bg-[#115343] border-2 border-[#25AA8A] rounded-2xl px-4 py-2 flex items-center mb-2 md:mb-0 md:mr-2">
+              <div className="flex flex-col md:flex-row max-w-xl flex-wrap gap-4">
+                <div className="flex-grow basis-full bg-[#115343] border-2 border-[#25AA8A] rounded-full px-4 py-2 flex items-center mb-2 md:mb-0 md:mr-2">
                   <input
                     type="email"
                     placeholder="Your email here..."
                     className="bg-transparent border-none outline-none w-full text-[#25AA8A] placeholder-[#25AA8A] text-sm leading-loose"
                   />
                 </div>
-                <button className="bg-[#BC0000] text-white font-bold px-8 py-2 rounded-2xl uppercase text-sm leading-loose transition-colors hover:bg-[#a00000] whitespace-nowrap">
+                <button className="bg-[#BC0000] text-white font-bold px-8 py-2 rounded-full uppercase text-sm leading-loose transition-colors hover:bg-[#a00000] whitespace-nowrap">
                   Subscribe
                 </button>
               </div>
@@ -165,4 +163,4 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+export default Footer;

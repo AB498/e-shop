@@ -32,7 +32,7 @@ export default function LandingPage({ featuredCarouselComponent, weeklyDealsComp
                 <Hero />
             </div>
 
-            <div className="relative z-0 w-full px-6 md:px-12 container mx-auto">
+            <div className="relative z-0 w-full px-6 md:px-12 container mx-auto flex flex-col py-6 gap-6">
 
                 {/* Feature Icons */}
                 <FeatureIcons />

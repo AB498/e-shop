@@ -41,7 +41,7 @@ const FeatureIcons = () => {
   ];
 
   return (
-    <div className="w-full py-4 sm:py-8 md:py-10 my-6 sm:my-8 md:my-10">
+    <div className="w-full py-0 sm:py-8 md:py-10 my-6 sm:my-8 md:my-10">
       <div className="container mx-auto px-0 sm:px-4">
         <div
           className="flex overflow-x-auto gap-4 sm:gap-6 md:gap-8 lg:justify-between"
