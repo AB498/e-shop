@@ -7,47 +7,62 @@ import { getUserOrders } from '@/lib/actions/orders';
 import { useWishlist } from '@/context/WishlistContext';
 import WishlistItem from '@/components/wishlist/WishlistItem';
 import EmptyWishlist from '@/components/wishlist/EmptyWishlist';
+import EditProfileModal from '@/components/profile/EditProfileModal';
+import AddressForm from '@/components/profile/AddressForm';
+import { toast } from 'react-hot-toast';
 
 const ProfileContent = ({ user, defaultTab = 'account' }) => {
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [userData, setUserData] = useState(user);
   const { wishlist, wishlistCount, isLoading: isWishlistLoading } = useWishlist();
+
+  // Initialize userData when user prop changes
+  useEffect(() => {
+    if (user) {
+      setUserData(user);
+    }
+  }, [user]);
 
   // Fetch user orders when the component mounts or when the user changes
   useEffect(() => {
     const fetchOrders = async () => {
-      if (user?.id) {
+      if (userData?.id) {
         setIsLoading(true);
         try {
-          console.log('Fetching orders for user ID:', user.id, 'Type:', typeof user.id);
-
           // Convert user.id to number if it's a string
-          const userId = typeof user.id === 'string' ? parseInt(user.id, 10) : user.id;
+          const userId = typeof userData.id === 'string' ? parseInt(userData.id, 10) : userData.id;
 
           const userOrders = await getUserOrders(userId);
-          console.log('Fetched user orders:', userOrders);
           setOrders(userOrders);
         } catch (error) {
           console.error('Error fetching orders:', error);
+          toast.error('Failed to load orders');
         } finally {
           setIsLoading(false);
         }
-      } else {
-        console.log('No user ID available, cannot fetch orders');
       }
     };
 
     fetchOrders();
-  }, [user?.id]);
+  }, [userData?.id]);
 
   const handleSignOut = async () => {
     await signOut({ redirect: true, callbackUrl: '/' });
   };
 
+  const handleProfileUpdate = (updatedUser) => {
+    setUserData(updatedUser);
+    toast.success('Profile updated successfully');
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-      {/* Sidebar */}
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        {/* Sidebar */}
       <div className="col-span-1">
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-bold mb-6 text-[#253D4E]">My Account</h2>
@@ -121,22 +136,30 @@ const ProfileContent = ({ user, defaultTab = 'account' }) => {
                   <div className="space-y-4">
                     <div>
                       <p className="text-sm text-[#7E7E7E]">Name</p>
-                      <p className="font-medium">{user.firstName} {user.lastName}</p>
+                      <p className="font-medium">{userData.firstName} {userData.lastName}</p>
                     </div>
 
                     <div>
                       <p className="text-sm text-[#7E7E7E]">Email</p>
-                      <p className="font-medium">{user.email}</p>
+                      <p className="font-medium">{userData.email}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-[#7E7E7E]">Phone</p>
+                      <p className="font-medium">{userData.phone || 'Not provided'}</p>
                     </div>
 
                     <div>
                       <p className="text-sm text-[#7E7E7E]">Role</p>
-                      <p className="font-medium capitalize">{user.role}</p>
+                      <p className="font-medium capitalize">{userData.role}</p>
                     </div>
                   </div>
 
                   <div className="mt-6">
-                    <button className="bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors">
+                    <button
+                      onClick={() => setShowEditProfileModal(true)}
+                      className="bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors"
+                    >
                       Edit Profile
                     </button>
                   </div>
@@ -153,7 +176,10 @@ const ProfileContent = ({ user, defaultTab = 'account' }) => {
                   </div>
 
                   <div className="mt-6">
-                    <button className="bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors">
+                    <button
+                      onClick={() => setShowEditProfileModal(true)}
+                      className="bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors"
+                    >
                       Change Password
                     </button>
                   </div>
@@ -316,17 +342,61 @@ const ProfileContent = ({ user, defaultTab = 'account' }) => {
             <div>
               <h2 className="text-2xl font-bold mb-6 text-[#253D4E]">Address Book</h2>
 
-              <div className="bg-gray-50 p-8 rounded-md text-center">
-                <p className="text-[#7E7E7E] mb-4">You haven't added any addresses yet.</p>
-                <button className="bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors">
-                  Add New Address
-                </button>
-              </div>
+              {userData.address ? (
+                <div className="bg-white border border-gray-200 rounded-md p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-lg font-semibold text-[#253D4E]">Default Address</h3>
+                    <button
+                      onClick={() => setShowAddressForm(true)}
+                      className="text-[#006B51] hover:text-[#005541] text-sm font-medium"
+                    >
+                      Edit
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-gray-700">{userData.firstName} {userData.lastName}</p>
+                    <p className="text-gray-700">{userData.address}</p>
+                    <p className="text-gray-700">{userData.city}, {userData.region || ''} {userData.postCode}</p>
+                    <p className="text-gray-700">{userData.country}</p>
+                    {userData.phone && <p className="text-gray-700">Phone: {userData.phone}</p>}
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gray-50 p-8 rounded-md text-center">
+                  <p className="text-[#7E7E7E] mb-4">You haven't added any addresses yet.</p>
+                  <button
+                    onClick={() => setShowAddressForm(true)}
+                    className="bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors"
+                  >
+                    Add New Address
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
-    </div>
+      </div>
+
+      {/* Edit Profile Modal */}
+      {showEditProfileModal && (
+        <EditProfileModal
+          user={userData}
+          onClose={() => setShowEditProfileModal(false)}
+          onUpdate={handleProfileUpdate}
+        />
+      )}
+
+      {/* Address Form Modal */}
+      {showAddressForm && (
+        <AddressForm
+          user={userData}
+          onClose={() => setShowAddressForm(false)}
+          onUpdate={handleProfileUpdate}
+        />
+      )}
+    </>
   );
 };
 
