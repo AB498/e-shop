@@ -144,6 +144,7 @@ async function seedDatabase() {
     const [
       categoriesSeed,
       productsSeed,
+      productImagesSeed,
       usersSeed,
       filesSeed,
       couriersSeed,
@@ -155,6 +156,7 @@ async function seedDatabase() {
     ] = await Promise.all([
       importSeedData('categories-seed.js'),
       importSeedData('products-seed.js'),
+      importSeedData('product-images-seed.js'),
       importSeedData('users-seed.js'),
       importSeedData('files-seed.js'),
       importSeedData('couriers-seed.js'),
@@ -176,6 +178,7 @@ async function seedDatabase() {
         'DROP TABLE IF EXISTS courier_tracking CASCADE',
         'DROP TABLE IF EXISTS order_items CASCADE',
         'DROP TABLE IF EXISTS orders CASCADE',
+        'DROP TABLE IF EXISTS product_images CASCADE',
         'DROP TABLE IF EXISTS products CASCADE',
         'DROP TABLE IF EXISTS categories CASCADE',
         'DROP TABLE IF EXISTS promotions CASCADE',
@@ -281,6 +284,21 @@ async function seedDatabase() {
           weight DECIMAL(5, 2) DEFAULT 0.5,
           description TEXT,
           image TEXT,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+
+      // Product images depends on products
+      await pool.query(`
+        CREATE TABLE product_images (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER REFERENCES products(id) NOT NULL,
+          url TEXT NOT NULL,
+          key TEXT NOT NULL,
+          alt_text TEXT,
+          position INTEGER DEFAULT 0 NOT NULL,
+          is_primary BOOLEAN DEFAULT FALSE NOT NULL,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )
@@ -548,6 +566,9 @@ async function seedDatabase() {
       // Insert dependent tables in sequence
       await insertData('products', schema.products, productsSeed);
 
+      // Insert product images after products are inserted
+      await insertData('product_images', schema.productImages, productImagesSeed);
+
       // Insert wishlist items after products and users are inserted
       await insertData('wishlist_items', schema.wishlistItems, wishlistItemsSeed);
     } catch (error) {
@@ -563,6 +584,7 @@ async function seedDatabase() {
     console.log(`Total execution time: ${totalDuration} seconds`);
     console.log('Stats:');
     console.log(`  Products: ${productsSeed.length}`);
+    console.log(`  Product Images: ${productImagesSeed.length}`);
     console.log(`  Categories: ${categoriesSeed.length}`);
     console.log(`  Users: ${usersSeed.length}`);
     console.log(`  Files: ${filesSeed.length}`);
@@ -582,6 +604,7 @@ async function seedDatabase() {
       message: `Database seeded successfully in ${totalDuration}s!`,
       stats: {
         products: productsSeed.length,
+        productImages: productImagesSeed.length,
         categories: categoriesSeed.length,
         users: usersSeed.length,
         files: filesSeed.length,

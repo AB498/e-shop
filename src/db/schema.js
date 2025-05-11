@@ -154,6 +154,19 @@ const storeLocations = pgTable('store_locations', {
   updated_at: timestamp('updated_at').defaultNow(),
 })
 
+// Product images table
+const productImages = pgTable('product_images', {
+  id: serial('id').primaryKey(),
+  product_id: integer('product_id').references(() => products.id).notNull(),
+  url: text('url').notNull(),
+  key: text('key').notNull(),
+  alt_text: text('alt_text'),
+  position: integer('position').default(0).notNull(),
+  is_primary: boolean('is_primary').default(false).notNull(),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
 // Wishlist items table
 const wishlistItems = pgTable('wishlist_items', {
   id: serial('id').primaryKey(),
@@ -224,6 +237,7 @@ export {
   users,
   categories,
   products,
+  productImages,
   orders,
   orderItems,
   couriers,

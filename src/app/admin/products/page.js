@@ -8,7 +8,11 @@ import {
   ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import { getAllProductsWithInventory, updateProductStock } from '@/lib/actions/admin';
+import { toast } from 'react-hot-toast';
 import ProductsTable from './ProductsTable';
+import AddProductModal from './AddProductModal';
+import EditProductModal from './EditProductModal';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 // Helper function to process product data
 const processProductData = (data) => {
@@ -44,6 +48,7 @@ export default function ProductsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddStockModal, setShowAddStockModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const [filterStock, setFilterStock] = useState('all');
@@ -91,17 +96,64 @@ export default function ProductsPage() {
     setSelectedProducts(newSelection);
   };
 
+  // Handle add product
+  const handleAddProduct = (newProduct) => {
+    setShowAddModal(false);
+    // Refresh the products list
+    setIsLoading(true);
+    getAllProductsWithInventory()
+      .then(data => {
+        const processedData = processProductData(data);
+        setProducts(processedData);
+        toast.success('Product added successfully');
+      })
+      .catch(err => {
+        console.error('Error refreshing products:', err);
+        setError('Failed to refresh products. Please try again later.');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   // Handle edit product
   const handleEditProduct = (product) => {
     setCurrentProduct(product);
     setShowEditModal(true);
   };
 
+  // Handle update product
+  const handleUpdateProduct = (updatedProduct) => {
+    setShowEditModal(false);
+    // Refresh the products list
+    setIsLoading(true);
+    getAllProductsWithInventory()
+      .then(data => {
+        const processedData = processProductData(data);
+        setProducts(processedData);
+        toast.success('Product updated successfully');
+      })
+      .catch(err => {
+        console.error('Error refreshing products:', err);
+        setError('Failed to refresh products. Please try again later.');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  // Handle show delete modal
+  const handleShowDeleteModal = (product) => {
+    setCurrentProduct(product);
+    setShowDeleteModal(true);
+  };
+
   // Handle delete product
   const handleDeleteProduct = (productId) => {
-    // In a real app, you would call an API to delete the product
-    console.log(`Delete product with ID: ${productId}`);
-    // Then update the UI
+    setShowDeleteModal(false);
+    // Remove the product from the UI
+    setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+    toast.success('Product deleted successfully');
   };
 
   // Handle add stock
@@ -286,7 +338,7 @@ export default function ProductsPage() {
           products={filteredProducts}
           isLoading={isLoading}
           onEdit={handleEditProduct}
-          onDelete={handleDeleteProduct}
+          onDelete={handleShowDeleteModal}
           onAddStock={handleAddStock}
           onSelectionChange={handleSelectionChange}
           selectedProducts={selectedProducts}
@@ -317,84 +369,30 @@ export default function ProductsPage() {
         )}
       </div>
 
-      {/* Add Product Modal - Would be implemented in a real app */}
+      {/* Add Product Modal */}
       {showAddModal && (
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Add New Product</h3>
-                    <div className="mt-4 space-y-4">
-                      {/* Form fields would go here */}
-                      <p className="text-sm text-gray-500">Form implementation would be added in a real application.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Add Product
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AddProductModal
+          onClose={() => setShowAddModal(false)}
+          onSubmit={handleAddProduct}
+        />
       )}
 
-      {/* Edit Product Modal - Would be implemented in a real app */}
+      {/* Edit Product Modal */}
       {showEditModal && currentProduct && (
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Edit Product: {currentProduct.name}</h3>
-                    <div className="mt-4 space-y-4">
-                      {/* Form fields would go here */}
-                      <p className="text-sm text-gray-500">Form implementation would be added in a real application.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowEditModal(false)}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <EditProductModal
+          product={currentProduct}
+          onClose={() => setShowEditModal(false)}
+          onSubmit={handleUpdateProduct}
+        />
+      )}
+
+      {/* Delete Product Modal */}
+      {showDeleteModal && currentProduct && (
+        <ConfirmDeleteModal
+          product={currentProduct}
+          onClose={() => setShowDeleteModal(false)}
+          onDelete={handleDeleteProduct}
+        />
       )}
 
       {/* Add Stock Modal */}

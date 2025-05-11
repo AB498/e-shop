@@ -42,6 +42,7 @@ export default async function ProductDetail({ productId }) {
           <div className="bg-white rounded-[15px] p-6 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] mb-6 border border-[#ECECEC]">
             <div className="flex flex-col md:flex-row gap-8">
               <ProductImageGallery
+                images={product.images}
                 image={product.image}
                 name={product.name}
                 discountPercentage={product.discountPercentage}

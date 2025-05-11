@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { orders, orderItems, products, users, categories, couriers, deliveryPersons } from '@/db/schema';
+import { orders, orderItems, products, users, categories, couriers, deliveryPersons, productImages } from '@/db/schema';
 import { eq, desc, sql, and, gte, lte, inArray } from 'drizzle-orm';
 
 /**
@@ -464,6 +464,21 @@ export async function getAllProductsWithInventory() {
       })
       .from(categories);
 
+    // Get primary images for all products
+    const primaryImagesData = await db
+      .select({
+        productId: productImages.product_id,
+        url: productImages.url
+      })
+      .from(productImages)
+      .where(eq(productImages.is_primary, true));
+
+    // Create a map of product IDs to primary images
+    const primaryImageMap = primaryImagesData.reduce((map, image) => {
+      map[image.productId] = image.url;
+      return map;
+    }, {});
+
     const categoryMap = categoriesData.reduce((map, category) => {
       map[category.id] = category.name;
       return map;
@@ -471,6 +486,8 @@ export async function getAllProductsWithInventory() {
 
     return productsData.map(product => ({
       ...product,
+      // Use primary image from product_images if available, otherwise use the legacy image field
+      image: primaryImageMap[product.id] || product.image,
       category: categoryMap[product.categoryId] || 'Uncategorized',
       price: `$${parseFloat(product.price).toFixed(2)}`,
       createdAt: product.createdAt.toISOString().split('T')[0],
@@ -507,6 +524,201 @@ export async function updateProductStock(productId, newStock) {
   } catch (error) {
     console.error('Error updating product stock:', error);
     return null;
+  }
+}
+
+/**
+ * Get product by ID
+ * @param {number} productId - Product ID
+ * @returns {Promise<Object|null>} - Product details
+ */
+export async function getProductById(productId) {
+  try {
+    const productData = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        sku: products.sku,
+        price: products.price,
+        stock: products.stock,
+        weight: products.weight,
+        description: products.description,
+        image: products.image,
+        categoryId: products.category_id,
+        createdAt: products.created_at,
+        updatedAt: products.updated_at
+      })
+      .from(products)
+      .where(eq(products.id, productId))
+      .limit(1);
+
+    if (!productData.length) {
+      return null;
+    }
+
+    const product = productData[0];
+
+    // Get category information
+    const categoryData = await db
+      .select({
+        id: categories.id,
+        name: categories.name
+      })
+      .from(categories)
+      .where(eq(categories.id, product.categoryId))
+      .limit(1);
+
+    const category = categoryData.length ? categoryData[0] : null;
+
+    return {
+      ...product,
+      category: category ? category.name : 'Uncategorized',
+      categoryId: category ? category.id : null,
+      price: parseFloat(product.price),
+      weight: parseFloat(product.weight),
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString()
+    };
+  } catch (error) {
+    console.error('Error fetching product by ID:', error);
+    return null;
+  }
+}
+
+/**
+ * Create a new product
+ * @param {Object} productData - Product data
+ * @returns {Promise<Object|null>} - Created product
+ */
+export async function createProduct(productData) {
+  try {
+    // Validate required fields
+    if (!productData.name || !productData.sku || !productData.price) {
+      throw new Error('Name, SKU, and price are required');
+    }
+
+    // Check if SKU already exists
+    const existingSku = await db
+      .select({ id: products.id })
+      .from(products)
+      .where(eq(products.sku, productData.sku))
+      .limit(1);
+
+    if (existingSku.length) {
+      throw new Error('SKU already exists');
+    }
+
+    // Create new product
+    const newProduct = await db
+      .insert(products)
+      .values({
+        name: productData.name,
+        sku: productData.sku,
+        category_id: productData.category_id || null,
+        price: productData.price,
+        stock: productData.stock || 0,
+        weight: productData.weight || 0.5,
+        description: productData.description || '',
+        image: productData.image || '',
+        created_at: new Date(),
+        updated_at: new Date()
+      })
+      .returning();
+
+    if (!newProduct.length) {
+      return null;
+    }
+
+    return newProduct[0];
+  } catch (error) {
+    console.error('Error creating product:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update an existing product
+ * @param {number} productId - Product ID
+ * @param {Object} productData - Updated product data
+ * @returns {Promise<Object|null>} - Updated product
+ */
+export async function updateProduct(productId, productData) {
+  try {
+    // Validate required fields
+    if (!productData.name || !productData.sku || !productData.price) {
+      throw new Error('Name, SKU, and price are required');
+    }
+
+    // Check if SKU already exists and belongs to another product
+    const existingSku = await db
+      .select({ id: products.id })
+      .from(products)
+      .where(and(
+        eq(products.sku, productData.sku),
+        sql`${products.id} != ${productId}`
+      ))
+      .limit(1);
+
+    if (existingSku.length) {
+      throw new Error('SKU already exists for another product');
+    }
+
+    // Update product
+    const updatedProduct = await db
+      .update(products)
+      .set({
+        name: productData.name,
+        sku: productData.sku,
+        category_id: productData.category_id || null,
+        price: productData.price,
+        stock: productData.stock !== undefined ? productData.stock : products.stock,
+        weight: productData.weight || products.weight,
+        description: productData.description || products.description,
+        image: productData.image || products.image,
+        updated_at: new Date()
+      })
+      .where(eq(products.id, productId))
+      .returning();
+
+    if (!updatedProduct.length) {
+      return null;
+    }
+
+    return updatedProduct[0];
+  } catch (error) {
+    console.error('Error updating product:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a product
+ * @param {number} productId - Product ID
+ * @returns {Promise<boolean>} - True if deleted successfully, false otherwise
+ */
+export async function deleteProduct(productId) {
+  try {
+    // Check if product exists
+    const productExists = await db
+      .select({ id: products.id })
+      .from(products)
+      .where(eq(products.id, productId))
+      .limit(1);
+
+    if (!productExists.length) {
+      return false;
+    }
+
+    // Delete product
+    const result = await db
+      .delete(products)
+      .where(eq(products.id, productId))
+      .returning({ id: products.id });
+
+    return result.length > 0;
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    return false;
   }
 }
 

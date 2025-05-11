@@ -2,23 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import {
-  ArrowPathIcon,
-  PlusIcon,
-  TruckIcon,
-} from '@heroicons/react/24/outline';
-import AddCourierModal from './AddCourierModal';
+import { TruckIcon } from '@heroicons/react/24/outline';
 import CouriersTable from './CouriersTable';
 
 export default function CouriersPage() {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const [couriers, setCouriers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [initializing, setInitializing] = useState(false);
+
+  // Redirect if not authenticated or not admin
+  useEffect(() => {
+    if (status === 'unauthenticated' || (session && session.user.role !== 'admin')) {
+      window.location.href = '/';
+    }
+  }, [session, status]);
 
   // Fetch couriers
   const fetchCouriers = async () => {
@@ -41,54 +39,9 @@ export default function CouriersPage() {
     }
   };
 
-  // Initialize courier systems
-  const initializeCouriers = async () => {
-    try {
-      setInitializing(true);
-      setError(null);
 
-      const response = await fetch('/api/couriers/initialize', {
-        method: 'POST',
-      });
 
-      if (!response.ok) {
-        throw new Error('Failed to initialize courier systems');
-      }
 
-      // Refetch couriers after initialization
-      await fetchCouriers();
-    } catch (err) {
-      console.error('Error initializing courier systems:', err);
-      setError(err.message || 'Failed to initialize courier systems');
-    } finally {
-      setInitializing(false);
-    }
-  };
-
-  // Handle add courier
-  const handleAddCourier = async (courierData) => {
-    try {
-      const response = await fetch('/api/admin/couriers', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(courierData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to add courier');
-      }
-
-      // Refresh couriers list
-      fetchCouriers();
-      setShowAddModal(false);
-    } catch (err) {
-      console.error('Error adding courier:', err);
-      setError(err.message || 'Failed to add courier');
-    }
-  };
 
   // Handle toggle courier status
   const handleToggleCourierStatus = async (courier) => {
@@ -122,27 +75,20 @@ export default function CouriersPage() {
     fetchCouriers();
   }, []);
 
+  // Show loading state while checking authentication
+  if (status === 'loading') {
+    return <div className="p-8">Loading...</div>;
+  }
+
+  // Don't render anything if not authenticated
+  if (status === 'unauthenticated' || (session && session.user.role !== 'admin')) {
+    return null;
+  }
+
   return (
     <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Courier Management</h1>
-        <div className="flex space-x-2">
-          <button
-            onClick={initializeCouriers}
-            disabled={initializing}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-          >
-            <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${initializing ? 'animate-spin' : ''}`} />
-            Initialize Couriers
-          </button>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
-            Add Courier
-          </button>
-        </div>
       </div>
 
       {error && (
@@ -176,14 +122,6 @@ export default function CouriersPage() {
           />
         </div>
       </div>
-
-      {/* Modals */}
-      {showAddModal && (
-        <AddCourierModal
-          onClose={() => setShowAddModal(false)}
-          onSubmit={handleAddCourier}
-        />
-      )}
     </div>
   );
 }

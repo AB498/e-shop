@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { products, categories } from '@/db/schema';
+import { products, categories, productImages } from '@/db/schema';
 import { eq, or, desc, asc, like, sql, and } from 'drizzle-orm';
 
 /**
@@ -297,6 +297,19 @@ export async function getProductById(id) {
     // Add category name to the product
     const category = categoryData.length > 0 ? categoryData[0] : { name: 'Unknown', slug: 'unknown' };
 
+    // Fetch product images
+    const productImagesData = await db
+      .select({
+        id: productImages.id,
+        url: productImages.url,
+        altText: productImages.alt_text,
+        position: productImages.position,
+        isPrimary: productImages.is_primary,
+      })
+      .from(productImages)
+      .where(eq(productImages.product_id, id))
+      .orderBy(asc(productImages.position));
+
     // Calculate discount price (10% off for demo purposes)
     const discountPrice = (parseFloat(product.price) * 0.9).toFixed(2);
     const discountPercentage = 10;
@@ -308,6 +321,17 @@ export async function getProductById(id) {
       categorySlug: category.slug,
       discountPrice,
       discountPercentage,
+      // Add product images
+      images: productImagesData.length > 0 ? productImagesData : [
+        // If no images found, create a default one from the main image
+        {
+          id: 0,
+          url: product.image,
+          altText: product.name,
+          position: 0,
+          isPrimary: true
+        }
+      ],
       // Add some additional fields for the product detail page
       rating: 4.5, // Mock rating
       reviewCount: Math.floor(Math.random() * 50) + 5, // Mock review count
@@ -406,6 +430,33 @@ export async function getAllCategories() {
  * @param {number} limit - Maximum number of products to return
  * @returns {Promise<Array>} - Array of new products
  */
+/**
+ * Fetch product images by product ID
+ * @param {number} productId - Product ID
+ * @returns {Promise<Array>} - Array of product images
+ */
+export async function getProductImages(productId) {
+  try {
+    // Fetch product images
+    const imageData = await db
+      .select({
+        id: productImages.id,
+        url: productImages.url,
+        altText: productImages.alt_text,
+        position: productImages.position,
+        isPrimary: productImages.is_primary,
+      })
+      .from(productImages)
+      .where(eq(productImages.product_id, productId))
+      .orderBy(asc(productImages.position));
+
+    return imageData;
+  } catch (error) {
+    console.error('Error fetching product images:', error);
+    return [];
+  }
+}
+
 export async function getNewProducts(limit = 3) {
   try {
     // Fetch products sorted by creation date (newest first)

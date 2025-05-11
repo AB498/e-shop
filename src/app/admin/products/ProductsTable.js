@@ -1,56 +1,73 @@
 'use client';
 
-import { 
-  PencilIcon, 
-  TrashIcon, 
-  PlusIcon 
+import {
+  PencilIcon,
+  TrashIcon,
+  PlusIcon
 } from '@heroicons/react/24/outline';
 import Table from '@/components/ui/table';
+import Image from 'next/image';
 
-export default function ProductsTable({ 
-  products, 
-  isLoading, 
-  onEdit, 
-  onDelete, 
+export default function ProductsTable({
+  products,
+  isLoading,
+  onEdit,
+  onDelete,
   onAddStock,
   onSelectionChange,
   selectedProducts
 }) {
   // Define table columns
   const columns = [
-    { 
-      key: 'id', 
-      label: 'ID', 
-      sortable: true 
+    {
+      key: 'id',
+      label: 'ID',
+      sortable: true
     },
-    { 
-      key: 'name', 
-      label: 'Product Name', 
-      sortable: true 
+    {
+      key: 'image',
+      label: 'Image',
+      sortable: false,
+      render: (product) => (
+        <div className="relative h-10 w-10 rounded-md overflow-hidden">
+          <Image
+            src={product.image || "/images/product-image.png"}
+            alt={product.name}
+            fill
+            className="object-cover"
+            sizes="40px"
+          />
+        </div>
+      )
     },
-    { 
-      key: 'sku', 
-      label: 'SKU', 
+    {
+      key: 'name',
+      label: 'Product Name',
+      sortable: true
+    },
+    {
+      key: 'sku',
+      label: 'SKU',
       sortable: true,
       responsive: 'md'
     },
-    { 
-      key: 'category', 
-      label: 'Category', 
+    {
+      key: 'category',
+      label: 'Category',
       sortable: true,
       responsive: 'md'
     },
-    { 
-      key: 'price', 
-      label: 'Price', 
+    {
+      key: 'price',
+      label: 'Price',
       sortable: true,
       render: (product) => (
         <div className="font-medium">${product.price.toFixed(2)}</div>
       )
     },
-    { 
-      key: 'stock', 
-      label: 'Stock', 
+    {
+      key: 'stock',
+      label: 'Stock',
       sortable: true,
       render: (product) => (
         <div className={product.stock === 0 ? 'text-red-500 font-medium' : 'font-medium'}>
@@ -58,15 +75,15 @@ export default function ProductsTable({
         </div>
       )
     },
-    { 
-      key: 'threshold', 
-      label: 'Threshold', 
+    {
+      key: 'threshold',
+      label: 'Threshold',
       sortable: true,
       responsive: 'lg'
     },
-    { 
-      key: 'stockStatus', 
-      label: 'Stock Status', 
+    {
+      key: 'stockStatus',
+      label: 'Stock Status',
       sortable: true,
       render: (product) => (
         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full

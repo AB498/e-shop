@@ -1,25 +1,34 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import Image from 'next/image';
 
-const ProductImageGallery = ({ image, name, discountPercentage = 0 }) => {
+const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) => {
   // Default image if none provided
-  const productImage = image || "/images/product-image.png";
+  const defaultImage = "/images/product-image.png";
 
-  // Generate thumbnail variations (in a real app, you'd have multiple images)
-  const thumbnails = [
-    { id: 1, src: productImage, active: true },
-    { id: 2, src: productImage, active: false },
-    { id: 3, src: productImage, active: false },
-    { id: 4, src: productImage, active: false },
+  // State to track the active image
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  // Use provided images array or create a fallback from the single image
+  const productImages = images || [
+    { id: 1, url: image || defaultImage, altText: name, position: 0, isPrimary: true }
   ];
+
+  // Get the currently active image
+  const activeImage = productImages[activeImageIndex]?.url || defaultImage;
+
+  // Handle thumbnail click
+  const handleThumbnailClick = (index) => {
+    setActiveImageIndex(index);
+  };
 
   return (
     <div className="w-full md:w-1/2 lg:w-2/5 fluid-p">
       {/* Main Product Image */}
       <div className="relative aspect-square mb-4 border border-[#ECECEC] rounded-[15px] overflow-hidden bg-white">
         <Image
-          src={productImage}
-          alt={name || "Product"}
+          src={activeImage}
+          alt={productImages[activeImageIndex]?.altText || name || "Product"}
           fill
           className="object-contain"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -36,11 +45,11 @@ const ProductImageGallery = ({ image, name, discountPercentage = 0 }) => {
 
       {/* Thumbnail Images */}
       <div className="flex fluid-gap overflow-x-auto pb-2 justify-center md:justify-start">
-        {thumbnails.map((thumbnail) => (
+        {productImages.map((image, index) => (
           <div
-            key={thumbnail.id}
-            className={`relative border rounded-[10px] overflow-hidden flex-shrink-0 ${
-              thumbnail.active
+            key={image.id || index}
+            className={`relative border rounded-[10px] overflow-hidden flex-shrink-0 cursor-pointer ${
+              index === activeImageIndex
                 ? 'border-[#3BB77E] shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)]'
                 : 'border-[#ECECEC]'
             }`}
@@ -48,10 +57,11 @@ const ProductImageGallery = ({ image, name, discountPercentage = 0 }) => {
               width: 'clamp(60px, 15vw, 96px)',
               height: 'clamp(60px, 15vw, 96px)'
             }}
+            onClick={() => handleThumbnailClick(index)}
           >
             <Image
-              src={thumbnail.src}
-              alt={`${name || "Product"} Thumbnail ${thumbnail.id}`}
+              src={image.url}
+              alt={image.altText || `${name || "Product"} Thumbnail ${index + 1}`}
               fill
               className="object-contain"
               sizes="(max-width: 768px) 15vw, 96px"
