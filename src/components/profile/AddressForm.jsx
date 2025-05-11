@@ -104,12 +104,12 @@ export default function AddressForm({ user, onClose, onUpdate }) {
       }
 
       toast.success('Address updated successfully');
-      
+
       // Call the onUpdate callback with the updated user data
       if (onUpdate) {
         onUpdate(data.user);
       }
-      
+
       onClose();
     } catch (error) {
       console.error('Error updating address:', error);
@@ -145,8 +145,8 @@ export default function AddressForm({ user, onClose, onUpdate }) {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Address */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                    Address *
+                  <label htmlFor="address" className="block text-[#444444] mb-2">
+                    Address*
                   </label>
                   <input
                     type="text"
@@ -155,9 +155,7 @@ export default function AddressForm({ user, onClose, onUpdate }) {
                     required
                     value={formData.address}
                     onChange={handleInputChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm ${
-                      errors.address ? 'border-red-500' : ''
-                    }`}
+                    className={`w-full p-3 border ${errors.address ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                   />
                   {errors.address && (
                     <p className="mt-1 text-sm text-red-600">{errors.address}</p>
@@ -166,8 +164,8 @@ export default function AddressForm({ user, onClose, onUpdate }) {
 
                 {/* City */}
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                    City *
+                  <label htmlFor="city" className="block text-[#444444] mb-2">
+                    City*
                   </label>
                   <input
                     type="text"
@@ -176,9 +174,7 @@ export default function AddressForm({ user, onClose, onUpdate }) {
                     required
                     value={formData.city}
                     onChange={handleInputChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm ${
-                      errors.city ? 'border-red-500' : ''
-                    }`}
+                    className={`w-full p-3 border ${errors.city ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                   />
                   {errors.city && (
                     <p className="mt-1 text-sm text-red-600">{errors.city}</p>
@@ -187,8 +183,8 @@ export default function AddressForm({ user, onClose, onUpdate }) {
 
                 {/* Post Code */}
                 <div>
-                  <label htmlFor="postCode" className="block text-sm font-medium text-gray-700">
-                    Post Code *
+                  <label htmlFor="postCode" className="block text-[#444444] mb-2">
+                    Post Code*
                   </label>
                   <input
                     type="text"
@@ -197,9 +193,7 @@ export default function AddressForm({ user, onClose, onUpdate }) {
                     required
                     value={formData.postCode}
                     onChange={handleInputChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm ${
-                      errors.postCode ? 'border-red-500' : ''
-                    }`}
+                    className={`w-full p-3 border ${errors.postCode ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                   />
                   {errors.postCode && (
                     <p className="mt-1 text-sm text-red-600">{errors.postCode}</p>
@@ -208,8 +202,8 @@ export default function AddressForm({ user, onClose, onUpdate }) {
 
                 {/* Country */}
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                    Country *
+                  <label htmlFor="country" className="block text-[#444444] mb-2">
+                    Country*
                   </label>
                   <input
                     type="text"
@@ -218,9 +212,7 @@ export default function AddressForm({ user, onClose, onUpdate }) {
                     required
                     value={formData.country}
                     onChange={handleInputChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm ${
-                      errors.country ? 'border-red-500' : ''
-                    }`}
+                    className={`w-full p-3 border ${errors.country ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                   />
                   {errors.country && (
                     <p className="mt-1 text-sm text-red-600">{errors.country}</p>
@@ -229,7 +221,7 @@ export default function AddressForm({ user, onClose, onUpdate }) {
 
                 {/* Region */}
                 <div>
-                  <label htmlFor="region" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="region" className="block text-[#444444] mb-2">
                     Region/State
                   </label>
                   <input
@@ -238,13 +230,13 @@ export default function AddressForm({ user, onClose, onUpdate }) {
                     id="region"
                     value={formData.region}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm"
+                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="phone" className="block text-[#444444] mb-2">
                     Phone
                   </label>
                   <input
@@ -253,7 +245,7 @@ export default function AddressForm({ user, onClose, onUpdate }) {
                     id="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm"
+                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
                   />
                 </div>
               </div>

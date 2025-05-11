@@ -124,8 +124,6 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
         throw new Error(data.error || 'Failed to update profile');
       }
 
-      toast.success('Profile updated successfully');
-
       // If email was changed, sign out the user
       if (user.email !== formData.email) {
         toast.success('Email changed. Please sign in with your new email.');
@@ -175,8 +173,8 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* First Name */}
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                    First Name *
+                  <label htmlFor="firstName" className="block text-[#444444] mb-2">
+                    First Name*
                   </label>
                   <input
                     type="text"
@@ -194,8 +192,8 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
 
                 {/* Last Name */}
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                    Last Name *
+                  <label htmlFor="lastName" className="block text-[#444444] mb-2">
+                    Last Name*
                   </label>
                   <input
                     type="text"
@@ -213,8 +211,8 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
 
                 {/* Email */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email *
+                  <label htmlFor="email" className="block text-[#444444] mb-2">
+                    Email*
                   </label>
                   <input
                     type="email"
@@ -237,7 +235,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
 
                 {/* Password */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="password" className="block text-[#444444] mb-2">
                     Password (leave blank to keep current)
                   </label>
                   <div className="relative">
@@ -265,7 +263,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                 {/* Confirm Password */}
                 {formData.password && (
                   <div className="sm:col-span-2">
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="confirmPassword" className="block text-[#444444] mb-2">
                       Confirm Password
                     </label>
                     <input
@@ -284,7 +282,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
 
                 {/* Phone */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="phone" className="block text-[#444444] mb-2">
                     Phone
                   </label>
                   <input
@@ -293,13 +291,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm"
+                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Address */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="address" className="block text-[#444444] mb-2">
                     Address
                   </label>
                   <input
@@ -308,13 +306,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="address"
                     value={formData.address}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm"
+                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* City */}
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="city" className="block text-[#444444] mb-2">
                     City
                   </label>
                   <input
@@ -323,13 +321,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm"
+                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Post Code */}
                 <div>
-                  <label htmlFor="postCode" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="postCode" className="block text-[#444444] mb-2">
                     Post Code
                   </label>
                   <input
@@ -338,13 +336,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="postCode"
                     value={formData.postCode}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm"
+                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Country */}
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="country" className="block text-[#444444] mb-2">
                     Country
                   </label>
                   <input
@@ -353,13 +351,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="country"
                     value={formData.country}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm"
+                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Region */}
                 <div>
-                  <label htmlFor="region" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="region" className="block text-[#444444] mb-2">
                     Region/State
                   </label>
                   <input
@@ -368,7 +366,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="region"
                     value={formData.region}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm"
+                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
                   />
                 </div>
               </div>
