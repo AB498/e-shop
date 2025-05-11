@@ -9,11 +9,74 @@ import { Navigation, Pagination, A11y } from "swiper/modules";
 import ProductCarouselSkeleton from "./ProductCarouselSkeleton";
 import { useProductQuickView } from "@/context/ProductQuickViewContext";
 import { usePathname } from "next/navigation";
+import { useWishlist } from "@/context/WishlistContext";
+import { toast } from "react-hot-toast";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+
+// Wishlist Button Component
+const WishlistButton = ({ product }) => {
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
+  const productInWishlist = isInWishlist(product.id);
+
+  const handleWishlistClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Prevent multiple clicks
+    if (isWishlistLoading) return;
+
+    setIsWishlistLoading(true);
+
+    if (productInWishlist) {
+      removeFromWishlist(product.id).then(result => {
+        if (result.success) {
+          toast.success('Removed from wishlist');
+        } else {
+          toast.error(result.message || 'Failed to remove from wishlist');
+        }
+      }).finally(() => {
+        setIsWishlistLoading(false);
+      });
+    } else {
+      addToWishlist(product).then(result => {
+        if (result.success) {
+          toast.success('Added to wishlist');
+        } else {
+          toast.error(result.message || 'Failed to add to wishlist');
+        }
+      }).finally(() => {
+        setIsWishlistLoading(false);
+      });
+    }
+  };
+
+  return (
+    <button
+      onClick={handleWishlistClick}
+      className="p-0.5 transition-all"
+      aria-label={productInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+    >
+      {isWishlistLoading ? (
+        <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+      ) : (
+        <Image
+          src={productInWishlist
+            ? "/images/wishlist/wishlist-icon-filled.svg"
+            : "/images/wishlist/wishlist-icon-outline.svg"}
+          alt="Wishlist"
+          width={20}
+          height={20}
+          className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer transition-all"
+        />
+      )}
+    </button>
+  );
+};
 
 /**
  * A reusable product carousel component
@@ -246,13 +309,7 @@ export default function ProductCarousel({
 
                     {/* Wishlist icon */}
                     <div className="absolute top-1 sm:top-2 right-1 sm:right-2">
-                      <Image
-                        src="/images/beauty-makeup/wishlist-icon.png"
-                        alt="Add to wishlist"
-                        width={20}
-                        height={20}
-                        className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer"
-                      />
+                      <WishlistButton product={product} />
                     </div>
 
                     {/* Product Info */}

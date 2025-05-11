@@ -1,14 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  UserIcon, 
-  BuildingStorefrontIcon, 
-  CreditCardIcon, 
-  TruckIcon, 
-  BellIcon, 
-  ShieldCheckIcon 
+import {
+  UserIcon,
+  BuildingStorefrontIcon,
+  CreditCardIcon,
+  TruckIcon,
+  BellIcon,
+  ShieldCheckIcon,
+  CubeIcon
 } from '@heroicons/react/24/outline';
+import CourierSettings from './CourierSettings';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('store');
@@ -17,21 +19,22 @@ export default function SettingsPage() {
     { id: 'store', name: 'Store Information', icon: BuildingStorefrontIcon },
     { id: 'payment', name: 'Payment Methods', icon: CreditCardIcon },
     { id: 'shipping', name: 'Shipping Options', icon: TruckIcon },
+    { id: 'courier', name: 'Courier Settings', icon: CubeIcon },
     { id: 'account', name: 'Account Settings', icon: UserIcon },
     { id: 'notifications', name: 'Notifications', icon: BellIcon },
     { id: 'security', name: 'Security', icon: ShieldCheckIcon },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
-        <p className="mt-2 text-sm text-gray-700">
+        <h1 className="text-xl md:text-2xl font-semibold text-gray-900">Settings</h1>
+        <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-700">
           Manage your store settings and preferences
         </p>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
+      <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="sm:hidden">
           <label htmlFor="tabs" className="sr-only">
             Select a tab
@@ -39,7 +42,7 @@ export default function SettingsPage() {
           <select
             id="tabs"
             name="tabs"
-            className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
+            className="block w-full pl-3 pr-10 py-2.5 text-sm border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 rounded-md"
             value={activeTab}
             onChange={(e) => setActiveTab(e.target.value)}
           >
@@ -50,9 +53,9 @@ export default function SettingsPage() {
             ))}
           </select>
         </div>
-        <div className="hidden sm:block">
+        <div className="hidden sm:block overflow-hidden">
           <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+            <nav className="-mb-px flex space-x-2 md:space-x-8 px-4 md:px-6 overflow-x-auto scrollbar-hide" aria-label="Tabs">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -62,13 +65,13 @@ export default function SettingsPage() {
                       ? 'border-emerald-500 text-emerald-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }
-                    whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center
+                    whitespace-nowrap py-3 md:py-4 px-1 border-b-2 font-medium text-xs md:text-sm flex items-center
                   `}
                 >
                   <tab.icon
                     className={`
                       ${activeTab === tab.id ? 'text-emerald-500' : 'text-gray-400'}
-                      -ml-0.5 mr-2 h-5 w-5
+                      -ml-0.5 mr-1 md:mr-2 h-4 w-4 md:h-5 md:w-5
                     `}
                     aria-hidden="true"
                   />
@@ -79,13 +82,13 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-3 md:p-6">
           {activeTab === 'store' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Store Information</h3>
-              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                <div className="sm:col-span-3">
-                  <label htmlFor="store-name" className="block text-sm font-medium text-gray-700">
+            <div className="space-y-4 md:space-y-6">
+              <h3 className="text-base md:text-lg font-medium leading-6 text-gray-900">Store Information</h3>
+              <div className="grid grid-cols-1 gap-y-4 md:gap-y-6 gap-x-3 md:gap-x-4 xs:grid-cols-2 sm:grid-cols-6">
+                <div className="xs:col-span-1 sm:col-span-3">
+                  <label htmlFor="store-name" className="block text-xs md:text-sm font-medium text-gray-700">
                     Store Name
                   </label>
                   <div className="mt-1">
@@ -94,13 +97,13 @@ export default function SettingsPage() {
                       name="store-name"
                       id="store-name"
                       defaultValue="E-Shop Store"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
-                  <label htmlFor="store-email" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-1 sm:col-span-3">
+                  <label htmlFor="store-email" className="block text-xs md:text-sm font-medium text-gray-700">
                     Store Email
                   </label>
                   <div className="mt-1">
@@ -109,13 +112,13 @@ export default function SettingsPage() {
                       name="store-email"
                       id="store-email"
                       defaultValue="contact@eshop.com"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
-                  <label htmlFor="store-phone" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-1 sm:col-span-3">
+                  <label htmlFor="store-phone" className="block text-xs md:text-sm font-medium text-gray-700">
                     Store Phone
                   </label>
                   <div className="mt-1">
@@ -124,20 +127,20 @@ export default function SettingsPage() {
                       name="store-phone"
                       id="store-phone"
                       defaultValue="+1 (555) 123-4567"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
-                  <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-1 sm:col-span-3">
+                  <label htmlFor="currency" className="block text-xs md:text-sm font-medium text-gray-700">
                     Currency
                   </label>
                   <div className="mt-1">
                     <select
                       id="currency"
                       name="currency"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     >
                       <option>USD ($)</option>
                       <option>EUR (€)</option>
@@ -147,8 +150,8 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="sm:col-span-6">
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-2 sm:col-span-6">
+                  <label htmlFor="address" className="block text-xs md:text-sm font-medium text-gray-700">
                     Address
                   </label>
                   <div className="mt-1">
@@ -157,13 +160,13 @@ export default function SettingsPage() {
                       name="address"
                       id="address"
                       defaultValue="123 E-Commerce St"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-2 sm:col-span-2">
+                  <label htmlFor="city" className="block text-xs md:text-sm font-medium text-gray-700">
                     City
                   </label>
                   <div className="mt-1">
@@ -172,13 +175,13 @@ export default function SettingsPage() {
                       name="city"
                       id="city"
                       defaultValue="San Francisco"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label htmlFor="state" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-1 sm:col-span-2">
+                  <label htmlFor="state" className="block text-xs md:text-sm font-medium text-gray-700">
                     State / Province
                   </label>
                   <div className="mt-1">
@@ -187,13 +190,13 @@ export default function SettingsPage() {
                       name="state"
                       id="state"
                       defaultValue="CA"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label htmlFor="zip" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-1 sm:col-span-2">
+                  <label htmlFor="zip" className="block text-xs md:text-sm font-medium text-gray-700">
                     ZIP / Postal Code
                   </label>
                   <div className="mt-1">
@@ -202,21 +205,21 @@ export default function SettingsPage() {
                       name="zip"
                       id="zip"
                       defaultValue="94107"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-row justify-end gap-2 mt-4">
                 <button
                   type="button"
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-xs md:text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Save
                 </button>
@@ -225,9 +228,9 @@ export default function SettingsPage() {
           )}
 
           {activeTab === 'payment' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Payment Methods</h3>
-              <div className="space-y-4">
+            <div className="space-y-4 md:space-y-6">
+              <h3 className="text-base md:text-lg font-medium leading-6 text-gray-900">Payment Methods</h3>
+              <div className="space-y-3 md:space-y-4">
                 <div className="relative flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -238,11 +241,11 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="payment-stripe" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="payment-stripe" className="font-medium text-xs md:text-sm text-gray-700">
                       Stripe
                     </label>
-                    <p className="text-gray-500">Accept credit card payments via Stripe</p>
+                    <p className="text-xs md:text-sm text-gray-500">Accept credit card payments via Stripe</p>
                   </div>
                 </div>
                 <div className="relative flex items-start">
@@ -255,11 +258,11 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="payment-paypal" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="payment-paypal" className="font-medium text-xs md:text-sm text-gray-700">
                       PayPal
                     </label>
-                    <p className="text-gray-500">Accept payments via PayPal</p>
+                    <p className="text-xs md:text-sm text-gray-500">Accept payments via PayPal</p>
                   </div>
                 </div>
                 <div className="relative flex items-start">
@@ -271,24 +274,24 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="payment-bank" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="payment-bank" className="font-medium text-xs md:text-sm text-gray-700">
                       Bank Transfer
                     </label>
-                    <p className="text-gray-500">Accept direct bank transfers</p>
+                    <p className="text-xs md:text-sm text-gray-500">Accept direct bank transfers</p>
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-row justify-end gap-2 mt-4">
                 <button
                   type="button"
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-xs md:text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Save
                 </button>
@@ -297,9 +300,9 @@ export default function SettingsPage() {
           )}
 
           {activeTab === 'shipping' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Shipping Options</h3>
-              <div className="space-y-4">
+            <div className="space-y-4 md:space-y-6">
+              <h3 className="text-base md:text-lg font-medium leading-6 text-gray-900">Shipping Options</h3>
+              <div className="space-y-3 md:space-y-4">
                 <div className="relative flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -310,11 +313,11 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="shipping-standard" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="shipping-standard" className="font-medium text-xs md:text-sm text-gray-700">
                       Standard Shipping
                     </label>
-                    <p className="text-gray-500">3-5 business days</p>
+                    <p className="text-xs md:text-sm text-gray-500">3-5 business days</p>
                   </div>
                 </div>
                 <div className="relative flex items-start">
@@ -327,11 +330,11 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="shipping-express" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="shipping-express" className="font-medium text-xs md:text-sm text-gray-700">
                       Express Shipping
                     </label>
-                    <p className="text-gray-500">1-2 business days</p>
+                    <p className="text-xs md:text-sm text-gray-500">1-2 business days</p>
                   </div>
                 </div>
                 <div className="relative flex items-start">
@@ -344,24 +347,24 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="shipping-free" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="shipping-free" className="font-medium text-xs md:text-sm text-gray-700">
                       Free Shipping
                     </label>
-                    <p className="text-gray-500">For orders over $100</p>
+                    <p className="text-xs md:text-sm text-gray-500">For orders over $100</p>
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-row justify-end gap-2 mt-4">
                 <button
                   type="button"
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-xs md:text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Save
                 </button>
@@ -369,12 +372,16 @@ export default function SettingsPage() {
             </div>
           )}
 
+          {activeTab === 'courier' && (
+            <CourierSettings />
+          )}
+
           {activeTab === 'account' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Account Settings</h3>
-              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                <div className="sm:col-span-3">
-                  <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
+            <div className="space-y-4 md:space-y-6">
+              <h3 className="text-base md:text-lg font-medium leading-6 text-gray-900">Account Settings</h3>
+              <div className="grid grid-cols-1 gap-y-4 md:gap-y-6 gap-x-3 md:gap-x-4 xs:grid-cols-2 sm:grid-cols-6">
+                <div className="xs:col-span-1 sm:col-span-3">
+                  <label htmlFor="first-name" className="block text-xs md:text-sm font-medium text-gray-700">
                     First name
                   </label>
                   <div className="mt-1">
@@ -383,13 +390,13 @@ export default function SettingsPage() {
                       name="first-name"
                       id="first-name"
                       defaultValue="Admin"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
-                  <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-1 sm:col-span-3">
+                  <label htmlFor="last-name" className="block text-xs md:text-sm font-medium text-gray-700">
                     Last name
                   </label>
                   <div className="mt-1">
@@ -398,13 +405,13 @@ export default function SettingsPage() {
                       name="last-name"
                       id="last-name"
                       defaultValue="User"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
 
-                <div className="sm:col-span-4">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <div className="xs:col-span-2 sm:col-span-4">
+                  <label htmlFor="email" className="block text-xs md:text-sm font-medium text-gray-700">
                     Email address
                   </label>
                   <div className="mt-1">
@@ -413,21 +420,21 @@ export default function SettingsPage() {
                       name="email"
                       type="email"
                       defaultValue="admin@eshop.com"
-                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                     />
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-row justify-end gap-2 mt-4">
                 <button
                   type="button"
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-xs md:text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Save
                 </button>
@@ -436,9 +443,9 @@ export default function SettingsPage() {
           )}
 
           {activeTab === 'notifications' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Notification Preferences</h3>
-              <div className="space-y-4">
+            <div className="space-y-4 md:space-y-6">
+              <h3 className="text-base md:text-lg font-medium leading-6 text-gray-900">Notification Preferences</h3>
+              <div className="space-y-3 md:space-y-4">
                 <div className="relative flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -449,11 +456,11 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="notify-orders" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="notify-orders" className="font-medium text-xs md:text-sm text-gray-700">
                       New Orders
                     </label>
-                    <p className="text-gray-500">Get notified when a new order is placed</p>
+                    <p className="text-xs md:text-sm text-gray-500">Get notified when a new order is placed</p>
                   </div>
                 </div>
                 <div className="relative flex items-start">
@@ -466,11 +473,11 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="notify-stock" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="notify-stock" className="font-medium text-xs md:text-sm text-gray-700">
                       Low Stock Alerts
                     </label>
-                    <p className="text-gray-500">Get notified when products are running low</p>
+                    <p className="text-xs md:text-sm text-gray-500">Get notified when products are running low</p>
                   </div>
                 </div>
                 <div className="relative flex items-start">
@@ -482,24 +489,24 @@ export default function SettingsPage() {
                       className="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-gray-300 rounded"
                     />
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="notify-customers" className="font-medium text-gray-700">
+                  <div className="ml-3">
+                    <label htmlFor="notify-customers" className="font-medium text-xs md:text-sm text-gray-700">
                       New Customers
                     </label>
-                    <p className="text-gray-500">Get notified when a new customer registers</p>
+                    <p className="text-xs md:text-sm text-gray-500">Get notified when a new customer registers</p>
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-row justify-end gap-2 mt-4">
                 <button
                   type="button"
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-xs md:text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Save
                 </button>
@@ -508,14 +515,14 @@ export default function SettingsPage() {
           )}
 
           {activeTab === 'security' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Security Settings</h3>
-              <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
+              <h3 className="text-base md:text-lg font-medium leading-6 text-gray-900">Security Settings</h3>
+              <div className="space-y-4 md:space-y-6">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-900">Change Password</h4>
-                  <div className="mt-2 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                    <div className="sm:col-span-4">
-                      <label htmlFor="current-password" className="block text-sm font-medium text-gray-700">
+                  <h4 className="text-xs md:text-sm font-medium text-gray-900">Change Password</h4>
+                  <div className="mt-2 grid grid-cols-1 gap-y-4 md:gap-y-6 gap-x-3 md:gap-x-4 xs:grid-cols-2 sm:grid-cols-6">
+                    <div className="xs:col-span-2 sm:col-span-4">
+                      <label htmlFor="current-password" className="block text-xs md:text-sm font-medium text-gray-700">
                         Current Password
                       </label>
                       <div className="mt-1">
@@ -523,12 +530,12 @@ export default function SettingsPage() {
                           type="password"
                           name="current-password"
                           id="current-password"
-                          className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                         />
                       </div>
                     </div>
-                    <div className="sm:col-span-4">
-                      <label htmlFor="new-password" className="block text-sm font-medium text-gray-700">
+                    <div className="xs:col-span-2 sm:col-span-4">
+                      <label htmlFor="new-password" className="block text-xs md:text-sm font-medium text-gray-700">
                         New Password
                       </label>
                       <div className="mt-1">
@@ -536,12 +543,12 @@ export default function SettingsPage() {
                           type="password"
                           name="new-password"
                           id="new-password"
-                          className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                         />
                       </div>
                     </div>
-                    <div className="sm:col-span-4">
-                      <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+                    <div className="xs:col-span-2 sm:col-span-4">
+                      <label htmlFor="confirm-password" className="block text-xs md:text-sm font-medium text-gray-700">
                         Confirm New Password
                       </label>
                       <div className="mt-1">
@@ -549,34 +556,34 @@ export default function SettingsPage() {
                           type="password"
                           name="confirm-password"
                           id="confirm-password"
-                          className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs md:text-sm border-gray-300 rounded-md h-9 md:h-10"
                         />
                       </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-900">Two-Factor Authentication</h4>
+                  <h4 className="text-xs md:text-sm font-medium text-gray-900">Two-Factor Authentication</h4>
                   <div className="mt-2">
                     <button
                       type="button"
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                      className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-xs md:text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 h-9 md:h-10"
                     >
                       Enable Two-Factor Authentication
                     </button>
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-row justify-end gap-2 mt-4">
                 <button
                   type="button"
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-xs md:text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="w-auto ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xs md:text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Save
                 </button>

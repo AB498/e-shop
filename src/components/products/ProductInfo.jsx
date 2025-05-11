@@ -15,6 +15,8 @@ const ProductInfo = ({ product }) => {
 
   // Check if product is in wishlist
   const productInWishlist = isInWishlist(product?.id);
+  // State to track wishlist operation in progress
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
   // Handle quantity change
   const decreaseQuantity = () => {
@@ -172,6 +174,11 @@ const ProductInfo = ({ product }) => {
 
           <button
             onClick={() => {
+              // Prevent multiple clicks
+              if (isWishlistLoading) return;
+
+              setIsWishlistLoading(true);
+
               if (productInWishlist) {
                 removeFromWishlist(product.id).then(result => {
                   if (result.success) {
@@ -179,6 +186,8 @@ const ProductInfo = ({ product }) => {
                   } else {
                     toast.error(result.message || 'Failed to remove from wishlist');
                   }
+                }).finally(() => {
+                  setIsWishlistLoading(false);
                 });
               } else {
                 addToWishlist(product).then(result => {
@@ -187,18 +196,24 @@ const ProductInfo = ({ product }) => {
                   } else {
                     toast.error(result.message || 'Failed to add to wishlist');
                   }
+                }).finally(() => {
+                  setIsWishlistLoading(false);
                 });
               }
             }}
             className={`border ${productInWishlist ? 'border-[#006B51] bg-[#F0F7F5]' : 'border-[#ECECEC]'} rounded-[40px] px-4 flex items-center justify-center hover:bg-[#F0F7F5] transition-colors`}
           >
-            <Image
-              src={productInWishlist ? "/images/popup/wishlist-icon.svg" : "/images/products/wishlist-icon.png"}
-              alt="Wishlist"
-              width={24}
-              height={24}
-              className="mr-2"
-            />
+            {isWishlistLoading ? (
+              <div className="w-6 h-6 border-2 border-[#FF3E3E] border-t-transparent rounded-full animate-spin mr-2"></div>
+            ) : (
+              <Image
+                src={productInWishlist ? "/images/wishlist/wishlist-icon-filled.svg" : "/images/wishlist/wishlist-icon-outline.svg"}
+                alt="Wishlist"
+                width={24}
+                height={24}
+                className="mr-2"
+              />
+            )}
             <span className={`font-semibold ${productInWishlist ? 'text-[#006B51]' : 'text-[#7E7E7E]'}`}>
               {productInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
             </span>

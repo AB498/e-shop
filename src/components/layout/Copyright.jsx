@@ -12,7 +12,7 @@ const Copyright = () => {
 
 
           {/* Quick Links */}
-          <div className="text-sm font-semibold leading-loose">
+          <div className="text-sm font-semibold leading-loose text-center">
             <a href="#" className="hover:underline">🛒 Shop Now</a> |
             <a href="#" className="hover:underline"> 📦 View Product Categories</a> |
             <a href="#" className="hover:underline"> 📍Track Your Order</a>

@@ -19,18 +19,40 @@ const WishlistItem = ({ item }) => {
     ? Math.round((1 - (parseFloat(product.discountPrice) / parseFloat(product.price))) * 100)
     : 0;
 
-  const handleRemove = async () => {
-    const result = await removeFromWishlist(product.id);
-    if (result.success) {
-      toast.success('Item removed from wishlist');
-    } else {
-      toast.error(result.message || 'Failed to remove item');
-    }
+  // Use a ref to track if a removal is in progress
+  const [isRemoving, setIsRemoving] = React.useState(false);
+
+  const handleRemove = () => {
+    // Prevent multiple clicks
+    if (isRemoving) return;
+
+    setIsRemoving(true);
+    removeFromWishlist(product.id)
+      .then(result => {
+        if (result.success) {
+          toast.success('Item removed from wishlist');
+        } else {
+          toast.error(result.message || 'Failed to remove item');
+        }
+      })
+      .finally(() => {
+        setIsRemoving(false);
+      });
   };
 
   const handleAddToCart = () => {
+    // Format the product properly for the cart
+    const cartItem = {
+      id: product.id,
+      name: product.name,
+      price: hasDiscount ? product.discountPrice : product.price,
+      image: product.image,
+      category: product.category?.name || '',
+      quantity: 1
+    };
+
     // Pass false to prevent duplicate toast from CartContext
-    addToCart(product, 1, false);
+    addToCart(cartItem, 1, false);
 
     // Show toast manually to ensure it only happens once
     toast.success(`${product.name} added to cart!`);
@@ -46,7 +68,7 @@ const WishlistItem = ({ item }) => {
               src={product.image || "/images/product-image.png"}
               alt={product.name}
               fill
-              className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
         </Link>
@@ -113,10 +135,18 @@ const WishlistItem = ({ item }) => {
           onClick={handleRemove}
           className="bg-white border border-[#DEDEDE] rounded-full p-1.5 hover:bg-gray-100 transition-colors shadow-sm"
           title="Remove from wishlist"
+          disabled={isRemoving}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="#333333"/>
-          </svg>
+          {isRemoving ? (
+            <div className="w-4 h-4 border-2 border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            <Image
+              src="/images/wishlist/wishlist-icon-filled.svg"
+              alt="Remove from wishlist"
+              width={16}
+              height={16}
+            />
+          )}
         </button>
       </div>
 
@@ -126,11 +156,16 @@ const WishlistItem = ({ item }) => {
           <button
             onClick={handleRemove}
             className="text-[#666666] hover:text-[#006B51] transition-colors flex items-center gap-1 text-sm"
+            disabled={isRemoving}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            <span>Remove</span>
+            {isRemoving ? (
+              <div className="w-3 h-3 border-2 border-[#666666] border-t-transparent rounded-full animate-spin mr-1"></div>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            )}
+            <span>{isRemoving ? 'Removing...' : 'Remove'}</span>
           </button>
         </div>
 

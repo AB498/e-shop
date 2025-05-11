@@ -9,11 +9,11 @@ const EmptyWishlist = () => {
     <div className="bg-white p-8 md:p-12 rounded-lg shadow-sm text-center max-w-2xl mx-auto">
       <div className="w-24 h-24 mx-auto mb-6">
         <Image
-          src="/images/popup/wishlist-icon.svg"
+          src="/images/wishlist/wishlist-icon-filled.svg"
           alt="Empty Wishlist"
           width={96}
           height={96}
-          className="opacity-40"
+          className="opacity-60"
         />
       </div>
       <h2 className="text-2xl md:text-3xl font-bold mb-4 text-[#253D4E]">Your Wishlist is Empty</h2>

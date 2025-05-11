@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { db } from '@/lib/db';
 import { orders, orderItems } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { resetSequence, handleDuplicateKeyError } from '@/lib/utils/db-utils';
 
@@ -50,6 +51,7 @@ export async function POST(request) {
       user_id: userId, // If user is logged in, associate order with user
       status: 'pending',
       total: body.payment.total,
+      payment_method: body.payment.method, // 'sslcommerz' or 'cod'
       shipping_address: body.customer.address,
       shipping_city: body.customer.city,
       shipping_post_code: body.customer.postCode,
@@ -153,6 +155,46 @@ export async function POST(request) {
     // Make sure the URL doesn't have trailing slashes
     const baseUrl = appUrl.endsWith('/') ? appUrl.slice(0, -1) : appUrl;
 
+    // Check if this is a Cash on Delivery order
+    if (body.payment.method === 'cod') {
+      // For COD orders, update the order status to 'processing' immediately
+      try {
+        await db.update(orders)
+          .set({
+            status: 'processing',
+            updated_at: new Date()
+          })
+          .where(eq(orders.id, orderId));
+
+        console.log(`COD Order ${orderId} status updated to 'processing'`);
+
+        // Automatically create a courier order with Pathao for COD orders
+        console.log(`Creating automatic courier order for COD order ${orderId}`);
+        const { createAutomaticCourierOrder } = await import('@/lib/services/auto-courier');
+        const courierResult = await createAutomaticCourierOrder(orderId);
+
+        if (courierResult) {
+          console.log(`Courier order created successfully for COD order ${orderId}`, {
+            consignment_id: courierResult.consignment_id
+          });
+        } else {
+          console.error(`Failed to create courier order for COD order ${orderId}`);
+          // Continue anyway, as we still want to show the success page
+        }
+
+        // Return success with redirect to order confirmation page
+        return NextResponse.json({
+          success: true,
+          redirectUrl: `${baseUrl}/payment/success?order_id=${orderId}&cod=true`,
+          orderId: orderId,
+        });
+      } catch (error) {
+        console.error('Error updating COD order status or creating courier order:', error);
+        return NextResponse.json({ error: 'Failed to process COD order' }, { status: 500 });
+      }
+    }
+
+    // For online payments, proceed with SSL Commerz
     // Prepare SSL Commerz parameters
     const sslParams = {
       store_id: process.env.SSLCOMMERZ_STORE_ID,

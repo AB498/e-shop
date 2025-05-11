@@ -117,7 +117,7 @@ export default function OrderDetailsPage() {
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex flex-col">
-        
+
         <div className="container mx-auto px-4 py-8 flex-grow flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#006B51]"></div>
         </div>
@@ -139,7 +139,7 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      
+
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center mb-6">
@@ -170,7 +170,7 @@ export default function OrderDetailsPage() {
           <div className="flex flex-col md:flex-row justify-between gap-8">
             <div className="md:w-1/2">
               <h2 className="text-lg font-semibold text-[#253D4E] mb-4">Order Summary</h2>
-              <OrderSummary total={order.total} />
+              <OrderSummary total={order.total} payment_method={order.payment_method} />
 
               {/* Shipping Information */}
               <ShippingInfo order={order} />

@@ -5,7 +5,18 @@ import { useCart } from '@/context/CartContext';
 
 const CartItem = ({ item }) => {
   const { updateQuantity, removeFromCart } = useCart();
-  const { id, name, price, image, category, quantity, size } = item;
+
+  // Handle both direct items and items with nested product structure (from wishlist)
+  const isProductNested = item.product && typeof item.product === 'object';
+
+  // Extract properties safely, handling both structures
+  const id = isProductNested ? item.product.id : item.id;
+  const name = isProductNested ? item.product.name : item.name;
+  const price = isProductNested ? item.product.price : item.price;
+  const image = isProductNested ? item.product.image : item.image;
+  const category = isProductNested ? (item.product.category?.name || '') : item.category;
+  const quantity = item.quantity || 1;
+  const size = item.size || 'Standard';
 
   const handleQuantityChange = (newQuantity) => {
     if (newQuantity >= 1) {

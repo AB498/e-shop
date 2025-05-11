@@ -52,9 +52,20 @@ export function CartProvider({ children }) {
   // Add item to cart
   const addToCart = (product, quantity = 1, showToast = true) => {
     setCart(prevCart => {
-      console.log('called add cart')
+      // Normalize product structure - handle both direct items and items with nested product structure
+      const normalizedProduct = product.product && typeof product.product === 'object'
+        ? {
+            id: product.product.id,
+            name: product.product.name,
+            price: product.product.price,
+            image: product.product.image,
+            category: product.product.category?.name || '',
+            ...product
+          }
+        : product;
+
       // Check if product already exists in cart
-      const existingItemIndex = prevCart.findIndex(item => item.id === product.id);
+      const existingItemIndex = prevCart.findIndex(item => item.id === normalizedProduct.id);
 
       if (existingItemIndex >= 0) {
         // Update quantity if product already exists
@@ -66,7 +77,7 @@ export function CartProvider({ children }) {
 
         // Show toast notification for updating quantity if showToast is true
         if (showToast) {
-          toast.success(`Updated ${product.name} quantity to ${updatedCart[existingItemIndex].quantity} in cart!`);
+          toast.success(`Updated ${normalizedProduct.name} quantity to ${updatedCart[existingItemIndex].quantity} in cart!`);
         }
 
         return updatedCart;
@@ -74,10 +85,10 @@ export function CartProvider({ children }) {
         // Add new item if product doesn't exist in cart
         // Show toast notification for adding new item if showToast is true
         if (showToast) {
-          toast.success(`${product.name} added to cart!`);
+          toast.success(`${normalizedProduct.name} added to cart!`);
         }
 
-        return [...prevCart, { ...product, quantity }];
+        return [...prevCart, { ...normalizedProduct, quantity }];
       }
     });
   };

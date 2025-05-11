@@ -98,6 +98,8 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
         {products.map((product) => {
           // Check if product is in wishlist
           const productInWishlist = isInWishlist(product.id);
+          // State to track wishlist operation in progress
+          const [isWishlistLoading, setIsWishlistLoading] = React.useState(false);
 
           // Calculate discount percentage
           const discountPercentage = Math.round((1 - (parseFloat(product.discountPrice || 0) / parseFloat(product.price || 1))) * 100);
@@ -130,6 +132,12 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
+
+                        // Prevent multiple clicks
+                        if (isWishlistLoading) return;
+
+                        setIsWishlistLoading(true);
+
                         if (productInWishlist) {
                           removeFromWishlist(product.id).then(result => {
                             if (result.success) {
@@ -137,6 +145,8 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
                             } else {
                               toast.error(result.message || 'Failed to remove from wishlist');
                             }
+                          }).finally(() => {
+                            setIsWishlistLoading(false);
                           });
                         } else {
                           addToWishlist(product).then(result => {
@@ -145,21 +155,27 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
                             } else {
                               toast.error(result.message || 'Failed to add to wishlist');
                             }
+                          }).finally(() => {
+                            setIsWishlistLoading(false);
                           });
                         }
                       }}
-                      className="bg-white rounded-full p-1 shadow-sm hover:shadow-md transition-all"
+                      className="p-1 transition-all"
                       aria-label={productInWishlist ? "Remove from wishlist" : "Add to wishlist"}
                     >
-                      <Image
-                        src={productInWishlist
-                          ? "/images/popup/wishlist-icon.svg"
-                          : "/images/products/wishlist-icon.png"}
-                        alt="Wishlist"
-                        width={20}
-                        height={20}
-                        className={`cursor-pointer transition-opacity ${productInWishlist ? 'filter-none' : 'opacity-70 hover:opacity-100'}`}
-                      />
+                      {isWishlistLoading ? (
+                        <div className="w-5 h-5 border-2 border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <Image
+                          src={productInWishlist
+                            ? "/images/wishlist/wishlist-icon-filled.svg"
+                            : "/images/wishlist/wishlist-icon-outline.svg"}
+                          alt="Wishlist"
+                          width={20}
+                          height={20}
+                          className="cursor-pointer transition-all"
+                        />
+                      )}
                     </button>
                   </div>
                 </div>

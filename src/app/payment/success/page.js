@@ -12,19 +12,21 @@ import Link from 'next/link';
 function SuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
+  const isCOD = searchParams.get('cod') === 'true';
 
   // We no longer need to clear the cart here as it's cleared at checkout time
   // This useEffect is kept as a placeholder in case we need to perform any actions
   // when the payment success page loads
   useEffect(() => {
     console.log('Payment success page loaded for order:', orderId || 'No order ID provided');
+    console.log('Is Cash on Delivery:', isCOD);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
-      
+
 
       <div className="container mx-auto px-4 py-16 flex-grow">
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8 text-center">
@@ -34,15 +36,25 @@ function SuccessContent() {
             </svg>
           </div>
 
-          <h1 className="text-3xl font-bold text-[#253D4E] mb-4">Payment Successful!</h1>
+          <h1 className="text-3xl font-bold text-[#253D4E] mb-4">
+            {isCOD ? 'Order Placed Successfully!' : 'Payment Successful!'}
+          </h1>
 
           <p className="text-[#7E7E7E] mb-6">
-            Thank you for your purchase. Your order has been successfully placed and is now being processed.
+            {isCOD
+              ? 'Thank you for your order. Your Cash on Delivery order has been successfully placed and is now being processed.'
+              : 'Thank you for your purchase. Your order has been successfully placed and is now being processed.'
+            }
           </p>
 
           {orderId && (
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <p className="text-[#253D4E] font-medium">Order Reference: <span className="font-bold">{orderId}</span></p>
+              {isCOD && (
+                <p className="text-[#3BB77E] text-sm mt-2">
+                  Payment will be collected upon delivery
+                </p>
+              )}
             </div>
           )}
 
@@ -78,7 +90,7 @@ function SuccessContent() {
 function SuccessPageSkeleton() {
   return (
     <div className="min-h-screen flex flex-col">
-      
+
       <div className="container mx-auto px-4 py-16 flex-grow">
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8 text-center">
           <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-6 animate-pulse"></div>

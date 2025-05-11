@@ -113,10 +113,10 @@ const Navigation = () => {
                 <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full ${isWishlistPage ? 'bg-[#3BB77E]' : 'bg-[#006B51]'} flex items-center justify-center`}>
                   <div className="relative w-4 h-4">
                     <Image
-                      src="/images/topbar/wishlist.png"
+                      src="/images/wishlist/wishlist-icon-nav.svg"
                       alt="Wishlist"
                       fill
-                      className="object-contain invert"
+                      className="object-contain"
                     />
                   </div>
                 </div>

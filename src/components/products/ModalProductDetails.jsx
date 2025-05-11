@@ -15,6 +15,8 @@ const ModalProductDetails = ({
   addToWishlist,
   removeFromWishlist
 }) => {
+  // State to track wishlist operation in progress
+  const [isWishlistLoading, setIsWishlistLoading] = React.useState(false);
   return (
     <div className="w-full md:w-3/5 p-2 sm:p-3 md:p-4">
       {/* Product title */}
@@ -104,6 +106,11 @@ const ModalProductDetails = ({
         <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
           <button
             onClick={() => {
+              // Prevent multiple clicks
+              if (isWishlistLoading) return;
+
+              setIsWishlistLoading(true);
+
               if (productInWishlist) {
                 removeFromWishlist(product.id).then(result => {
                   if (result.success) {
@@ -111,6 +118,8 @@ const ModalProductDetails = ({
                   } else {
                     toast.error(result.message || 'Failed to remove from wishlist');
                   }
+                }).finally(() => {
+                  setIsWishlistLoading(false);
                 });
               } else {
                 addToWishlist(product).then(result => {
@@ -119,6 +128,8 @@ const ModalProductDetails = ({
                   } else {
                     toast.error(result.message || 'Failed to add to wishlist');
                   }
+                }).finally(() => {
+                  setIsWishlistLoading(false);
                 });
               }
             }}
@@ -127,9 +138,13 @@ const ModalProductDetails = ({
             }`}
             aria-label={productInWishlist ? "Remove from wishlist" : "Add to wishlist"}
           >
-            <svg width="16" height="16" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4">
-              <path d="M13 22.75C13 22.75 2.4375 16.25 2.4375 8.9375C2.4375 7.5625 2.92188 6.23438 3.80078 5.19531C4.67969 4.15625 5.89844 3.5 7.3125 3.5C9.5 3.5 11.375 4.8125 13 7C14.625 4.8125 16.5 3.5 18.6875 3.5C20.1016 3.5 21.3203 4.15625 22.1992 5.19531C23.0781 6.23438 23.5625 7.5625 23.5625 8.9375C23.5625 16.25 13 22.75 13 22.75Z" fill={productInWishlist ? "#006B51" : "#000000"} stroke={productInWishlist ? "#006B51" : "#000000"} strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            {isWishlistLoading ? (
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 border-2 border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4">
+                <path d="M15.96 0H15.9075C13.8232 0 11.9805 1.1025 10.92 2.73C9.8595 1.1025 8.01675 0 5.9325 0H5.88C2.63025 0.0315 0 2.67225 0 5.9325C0 7.875 0.8505 10.6313 2.5095 12.8993C5.67 17.22 10.92 21 10.92 21C10.92 21 16.17 17.22 19.3305 12.8993C20.9895 10.6313 21.84 7.875 21.84 5.9325C21.84 2.67225 19.2098 0.0315 15.96 0Z" fill={productInWishlist ? "#FF3E3E" : "none"} stroke={productInWishlist ? "#FF3E3E" : "#FF3E3E"} strokeWidth="1.5"/>
+              </svg>
+            )}
             <span className="text-responsive-xs font-semibold">Wishlist</span>
           </button>
           <button

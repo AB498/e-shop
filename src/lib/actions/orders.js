@@ -137,6 +137,7 @@ export async function getOrderDetails(orderId, userId) {
         user_id: orders.user_id,
         status: orders.status,
         total: orders.total,
+        payment_method: orders.payment_method,
         courier_id: orders.courier_id,
         courier_order_id: orders.courier_order_id,
         courier_tracking_id: orders.courier_tracking_id,

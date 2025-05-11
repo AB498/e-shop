@@ -133,7 +133,7 @@ const ProductLeftBar = ({ categories = [], isMobile = false }) => {
                                             {category.name}
                                         </span>
                                     </div>
-                                    <div className="bg-[#BCE3C9] rounded-full px-2 py-1">
+                                    <div className="bg-[#BCE3C9] flex items-center justify-center rounded-full w-6 h-6">
                                         <span className="text-[#253D4E] text-xs">{Math.floor(Math.random() * 30) + 5}</span>
                                     </div>
                                 </div>

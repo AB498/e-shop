@@ -509,6 +509,31 @@ export default function CheckoutPage() {
                       </p>
                     </label>
                   </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="cod"
+                      name="paymentMethod"
+                      value="cod"
+                      checked={formData.paymentMethod === 'cod'}
+                      onChange={handleChange}
+                      className="h-5 w-5 text-[#3BB77E] focus:ring-[#3BB77E]"
+                    />
+                    <label htmlFor="cod" className="ml-3 block text-[#444444]">
+                      <div className="flex items-center">
+                        <span className="font-medium">Cash on Delivery</span>
+                        <div className="ml-4 flex space-x-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#3BB77E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      </div>
+                      <p className="text-sm text-[#7E7E7E] mt-1">
+                        Pay with cash when your order is delivered. Available for all areas served by our delivery partners.
+                      </p>
+                    </label>
+                  </div>
                 </div>
               </div>
 
@@ -528,7 +553,7 @@ export default function CheckoutPage() {
                     </>
                   ) : (
                     <>
-                      Place Order & Pay
+                      {formData.paymentMethod === 'cod' ? 'Place Order' : 'Place Order & Pay'}
                       <Image
                         src="/images/cart/arrow-right-icon.svg"
                         alt="Checkout"

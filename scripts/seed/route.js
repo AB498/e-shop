@@ -141,6 +141,7 @@ export async function POST() {
           user_id INTEGER REFERENCES users(id),
           status TEXT NOT NULL DEFAULT 'pending',
           total DECIMAL(10, 2) NOT NULL,
+          payment_method TEXT DEFAULT 'sslcommerz' NOT NULL,
           courier_id INTEGER REFERENCES couriers(id),
           delivery_person_id INTEGER REFERENCES delivery_persons(id),
           courier_order_id TEXT,

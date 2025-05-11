@@ -359,6 +359,12 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                           <dt className="text-sm font-medium text-gray-500">Total</dt>
                           <dd className="mt-1 text-sm text-gray-900">{selectedOrder.total}</dd>
                         </div>
+                        <div className="sm:col-span-1">
+                          <dt className="text-sm font-medium text-gray-500">Payment Method</dt>
+                          <dd className="mt-1 text-sm text-gray-900">
+                            {selectedOrder.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment'}
+                          </dd>
+                        </div>
                         <div className="sm:col-span-2">
                           <dt className="text-sm font-medium text-gray-500">Shipping Address</dt>
                           <dd className="mt-1 text-sm text-gray-900">

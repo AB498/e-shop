@@ -143,7 +143,7 @@ const Topbar = ({ serverSession, serverAuthStatus }) => {
             <span className="mx-2"> | </span>
             <Link href="/contact" className="hover:text-[#3BB77E] transition-colors">Contact Us</Link>
             <span className="mx-2"> | </span>
-            <Link href="/delivery" className="hover:text-[#3BB77E] transition-colors">Delivery</Link>
+            <Link href="/profile/orders" className="hover:text-[#3BB77E] transition-colors">Delivery</Link>
           </div>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-4">
@@ -169,7 +169,7 @@ const Topbar = ({ serverSession, serverAuthStatus }) => {
               className={`flex items-center space-x-2 transition-colors ${isWishlistPage ? 'text-[#3BB77E]' : 'hover:text-[#3BB77E]'}`}
             >
               <div className="relative">
-                <Image src="/images/topbar/wishlist.png" alt="Wishlist" width={16} height={16} />
+                <Image src="/images/wishlist/wishlist-icon-topbar-black.svg" alt="Wishlist" width={16} height={16} />
                 {wishlistCount > 0 && (
                   <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-[#DD2222] flex items-center justify-center">
                     <span className="text-[8px] text-white font-bold">{wishlistCount}</span>

@@ -150,7 +150,8 @@ async function seedDatabase() {
       storeLocationsSeed,
       deliveryPersonsSeed,
       wishlistItemsSeed,
-      promotionsSeed
+      promotionsSeed,
+      settingsSeed
     ] = await Promise.all([
       importSeedData('categories-seed.js'),
       importSeedData('products-seed.js'),
@@ -160,7 +161,8 @@ async function seedDatabase() {
       importSeedData('store-locations-seed.js'),
       importSeedData('delivery-persons-seed.js'),
       importSeedData('wishlist-seed.js'),
-      importSeedData('promotions-seed.js')
+      importSeedData('promotions-seed.js'),
+      importSeedData('settings-seed.js')
     ]);
 
     // Drop existing tables if they exist (for clean seeding)
@@ -181,6 +183,7 @@ async function seedDatabase() {
         'DROP TABLE IF EXISTS couriers CASCADE',
         'DROP TABLE IF EXISTS users CASCADE',
         'DROP TABLE IF EXISTS files CASCADE',
+        'DROP TABLE IF EXISTS settings CASCADE',
         'DROP TYPE IF EXISTS user_role CASCADE',
         'DROP TYPE IF EXISTS order_status CASCADE'
       ];
@@ -290,6 +293,7 @@ async function seedDatabase() {
           user_id INTEGER REFERENCES users(id),
           status order_status DEFAULT 'pending' NOT NULL,
           total DECIMAL(10, 2) NOT NULL,
+          payment_method TEXT DEFAULT 'sslcommerz' NOT NULL,
           courier_id INTEGER REFERENCES couriers(id),
           delivery_person_id INTEGER REFERENCES delivery_persons(id),
           courier_order_id TEXT,
@@ -416,6 +420,18 @@ async function seedDatabase() {
           updated_at TIMESTAMP DEFAULT NOW()
         )
       `);
+
+      // Settings table for system-wide configuration
+      await pool.query(`
+        CREATE TABLE settings (
+          id SERIAL PRIMARY KEY,
+          key TEXT NOT NULL UNIQUE,
+          value TEXT,
+          description TEXT,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
     } catch (error) {
       console.error('Error creating schema:', error);
       throw error;
@@ -525,7 +541,8 @@ async function seedDatabase() {
         insertData('couriers', schema.couriers, couriersSeed),
         insertData('delivery_persons', schema.deliveryPersons, deliveryPersonsSeed),
         insertData('store_locations', schema.storeLocations, storeLocationsSeed),
-        insertData('promotions', schema.promotions, promotionsSeed)
+        insertData('promotions', schema.promotions, promotionsSeed),
+        insertData('settings', schema.settings, settingsSeed)
       ]);
 
       // Insert dependent tables in sequence
@@ -554,6 +571,7 @@ async function seedDatabase() {
     console.log(`  Delivery Persons: ${deliveryPersonsSeed.length}`);
     console.log(`  Wishlist Items: ${wishlistItemsSeed.length}`);
     console.log(`  Promotions: ${promotionsSeed.length}`);
+    console.log(`  Settings: ${settingsSeed.length}`);
     console.log(`  Payment Transactions: 0 (table created but no seed data)`);
 
     // Close the database connection
@@ -572,6 +590,7 @@ async function seedDatabase() {
         deliveryPersons: deliveryPersonsSeed.length,
         wishlistItems: wishlistItemsSeed.length,
         promotions: promotionsSeed.length,
+        settings: settingsSeed.length,
         paymentTransactions: 0
       }
     };

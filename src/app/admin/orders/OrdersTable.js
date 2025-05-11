@@ -64,7 +64,14 @@ export default function OrdersTable({
       label: 'Total',
       sortable: true,
       render: (order) => (
-        <div className="text-sm text-gray-900">{order.total}</div>
+        <div className="text-sm text-gray-900">
+          {order.total}
+          {order.payment_method && (
+            <div className="text-xs text-gray-500 mt-1">
+              {order.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment'}
+            </div>
+          )}
+        </div>
       )
     },
     {

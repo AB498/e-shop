@@ -32,8 +32,8 @@ export default function CouriersTable({
       responsive: 'md',
       render: (courier) => (
         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-          ${courier.type === 'internal' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}`}>
-          {courier.type === 'internal' ? 'Internal' : 'External'}
+          ${courier.courier_type === 'internal' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}`}>
+          {courier.courier_type === 'internal' ? 'Internal' : 'External'}
         </span>
       )
     },

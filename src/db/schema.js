@@ -93,6 +93,7 @@ const orders = pgTable('orders', {
   user_id: integer('user_id').references(() => users.id),
   status: orderStatusEnum('status').default('pending').notNull(),
   total: decimal('total', { precision: 10, scale: 2 }).notNull(),
+  payment_method: text('payment_method').default('sslcommerz').notNull(), // 'sslcommerz' or 'cod'
   courier_id: integer('courier_id').references(() => couriers.id),
   delivery_person_id: integer('delivery_person_id').references(() => deliveryPersons.id),
   courier_order_id: text('courier_order_id'),
@@ -208,6 +209,16 @@ const paymentTransactions = pgTable('payment_transactions', {
   updated_at: timestamp('updated_at').defaultNow(),
 })
 
+// Settings table for system-wide configuration
+const settings = pgTable('settings', {
+  id: serial('id').primaryKey(),
+  key: text('key').notNull().unique(),
+  value: text('value'),
+  description: text('description'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
 export {
   files,
   users,
@@ -222,6 +233,7 @@ export {
   wishlistItems,
   promotions,
   paymentTransactions,
+  settings,
   userRoleEnum,
   orderStatusEnum
 }

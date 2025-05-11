@@ -5,6 +5,7 @@ const ordersSeed = [
     user_id: 1,
     status: 'delivered',
     total: 35.96,
+    payment_method: 'sslcommerz',
     courier_id: 1, // Pathao
     courier_order_id: 'PTH123456789',
     courier_tracking_id: 'PTH123456789',
@@ -20,6 +21,7 @@ const ordersSeed = [
     user_id: 2,
     status: 'processing',
     total: 29.95,
+    payment_method: 'sslcommerz',
     created_at: new Date('2023-06-16')
   },
   {
@@ -27,6 +29,7 @@ const ordersSeed = [
     user_id: 1,
     status: 'shipped',
     total: 24.96,
+    payment_method: 'cod',
     courier_id: 2, // Internal Delivery
     courier_order_id: 'INT789012345',
     courier_tracking_id: 'INT789012345',
@@ -78,6 +81,7 @@ const ordersSeed = [
     user_id: 2,
     status: 'shipped',
     total: 45.96,
+    payment_method: 'cod',
     courier_id: 1, // Pathao
     courier_order_id: 'PTH456789012',
     courier_tracking_id: 'PTH456789012',

@@ -33,11 +33,21 @@ export default function TrackingInfo({ tracking, trackingError, isRefreshing, re
       ) : !tracking ? (
         <div className="bg-gray-50 p-4 rounded-md text-center">
           <p className="text-[#7E7E7E] mb-4">Loading tracking information...</p>
+          <div className="flex justify-center mt-4">
+            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-[#006B51]"></div>
+          </div>
         </div>
       ) : !tracking.has_tracking ? (
         <div className="bg-gray-50 p-4 rounded-md text-center">
           <p className="text-[#7E7E7E] mb-4">This order doesn't have tracking information yet.</p>
-          <p className="text-[#7E7E7E]">Please check back later.</p>
+          <p className="text-[#7E7E7E]">Please check back later or try refreshing.</p>
+          <button
+            onClick={refreshTracking}
+            className="mt-4 bg-[#006B51] text-white px-4 py-2 rounded-md hover:bg-[#005541] transition-colors"
+            disabled={isRefreshing}
+          >
+            {isRefreshing ? 'Refreshing...' : 'Refresh Tracking'}
+          </button>
         </div>
       ) : (
         <div>

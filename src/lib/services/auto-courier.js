@@ -4,15 +4,29 @@ import { db } from '@/lib/db';
 import { orders, users, orderItems, products, couriers, courierTracking } from '@/db/schema';
 import { eq, inArray } from 'drizzle-orm';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
+import { isAutoPathaoOrderEnabled } from '@/lib/actions/settings';
 
 /**
  * Automatically create a Pathao courier order after successful payment
  * @param {number} orderId - Order ID
  * @returns {Promise<object|null>} - Created courier order details
  */
-export async function createAutomaticCourierOrder(orderId) {
+export async function createAutomaticCourierOrder(orderId, forceCreate = false) {
   try {
     console.log(`Creating automatic courier order for order ID: ${orderId}`);
+
+    // Check if automatic Pathao order creation is enabled
+    if (!forceCreate) {
+      const isEnabled = await isAutoPathaoOrderEnabled();
+      if (!isEnabled) {
+        console.log('Automatic Pathao order creation is disabled. Skipping.');
+        return {
+          success: false,
+          message: 'Automatic Pathao order creation is disabled',
+          skipped: true
+        };
+      }
+    }
 
     // 1. Get order details
     const orderData = await db
@@ -20,6 +34,7 @@ export async function createAutomaticCourierOrder(orderId) {
         id: orders.id,
         user_id: orders.user_id,
         total: orders.total,
+        payment_method: orders.payment_method,
         shipping_address: orders.shipping_address,
         shipping_city: orders.shipping_city,
         shipping_post_code: orders.shipping_post_code,
@@ -246,6 +261,10 @@ export async function createAutomaticCourierOrder(orderId) {
       formattedPhone = '01712345678';
     }
 
+    // Check if this is a Cash on Delivery order
+    const isCOD = order.payment_method === 'cod';
+    console.log(`Order payment method: ${order.payment_method}, isCOD: ${isCOD}`);
+
     const pathaoOrderData = {
       store_id: defaultStore.store_id,
       merchant_order_id: `order-${order.id}`,
@@ -260,7 +279,9 @@ export async function createAutomaticCourierOrder(orderId) {
       special_instruction: deliveryInfo.special_instructions || '',
       item_quantity: enrichedItems.reduce((total, item) => total + item.quantity, 0),
       item_weight: enrichedItems.reduce((total, item) => total + (item.weight * item.quantity), 0),
-      amount_to_collect: Math.round(parseFloat(order.total) * 100), // Convert to integer (cents/paisa)
+      // For COD orders, set the amount to collect to the order total
+      // For non-COD orders, set it to 0 as payment is already made
+      amount_to_collect: isCOD ? Math.round(parseFloat(order.total) * 100) : 0,
       item_description: enrichedItems.map(item => item.product_name).join(', ').substring(0, 255)
     };
 
