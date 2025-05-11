@@ -56,7 +56,6 @@ const ProfileContent = ({ user, defaultTab = 'account' }) => {
 
   const handleProfileUpdate = (updatedUser) => {
     setUserData(updatedUser);
-    toast.success('Profile updated successfully');
   };
 
   return (

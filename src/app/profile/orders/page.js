@@ -2,6 +2,7 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
+import { refreshSession } from '@/lib/actions/session';
 
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
@@ -16,8 +17,11 @@ export const metadata = {
 };
 
 export default async function OrdersPage() {
-  // Get the session
-  const session = await getServerSession(authOptions);
+  // Get the session with refreshed data
+  let session = await getServerSession(authOptions);
+
+  // Refresh the session to get the latest user data
+  session = await refreshSession() || session;
 
   // Redirect to login if not authenticated
   if (!session) {
@@ -26,7 +30,7 @@ export default async function OrdersPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      
+
 
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4 border-b border-[#ECECEC]">

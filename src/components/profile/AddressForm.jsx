@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 export default function AddressForm({ user, onClose, onUpdate }) {
+  const { update: updateSession } = useSession();
   const [formData, setFormData] = useState({
     address: '',
     city: '',
@@ -104,6 +106,13 @@ export default function AddressForm({ user, onClose, onUpdate }) {
       }
 
       toast.success('Address updated successfully');
+
+      // Update the session with the new user data
+      await updateSession({
+        user: {
+          ...data.user
+        }
+      });
 
       // Call the onUpdate callback with the updated user data
       if (onUpdate) {

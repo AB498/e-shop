@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function EditProfileModal({ user, onClose, onUpdate }) {
+  const { update: updateSession } = useSession();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -123,6 +124,15 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update profile');
       }
+
+      toast.success('Profile updated successfully');
+
+      // Update the session with the new user data
+      await updateSession({
+        user: {
+          ...data.user
+        }
+      });
 
       // If email was changed, sign out the user
       if (user.email !== formData.email) {

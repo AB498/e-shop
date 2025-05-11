@@ -9,6 +9,7 @@ import Copyright from '@/components/layout/Copyright';
 import Link from 'next/link';
 import Image from 'next/image';
 import ProfileContent from '@/components/profile/ProfileContent';
+import { refreshSession } from '@/lib/actions/session';
 
 export const metadata = {
   title: 'My Profile - Thai Bangla Store',
@@ -16,8 +17,11 @@ export const metadata = {
 };
 
 export default async function ProfilePage() {
-  // Get the session
-  const session = await getServerSession(authOptions);
+  // Get the session with refreshed data
+  let session = await getServerSession(authOptions);
+
+  // Refresh the session to get the latest user data
+  session = await refreshSession() || session;
 
   // Redirect to login if not authenticated
   if (!session) {
@@ -26,7 +30,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      
+
 
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4 border-b border-[#ECECEC]">
