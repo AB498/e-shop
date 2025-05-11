@@ -204,9 +204,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     required
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm ${
-                      errors.lastName ? 'border-red-500' : ''
-                    }`}
+                    className={`w-full p-3 border ${errors.lastName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                   />
                   {errors.lastName && (
                     <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
@@ -225,9 +223,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm ${
-                      errors.email ? 'border-red-500' : ''
-                    }`}
+                    className={`w-full p-3 border ${errors.email ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                   />
                   {errors.email && (
                     <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -251,9 +247,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                       id="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm ${
-                        errors.password ? 'border-red-500' : ''
-                      }`}
+                      className={`w-full p-3 border ${errors.password ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                     />
                     <button
                       type="button"
@@ -280,9 +274,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                       id="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3BB77E] focus:ring-[#3BB77E] sm:text-sm ${
-                        errors.confirmPassword ? 'border-red-500' : ''
-                      }`}
+                      className={`w-full p-3 border ${errors.confirmPassword ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
                     />
                     {errors.confirmPassword && (
                       <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
