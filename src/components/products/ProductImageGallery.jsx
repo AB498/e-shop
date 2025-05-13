@@ -55,11 +55,10 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
             }`}
             onClick={() => handleThumbnailClick(index)}
           >
-            <Image
+            <img
               src={image.url}
               alt={image.altText || `${name || "Product"} Thumbnail ${index + 1}`}
-              fill
-              className="object-contain"
+              className="object-cover w-full h-full"
               sizes="(max-width: 768px) 12vw, 80px"
             />
           </div>

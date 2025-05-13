@@ -15,9 +15,6 @@ import DealsOfTheDay from "@/components/deals/DealsOfTheDay";
 import WeeklyDiscountsClient from "@/components/categories/WeeklyDiscountsClient";
 import GroomingSectionClient from "@/components/categories/GroomingSectionClient";
 import BeautyMakeupSectionClient from "@/components/categories/BeautyMakeupSectionClient";
-import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
-import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
-import ResponsiveContainer from "@/components/ui/ResponsiveContainer";
 
 /**
  * Landing page component that uses responsive design system
