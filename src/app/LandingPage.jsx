@@ -13,7 +13,7 @@ import FeaturedCarousel from "@/components/layout/FeaturedCarousel";
 import WeeklyDeals from "@/components/layout/WeeklyDeals";
 import DealsOfTheDay from "@/components/deals/DealsOfTheDay";
 import WeeklyDiscountsClient from "@/components/categories/WeeklyDiscountsClient";
-import VegetableAndFruitsClient from "@/components/categories/VegetableAndFruitsClient";
+import GroomingSectionClient from "@/components/categories/GroomingSectionClient";
 import BeautyMakeupSectionClient from "@/components/categories/BeautyMakeupSectionClient";
 import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
 import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
@@ -46,8 +46,8 @@ export default function LandingPage({ featuredCarouselComponent, weeklyDealsComp
                 {/* Discounted Products */}
                 <WeeklyDiscountsClient />
 
-                {/* Vegetables & Fruits */}
-                <VegetableAndFruitsClient />
+                {/* Grooming Products */}
+                <GroomingSectionClient />
 
                 {/* Banner Section */}
                 <BannerSection />
