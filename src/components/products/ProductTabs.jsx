@@ -80,12 +80,6 @@ const ProductTabs = ({ description, sku, type }) => {
             {productDescription}
           </p>
 
-          {productDescription.length > 100 && (
-            <p className="text-sm mb-3 sm:mb-4">
-              Spluttered narrowly yikes left moth in yikes bowed this that grizzly much hello on spoon-fed that alas rethought much decently richly and wow against the frequent fluidly at formidable acceptably flapped besides and much circa far over the bucolically hey precarious goldfinch mastodon goodness gnashed a jellyfish and one however because.
-            </p>
-          )}
-
           {/* Product Specifications */}
           <div className="mb-3 sm:mb-4">
             {specifications.map((spec, index) => (
