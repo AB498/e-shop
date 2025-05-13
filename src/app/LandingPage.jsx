@@ -30,9 +30,7 @@ export default function LandingPage({ featuredCarouselComponent, weeklyDealsComp
     return (
         <>
             {/* Hero Section */}
-            <div className="relative z-0 w-full sm:px-12 sm:container sm:mx-auto">
-                <Hero />
-            </div>
+            <Hero />
 
             <div className="relative z-0 w-full px-6 md:px-12 container mx-auto flex flex-col py-6 gap-6">
 

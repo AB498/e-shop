@@ -49,7 +49,7 @@ const FeatureIcons = () => {
     <div className="w-full py-0 sm:py-6 md:py-8 my-3 sm:my-6 md:my-8">
       <div className="container mx-auto px-2 sm:px-3">
         <div
-          className="flex flex-wrap justify-center sm:justify-between overflow-x-hidden gap-y-3 gap-x-1 sm:gap-4 md:gap-6 py-3"
+          className="flex flex-wrap sm:flex-nowrap sm:overflow-x-auto justify-center sm:justify-between overflow-x-hidden gap-y-3 gap-x-1 sm:gap-4 md:gap-6 py-3"
         >
           {features.map((feature) => (
             <div
@@ -69,7 +69,7 @@ const FeatureIcons = () => {
                 />
               </div>
               <p
-                className="text-center font-semibold text-[10px] sm:text-[14px] md:text-[16px] leading-[1.1] sm:leading-[1.3] h-[2.6em] sm:h-[4.0em] flex items-center justify-center"
+                className="text-center font-semibold text-[10px] sm:text-[12px] leading-[1.1] sm:leading-[1.3] h-[2.6em] sm:h-[4.0em] flex items-center justify-center"
                 style={{ whiteSpace: 'pre-line' }}
               >
                 {feature.text}
