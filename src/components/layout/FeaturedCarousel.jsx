@@ -80,7 +80,7 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
     };
 
     fetchPromotions();
-  }, [initialPromotions]);
+  }, []);
 
   // Auto play functionality
   useEffect(() => {

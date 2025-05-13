@@ -3,7 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { updateProductImage, deleteProductImage } from '@/lib/actions/product-images';
 
-export async function PUT(request, { params }) {
+export async function PUT(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -29,7 +30,8 @@ export async function PUT(request, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);

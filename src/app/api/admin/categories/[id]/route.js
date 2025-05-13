@@ -4,7 +4,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getCategoryById, updateCategory, deleteCategory } from '@/lib/actions/categories';
 
 // GET handler to fetch a specific category
-export async function GET(request, { params }) {
+export async function GET(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -35,7 +36,8 @@ export async function GET(request, { params }) {
 }
 
 // PUT handler to update a category
-export async function PUT(request, { params }) {
+export async function PUT(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -74,7 +76,8 @@ export async function PUT(request, { params }) {
 }
 
 // DELETE handler to delete a category
-export async function DELETE(request, { params }) {
+export async function DELETE(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);

@@ -4,7 +4,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getFileById, deleteFile } from '@/lib/actions/files';
 
 // GET handler to fetch a specific file
-export async function GET(request, { params }) {
+export async function GET(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -35,7 +36,8 @@ export async function GET(request, { params }) {
 }
 
 // DELETE handler to delete a file
-export async function DELETE(request, { params }) {
+export async function DELETE(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);

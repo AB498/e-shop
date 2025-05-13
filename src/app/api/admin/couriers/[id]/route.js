@@ -4,7 +4,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getCourierById, updateCourier, deleteCourier } from '@/lib/actions/couriers';
 
 // GET handler to fetch a courier by ID
-export async function GET(request, { params }) {
+export async function GET(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -32,7 +33,8 @@ export async function GET(request, { params }) {
 }
 
 // PUT handler to update a courier
-export async function PUT(request, { params }) {
+export async function PUT(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -68,7 +70,8 @@ export async function PUT(request, { params }) {
 }
 
 // DELETE handler to delete a courier
-export async function DELETE(request, { params }) {
+export async function DELETE(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);

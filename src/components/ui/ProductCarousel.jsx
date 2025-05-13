@@ -123,7 +123,7 @@ export default function ProductCarousel({
 }) {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { openQuickView } = useProductQuickView();
   const pathname = usePathname();
 
@@ -162,7 +162,6 @@ export default function ProductCarousel({
     );
   }
 
-  console.log('products',products);
   return (
     <section className={`py-2 sm:py-3 md:py-4 relative ${className}`}>
       {/* Section title */}
@@ -226,7 +225,7 @@ export default function ProductCarousel({
             <Swiper
               modules={[Navigation, Pagination, A11y]}
               spaceBetween={18}
-              slidesPerView="auto"
+              slidesPerView={2}
               navigation={{
                 prevEl: prevRef.current,
                 nextEl: nextRef.current,
@@ -246,15 +245,15 @@ export default function ProductCarousel({
                 // Ensure loading state is set to false when Swiper is fully initialized
                 setIsLoading(false);
               }}
-              className={`px-2 sm:px-0 overflow-visible py-6`}
+              className={`px-2 overflow-visible py-6`}
               loop={false}
               loopFillGroupWithBlank={false}
-              slidesPerGroupAuto={true}
               rewind={false}
               allowTouchMove={enableSwiping}
+              breakpoints={breakpoints}
             >
               {products.map((product) => (
-                <SwiperSlide key={product.id} className={`${enableSwiping ? '!w-[calc(40vw-16px)] sm:!w-[calc(25vw-16px)] md:!w-[calc(20vw-16px)] lg:!w-[calc(12.666vw-16px)] xl:!w-[calc(10.285vw-16px)] 2xl:!w-[calc(8.5vw-16px)]' : 'w-full sm:max-w-[220px] mx-auto'}`}>
+                <SwiperSlide key={product.id} className={'w-full sm:max-w-[220px] mx-auto'}>
                   <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[280px]">
                     {/* Product Image with Link or Quick View */}
                     {isLandingPage ? (

@@ -4,7 +4,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getStoreLocationById, updateStoreLocation, deleteStoreLocation } from '@/lib/actions/store-locations';
 
 // GET /api/store-locations/:id - Get a store location by ID
-export async function GET(request, { params }) {
+export async function GET(request, props) {
+  const params = await props.params;
   try {
     // Check authentication and authorization
     const session = await getServerSession(authOptions);
@@ -32,7 +33,8 @@ export async function GET(request, { params }) {
 }
 
 // PUT /api/store-locations/:id - Update a store location
-export async function PUT(request, { params }) {
+export async function PUT(request, props) {
+  const params = await props.params;
   try {
     // Check authentication and authorization
     const session = await getServerSession(authOptions);
@@ -68,7 +70,8 @@ export async function PUT(request, { params }) {
 }
 
 // DELETE /api/store-locations/:id - Delete a store location
-export async function DELETE(request, { params }) {
+export async function DELETE(request, props) {
+  const params = await props.params;
   try {
     // Check authentication and authorization
     const session = await getServerSession(authOptions);

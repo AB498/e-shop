@@ -40,6 +40,12 @@ const SidebarClient = ({ categories = [] }) => {
     setCollapsed(newState);
   };
 
+  // Function to handle sidebar item click
+  const handleSidebarItemClick = () => {
+    // Collapse sidebar on all screen sizes
+    setCollapsed(true);
+  };
+
   // Find the active category index based on the URL
   const getActiveCategoryIndex = () => {
     // Special case for discount
@@ -111,10 +117,10 @@ const SidebarClient = ({ categories = [] }) => {
     <>
       {/* fake div to make the sidebar occupy width */}
       <div
-        className="transition-all duration-300 w-[0px] sm:w-[50px]"
+        className="transition-all duration-300 w-[0px] sm:w-[55px]"
       ></div>
       <div
-        className={`${collapsed ? 'w-[0px] sm:w-[50px]' : 'w-[16rem]'} h-screen bg-white sm:border-r sm:border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
+        className={`${collapsed ? 'w-[0px] sm:w-[55px]' : 'w-[16rem]'} h-screen bg-white sm:border-r sm:border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
 
       >
         {/* Menu Toggle Button */}
@@ -150,6 +156,7 @@ const SidebarClient = ({ categories = [] }) => {
               <Link
                 href="/products"
                 className="flex items-center w-full"
+                onClick={handleSidebarItemClick}
               >
                 <div className={`p-2 aspect-square h-10 p-2 shrink-0 relative rounded-md overflow-hidden  flex-shrink-0  `}>
                   <svg className="h-[px] w-[px] text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -180,6 +187,7 @@ const SidebarClient = ({ categories = [] }) => {
                 <Link
                   href={getCategoryUrl(category)}
                   className="flex items-center w-full"
+                  onClick={handleSidebarItemClick}
                 >
                   <div className={`p-2 aspect-square h-10 p-2 shrink-0 relative rounded-md overflow-hidden  flex-shrink-0  `}>
                     <Image

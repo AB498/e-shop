@@ -4,7 +4,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getOrderDetails } from '@/lib/actions/orders';
 
 // GET handler to fetch a specific order
-export async function GET(request, { params }) {
+export async function GET(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);

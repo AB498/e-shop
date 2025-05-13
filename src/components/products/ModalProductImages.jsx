@@ -39,20 +39,18 @@ const ModalProductImages = ({ product }) => {
     <div className="w-full md:w-2/5 p-3 sm:p-1.5 md:p-2">
       <div className="flex flex-col md:flex-row gap-3 sm:gap-1.5 md:gap-2">
         {/* Thumbnail list */}
-        <div className="order-1 md:order-none flex flex-col gap-0.5 md:gap-1 w-10 md:w-12">
+        <div className="order-1 md:order-none flex flex-row md:flex-col gap-0.5 md:gap-1 w-auto h-12 md:h-auto md:w-12">
           {productImages.map((image, index) => (
             <div
               key={image.id || index}
-              className={`border ${index === activeImageIndex ? 'border-[#006B51]' : 'border-[#E7ECF0]'} rounded-sm bg-white p-0.5 cursor-pointer hover:border-[#006B51] transition-colors`}
+              className={`border ${index === activeImageIndex ? 'border-[#006B51]' : 'border-[#E7ECF0]'} rounded-sm bg-white p-0.5 cursor-pointer hover:border-[#006B51] transition-colors h-full w-auto md:w-full md:h-auto`}
               onClick={() => handleThumbnailClick(index)}
             >
-              <div className="relative aspect-square rounded-sm overflow-hidden">
-                <Image
+              <div className="relative aspect-square rounded-sm overflow-hidden h-full w-auto md:w-full md:h-auto aspect-square">
+                <img
                   src={image.url}
                   alt={image.altText || `Product thumbnail ${index + 1}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 40px"
-                  className="object-cover"
+                  className="object-cover w-full h-full"
                 />
               </div>
             </div>
@@ -62,12 +60,10 @@ const ModalProductImages = ({ product }) => {
         {/* Main image */}
         <div className="flex-1 border border-[#E7ECF0] rounded-sm bg-white p-0.5">
           <div className="relative aspect-square rounded-sm overflow-hidden">
-            <Image
+            <img
               src={activeImage}
               alt={productImages[activeImageIndex]?.altText || product.name || "Product Image"}
-              fill
-              sizes="(max-width: 640px) 90vw, (max-width: 768px) 80vw, (max-width: 1200px) 35vw, 300px"
-              className="object-cover"
+              className="object-cover w-full h-full"
             />
             {/* Next/Prev buttons for image gallery */}
             <div className="absolute bottom-3 right-3 sm:bottom-1.5 sm:right-1.5 md:bottom-2 md:right-2 flex gap-3">

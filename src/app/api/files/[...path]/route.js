@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getFileUrl } from '@/lib/s3';
 
-export async function GET(request, { params }) {
+export async function GET(request, props) {
+  const params = await props.params;
   try {
     // Get the file path from the URL
     const filePath = params.path.join('/');

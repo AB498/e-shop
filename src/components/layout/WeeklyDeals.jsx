@@ -60,7 +60,7 @@ export default function WeeklyDeals({ initialDeals = [] }) {
     };
 
     fetchDeals();
-  }, [initialDeals]);
+  }, []);
 
   if (loading) {
     return (

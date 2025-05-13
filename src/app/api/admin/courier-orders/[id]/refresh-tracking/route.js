@@ -7,7 +7,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
 import { mapCourierStatusToOrderStatus } from '@/lib/utils/status-mapping';
 
-export async function POST(request, { params }) {
+export async function POST(request, props) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);

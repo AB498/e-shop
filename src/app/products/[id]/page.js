@@ -7,7 +7,8 @@ import Copyright from '@/components/layout/Copyright';
 export const dynamic = 'force-dynamic';
 
 // This is a Server Component that fetches data
-export default async function ProductDetailPage({ params }) {
+export default async function ProductDetailPage(props) {
+  const params = await props.params;
   await params;
   const { id } = params;
 

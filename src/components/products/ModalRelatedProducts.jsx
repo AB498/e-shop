@@ -2,11 +2,14 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useProductQuickView } from '@/context/ProductQuickViewContext';
 
 const ModalRelatedProducts = ({ products = [], isLoading = false, formatPrice }) => {
+  const { closeQuickView } = useProductQuickView();
+
   return (
     <div className="mt-4 sm:mt-6 md:mt-8 px-2 sm:px-4 md:px-10 pb-3 sm:pb-4 md:pb-6">
-      <div className="bg-[#A4A4A4] text-black py-1 sm:py-1.5 md:py-2 px-2 sm:px-3 md:px-4 rounded-md mb-2 sm:mb-3 md:mb-4 flex justify-between items-center">
+      <div className="text-black py-1 sm:py-1.5 md:py-2 px-2 sm:px-3 md:px-4 rounded-md mb-2 sm:mb-3 md:mb-4 flex justify-between items-center">
         <h3 className="font-semibold text-base sm:text-lg md:text-xl lg:text-2xl">Related Products</h3>
         <div className="flex gap-1 sm:gap-2">
           <button className="bg-[#006B51] p-1 sm:p-1.5 rounded-md">
@@ -41,7 +44,12 @@ const ModalRelatedProducts = ({ products = [], isLoading = false, formatPrice })
         ) : products.length > 0 ? (
           // Show actual products
           products.map((product) => (
-            <Link href={`/products/${product.id}`} key={product.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <Link
+              href={`/products/${product.id}`}
+              key={product.id}
+              className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+              onClick={() => closeQuickView()}
+            >
               <div className="relative">
                 {/* Product image */}
                 <div className="relative aspect-square">
