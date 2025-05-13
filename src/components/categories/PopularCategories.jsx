@@ -255,12 +255,12 @@ const PopularCategories = () => {
           {/* Categories Flex Container */}
           <div
             ref={containerRef}
-            className={`flex gap-1 xs:gap-1.5 sm:gap-2 md:gap-3 flex-nowrap w-full`}
+            className={`flex gap-1 xs:gap-1.5 sm:gap-2 md:gap-3 flex-nowrap w-full py-2`}
           >
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="flex w-[180px] sm:w-[200px] md:w-[220px] aspect-video bg-white rounded-[4px] xs:rounded-[5px] sm:rounded-[6px] shadow-sm overflow-hidden hover:shadow-md transition-shadow flex-none"
+                className="flex w-[180px] sm:w-[200px] md:w-[220px] aspect-video bg-white rounded-[4px] xs:rounded-[5px] sm:rounded-[6px] shadow-md overflow-hidden hover:shadow-md transition-shadow flex-none"
               >
                 {/* Category Image */}
                 <div className="relative p-2 w-2/5 h-full min-h-[80px] xs:min-h-[90px] sm:min-h-[100px] md:min-h-[110px]">

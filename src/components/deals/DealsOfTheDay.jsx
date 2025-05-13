@@ -165,7 +165,7 @@ const DealsOfTheDay = () => {
       {/* Deals Row */}
       <div ref={scrollContainerRef} className="flex flex-nowrap overflow-x-auto gap-2 sm:gap-3 md:gap-4 pb-2 scrollbar-hide">
         {displayProducts.map((product, index) => (
-          <div key={product.id || index} className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col w-[140px] sm:w-[160px] md:w-[180px] flex-shrink-0">
+          <div key={product.id || index} className="bg-white rounded-md overflow-hidden shadow-md hover:shadow-md transition-shadow flex flex-col w-[140px] sm:w-[160px] md:w-[180px] flex-shrink-0">
             {/* Product Image */}
             <Link href={`/products/${product.id}`}>
               <div className="relative h-32 xs:h-36 sm:h-40">
