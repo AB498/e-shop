@@ -7,32 +7,32 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 
-  /* Responsive spacing variables - more compact on all screens */
-  --space-xs: clamp(0.15rem, 0.125rem + 0.15vw, 0.35rem);
-  --space-sm: clamp(0.25rem, 0.2rem + 0.25vw, 0.5rem);
-  --space-md: clamp(0.5rem, 0.4rem + 0.5vw, 0.9rem);
-  --space-lg: clamp(0.75rem, 0.6rem + 0.75vw, 1.25rem);
-  --space-xl: clamp(1rem, 0.8rem + 1vw, 1.75rem);
-  --space-2xl: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+  /* Responsive spacing variables - larger on mobile */
+  --space-xs: clamp(0.25rem, 0.2rem + 0.15vw, 0.4rem);
+  --space-sm: clamp(0.35rem, 0.3rem + 0.25vw, 0.6rem);
+  --space-md: clamp(0.6rem, 0.5rem + 0.5vw, 1rem);
+  --space-lg: clamp(0.85rem, 0.7rem + 0.75vw, 1.35rem);
+  --space-xl: clamp(1.1rem, 0.9rem + 1vw, 1.85rem);
+  --space-2xl: clamp(1.6rem, 1.3rem + 1.5vw, 2.6rem);
 
-  /* Responsive font size variables - smaller on all screens */
-  --text-xs: clamp(0.65rem, 0.6rem + 0.15vw, 0.7rem);
-  --text-sm: clamp(0.7rem, 0.65rem + 0.2vw, 0.8rem);
-  --text-base: clamp(0.8rem, 0.75rem + 0.25vw, 0.9rem);
-  --text-lg: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
-  --text-xl: clamp(1rem, 0.95rem + 0.35vw, 1.125rem);
-  --text-2xl: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
-  --text-3xl: clamp(1.25rem, 1.15rem + 0.75vw, 1.5rem);
+  /* Responsive font size variables - larger on mobile */
+  --text-xs: clamp(0.75rem, 0.7rem + 0.15vw, 0.8rem);
+  --text-sm: clamp(0.8rem, 0.75rem + 0.2vw, 0.9rem);
+  --text-base: clamp(0.9rem, 0.85rem + 0.25vw, 1rem);
+  --text-lg: clamp(1rem, 0.95rem + 0.3vw, 1.1rem);
+  --text-xl: clamp(1.1rem, 1.05rem + 0.35vw, 1.2rem);
+  --text-2xl: clamp(1.2rem, 1.15rem + 0.5vw, 1.35rem);
+  --text-3xl: clamp(1.35rem, 1.25rem + 0.75vw, 1.6rem);
 
-  /* Component sizing - more compact on all screens */
-  --card-width: clamp(240px, 100%, 320px);
-  --input-height: clamp(2rem, 1.75rem + 1vw, 2.5rem);
-  --button-height: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
-  --icon-size: clamp(0.875rem, 0.8rem + 0.35vw, 1.25rem);
-  --border-radius: clamp(0.2rem, 0.175rem + 0.15vw, 0.4rem);
+  /* Component sizing - larger on mobile */
+  --card-width: clamp(260px, 100%, 340px);
+  --input-height: clamp(2.2rem, 1.95rem + 1vw, 2.7rem);
+  --button-height: clamp(1.95rem, 1.7rem + 1vw, 2.45rem);
+  --icon-size: clamp(1rem, 0.9rem + 0.35vw, 1.35rem);
+  --border-radius: clamp(0.25rem, 0.225rem + 0.15vw, 0.45rem);
 
   /* Container widths - more compact on all screens */
-  --container-padding: clamp(0.5rem, 0.4rem + 0.5vw, 1.5rem);
+  --container-padding: clamp(0.6rem, 0.5rem + 0.5vw, 1.6rem);
 
   /* Sidebar width */
   --sidebar-width: 4rem;
@@ -44,40 +44,65 @@ body {
   font-size: var(--text-base);
 }
 
-/* Global text size reduction for all screens */
+/* Base font size for all screens */
 html {
-  font-size: 14px; /* Reduce base font size on all screens */
+  font-size: 15px; /* Slightly larger base font size */
 }
 
 /* Adjust specific Tailwind text classes for all screens */
 .text-xs {
-  font-size: 0.65rem !important;
+  font-size: 0.75rem !important;
 }
 
 .text-sm {
-  font-size: 0.7rem !important;
-}
-
-.text-base {
   font-size: 0.8rem !important;
 }
 
-.text-lg {
+.text-base {
   font-size: 0.9rem !important;
 }
 
-.text-xl {
+.text-lg {
   font-size: 1rem !important;
 }
 
-.text-2xl {
-  font-size: 1.125rem !important;
+.text-xl {
+  font-size: 1.1rem !important;
 }
 
-/* Even smaller text on mobile */
+.text-2xl {
+  font-size: 1.225rem !important;
+}
+
+/* Larger text on mobile */
 @media (max-width: 767px) {
   html {
-    font-size: 13px;
+    font-size: 16px; /* Increase base font size on mobile */
+  }
+
+  /* Mobile-specific text size adjustments */
+  .text-xs {
+    font-size: 0.8rem !important;
+  }
+
+  .text-sm {
+    font-size: 0.9rem !important;
+  }
+
+  .text-base {
+    font-size: 1rem !important;
+  }
+
+  .text-lg {
+    font-size: 1.1rem !important;
+  }
+
+  .text-xl {
+    font-size: 1.2rem !important;
+  }
+
+  .text-2xl {
+    font-size: 1.325rem !important;
   }
 }
 
@@ -167,17 +192,51 @@ html {
     border-radius: var(--border-radius);
     font-size: var(--text-xs);
   }
+
+  /* Mobile-specific component adjustments */
+  @media (max-width: 767px) {
+    .responsive-button {
+      height: calc(var(--button-height) + 0.2rem);
+      padding-left: calc(var(--space-md) + 0.1rem);
+      padding-right: calc(var(--space-md) + 0.1rem);
+      font-size: calc(var(--text-xs) + 0.05rem);
+    }
+
+    .responsive-input {
+      height: calc(var(--input-height) + 0.2rem);
+      padding-left: calc(var(--space-sm) + 0.1rem);
+      padding-right: calc(var(--space-sm) + 0.1rem);
+      font-size: calc(var(--text-xs) + 0.05rem);
+    }
+
+    .responsive-card {
+      padding: calc(var(--space-sm) + 0.1rem);
+    }
+  }
 }
 
 /* Section spacing */
 .section-spacing {
-  margin-top: clamp(1.5rem, 1.25rem + 1.25vw, 2.5rem);
-  margin-bottom: clamp(1.5rem, 1.25rem + 1.25vw, 2.5rem);
+  margin-top: clamp(1.7rem, 1.4rem + 1.25vw, 2.7rem);
+  margin-bottom: clamp(1.7rem, 1.4rem + 1.25vw, 2.7rem);
 }
 
 .section-spacing-sm {
-  margin-top: clamp(1rem, 0.75rem + 1vw, 1.75rem);
-  margin-bottom: clamp(1rem, 0.75rem + 1vw, 1.75rem);
+  margin-top: clamp(1.2rem, 0.9rem + 1vw, 1.9rem);
+  margin-bottom: clamp(1.2rem, 0.9rem + 1vw, 1.9rem);
+}
+
+/* Mobile-specific section spacing */
+@media (max-width: 767px) {
+  .section-spacing {
+    margin-top: clamp(1.8rem, 1.5rem + 1.25vw, 2.8rem);
+    margin-bottom: clamp(1.8rem, 1.5rem + 1.25vw, 2.8rem);
+  }
+
+  .section-spacing-sm {
+    margin-top: clamp(1.3rem, 1rem + 1vw, 2rem);
+    margin-bottom: clamp(1.3rem, 1rem + 1vw, 2rem);
+  }
 }
 
 /* Swiper custom styles */
@@ -204,8 +263,8 @@ html {
 .product-carousel .swiper-pagination-bullet,.swiper-pagination-bullet {
   background: #006B51;
   opacity: 0.5;
-  width: clamp(5px, 1.25vw, 7px);
-  height: clamp(5px, 1.25vw, 7px);
+  width: clamp(6px, 1.5vw, 8px);
+  height: clamp(6px, 1.5vw, 8px);
 }
 
 .product-carousel .swiper-pagination-bullet-active,.swiper-pagination-bullet-active {
@@ -216,23 +275,23 @@ html {
 .product-carousel .swiper-slide,.swiper-slide {
   height: auto !important;
   transition: transform 0.3s ease;
-  width: clamp(130px, calc(100% / 2 - var(--space-md)), 220px) !important;
+  width: clamp(150px, calc(100% / 2 - var(--space-md)), 240px) !important;
 }
 
 @media (min-width: 640px) {
   .product-carousel .swiper-slide,.swiper-slide {
-    width: clamp(150px, calc(100% / 3 - var(--space-lg)), 200px) !important;
+    width: clamp(160px, calc(100% / 3 - var(--space-lg)), 220px) !important;
   }
 }
 
 @media (min-width: 768px) {
   .product-carousel .swiper-slide,.swiper-slide {
-    width: clamp(160px, calc(100% / 4 - var(--space-lg)), 220px) !important;
+    width: clamp(170px, calc(100% / 4 - var(--space-lg)), 230px) !important;
   }
 }
 
 @media (min-width: 1024px) {
   .product-carousel .swiper-slide,.swiper-slide {
-    width: clamp(180px, calc(100% / 6 - var(--space-xl)), 220px) !important;
+    width: clamp(180px, calc(100% / 6 - var(--space-xl)), 230px) !important;
   }
 }

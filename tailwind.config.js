@@ -36,22 +36,22 @@ module.exports = {
         'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
       },
       fontSize: {
-        // Smaller text sizes for all screens
-        'xs': ['clamp(0.65rem, 0.6rem + 0.15vw, 0.7rem)', { lineHeight: '1rem' }],
-        'sm': ['clamp(0.7rem, 0.65rem + 0.2vw, 0.8rem)', { lineHeight: '1.2rem' }],
-        'base': ['clamp(0.8rem, 0.75rem + 0.25vw, 0.9rem)', { lineHeight: '1.4rem' }],
-        'lg': ['clamp(0.9rem, 0.85rem + 0.3vw, 1rem)', { lineHeight: '1.5rem' }],
-        'xl': ['clamp(1rem, 0.95rem + 0.35vw, 1.125rem)', { lineHeight: '1.6rem' }],
-        '2xl': ['clamp(1.125rem, 1rem + 0.5vw, 1.25rem)', { lineHeight: '1.75rem' }],
-        '3xl': ['clamp(1.25rem, 1.15rem + 0.75vw, 1.5rem)', { lineHeight: '2rem' }],
-        '4xl': ['clamp(1.5rem, 1.4rem + 1vw, 1.875rem)', { lineHeight: '2.25rem' }],
-        '5xl': ['clamp(1.875rem, 1.7rem + 1.25vw, 2.25rem)', { lineHeight: '1' }],
-        '6xl': ['clamp(2.25rem, 2rem + 1.5vw, 3rem)', { lineHeight: '1' }],
-        // Additional responsive text sizes
-        'mobile-xs': ['0.6rem', { lineHeight: '0.9rem' }],
-        'mobile-sm': ['0.7rem', { lineHeight: '1.1rem' }],
-        'mobile-base': ['0.8rem', { lineHeight: '1.3rem' }],
-        'mobile-lg': ['0.9rem', { lineHeight: '1.5rem' }],
+        // Responsive text sizes with larger mobile sizes
+        'xs': ['clamp(0.7rem, 0.65rem + 0.15vw, 0.75rem)', { lineHeight: '1.1rem' }],
+        'sm': ['clamp(0.8rem, 0.75rem + 0.2vw, 0.85rem)', { lineHeight: '1.3rem' }],
+        'base': ['clamp(0.9rem, 0.85rem + 0.25vw, 0.95rem)', { lineHeight: '1.5rem' }],
+        'lg': ['clamp(1rem, 0.95rem + 0.3vw, 1.1rem)', { lineHeight: '1.6rem' }],
+        'xl': ['clamp(1.1rem, 1.05rem + 0.35vw, 1.2rem)', { lineHeight: '1.7rem' }],
+        '2xl': ['clamp(1.2rem, 1.15rem + 0.5vw, 1.35rem)', { lineHeight: '1.85rem' }],
+        '3xl': ['clamp(1.35rem, 1.25rem + 0.75vw, 1.6rem)', { lineHeight: '2.1rem' }],
+        '4xl': ['clamp(1.6rem, 1.5rem + 1vw, 1.95rem)', { lineHeight: '2.35rem' }],
+        '5xl': ['clamp(1.95rem, 1.8rem + 1.25vw, 2.35rem)', { lineHeight: '1.1' }],
+        '6xl': ['clamp(2.35rem, 2.1rem + 1.5vw, 3.1rem)', { lineHeight: '1.1' }],
+        // Mobile-specific text sizes (larger than before)
+        'mobile-xs': ['0.75rem', { lineHeight: '1.1rem' }],
+        'mobile-sm': ['0.85rem', { lineHeight: '1.3rem' }],
+        'mobile-base': ['0.95rem', { lineHeight: '1.5rem' }],
+        'mobile-lg': ['1.05rem', { lineHeight: '1.7rem' }],
       },
       spacing: {
         '0.5': '0.125rem',
@@ -80,60 +80,60 @@ module.exports = {
     function ({ addComponents }) {
       addComponents({
         '.text-responsive-xs': {
-          fontSize: 'clamp(0.65rem, 0.6rem + 0.15vw, 0.7rem)',
+          fontSize: 'clamp(0.75rem, 0.7rem + 0.15vw, 0.8rem)',
           lineHeight: '1.4',
         },
         '.text-responsive': {
-          fontSize: 'clamp(0.7rem, 0.65rem + 0.2vw, 0.8rem)',
+          fontSize: 'clamp(0.85rem, 0.8rem + 0.2vw, 0.9rem)',
           lineHeight: '1.4',
         },
         '.text-responsive-lg': {
-          fontSize: 'clamp(0.8rem, 0.75rem + 0.25vw, 0.9rem)',
+          fontSize: 'clamp(0.95rem, 0.9rem + 0.25vw, 1rem)',
           lineHeight: '1.4',
         },
         '.text-responsive-xl': {
-          fontSize: 'clamp(0.9rem, 0.85rem + 0.3vw, 1rem)',
+          fontSize: 'clamp(1.05rem, 1rem + 0.3vw, 1.1rem)',
           lineHeight: '1.3',
         },
         '.text-responsive-2xl': {
-          fontSize: 'clamp(1rem, 0.95rem + 0.35vw, 1.125rem)',
+          fontSize: 'clamp(1.15rem, 1.1rem + 0.35vw, 1.2rem)',
           lineHeight: '1.2',
         },
         '.text-responsive-3xl': {
-          fontSize: 'clamp(1.125rem, 1rem + 0.5vw, 1.25rem)',
+          fontSize: 'clamp(1.25rem, 1.2rem + 0.5vw, 1.35rem)',
           lineHeight: '1.1',
         },
         '.text-responsive-4xl': {
-          fontSize: 'clamp(1.25rem, 1.15rem + 0.75vw, 1.5rem)',
+          fontSize: 'clamp(1.4rem, 1.3rem + 0.75vw, 1.6rem)',
           lineHeight: '1.1',
         },
         '.fluid-p': {
-          padding: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
+          padding: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
         },
         '.fluid-px': {
-          paddingLeft: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
-          paddingRight: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
+          paddingLeft: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
+          paddingRight: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
         },
         '.fluid-py': {
-          paddingTop: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
-          paddingBottom: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
+          paddingTop: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
+          paddingBottom: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
         },
         '.fluid-m': {
-          margin: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
+          margin: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
         },
         '.fluid-mx': {
-          marginLeft: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
-          marginRight: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
+          marginLeft: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
+          marginRight: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
         },
         '.fluid-my': {
-          marginTop: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
-          marginBottom: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
+          marginTop: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
+          marginBottom: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
         },
         '.fluid-gap': {
-          gap: 'clamp(0.25rem, 0.2rem + 0.5vw, 0.75rem)',
+          gap: 'clamp(0.35rem, 0.3rem + 0.5vw, 0.85rem)',
         },
         '.fluid-gap-sm': {
-          gap: 'clamp(0.2rem, 0.15rem + 0.35vw, 0.5rem)',
+          gap: 'clamp(0.3rem, 0.25rem + 0.35vw, 0.6rem)',
         },
         '.scrollbar-hide': {
           '-ms-overflow-style': 'none',

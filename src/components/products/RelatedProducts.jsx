@@ -57,28 +57,28 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
   }
 
   return (
-    <div className="py-2 sm:py-3 md:py-4">
-      <div className="flex justify-between items-center mb-1.5 sm:mb-2 md:mb-3">
-        <div className="flex items-center gap-1 sm:gap-1.5">
-          <h2 className="text-sm sm:text-base md:text-lg font-semibold text-black">Related Products</h2>
+    <div className="py-3 sm:py-3 md:py-4">
+      <div className="flex justify-between items-center mb-3 sm:mb-2 md:mb-3">
+        <div className="flex items-center gap-2 sm:gap-1.5">
+          <h2 className="text-base sm:text-base md:text-lg font-semibold text-black">Related Products</h2>
           <Image
             src="/images/deals/discount-coupon-icon.png"
             alt="Discount"
             width={20}
             height={20}
-            className="object-contain w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5"
+            className="object-contain w-5 h-5 sm:w-4 sm:h-4 md:w-5 md:h-5"
           />
         </div>
         <div className="flex items-center text-[#7E7E7E]">
           <Link href={`/products?category=${category}`} className="flex items-center hover:text-[#006B51] transition-colors">
-            <span className="text-[10px] sm:text-xs font-normal">All {category}</span>
+            <span className="text-sm sm:text-xs font-normal">All {category}</span>
             <svg
-              width="10"
-              height="10"
+              width="12"
+              height="12"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="ml-0.5"
+              className="ml-1"
             >
               <path
                 d="M9 6L15 12L9 18"
@@ -93,7 +93,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
       </div>
 
       {/* Related Products Grid */}
-      <div className="grid grid-cols-2 xs:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-2 md:gap-3">
+      <div className="grid grid-cols-2 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-2 md:gap-3">
         {products.map((product) => {
           // Check if product is in wishlist
           const productInWishlist = isInWishlist(product.id);
