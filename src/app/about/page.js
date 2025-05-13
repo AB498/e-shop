@@ -13,25 +13,25 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
       {/* Header with Breadcrumb */}
-      <div className="container mx-auto py-4 sm:py-6 md:py-8 px-4 sm:px-6 md:px-8">
+      <div className="container mx-auto py-4 sm:py-5 md:py-6 px-4 sm:px-5 md:px-6">
         <AboutHeader />
       </div>
 
-      {/* Additional Content Section */}
-      <section className="mt-4 sm:mt-6 md:mt-10">
-        <ResponsiveContainer>
-          <div className="max-w-[1095px] mx-auto">
-            <div className="text-sm md:text-[14px] leading-[1.7] text-[#202435] space-y-4 md:space-y-6">
-              <p>
-                In nec purus eget neque accumsan finibus. Duis condimentum elit ut libero commodo iaculis. Donec augue diam, tristique et ultricies nec, consectetur quis enim. Nullam id rutrum ex. Aliquam a lectus id lacus rhoncus dapibus non ac justo. Vivamus lacinia vestibulum metus in dapibus. Vestibulum sit amet sollicitudin enim. Ut id interdum turpis.
-              </p>
-            </div>
-          </div>
-        </ResponsiveContainer>
-      </section>
 
       {/* Main Content */}
-      <main className="w-full max-w-[1200px] mx-auto relative px-4 sm:px-6 md:px-8">
+      <main className="w-full max-w-[1000px] mx-auto relative px-4 sm:px-5 md:px-6">
+        {/* Additional Content Section */}
+        <section className="mt-4 sm:mt-5 md:mt-6">
+          <ResponsiveContainer>
+            <div className="max-w-[980px] mx-auto">
+              <div className="text-sm md:text-[14px] leading-[1.7] text-[#202435] space-y-4 md:space-y-5">
+                <p>
+                  In nec purus eget neque accumsan finibus. Duis condimentum elit ut libero commodo iaculis. Donec augue diam, tristique et ultricies nec, consectetur quis enim. Nullam id rutrum ex. Aliquam a lectus id lacus rhoncus dapibus non ac justo. Vivamus lacinia vestibulum metus in dapibus. Vestibulum sit amet sollicitudin enim. Ut id interdum turpis.
+                </p>
+              </div>
+            </div>
+          </ResponsiveContainer>
+        </section>
         {/* Intro Section */}
         <AboutIntro />
 
@@ -42,10 +42,10 @@ export default function AboutPage() {
         <AboutQuote />
 
         {/* Additional Content Section */}
-        <section className="py-8 md:py-12 lg:py-16">
+        <section className="py-8 md:py-10 lg:py-12">
           <ResponsiveContainer>
-            <div className="max-w-[1095px] mx-auto">
-              <div className="text-sm md:text-[14px] leading-[1.7] text-[#202435] space-y-4 md:space-y-6">
+            <div className="max-w-[980px] mx-auto">
+              <div className="text-sm md:text-[14px] leading-[1.7] text-[#202435] space-y-4 md:space-y-5">
                 <p>
                   In nec purus eget neque accumsan finibus. Duis condimentum elit ut libero commodo iaculis. Donec augue diam, tristique et ultricies nec, consectetur quis enim. Nullam id rutrum ex. Aliquam a lectus id lacus rhoncus dapibus non ac justo. Vivamus lacinia vestibulum metus in dapibus. Vestibulum sit amet sollicitudin enim. Ut id interdum turpis.
                 </p>
@@ -59,7 +59,7 @@ export default function AboutPage() {
       </main>
 
       {/* Footer with Newsletter */}
-      
+
     </div>
   );
 }

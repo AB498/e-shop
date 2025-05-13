@@ -121,7 +121,7 @@ export default function OrderDetailsPage() {
         <div className="container mx-auto px-4 py-8 flex-grow flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#006B51]"></div>
         </div>
-        
+
       </div>
     );
   }
@@ -139,36 +139,35 @@ export default function OrderDetailsPage() {
   return (
     <div className="min-h-screen flex flex-col">
 
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center mb-6">
-          <Link href="/profile" className="text-[#006B51] hover:underline flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+      <div className="container mx-auto px-3 py-4 md:py-6">
+        <div className="flex items-center mb-3 md:mb-4">
+          <Link href="/profile" className="text-[#006B51] hover:underline flex items-center text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
             Back to My Account
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-[rgba(0,0,0,0.1)]">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-6 border-b border-[#ECECEC]">
+        <div className="bg-white rounded-lg shadow-sm p-3 md:p-4 border border-[rgba(0,0,0,0.1)]">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-4 pb-3 md:pb-4 border-b border-[#ECECEC]">
             <div>
-              <h1 className="text-2xl font-bold text-[#253D4E]">Order #{order.id}</h1>
-              <p className="text-[#7E7E7E]">Placed on {order.created_at}</p>
+              <h1 className="text-xl font-bold text-[#253D4E]">Order #{order.id}</h1>
+              <p className="text-xs text-[#7E7E7E]">Placed on {order.created_at}</p>
             </div>
-            <div className="mt-4 md:mt-0">
+            <div className="mt-2 md:mt-0">
               <OrderStatusBadge status={order.status} />
             </div>
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold text-[#253D4E] mb-4">Order Items</h2>
+          <div className="mb-4 md:mb-6">
+            <h2 className="text-base font-semibold text-[#253D4E] mb-2 md:mb-3">Order Items</h2>
             <OrderItems items={order.items} />
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between gap-8">
+          <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-6">
             <div className="md:w-1/2">
-              <h2 className="text-lg font-semibold text-[#253D4E] mb-4">Order Summary</h2>
+              <h2 className="text-base font-semibold text-[#253D4E] mb-2 md:mb-3">Order Summary</h2>
               <OrderSummary total={order.total} payment_method={order.payment_method} />
 
               {/* Shipping Information */}
@@ -176,7 +175,7 @@ export default function OrderDetailsPage() {
             </div>
 
             <div className="md:w-1/2">
-              <h2 className="text-lg font-semibold text-[#253D4E] mb-4">Order Actions</h2>
+              <h2 className="text-base font-semibold text-[#253D4E] mb-2 md:mb-3">Order Actions</h2>
               <OrderActions order={order} />
 
               {/* Tracking Information */}
@@ -193,7 +192,6 @@ export default function OrderDetailsPage() {
         </div>
       </div>
 
-      
     </div>
   );
 }

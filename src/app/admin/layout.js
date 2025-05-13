@@ -81,6 +81,12 @@ export default async function AdminLayout({ children }) {
       customIconName: 'FiUsers'
     },
     {
+      name: 'Contact Messages',
+      href: '/admin/contact-messages',
+      iconName: 'EnvelopeIcon',
+      customIconName: 'FiMail'
+    },
+    {
       name: 'Admin Users',
       href: '/admin/users',
       iconName: 'UserIcon',

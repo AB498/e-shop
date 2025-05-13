@@ -53,7 +53,7 @@ const ContactForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -62,10 +62,23 @@ const ContactForm = () => {
 
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitSuccess(true);
+    try {
+      // Submit form data to API
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
+      // Reset form on success
       setFormData({
         name: '',
         email: '',
@@ -73,25 +86,35 @@ const ContactForm = () => {
         message: '',
       });
 
+      setSubmitSuccess(true);
+
       // Reset success message after 5 seconds
       setTimeout(() => {
         setSubmitSuccess(false);
       }, 5000);
-    }, 1500);
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setErrors(prev => ({
+        ...prev,
+        form: error.message || 'Failed to send message. Please try again later.'
+      }));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <section className="py-8 md:py-12 lg:py-16">
+    <section className="py-8 md:py-10 lg:py-12">
       <ResponsiveContainer>
-        <div className="bg-white border border-[#EDEEF5] rounded-[7px] shadow-[0px_0px_60px_0px_rgba(0,0,0,0.08)] py-6 sm:py-8 md:py-12 lg:py-[91px] px-4 sm:px-6 md:px-10 lg:px-[205px]">
-          <div className="border-b border-[#EDEEF5] pb-6 sm:pb-8 md:pb-10 lg:pb-14 mb-6 sm:mb-8 md:mb-10 lg:mb-14">
+        <div className="bg-white border border-[#EDEEF5] rounded-[7px] shadow-[0px_0px_40px_0px_rgba(0,0,0,0.06)] py-6 sm:py-7 md:py-8 lg:py-[60px] px-4 sm:px-5 md:px-8 lg:px-[120px]">
+          <div className="border-b border-[#EDEEF5] pb-6 sm:pb-7 md:pb-8 lg:pb-10 mb-6 sm:mb-7 md:mb-8 lg:mb-10">
             <ResponsiveText
               as="h2"
-              className="text-2xl md:text-3xl lg:text-[40px] font-normal text-[#202435] mb-2 text-center leading-[1.2]"
+              className="text-2xl md:text-3xl lg:text-[36px] font-normal text-[#202435] mb-2 text-center leading-[1.2]"
             >
               Send Us
             </ResponsiveText>
-            <p className="text-sm md:text-[14px] leading-[1.7] text-[#202435] text-center max-w-[760px] mx-auto">
+            <p className="text-sm md:text-[14px] leading-[1.7] text-[#202435] text-center max-w-[680px] mx-auto">
               Contact us for all your questions and opinions, or you can solve your problems in a shorter time with our contact offices.
             </p>
           </div>
@@ -99,6 +122,12 @@ const ContactForm = () => {
           {submitSuccess && (
             <div className="bg-green-50 text-green-700 p-4 rounded-md mb-6">
               Your message has been sent successfully. We'll get back to you soon!
+            </div>
+          )}
+
+          {errors.form && (
+            <div className="bg-red-50 text-red-700 p-4 rounded-md mb-6">
+              {errors.form}
             </div>
           )}
 

@@ -167,23 +167,23 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Edit Profile</h3>
+          <div className="bg-white px-3 pt-4 pb-3 sm:p-5 sm:pb-4">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-base font-medium text-gray-900">Edit Profile</h3>
               <button
                 type="button"
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-500 focus:outline-none"
               >
-                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                <XMarkIcon className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-4">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <form onSubmit={handleSubmit} className="mt-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {/* First Name */}
                 <div>
-                  <label htmlFor="firstName" className="block text-[#444444] mb-2">
+                  <label htmlFor="firstName" className="block text-[#444444] text-xs mb-1">
                     First Name*
                   </label>
                   <input
@@ -193,16 +193,16 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     required
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className={`w-full p-3 border ${errors.firstName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.firstName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.firstName && (
-                    <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                    <p className="mt-1 text-xs text-red-600">{errors.firstName}</p>
                   )}
                 </div>
 
                 {/* Last Name */}
                 <div>
-                  <label htmlFor="lastName" className="block text-[#444444] mb-2">
+                  <label htmlFor="lastName" className="block text-[#444444] text-xs mb-1">
                     Last Name*
                   </label>
                   <input
@@ -212,16 +212,16 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     required
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className={`w-full p-3 border ${errors.lastName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.lastName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.lastName && (
-                    <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                    <p className="mt-1 text-xs text-red-600">{errors.lastName}</p>
                   )}
                 </div>
 
                 {/* Email */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="email" className="block text-[#444444] mb-2">
+                  <label htmlFor="email" className="block text-[#444444] text-xs mb-1">
                     Email*
                   </label>
                   <input
@@ -231,13 +231,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`w-full p-3 border ${errors.email ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.email ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                    <p className="mt-1 text-xs text-red-600">{errors.email}</p>
                   )}
                   {formData.email !== user.email && (
-                    <p className="mt-1 text-sm text-amber-600">
+                    <p className="mt-1 text-xs text-amber-600">
                       Changing your email will require you to sign in again.
                     </p>
                   )}
@@ -245,7 +245,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
 
                 {/* Password */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="password" className="block text-[#444444] mb-2">
+                  <label htmlFor="password" className="block text-[#444444] text-xs mb-1">
                     Password (leave blank to keep current)
                   </label>
                   <div className="relative">
@@ -255,25 +255,25 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                       id="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className={`w-full p-3 border ${errors.password ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                      className={`w-full p-2 text-sm border ${errors.password ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-xs leading-5"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? 'Hide' : 'Show'}
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                    <p className="mt-1 text-xs text-red-600">{errors.password}</p>
                   )}
                 </div>
 
                 {/* Confirm Password */}
                 {formData.password && (
                   <div className="sm:col-span-2">
-                    <label htmlFor="confirmPassword" className="block text-[#444444] mb-2">
+                    <label htmlFor="confirmPassword" className="block text-[#444444] text-xs mb-1">
                       Confirm Password
                     </label>
                     <input
@@ -282,17 +282,17 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                       id="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className={`w-full p-3 border ${errors.confirmPassword ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                      className={`w-full p-2 text-sm border ${errors.confirmPassword ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                     />
                     {errors.confirmPassword && (
-                      <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                      <p className="mt-1 text-xs text-red-600">{errors.confirmPassword}</p>
                     )}
                   </div>
                 )}
 
                 {/* Phone */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="phone" className="block text-[#444444] mb-2">
+                  <label htmlFor="phone" className="block text-[#444444] text-xs mb-1">
                     Phone
                   </label>
                   <input
@@ -301,13 +301,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
+                    className="w-full p-2 text-sm border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Address */}
                 <div className="sm:col-span-2">
-                  <label htmlFor="address" className="block text-[#444444] mb-2">
+                  <label htmlFor="address" className="block text-[#444444] text-xs mb-1">
                     Address
                   </label>
                   <input
@@ -316,13 +316,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="address"
                     value={formData.address}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
+                    className="w-full p-2 text-sm border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* City */}
                 <div>
-                  <label htmlFor="city" className="block text-[#444444] mb-2">
+                  <label htmlFor="city" className="block text-[#444444] text-xs mb-1">
                     City
                   </label>
                   <input
@@ -331,13 +331,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
+                    className="w-full p-2 text-sm border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Post Code */}
                 <div>
-                  <label htmlFor="postCode" className="block text-[#444444] mb-2">
+                  <label htmlFor="postCode" className="block text-[#444444] text-xs mb-1">
                     Post Code
                   </label>
                   <input
@@ -346,13 +346,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="postCode"
                     value={formData.postCode}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
+                    className="w-full p-2 text-sm border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Country */}
                 <div>
-                  <label htmlFor="country" className="block text-[#444444] mb-2">
+                  <label htmlFor="country" className="block text-[#444444] text-xs mb-1">
                     Country
                   </label>
                   <input
@@ -361,13 +361,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="country"
                     value={formData.country}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
+                    className="w-full p-2 text-sm border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Region */}
                 <div>
-                  <label htmlFor="region" className="block text-[#444444] mb-2">
+                  <label htmlFor="region" className="block text-[#444444] text-xs mb-1">
                     Region/State
                   </label>
                   <input
@@ -376,23 +376,23 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                     id="region"
                     value={formData.region}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
+                    className="w-full p-2 text-sm border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]"
                   />
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end space-x-3">
+              <div className="mt-4 flex justify-end space-x-2">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3BB77E]"
+                  className="inline-flex justify-center py-1.5 px-3 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-[#3BB77E]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#3BB77E] hover:bg-[#2A9D6E] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3BB77E] disabled:opacity-50"
+                  className="inline-flex justify-center py-1.5 px-3 border border-transparent shadow-sm text-xs font-medium rounded-md text-white bg-[#3BB77E] hover:bg-[#2A9D6E] focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-[#3BB77E] disabled:opacity-50"
                 >
                   {isSubmitting ? 'Saving...' : 'Save Changes'}
                 </button>

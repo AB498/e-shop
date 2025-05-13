@@ -7,19 +7,18 @@ import ContactHeader from '@/components/contact/ContactHeader';
 import ContactIntro from '@/components/contact/ContactIntro';
 import ContactInfoCards from '@/components/contact/ContactInfoCards';
 import ContactForm from '@/components/contact/ContactForm';
-import NewsletterSection from '@/components/contact/NewsletterSection';
 import ResponsiveContainer from '@/components/ui/ResponsiveContainer';
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
       {/* Header with Breadcrumb */}
-      <div className="container mx-auto py-4 sm:py-8 md:py-12 lg:py-16 px-4 sm:px-6 md:px-8">
+      <div className="container mx-auto py-4 sm:py-5 md:py-6 px-4 sm:px-5 md:px-6">
         <ContactHeader />
       </div>
 
       {/* Main Content */}
-      <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
+      <main className="w-full max-w-5xl mx-auto px-4 sm:px-5 md:px-6">
         {/* Intro Section */}
         <ContactIntro />
 
@@ -29,12 +28,6 @@ export default function ContactPage() {
         {/* Contact Form */}
         <ContactForm />
       </main>
-
-      {/* Footer with Newsletter */}
-      <ResponsiveContainer>
-        <NewsletterSection />
-      </ResponsiveContainer>
-      
     </div>
   );
 }

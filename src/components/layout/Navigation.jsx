@@ -182,16 +182,25 @@ const Navigation = () => {
           {/* Promotions Section - Responsive on different screen sizes */}
           <div className="hidden md:flex md:flex-wrap items-center md:space-x-2 lg:space-x-6">
             <Link href="/products">
-              <div className="flex items-center space-x-1 cursor-pointer">
+              <div className="flex items-center space-x-1 cursor-pointer relative group">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 lg:w-4 lg:h-4">
                   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                   <line x1="7" y1="7" x2="7.01" y2="7"></line>
                 </svg>
                 <span className={getResponsiveTextClass('xs', { additionalClasses: 'text-[#333333] font-medium' })}>Products</span>
+
+                {/* Tooltip */}
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-1.5 bg-[#006B51] text-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-40 z-50">
+                  <div className="relative">
+                  <p className="leading-tight text-sm">Browse our complete catalog of products with detailed descriptions, specifications, and customer reviews. Filter by category, price, and more.</p>
+                    {/* Arrow */}
+                    <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[4px] border-b-[#006B51]"></div>
+                  </div>
+                </div>
               </div>
             </Link>
 
-            <div className="hidden lg:flex items-center space-x-1 cursor-pointer">
+            <div className="hidden lg:flex items-center space-x-1 cursor-pointer relative group">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 lg:w-4 lg:h-4">
                 <rect x="1" y="3" width="15" height="13"></rect>
                 <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
@@ -199,13 +208,31 @@ const Navigation = () => {
                 <circle cx="18.5" cy="18.5" r="2.5"></circle>
               </svg>
               <span className={getResponsiveTextClass('xs', { additionalClasses: 'text-[#333333] font-medium' })}>Get 1 Hour Delivery</span>
+
+              {/* Tooltip */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-1.5 bg-[#006B51] text-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-40 z-50">
+                <div className="relative">
+                  <p className="leading-tight text-sm">Get your orders delivered within 1 hour for eligible products in selected areas. Our express delivery service ensures your essential items arrive quickly when you need them most.</p>
+                  {/* Arrow */}
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[4px] border-b-[#006B51]"></div>
+                </div>
+              </div>
             </div>
 
-            <div className="hidden xl:flex items-center space-x-1 cursor-pointer">
+            <div className="hidden xl:flex items-center space-x-1 cursor-pointer relative group">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 lg:w-4 lg:h-4">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
               <span className={getResponsiveTextClass('xs', { additionalClasses: 'text-[#333333] font-medium' })}>Weekly Offer</span>
+
+              {/* Tooltip */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-1.5 bg-[#006B51] text-white text-[8px] rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-40 z-50">
+                <div className="relative">
+                  <p className="text-center leading-tight">Check out our special weekly deals and discounts on selected products. We update our offers every week with new seasonal items, bestsellers, and customer favorites at unbeatable prices.</p>
+                  {/* Arrow */}
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[4px] border-b-[#006B51]"></div>
+                </div>
+              </div>
             </div>
           </div>
 

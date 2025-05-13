@@ -6,16 +6,16 @@ import ResponsiveText from '@/components/ui/ResponsiveText';
 
 const AboutIntro = () => {
   return (
-    <section className="py-8 md:py-12 lg:py-16">
+    <section className="py-8 md:py-10 lg:py-12">
       <ResponsiveContainer>
-        <div className="max-w-[1095px] mx-auto">
+        <div className="max-w-[980px] mx-auto">
           <ResponsiveText
             as="h2"
-            className="text-2xl md:text-3xl lg:text-[32px] font-semibold text-[#202435] mb-4 md:mb-6 lg:mb-8 leading-[1.2]"
+            className="text-2xl md:text-3xl lg:text-[28px] font-semibold text-[#202435] mb-4 md:mb-5 lg:mb-6 leading-[1.2]"
           >
             Quisque erat urna, congue et libero in eleifend euismod velit.
           </ResponsiveText>
-          <div className="text-sm md:text-[14px] leading-[1.7] text-[#202435] space-y-4 md:space-y-6">
+          <div className="text-sm md:text-[14px] leading-[1.7] text-[#202435] space-y-4 md:space-y-5">
             <p>
               In nec purus eget neque accumsan finibus. Duis condimentum elit ut libero commodo iaculis. Donec augue diam, tristique et ultricies nec, consectetur quis enim. Nullam id rutrum ex. Aliquam a lectus id lacus rhoncus dapibus non ac justo. Vivamus lacinia vestibulum metus in dapibus. Vestibulum sit amet sollicitudin enim. Ut id interdum turpis.
             </p>

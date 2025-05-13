@@ -153,7 +153,8 @@ async function seedDatabase() {
       deliveryPersonsSeed,
       wishlistItemsSeed,
       promotionsSeed,
-      settingsSeed
+      settingsSeed,
+      contactMessagesSeed
     ] = await Promise.all([
       importSeedData('categories-seed.js'),
       importSeedData('products-seed.js'),
@@ -165,7 +166,8 @@ async function seedDatabase() {
       importSeedData('delivery-persons-seed.js'),
       importSeedData('wishlist-seed.js'),
       importSeedData('promotions-seed.js'),
-      importSeedData('settings-seed.js')
+      importSeedData('settings-seed.js'),
+      importSeedData('contact-messages-seed.js')
     ]);
 
     // Drop existing tables if they exist (for clean seeding)
@@ -188,8 +190,10 @@ async function seedDatabase() {
         'DROP TABLE IF EXISTS users CASCADE',
         'DROP TABLE IF EXISTS files CASCADE',
         'DROP TABLE IF EXISTS settings CASCADE',
+        'DROP TABLE IF EXISTS contact_messages CASCADE',
         'DROP TYPE IF EXISTS user_role CASCADE',
-        'DROP TYPE IF EXISTS order_status CASCADE'
+        'DROP TYPE IF EXISTS order_status CASCADE',
+        'DROP TYPE IF EXISTS contact_message_status CASCADE'
       ];
 
       // Execute drop queries in sequence to maintain dependency order
@@ -207,6 +211,7 @@ async function seedDatabase() {
       // Create enum types first
       await pool.query("CREATE TYPE user_role AS ENUM ('admin', 'customer')");
       await pool.query("CREATE TYPE order_status AS ENUM ('pending', 'processing', 'in_transit', 'shipped', 'delivered', 'cancelled')");
+      await pool.query("CREATE TYPE contact_message_status AS ENUM ('new', 'read', 'replied', 'archived')");
 
       // Define table creation queries
       const tableQueries = [
@@ -216,6 +221,17 @@ async function seedDatabase() {
           key TEXT NOT NULL,
           url TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT NOW()
+        )`,
+        `CREATE TABLE contact_messages (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          phone TEXT,
+          message TEXT NOT NULL,
+          status contact_message_status DEFAULT 'new' NOT NULL,
+          admin_notes TEXT,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
         )`,
         `CREATE TABLE users (
           id SERIAL PRIMARY KEY,
@@ -563,7 +579,8 @@ async function seedDatabase() {
         insertData('delivery_persons', schema.deliveryPersons, deliveryPersonsSeed),
         insertData('store_locations', schema.storeLocations, storeLocationsSeed),
         insertData('promotions', schema.promotions, promotionsSeed),
-        insertData('settings', schema.settings, settingsSeed)
+        insertData('settings', schema.settings, settingsSeed),
+        insertData('contact_messages', schema.contactMessages, contactMessagesSeed)
       ]);
 
       // Fetch products from Google Sheets
@@ -728,6 +745,7 @@ async function seedDatabase() {
     console.log(`  Wishlist Items: ${wishlistItemsSeed.length}`);
     console.log(`  Promotions: ${promotionsSeed.length}`);
     console.log(`  Settings: ${settingsSeed.length}`);
+    console.log(`  Contact Messages: ${contactMessagesSeed.length}`);
     console.log(`  Payment Transactions: 0 (table created but no seed data)`);
 
     // Close the database connection
@@ -748,6 +766,7 @@ async function seedDatabase() {
         wishlistItems: wishlistItemsSeed.length,
         promotions: promotionsSeed.length,
         settings: settingsSeed.length,
+        contactMessages: contactMessagesSeed.length,
         paymentTransactions: 0
       }
     };

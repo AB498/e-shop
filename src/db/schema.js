@@ -1,5 +1,21 @@
 import { pgTable, serial, text, timestamp, integer, decimal, boolean, json, jsonb, varchar, pgEnum } from 'drizzle-orm/pg-core'
 
+// Contact messages status enum
+const contactMessageStatusEnum = pgEnum('contact_message_status', ['new', 'read', 'replied', 'archived'])
+
+// Contact messages table
+const contactMessages = pgTable('contact_messages', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  phone: text('phone'),
+  message: text('message').notNull(),
+  status: contactMessageStatusEnum('status').default('new').notNull(),
+  admin_notes: text('admin_notes'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
 // Files table for storing uploaded files
 const files = pgTable('files', {
   id: serial('id').primaryKey(),
@@ -249,6 +265,8 @@ export {
   promotions,
   paymentTransactions,
   settings,
+  contactMessages,
   userRoleEnum,
-  orderStatusEnum
+  orderStatusEnum,
+  contactMessageStatusEnum
 }

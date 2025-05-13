@@ -6,9 +6,9 @@ import ResponsiveContainer from '@/components/ui/ResponsiveContainer';
 
 const AboutHeader = () => {
   return (
-    <div className="px-4 sm:px-8 md:px-12 lg:px-16 w-full bg-[url('/images/breadcrumb/breadcrumb-bg.png')] bg-cover bg-center py-8 md:py-12 lg:py-16 rounded-[20px]">
+    <div className="px-4 sm:px-8 md:px-10 lg:px-12 w-full bg-[url('/images/breadcrumb/breadcrumb-bg.png')] bg-cover bg-center py-8 md:py-10 lg:py-12 rounded-[20px]">
       <ResponsiveContainer>
-        <h1 className="text-3xl md:text-4xl lg:text-[48px] font-bold text-[#253D4E] mb-4">About</h1>
+        <h1 className="text-3xl md:text-4xl lg:text-[42px] font-bold text-[#253D4E] mb-4">About</h1>
         <div className="flex items-center">
           <Link href="/" className="text-[#3BB77E] font-semibold text-xs sm:text-sm md:text-[14px] uppercase flex items-center">
             Home

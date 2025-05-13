@@ -8,21 +8,21 @@ export default function ShippingInfo({ order }) {
   }
 
   return (
-    <div className="mt-6">
-      <h2 className="text-lg font-semibold text-[#253D4E] mb-4">Shipping Information</h2>
-      <div className="bg-gray-50 p-4 rounded-md">
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-500 mb-2">Shipping Address</h3>
-          <p className="text-sm">{order.shipping_address}</p>
-          {order.shipping_city && <p className="text-sm">{order.shipping_city}</p>}
-          {order.shipping_post_code && <p className="text-sm">Postal Code: {order.shipping_post_code}</p>}
-          {order.shipping_phone && <p className="text-sm">Phone: {order.shipping_phone}</p>}
+    <div className="mt-4">
+      <h2 className="text-base font-semibold text-[#253D4E] mb-2 md:mb-3">Shipping Information</h2>
+      <div className="bg-gray-50 p-3 rounded-md">
+        <div className="mb-3">
+          <h3 className="text-xs font-medium text-gray-500 mb-1">Shipping Address</h3>
+          <p className="text-xs">{order.shipping_address}</p>
+          {order.shipping_city && <p className="text-xs">{order.shipping_city}</p>}
+          {order.shipping_post_code && <p className="text-xs">Postal Code: {order.shipping_post_code}</p>}
+          {order.shipping_phone && <p className="text-xs">Phone: {order.shipping_phone}</p>}
         </div>
 
         {order.courier && (
-          <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Courier Service</h3>
-            <p className="text-sm font-medium">{order.courier.name}</p>
+          <div className="mb-2">
+            <h3 className="text-xs font-medium text-gray-500 mb-1">Courier Service</h3>
+            <p className="text-xs font-medium">{order.courier.name}</p>
           </div>
         )}
       </div>
