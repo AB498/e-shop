@@ -4,10 +4,10 @@ import ProductImageGallery from './ProductImageGallery';
 import ProductInfo from './ProductInfo';
 import ProductTabs from './ProductTabs';
 import RelatedProducts from './RelatedProducts';
-import ProductSidebar from './ProductSidebar';
 import BottomBanner from './BottomBanner';
 import { getProductById, getRelatedProducts } from '@/lib/actions/products';
 import { notFound } from 'next/navigation';
+import ProductLeftBarServer from './ProductLeftBarServer';
 
 // This is a Server Component that fetches data
 export default async function ProductDetail({ productId }) {
@@ -69,9 +69,7 @@ export default async function ProductDetail({ productId }) {
 
         {/* Right Sidebar */}
         <div className="hidden lg:block">
-          <ProductSidebar
-            category={product.category}
-          />
+          <ProductLeftBarServer />
         </div>
       </div>
 

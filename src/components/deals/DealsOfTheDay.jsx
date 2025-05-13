@@ -199,7 +199,7 @@ const DealsOfTheDay = () => {
             </Link>
 
             {/* Product Details */}
-            <div className="p-1.5 sm:p-2 grow shadow-[2px_2px_8px_0px_rgba(0,0,0,0.03)] rounded-md -mt-2 sm:-mt-3 mb-2 mx-1.5 sm:mx-2 bg-white relative">
+            <div className="p-1.5 sm:p-2 grow shadow-sm rounded-md -mt-2 sm:-mt-3 mb-2 mx-1.5 sm:mx-2 bg-white relative">
               <Link href={`/products/${product.id}`}>
                 <h3 className="text-[#253D4E] text-xs sm:text-sm font-semibold leading-tight mb-0.5 sm:mb-1 line-clamp-1">
                   {product.name}

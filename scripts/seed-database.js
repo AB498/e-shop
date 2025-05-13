@@ -238,6 +238,7 @@ async function seedDatabase() {
           name TEXT NOT NULL,
           slug TEXT NOT NULL UNIQUE,
           image TEXT,
+          display_order INTEGER DEFAULT 1 NOT NULL,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
@@ -544,7 +545,8 @@ async function seedDatabase() {
             id: category.id,
             name: category.name,
             slug: category.slug,
-            image: category.image
+            image: category.image,
+            display_order: category.display_order || 1
           };
         } catch (error) {
           console.error(`Error processing category ${category.name}:`, error);

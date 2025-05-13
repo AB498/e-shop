@@ -123,6 +123,101 @@ export default function CategoriesPage() {
     }
   };
 
+  // Handle moving a category up in order
+  const handleMoveUp = async (category) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await fetch('/api/admin/categories/reorder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'move_up',
+          id: category.id,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to reorder category');
+      }
+
+      // Refresh categories list
+      await fetchCategories();
+    } catch (err) {
+      console.error('Error moving category up:', err);
+      setError(err.message || 'Failed to reorder category');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle moving a category down in order
+  const handleMoveDown = async (category) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await fetch('/api/admin/categories/reorder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'move_down',
+          id: category.id,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to reorder category');
+      }
+
+      // Refresh categories list
+      await fetchCategories();
+    } catch (err) {
+      console.error('Error moving category down:', err);
+      setError(err.message || 'Failed to reorder category');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle normalizing category order
+  const handleNormalizeOrder = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await fetch('/api/admin/categories/reorder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'normalize',
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to normalize category order');
+      }
+
+      // Refresh categories list
+      await fetchCategories();
+    } catch (err) {
+      console.error('Error normalizing category order:', err);
+      setError(err.message || 'Failed to normalize category order');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Filter categories based on search term
   const filteredCategories = categories.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,14 +254,24 @@ export default function CategoriesPage() {
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
         />
-        <button
-          onClick={fetchCategories}
-          disabled={isLoading}
-          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-        >
-          <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
+        <div className="flex space-x-2">
+          <button
+            onClick={handleNormalizeOrder}
+            disabled={isLoading}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+            title="Fix category order to ensure sequential numbering"
+          >
+            Normalize Order
+          </button>
+          <button
+            onClick={fetchCategories}
+            disabled={isLoading}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+          >
+            <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Categories Table */}
@@ -177,6 +282,8 @@ export default function CategoriesPage() {
           setShowEditModal(true);
         }}
         onDelete={handleDeleteCategory}
+        onMoveUp={handleMoveUp}
+        onMoveDown={handleMoveDown}
         isLoading={isLoading}
       />
 

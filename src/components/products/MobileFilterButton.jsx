@@ -2,35 +2,44 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import ProductLeftBar from './ProductLeftBar';
-import { getAllCategories } from '@/lib/actions/products';
+import { getAllCategories, getNewProducts } from '@/lib/actions/products';
+import { getProductCountsByCategory } from '@/lib/actions/categories';
 
 const MobileFilterButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [newProducts, setNewProducts] = useState([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    
-    // Fetch categories
-    const fetchCategories = async () => {
+
+    // Fetch categories, category counts, and new products
+    const fetchData = async () => {
       try {
-        const categoriesData = await getAllCategories();
+        const [categoriesData, categoryCountsData, newProductsData] = await Promise.all([
+          getAllCategories(),
+          getProductCountsByCategory(),
+          getNewProducts(3)
+        ]);
         setCategories(categoriesData);
+        setCategoryCounts(categoryCountsData);
+        setNewProducts(newProductsData);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Error fetching data:', error);
       }
     };
-    
-    fetchCategories();
-    
+
+    fetchData();
+
     // Prevent body scroll when sidebar is open
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-    
+
     return () => {
       document.body.style.overflow = 'auto';
     };
@@ -57,11 +66,11 @@ const MobileFilterButton = () => {
       {mounted && isOpen && createPortal(
         <div className="fixed inset-0 z-50 flex">
           {/* Backdrop */}
-          <div 
+          <div
             className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
             onClick={toggleSidebar}
           ></div>
-          
+
           {/* Sidebar */}
           <div className="relative w-4/5 max-w-sm bg-white h-full overflow-y-auto shadow-xl transition-transform transform-gpu">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
@@ -72,11 +81,16 @@ const MobileFilterButton = () => {
                 </svg>
               </button>
             </div>
-            
+
             <div className="p-4">
-              <ProductLeftBar categories={categories} isMobile={true} />
+              <ProductLeftBar
+                categories={categories}
+                categoryCounts={categoryCounts}
+                newProducts={newProducts}
+                isMobile={true}
+              />
             </div>
-            
+
             <div className="p-4 border-t border-gray-200">
               <button
                 onClick={toggleSidebar}

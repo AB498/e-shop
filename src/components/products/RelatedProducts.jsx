@@ -49,7 +49,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-md p-3 sm:p-4 text-center shadow-[2px_2px_8px_0px_rgba(0,0,0,0.03)]">
+        <div className="bg-white rounded-md p-3 sm:p-4 text-center shadow-sm">
           <p className="text-[#7E7E7E] text-xs sm:text-sm">No related products found.</p>
         </div>
       </div>

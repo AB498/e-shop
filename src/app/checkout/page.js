@@ -537,11 +537,11 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="mt-5">
+              <div className="mt-5 flex flex-col items-start ">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full bg-[#006B51] text-white font-medium py-3 text-sm rounded-full flex items-center justify-center ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#005541] transition-colors'}`}
+                  className={`px-6 py-2 bg-[#006B51] text-white font-medium py-3 text-sm rounded-full flex items-center justify-center ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#005541] transition-colors'}`}
                 >
                   {isSubmitting ? (
                     <>
@@ -569,14 +569,14 @@ export default function CheckoutPage() {
           </div>
 
           {/* Order Summary */}
-          <div className="lg:w-1/3">
-            <div className="bg-white rounded-lg shadow-sm p-4 border border-[rgba(0,0,0,0.1)]">
-              <h2 className="text-lg font-semibold text-[#253D4E] mb-3">Order Summary</h2>
+          <div className="lg:w-1/4">
+            <div className="bg-white rounded-lg shadow-sm p-3 border border-[rgba(0,0,0,0.1)]">
+              <h2 className="text-base font-semibold text-[#253D4E] mb-2">Order Summary</h2>
 
-              <div className="space-y-3 mb-4">
+              <div className="space-y-2 mb-3">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex items-start gap-2">
-                    <div className="relative overflow-hidden w-12 h-12 bg-[#F0EEED] rounded-md flex items-center justify-center flex-shrink-0">
+                  <div key={item.id} className="flex items-center gap-1.5">
+                    <div className="relative overflow-hidden w-10 h-10 bg-[#F0EEED] rounded flex items-center justify-center flex-shrink-0">
                       <Image
                         src={item.image || "/images/product-image.png"}
                         alt={item.name}
@@ -584,36 +584,36 @@ export default function CheckoutPage() {
                         className="object-cover"
                       />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-[#253D4E] font-medium text-sm">{item.name}</h3>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-[#253D4E] font-medium text-xs truncate">{item.name}</h3>
                       <p className="text-[#7E7E7E] text-xs">{item.quantity} × ৳{parseFloat(item.price).toFixed(2)}</p>
                     </div>
-                    <div className="text-[#3BB77E] font-semibold text-sm">
+                    <div className="text-[#3BB77E] font-medium text-xs whitespace-nowrap">
                       ৳{(parseFloat(item.price) * item.quantity).toFixed(2)}
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="border-t border-[#ECECEC] pt-3 space-y-2">
+              <div className="border-t border-[#ECECEC] pt-2 space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-[#7E7E7E] text-sm">Subtotal</span>
-                  <span className="text-[#253D4E] font-medium text-sm">৳{subtotal.toFixed(2)}</span>
+                  <span className="text-[#7E7E7E] text-xs">Subtotal</span>
+                  <span className="text-[#253D4E] font-medium text-xs">৳{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#7E7E7E] text-sm">Discount (20%)</span>
-                  <span className="text-[#3BB77E] font-medium text-sm">-৳{discountAmount.toFixed(2)}</span>
+                  <span className="text-[#7E7E7E] text-xs">Discount (20%)</span>
+                  <span className="text-[#3BB77E] font-medium text-xs">-৳{discountAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#7E7E7E] text-sm">Delivery Fee</span>
-                  <span className="text-[#253D4E] font-medium text-sm">৳{deliveryFee.toFixed(2)}</span>
+                  <span className="text-[#7E7E7E] text-xs">Delivery Fee</span>
+                  <span className="text-[#253D4E] font-medium text-xs">৳{deliveryFee.toFixed(2)}</span>
                 </div>
               </div>
 
-              <div className="border-t border-[#ECECEC] mt-3 pt-3">
+              <div className="border-t border-[#ECECEC] mt-2 pt-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#253D4E] font-medium text-sm">Total</span>
-                  <span className="text-[#3BB77E] font-bold text-lg">৳{total.toFixed(2)}</span>
+                  <span className="text-[#253D4E] font-medium text-xs">Total</span>
+                  <span className="text-[#3BB77E] font-bold text-base">৳{total.toFixed(2)}</span>
                 </div>
               </div>
             </div>

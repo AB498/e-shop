@@ -51,7 +51,7 @@ const Navigation = () => {
   }
 
   return (
-    <div className="z-20 sticky top-0 w-full bg-[#FAF8F5] border-b border-[#E3E3E3] py-2 sm:py-3">
+    <div className="w-full bg-[#FAF8F5] border-b border-[#E3E3E3] py-2 sm:py-3">
       <div className="container mx-auto px-2 sm:px-3">
         {/* Mobile View */}
         <div className="md:hidden w-full">

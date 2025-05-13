@@ -35,6 +35,7 @@ const categories = pgTable('categories', {
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   image: text('image'),
+  display_order: integer('display_order').default(1).notNull(),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
 })

@@ -132,12 +132,14 @@ const ProductInfo = ({ product }) => {
             >
               -
             </button>
+            <div className="grow"></div>
             <input
               type="text"
               value={quantity}
               className="w-8 text-center border-none focus:outline-none text-[#253D4E] text-sm"
               readOnly
             />
+            <div className="grow"></div>
             <button
               onClick={increaseQuantity}
               className="px-2 py-1 text-[#7E7E7E] text-lg hover:text-[#3BB77E] transition-colors"

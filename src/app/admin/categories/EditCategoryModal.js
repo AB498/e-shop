@@ -9,6 +9,7 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
     name: '',
     slug: '',
     image: '',
+    display_order: 1,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,6 +25,7 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
         name: category.name || '',
         slug: category.slug || '',
         image: category.image || '',
+        display_order: category.display_order || 0,
       });
       setImagePreview(category.image || null);
     }
@@ -196,6 +198,24 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
                       />
                       <p className="mt-1 text-xs text-gray-500">
                         Auto-generated from name if left empty. Used in URLs.
+                      </p>
+                    </div>
+
+                    <div className="mb-4">
+                      <label htmlFor="display_order" className="block text-sm font-medium text-gray-700">
+                        Display Order
+                      </label>
+                      <input
+                        type="number"
+                        name="display_order"
+                        id="display_order"
+                        value={formData.display_order}
+                        onChange={handleInputChange}
+                        min="1"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                      />
+                      <p className="mt-1 text-xs text-gray-500">
+                        Order in which the category will be displayed. Lower numbers appear first (1 is the top position).
                       </p>
                     </div>
 

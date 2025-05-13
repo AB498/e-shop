@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -7,35 +7,16 @@ import PriceRangeFilterWrapper from './PriceRangeFilterWrapper';
 import CheckboxFilterWrapper from './CheckboxFilterWrapper';
 import StarRating from '@/components/ui/StarRating';
 
-const ProductLeftBar = ({ categories = [], isMobile = false }) => {
+const ProductLeftBar = ({
+    categories = [],
+    categoryCounts = {},
+    newProducts = [],
+    isMobile = false
+}) => {
     const searchParams = useSearchParams();
     const currentCategoryId = searchParams.get('categoryId');
 
-    // State for new products
-    const [newProducts, setNewProducts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch new products on component mount
-    useEffect(() => {
-        const fetchNewProducts = async () => {
-            try {
-                setIsLoading(true);
-                const response = await fetch('/api/products/new?limit=3');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch new products');
-                }
-                const data = await response.json();
-                setNewProducts(data.products || []);
-            } catch (error) {
-                console.error('Error fetching new products:', error);
-                setNewProducts([]);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchNewProducts();
-    }, []);
 
     // Array of SVG icons to cycle through for categories
     const categoryIcons = [
@@ -134,7 +115,9 @@ const ProductLeftBar = ({ categories = [], isMobile = false }) => {
                                         </span>
                                     </div>
                                     <div className="bg-[#BCE3C9] flex items-center justify-center rounded-full w-6 h-6">
-                                        <span className="text-[#253D4E] text-xs">{Math.floor(Math.random() * 30) + 5}</span>
+                                        <span className="text-[#253D4E] text-xs">
+                                            {categoryCounts[category.id] || 0}
+                                        </span>
                                     </div>
                                 </div>
                             </Link>
@@ -184,9 +167,7 @@ const ProductLeftBar = ({ categories = [], isMobile = false }) => {
                         <div className="w-12 h-1 bg-[#BCE3C9] mb-2"></div>
                     </div>
 
-                    {isLoading ? (
-                        <div className="py-4 text-center text-[#7E7E7E]">Loading new products...</div>
-                    ) : newProducts.length === 0 ? (
+                    {newProducts.length === 0 ? (
                         <div className="py-4 text-center text-[#7E7E7E]">No new products found</div>
                     ) : (
                         <>

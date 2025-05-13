@@ -48,15 +48,11 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
         {productImages.map((image, index) => (
           <div
             key={image.id || index}
-            className={`relative border rounded-md overflow-hidden flex-shrink-0 cursor-pointer ${
+            className={`relative w-14 h-14 border rounded-md overflow-hidden flex-shrink-0 cursor-pointer ${
               index === activeImageIndex
                 ? 'border-[#3BB77E] shadow-sm'
                 : 'border-[#ECECEC]'
             }`}
-            style={{
-              width: 'clamp(50px, 12vw, 80px)',
-              height: 'clamp(50px, 12vw, 80px)'
-            }}
             onClick={() => handleThumbnailClick(index)}
           >
             <Image

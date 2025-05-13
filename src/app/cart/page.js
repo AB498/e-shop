@@ -17,33 +17,32 @@ export default function CartPage() {
   const { cart } = useCart();
 
   return (
-    <div className="min-h-screen flex flex-col px-4 py-8">
-      
+    <div className="min-h-screen flex flex-col px-3 py-4">
 
-      <div className="container mx-auto border border-[rgba(0,0,0,0.1)] rounded-lg p-8 mt-8 bg-white">
+      <div className="container mx-auto border border-[rgba(0,0,0,0.1)] rounded-md p-4 mt-4 bg-white">
         {cart.length > 0 ? (
           <>
-            <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex flex-col lg:flex-row gap-4">
               {/* Cart Items */}
               <div className="flex-1">
-                <div className="bg-white rounded-lg shadow-sm p-6 border border-[rgba(0,0,0,0.1)]">
+                <div className="bg-white rounded-md shadow-sm p-3 border border-[rgba(0,0,0,0.1)]">
                   {cart.map((item, index) => (
                     <React.Fragment key={item.id}>
                       <CartItem item={item} />
-                      {index < cart.length - 1 && <hr className="border-t border-[rgba(0,0,0,0.1)] my-4" />}
+                      {index < cart.length - 1 && <hr className="border-t border-[rgba(0,0,0,0.1)] my-2" />}
                     </React.Fragment>
                   ))}
                 </div>
               </div>
 
               {/* Cart Summary */}
-              <div className="lg:w-1/3">
+              <div className="lg:w-1/4">
                 <CartSummary />
               </div>
             </div>
 
-            <div className="mt-8 text-center">
-              <Link href="/products" className="text-[#444444] hover:text-[#006B51] transition-colors tracking-wider">
+            <div className="mt-4 text-center">
+              <Link href="/products" className="text-[#444444] text-sm hover:text-[#006B51] transition-colors">
                 Continue Shopping
               </Link>
             </div>
@@ -53,11 +52,10 @@ export default function CartPage() {
         )}
       </div>
 
-      <div className="container mx-auto">
+      <div className="container mx-auto mt-4">
         <DealsOfTheDay />
       </div>
 
-      
     </div>
   );
 }

@@ -82,6 +82,7 @@ export async function POST() {
           name TEXT NOT NULL,
           slug TEXT NOT NULL UNIQUE,
           image TEXT,
+          display_order INTEGER DEFAULT 1 NOT NULL,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )

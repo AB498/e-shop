@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Topbar from './Topbar';
 
-export default async function AuthProvider() {
+export default async function TopBarClient() {
   // Fetch the session on the server
   const session = await getServerSession(authOptions);
   

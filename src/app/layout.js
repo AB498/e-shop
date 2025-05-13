@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import Sidebar from "../components/layout/Sidebar";
 import SidebarClient from "../components/layout/SidebarClient";
-import AuthProvider from "../components/layout/AuthProvider";
+import TopBarClient from "../components/layout/TopBarClient";
 import SessionProvider from "../components/providers/SessionProvider";
 import { CartProvider } from "../context/CartContext";
 import { WishlistProvider } from "../context/WishlistContext";
@@ -45,8 +45,7 @@ export default function RootLayout({ children }) {
                     </Suspense>
                   </div>
                   <div className="relative z-0 overflow-x-hidden flex-grow w-full min-h-screen transition-all duration-300">
-                    <AuthProvider />
-                    <Navigation />
+                    <TopBarClient />
                     {children}
                     <Footer />
                     <Copyright />

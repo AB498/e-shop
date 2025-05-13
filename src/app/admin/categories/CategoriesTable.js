@@ -1,9 +1,22 @@
 'use client';
 
-import { PencilIcon, TrashIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import {
+  PencilIcon,
+  TrashIcon,
+  PhotoIcon,
+  ArrowUpIcon,
+  ArrowDownIcon
+} from '@heroicons/react/24/outline';
 import Table from '@/components/ui/table';
 
-export default function CategoriesTable({ categories, onEdit, onDelete, isLoading }) {
+export default function CategoriesTable({
+  categories,
+  onEdit,
+  onDelete,
+  onMoveUp,
+  onMoveDown,
+  isLoading
+}) {
   // Format date to a readable format
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -17,6 +30,14 @@ export default function CategoriesTable({ categories, onEdit, onDelete, isLoadin
 
   // Define table columns
   const columns = [
+    {
+      key: 'display_order',
+      label: 'Order',
+      sortable: true,
+      render: (category) => (
+        <div className="text-sm text-gray-500">{category.display_order}</div>
+      )
+    },
     {
       key: 'image',
       label: 'Image',
@@ -81,6 +102,30 @@ export default function CategoriesTable({ categories, onEdit, onDelete, isLoadin
       )
     },
     {
+      key: 'order_actions',
+      label: 'Order',
+      render: (category) => (
+        <div className="flex space-x-2">
+          <button
+            onClick={() => onMoveUp(category)}
+            className="text-blue-600 hover:text-blue-900"
+            title="Move Up"
+            disabled={isLoading}
+          >
+            <ArrowUpIcon className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => onMoveDown(category)}
+            className="text-blue-600 hover:text-blue-900"
+            title="Move Down"
+            disabled={isLoading}
+          >
+            <ArrowDownIcon className="h-5 w-5" />
+          </button>
+        </div>
+      )
+    },
+    {
       key: 'actions',
       label: 'Actions',
       render: (category) => (
@@ -118,7 +163,7 @@ export default function CategoriesTable({ categories, onEdit, onDelete, isLoadin
       pageSizeOptions={[10, 25, 50, 100]}
       initialState={{
         pageSize: 10,
-        sortBy: 'name',
+        sortBy: 'display_order',
         sortDirection: 'asc',
       }}
     />

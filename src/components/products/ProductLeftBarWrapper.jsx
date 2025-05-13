@@ -17,10 +17,20 @@ const ProductLeftBarFallback = () => {
 };
 
 // Wrapper component that adds Suspense boundary
-const ProductLeftBarWrapper = ({ categories, isMobile = false }) => {
+const ProductLeftBarWrapper = ({
+  categories,
+  categoryCounts = {},
+  newProducts = [],
+  isMobile = false
+}) => {
   return (
     <Suspense fallback={<ProductLeftBarFallback />}>
-      <ProductLeftBar categories={categories} isMobile={isMobile} />
+      <ProductLeftBar
+        categories={categories}
+        categoryCounts={categoryCounts}
+        newProducts={newProducts}
+        isMobile={isMobile}
+      />
     </Suspense>
   );
 };
