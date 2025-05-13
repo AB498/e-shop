@@ -158,6 +158,30 @@ const PopularCategories = () => {
         "Oral Care",
         "Wellness Essentials"
       ]
+    },
+    {
+      id: 5,
+      name: "Perfume",
+      image: "https://images.unsplash.com/photo-1615160460366-2c9a41771b51?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHBlcmZ1bWUlMjBib3R0bGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&h=600&q=80",
+      subcategories: [
+        "Floral",
+        "Woody",
+        "Oriental",
+        "Fresh",
+        "Citrus"
+      ]
+    },
+    {
+      id: 6,
+      name: "Hair Care",
+      image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600&q=80",
+      subcategories: [
+        "Shampoo",
+        "Conditioner",
+        "Hair Masks",
+        "Hair Oils",
+        "Styling Products"
+      ]
     }
   ];
 

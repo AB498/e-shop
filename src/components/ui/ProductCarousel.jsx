@@ -225,7 +225,8 @@ export default function ProductCarousel({
             <Swiper
               modules={[Navigation, Pagination, A11y]}
               spaceBetween={18}
-              slidesPerView={2}
+              slidesPerView={"auto"}
+              wrapperClass="swiper-wrapper !justify-start"
               navigation={{
                 prevEl: prevRef.current,
                 nextEl: nextRef.current,
@@ -250,10 +251,20 @@ export default function ProductCarousel({
               loopFillGroupWithBlank={false}
               rewind={false}
               allowTouchMove={enableSwiping}
+              watchOverflow={true}
+              centeredSlides={false}
+              cssMode={false}
+              slidesOffsetBefore={0}
+              slidesOffsetAfter={0}
+              slidesPerGroup={1}
+              grid={{
+                rows: 1,
+                fill: 'row'
+              }}
               breakpoints={breakpoints}
             >
               {products.map((product) => (
-                <SwiperSlide key={product.id} className={'w-full sm:max-w-[220px] mx-auto'}>
+                <SwiperSlide key={product.id} className={'w-full sm:max-w-[220px]'}>
                   <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[280px]">
                     {/* Product Image with Link or Quick View */}
                     {isLandingPage ? (

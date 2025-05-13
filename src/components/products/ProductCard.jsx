@@ -21,7 +21,7 @@ const ProductCard = ({ product, showAddToCart = true }) => {
 
   return (
     <div className="responsive-card bg-white rounded-[6px] shadow-sm w-full">
-      <div className="relative mb-1 md:mb-1.5">
+      <div className="relative mb-2 md:mb-2.5">
         <Link href={`/products/${id}`}>
           <div className="relative w-full aspect-square overflow-hidden rounded-[6px]">
             <Image
@@ -36,14 +36,14 @@ const ProductCard = ({ product, showAddToCart = true }) => {
         </Link>
 
         {discountPercentage > 0 && (
-          <div className="absolute top-0.5 left-0.5 md:top-1 md:left-1">
-            <div className="bg-[#006B51] text-white text-responsive-xs font-semibold py-0 px-0.5 md:py-0 md:px-1 rounded-[4px] text-[10px] xs:text-[11px] md:text-xs">
+          <div className="absolute top-1 left-1 md:top-1.5 md:left-1.5">
+            <div className="bg-[#006B51] text-white text-responsive-xs font-semibold py-0.5 px-1 md:py-0.5 md:px-1.5 rounded-[4px] text-[10px] xs:text-[11px] md:text-xs">
               -{discountPercentage}%
             </div>
           </div>
         )}
 
-        <div className="absolute top-0.5 right-0.5 md:top-1 md:right-1">
+        <div className="absolute top-1 right-1 md:top-1.5 md:right-1.5">
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -97,18 +97,18 @@ const ProductCard = ({ product, showAddToCart = true }) => {
         </div>
       </div>
 
-      <div className="text-center px-0.5 md:px-1">
-        <div className="text-[#A9A9A9] text-[10px] xs:text-[11px] md:text-xs font-semibold uppercase mb-0.5">
+      <div className="text-center px-1 md:px-2">
+        <div className="text-[#A9A9A9] text-[10px] xs:text-[11px] md:text-xs font-semibold uppercase mb-1 md:mb-1.5">
           {category}
         </div>
 
         <Link href={`/products/${id}`}>
-          <h3 className="text-[#3F3F3F] text-[12px] sm:text-[13px] md:text-sm font-semibold mb-0.5 hover:text-[#006B51] transition-colors line-clamp-2 h-[2.4em] md:h-[2.6em]">
+          <h3 className="text-[#3F3F3F] text-[12px] sm:text-[13px] md:text-sm font-semibold mb-1 md:mb-1.5 hover:text-[#006B51] transition-colors line-clamp-2 h-[2.4em] md:h-[2.6em]">
             {name}
           </h3>
         </Link>
 
-        <div className="flex items-center justify-center space-x-0.5 mb-1 md:mb-1.5">
+        <div className="flex items-center justify-center space-x-1 md:space-x-1.5 mb-2 md:mb-2.5">
           {discountPrice !== price && (
             <span className="text-[#E12625] text-[10px] xs:text-[11px] md:text-xs line-through">৳{parseFloat(price).toFixed(2)}</span>
           )}
@@ -118,14 +118,14 @@ const ProductCard = ({ product, showAddToCart = true }) => {
         {showAddToCart && (
           <button
             onClick={() => addToCart(product, 1)}
-            className="bg-[#006B51] text-white font-semibold rounded-md md:rounded-lg flex items-center justify-center w-full hover:bg-[#005541] transition-colors py-0.5 px-1 md:px-1.5 text-[10px] xs:text-[11px] md:text-xs"
+            className="bg-[#006B51] text-white font-semibold rounded-md md:rounded-lg flex items-center justify-center w-full hover:bg-[#005541] transition-colors py-1 md:py-1.5 px-2 md:px-2.5 text-[10px] xs:text-[11px] md:text-xs"
           >
             <Image
               src="/images/products/cart-icon.png"
               alt="Cart"
               width={12}
               height={12}
-              className="mr-0.5 w-3 h-3 md:w-3.5 md:h-3.5"
+              className="mr-1 md:mr-1.5 w-3 h-3 md:w-3.5 md:h-3.5"
             />
             <span>Add To Cart</span>
           </button>
