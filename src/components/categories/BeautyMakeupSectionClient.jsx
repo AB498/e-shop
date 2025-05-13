@@ -9,7 +9,7 @@ export default function BeautyMakeupSectionClient() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch('/api/products?categoryId=3,6&limit=9');
+        const response = await fetch('/api/products?categoryId=3,6&limit=30');
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

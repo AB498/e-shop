@@ -9,7 +9,7 @@ export default function VegetableAndFruitsClient() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch('/api/products?categoryId=4,8&limit=8');
+        const response = await fetch('/api/products?categoryId=4,8&limit=30');
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

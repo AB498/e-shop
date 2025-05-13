@@ -10,7 +10,7 @@ export default function GroomingSectionClient() {
     async function fetchProducts() {
       try {
         // Fetch products from category ID 1 (Grooming)
-        const response = await fetch('/api/products?categoryId=1&limit=8');
+        const response = await fetch('/api/products?categoryId=1&limit=30');
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

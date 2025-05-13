@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 // Import Swiper and required modules
@@ -155,21 +155,137 @@ export default function ProductCarousel({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Split products into two rows
-  const splitProducts = () => {
-    if (!products.length) return [[], []];
-    const midpoint = Math.ceil(products.length / 2);
-    return [products.slice(0, midpoint), products.slice(midpoint)];
-  };
+  // Calculate max items per row based on screen size and breakpoints
+  const getMaxItemsPerRow = useCallback(() => {
+    // Default to largest breakpoint
+    let maxItems = breakpoints[1280]?.slidesPerView || 7; // Default for 1280+ screens
 
-  const [firstRowProducts, secondRowProducts] = splitProducts();
+    // Check window width and determine max items based on breakpoints
+    if (typeof window !== 'undefined') {
+      const width = window.innerWidth;
+
+      // Find the appropriate breakpoint for the current width
+      const breakpointKeys = Object.keys(breakpoints)
+        .map(Number)
+        .sort((a, b) => a - b);
+
+      // Find the largest breakpoint that is smaller than or equal to the current width
+      for (let i = breakpointKeys.length - 1; i >= 0; i--) {
+        if (width >= breakpointKeys[i]) {
+          return breakpoints[breakpointKeys[i]].slidesPerView;
+        }
+      }
+
+      // If no matching breakpoint, use the smallest one
+      if (breakpointKeys.length > 0) {
+        return breakpoints[breakpointKeys[0]].slidesPerView;
+      }
+    }
+
+    return maxItems;
+  }, [breakpoints]);
+
+  // State to track max items per row
+  const [maxItemsPerRow, setMaxItemsPerRow] = useState(7);
+
+  // Update max items on resize
+  useEffect(() => {
+    const updateMaxItems = () => {
+      setMaxItemsPerRow(getMaxItemsPerRow());
+    };
+
+    // Initial calculation
+    updateMaxItems();
+
+    // Add event listener
+    window.addEventListener('resize', updateMaxItems);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updateMaxItems);
+  }, [getMaxItemsPerRow]);
+
+  // Split products into two rows, distributing them evenly when there are enough products
+  const splitProducts = useCallback(() => {
+    if (!products.length) return [[], []];
+
+    // Round down to ensure we don't exceed the max items
+    const firstRowCount = Math.floor(maxItemsPerRow);
+
+    // Minimum number of products needed to activate the first row scrolling
+    // We need at least 80% of maxItemsPerRow + 1 to make it scrollable
+    const minForScrolling = Math.ceil(firstRowCount * 0.8) + 1;
+
+    // If we don't have enough products to make the first row scrollable,
+    // put all products in the first row
+    if (products.length <= minForScrolling) {
+      return [products, []];
+    }
+
+    // If we have enough for first row scrolling but not enough for two full rows,
+    // ensure first row is filled to capacity before adding to second row
+    if (products.length <= firstRowCount + minForScrolling) {
+      // First fill the first row to capacity
+      const firstRow = products.slice(0, firstRowCount);
+      // Any remaining products go to the second row
+      const secondRow = products.slice(firstRowCount);
+
+      return [firstRow, secondRow];
+    }
+
+    // If we have enough products for both rows to be scrollable,
+    // distribute them evenly
+    if (products.length < 2 * firstRowCount + 2) {
+      // Calculate how many items should go in each row to make them both scrollable
+      const itemsPerRow = Math.ceil(products.length / 2);
+
+      // Ensure first row has enough items to be scrollable
+      const firstRow = products.slice(0, itemsPerRow);
+      const secondRow = products.slice(itemsPerRow);
+
+      return [firstRow, secondRow];
+    }
+
+    // If we have enough products to fill both rows completely
+    // Distribute them evenly between the two rows
+
+    // For products that exceed 2*firstRowCount, we'll still distribute them evenly
+    // between the two rows to ensure both rows remain scrollable
+    const totalProducts = products.length;
+    const halfProducts = Math.ceil(totalProducts / 2);
+
+    // Ensure we don't exceed max items per row if specified
+    // But allow more items if needed to ensure even distribution
+    const firstRowItems = Math.min(halfProducts, Math.max(firstRowCount, Math.floor(totalProducts / 2)));
+
+    const firstRow = products.slice(0, firstRowItems);
+    const secondRow = products.slice(firstRowItems);
+
+    return [firstRow, secondRow];
+  }, [products, maxItemsPerRow]);
+
+  // State for the split products
+  const [firstRowProducts, setFirstRowProducts] = useState([]);
+  const [secondRowProducts, setSecondRowProducts] = useState([]);
+
+  // Update product rows when products or maxItemsPerRow changes
+  useEffect(() => {
+    const [firstRow, secondRow] = splitProducts();
+
+    // Debug log to understand product distribution
+    console.log(`Products split: ${firstRow.length} in first row, ${secondRow.length} in second row (max per row: ${maxItemsPerRow}, total products: ${products.length})`);
+
+    setFirstRowProducts(firstRow);
+    setSecondRowProducts(secondRow);
+  }, [products, maxItemsPerRow, splitProducts]);
 
   // Check if we're on the landing page
   const isLandingPage = pathname === "/";
 
   // Check if we have enough products to enable swiping for each row
-  const enableSwipingRow1 = firstRowProducts.length > 1;
-  const enableSwipingRow2 = secondRowProducts.length > 1;
+  // We need more products than can fit in the viewport to enable swiping
+  const minForScrolling = Math.ceil(maxItemsPerRow * 0.8) + 1;
+  const enableSwipingRow1 = firstRowProducts.length >= minForScrolling;
+  const enableSwipingRow2 = secondRowProducts.length >= minForScrolling;
 
   // References to swiper instances
   const swiperRef1 = useRef(null);
