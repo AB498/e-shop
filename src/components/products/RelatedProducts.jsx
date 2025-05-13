@@ -93,7 +93,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
       </div>
 
       {/* Related Products Grid */}
-      <div className="grid grid-cols-2 xs:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-1.5 sm:gap-2 md:gap-3">
+      <div className="grid grid-cols-2 xs:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-2 md:gap-3">
         {products.map((product) => {
           // Check if product is in wishlist
           const productInWishlist = isInWishlist(product.id);
@@ -107,7 +107,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
             <div key={product.id} className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col max-w-[180px]">
               {/* Product Image */}
               <Link href={`/products/${product.id}`}>
-                <div className="relative h-28 xs:h-32 sm:h-36">
+                <div className="relative h-32 xs:h-32 sm:h-36">
                   <Image
                     src={product.image || "/images/product-image.png"}
                     alt={product.name}
@@ -118,15 +118,15 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
 
                   {/* Discount Badge */}
                   {discountPercentage > 0 && (
-                    <div className="absolute top-0.5 left-0.5 sm:top-1 sm:left-1">
-                      <div className="bg-[#006B51] text-white text-[8px] font-medium py-0 px-0.5 sm:px-1 rounded-sm">
+                    <div className="absolute top-1 left-1 sm:top-1 sm:left-1">
+                      <div className="bg-[#006B51] text-white text-xs sm:text-[8px] font-medium py-0.5 px-1 sm:px-1 rounded-sm">
                         -{discountPercentage}%
                       </div>
                     </div>
                   )}
 
                   {/* Wishlist Button */}
-                  <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1">
+                  <div className="absolute top-1 right-1 sm:top-1 sm:right-1">
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -163,7 +163,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
                       aria-label={productInWishlist ? "Remove from wishlist" : "Add to wishlist"}
                     >
                       {isWishlistLoading ? (
-                        <div className="w-3 h-3 sm:w-4 sm:h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-4 h-4 sm:w-4 sm:h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
                       ) : (
                         <Image
                           src={productInWishlist
@@ -172,7 +172,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
                           alt="Wishlist"
                           width={16}
                           height={16}
-                          className="w-3 h-3 sm:w-4 sm:h-4 cursor-pointer transition-all"
+                          className="w-4 h-4 sm:w-4 sm:h-4 cursor-pointer transition-all"
                         />
                       )}
                     </button>
@@ -181,14 +181,14 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
               </Link>
 
               {/* Product Details */}
-              <div className="p-1 sm:p-1.5 md:p-2 grow shadow-[1px_1px_5px_0px_rgba(0,0,0,0.03)] rounded-md -mt-1.5 sm:-mt-2 mb-1 mx-1 sm:mx-1.5 bg-white relative">
+              <div className="p-2 sm:p-1.5 md:p-2 grow shadow-sm rounded-md -mt-2 sm:-mt-2 mb-1 mx-1 sm:mx-1.5 bg-white relative">
                 <Link href={`/products/${product.id}`}>
-                  <h3 className="text-[#253D4E] text-[10px] sm:text-xs font-semibold leading-tight mb-0.5 line-clamp-1 hover:text-[#006B51] transition-colors">
+                  <h3 className="text-[#253D4E] text-xs sm:text-xs font-semibold leading-tight mb-1 line-clamp-1 hover:text-[#006B51] transition-colors">
                     {product.name}
                   </h3>
                 </Link>
 
-                <div className="mb-0.5">
+                <div className="mb-1">
                   <StarRating
                     rating={product.rating || 4.0}
                     reviewCount={product.reviewCount || 0}
@@ -196,25 +196,25 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
                   />
                 </div>
 
-                <div className="flex justify-between items-center mt-0.5">
+                <div className="flex justify-between items-center mt-1">
                   {discountPercentage > 0 ? (
                     <div>
-                      <span className="text-[#006B51] text-[8px] sm:text-[9px] mr-0.5">{product.category}</span>
+                      <span className="text-[#006B51] text-xs sm:text-[9px] mr-1">{product.category}</span>
                       <div className="mt-0.5">
-                        <span className="text-[#006B51] font-semibold text-[9px] sm:text-[10px]">
+                        <span className="text-[#006B51] font-semibold text-xs sm:text-[10px]">
                           ৳{parseFloat(product.discountPrice || 0).toFixed(2)}
                         </span>
-                        <span className="text-[#ADADAD] font-medium text-[8px] sm:text-[9px] ml-0.5 line-through">
+                        <span className="text-[#ADADAD] font-medium text-[10px] sm:text-[9px] ml-1 line-through">
                           ৳{parseFloat(product.price || 0).toFixed(2)}
                         </span>
                       </div>
                     </div>
                   ) : (
-                    <span className="text-[#006B51] text-[8px] sm:text-[9px]">{product.category}</span>
+                    <span className="text-[#006B51] text-xs sm:text-[9px]">{product.category}</span>
                   )}
 
                   <button
-                    className="bg-[#006B51] text-white text-[8px] font-medium py-0 px-1 sm:px-1.5 rounded-sm flex items-center hover:bg-[#005541] transition-colors"
+                    className="bg-[#006B51] text-white text-xs sm:text-[8px] font-medium py-1 px-2 sm:px-1.5 rounded-sm flex items-center hover:bg-[#005541] transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -229,12 +229,12 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
                     }}
                   >
                     <svg
-                      width="8"
-                      height="8"
+                      width="10"
+                      height="10"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="mr-0.5"
+                      className="mr-1"
                     >
                       <path
                         d="M12 5V19M5 12H19"

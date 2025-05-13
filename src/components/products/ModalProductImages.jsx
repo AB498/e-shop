@@ -36,8 +36,8 @@ const ModalProductImages = ({ product }) => {
   };
 
   return (
-    <div className="w-full md:w-2/5 p-1 sm:p-1.5 md:p-2">
-      <div className="flex gap-1 sm:gap-1.5 md:gap-2">
+    <div className="w-full md:w-2/5 p-2 sm:p-1.5 md:p-2">
+      <div className="flex gap-2 sm:gap-1.5 md:gap-2">
         {/* Thumbnail list */}
         <div className="hidden md:flex flex-col gap-0.5 md:gap-1 w-10 md:w-12">
           {productImages.map((image, index) => (
@@ -70,23 +70,23 @@ const ModalProductImages = ({ product }) => {
               className="object-cover"
             />
             {/* Next/Prev buttons for image gallery */}
-            <div className="absolute bottom-1 right-1 sm:bottom-1.5 sm:right-1.5 md:bottom-2 md:right-2 flex gap-1">
+            <div className="absolute bottom-2 right-2 sm:bottom-1.5 sm:right-1.5 md:bottom-2 md:right-2 flex gap-2">
               {/* Previous button */}
               <div
-                className="bg-white rounded-full p-0.5 sm:p-0.5 md:p-1 shadow-sm cursor-pointer hover:bg-gray-100 transition-colors"
+                className="bg-white rounded-full p-1 sm:p-0.5 md:p-1 shadow-sm cursor-pointer hover:bg-gray-100 transition-colors"
                 onClick={handlePrev}
               >
-                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 transform rotate-180">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 transform rotate-180">
                   <path d="M7.5 15L12.5 10L7.5 5" stroke="#595959" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
 
               {/* Next button */}
               <div
-                className="bg-white rounded-full p-0.5 sm:p-0.5 md:p-1 shadow-sm cursor-pointer hover:bg-gray-100 transition-colors"
+                className="bg-white rounded-full p-1 sm:p-0.5 md:p-1 shadow-sm cursor-pointer hover:bg-gray-100 transition-colors"
                 onClick={handleNext}
               >
-                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3">
                   <path d="M7.5 15L12.5 10L7.5 5" stroke="#595959" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>

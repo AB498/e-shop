@@ -56,7 +56,7 @@ function processProductData(rows) {
 
     // Set a reasonable price (between 9.99 and 29.99)
     let productPrice = 9.99;
-    if (price && !isNaN(parseFloat(price)) && parseFloat(price) < 100) {
+    if (price && !isNaN(parseFloat(price))) {
       productPrice = parseFloat(price);
     } else {
       // Generate a random price between 9.99 and 29.99

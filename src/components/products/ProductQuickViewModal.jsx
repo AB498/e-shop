@@ -68,21 +68,21 @@ const ProductQuickViewModal = () => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen p-1 sm:p-2 md:p-3">
+      <div className="flex items-center justify-center min-h-screen p-2 sm:p-2 md:p-3">
         {/* Backdrop */}
         <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={closeQuickView}></div>
 
         {/* Modal Container */}
         <div className="relative w-full max-w-[95%] sm:max-w-[80%] md:max-w-3xl lg:max-w-4xl mx-auto">
           {/* Modal Content */}
-          <div className="flex flex-col bg-[#E0DCD6] rounded-md overflow-hidden relative p-1 sm:p-1.5 md:p-2">
+          <div className="flex flex-col bg-[#E0DCD6] rounded-md overflow-hidden relative p-2 sm:p-1.5 md:p-2">
             {/* Close button */}
-            <div className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 md:top-2 md:right-2 z-10">
+            <div className="absolute top-2 right-2 sm:top-1.5 sm:right-1.5 md:top-2 md:right-2 z-10">
               <button
                 onClick={closeQuickView}
-                className="bg-white rounded-full p-0.5 sm:p-1 shadow-sm hover:bg-gray-100 transition-colors"
+                className="bg-white rounded-full p-1 sm:p-1 shadow-sm hover:bg-gray-100 transition-colors"
               >
-                <svg width="10" height="10" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M1 1L13 13M1 13L13 1" stroke="#666666" strokeWidth="1.5" strokeLinecap="round"/>
                 </svg>
               </button>
@@ -109,7 +109,7 @@ const ProductQuickViewModal = () => {
               />
             </div>
 
-            <div className="w-full p-1 sm:p-1.5 md:p-2">
+            <div className="w-full p-2 sm:p-1.5 md:p-2">
               {/* Related Products Section - Spans full width */}
               <RelatedProducts
                 products={relatedProducts}
