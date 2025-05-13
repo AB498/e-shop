@@ -165,7 +165,7 @@ const DealsOfTheDay = () => {
       {/* Deals Row */}
       <div ref={scrollContainerRef} className="flex flex-nowrap overflow-x-auto gap-2 sm:gap-3 md:gap-4 pb-2 scrollbar-hide">
         {displayProducts.map((product, index) => (
-          <div key={product.id || index} className="bg-white rounded-md overflow-hidden shadow-md hover:shadow-md transition-shadow flex flex-col w-[140px] sm:w-[160px] md:w-[180px] flex-shrink-0">
+          <div key={product.id || index} className="bg-white rounded-md overflow-hidden shadow-md hover:shadow-md transition-shadow flex flex-col basis-1/2 sm:basis-1/4 max-w-[240px] flex-shrink-0">
             {/* Product Image */}
             <Link href={`/products/${product.id}`}>
               <div className="relative h-32 xs:h-36 sm:h-40">
@@ -199,7 +199,7 @@ const DealsOfTheDay = () => {
             </Link>
 
             {/* Product Details */}
-            <div className="p-1.5 sm:p-2 grow shadow-sm rounded-md -mt-2 sm:-mt-3 mb-2 mx-1.5 sm:mx-2 bg-white relative">
+            <div className="p-1.5 sm:p-2 grow shadow-md rounded-md -mt-2 sm:-mt-3 mb-2 mx-1.5 sm:mx-2 bg-white relative">
               <Link href={`/products/${product.id}`}>
                 <h3 className="text-[#253D4E] text-xs sm:text-sm font-semibold leading-tight mb-0.5 sm:mb-1 line-clamp-1 overflow-ellipsis">
                   {product.name}

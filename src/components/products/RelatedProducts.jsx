@@ -49,7 +49,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-md p-2 xs:p-3 md:p-4 text-center shadow-sm">
+        <div className="bg-white rounded-md p-2 xs:p-3 md:p-4 text-center shadow-md">
           <p className="text-[#7E7E7E] text-[10px] xs:text-xs md:text-sm">No related products found.</p>
         </div>
       </div>
@@ -104,7 +104,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
           const discountPercentage = Math.round((1 - (parseFloat(product.discountPrice || 0) / parseFloat(product.price || 1))) * 100);
 
           return (
-            <div key={product.id} className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col w-full">
+            <div key={product.id} className="bg-white rounded-md overflow-hidden shadow-md hover:shadow-md transition-shadow flex flex-col w-full">
               {/* Product Image */}
               <Link href={`/products/${product.id}`}>
                 <div className="relative h-28 xs:h-32 sm:h-36">
@@ -181,7 +181,7 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
               </Link>
 
               {/* Product Details */}
-              <div className="p-1.5 xs:p-2 sm:p-1.5 md:p-2 grow shadow-sm rounded-md -mt-1 xs:-mt-2 mb-1 mx-1 bg-white relative">
+              <div className="p-1.5 xs:p-2 sm:p-1.5 md:p-2 grow shadow-md rounded-md -mt-1 xs:-mt-2 mb-1 mx-1 bg-white relative">
                 <Link href={`/products/${product.id}`}>
                   <h3 className="text-[#253D4E] text-[10px] xs:text-xs font-semibold leading-tight mb-1 line-clamp-1 hover:text-[#006B51] transition-colors">
                     {product.name}

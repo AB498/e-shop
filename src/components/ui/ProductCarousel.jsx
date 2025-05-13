@@ -167,7 +167,7 @@ export default function ProductCarousel({
       {/* Section title */}
       {(title || icon) && (
         <div className="container mx-auto px-2 sm:px-3">
-          <div className="flex items-center mb-2 sm:mb-3 relative">
+          <div className="flex items-center relative">
             <div className="flex items-center gap-1 sm:gap-2">
               {icon && (
                 <img
