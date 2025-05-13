@@ -37,7 +37,7 @@ const ProductCard = ({ product, showAddToCart = true }) => {
 
         {discountPercentage > 0 && (
           <div className="absolute top-0.5 left-0.5 md:top-1 md:left-1">
-            <div className="bg-[#006B51] text-white text-responsive-xs font-semibold py-0 px-0.5 md:py-0 md:px-1 rounded-[4px] text-[8px] xs:text-[9px]">
+            <div className="bg-[#006B51] text-white text-responsive-xs font-semibold py-0 px-0.5 md:py-0 md:px-1 rounded-[4px] text-[10px] xs:text-[11px] md:text-xs">
               -{discountPercentage}%
             </div>
           </div>
@@ -80,9 +80,9 @@ const ProductCard = ({ product, showAddToCart = true }) => {
             aria-label={productInWishlist ? "Remove from wishlist" : "Add to wishlist"}
           >
             {isWishlistLoading ? (
-              <div className="w-3 h-3 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
             ) : (
-              <div className="w-3 h-3 relative">
+              <div className="w-4 h-4 relative">
                 <Image
                   src={productInWishlist
                     ? "/images/wishlist/wishlist-icon-filled.svg"
@@ -98,34 +98,34 @@ const ProductCard = ({ product, showAddToCart = true }) => {
       </div>
 
       <div className="text-center px-0.5 md:px-1">
-        <div className="text-[#A9A9A9] text-[8px] xs:text-[9px] font-semibold uppercase mb-0.5">
+        <div className="text-[#A9A9A9] text-[10px] xs:text-[11px] md:text-xs font-semibold uppercase mb-0.5">
           {category}
         </div>
 
         <Link href={`/products/${id}`}>
-          <h3 className="text-[#3F3F3F] text-[10px] sm:text-[11px] md:text-xs font-semibold mb-0.5 hover:text-[#006B51] transition-colors line-clamp-2 h-[2.4em] md:h-[2.6em]">
+          <h3 className="text-[#3F3F3F] text-[12px] sm:text-[13px] md:text-sm font-semibold mb-0.5 hover:text-[#006B51] transition-colors line-clamp-2 h-[2.4em] md:h-[2.6em]">
             {name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-center space-x-0.5 mb-1 md:mb-1.5">
           {discountPrice !== price && (
-            <span className="text-[#E12625] text-[8px] xs:text-[9px] md:text-[10px] line-through">৳{parseFloat(price).toFixed(2)}</span>
+            <span className="text-[#E12625] text-[10px] xs:text-[11px] md:text-xs line-through">৳{parseFloat(price).toFixed(2)}</span>
           )}
-          <span className="text-[#006B51] text-[9px] sm:text-[10px] md:text-xs font-medium">৳{parseFloat(discountPrice).toFixed(2)}</span>
+          <span className="text-[#006B51] text-[11px] sm:text-[12px] md:text-sm font-medium">৳{parseFloat(discountPrice).toFixed(2)}</span>
         </div>
 
         {showAddToCart && (
           <button
             onClick={() => addToCart(product, 1)}
-            className="bg-[#006B51] text-white font-semibold rounded-md md:rounded-lg flex items-center justify-center w-full hover:bg-[#005541] transition-colors py-0.5 px-1 md:px-1.5 text-[8px] xs:text-[9px] md:text-[10px]"
+            className="bg-[#006B51] text-white font-semibold rounded-md md:rounded-lg flex items-center justify-center w-full hover:bg-[#005541] transition-colors py-0.5 px-1 md:px-1.5 text-[10px] xs:text-[11px] md:text-xs"
           >
             <Image
               src="/images/products/cart-icon.png"
               alt="Cart"
-              width={10}
-              height={10}
-              className="mr-0.5 w-2 h-2 md:w-2.5 md:h-2.5"
+              width={12}
+              height={12}
+              className="mr-0.5 w-3 h-3 md:w-3.5 md:h-3.5"
             />
             <span>Add To Cart</span>
           </button>
