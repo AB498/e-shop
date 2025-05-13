@@ -80,8 +80,7 @@ function SuccessContent() {
         </div>
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }
@@ -103,8 +102,7 @@ function SuccessPageSkeleton() {
           </div>
         </div>
       </div>
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

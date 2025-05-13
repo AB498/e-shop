@@ -70,8 +70,7 @@ export default async function AuthErrorPage({ searchParams }) {
         </div>
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

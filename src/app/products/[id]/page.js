@@ -15,8 +15,7 @@ export default async function ProductDetailPage({ params }) {
     <div className="min-h-screen flex flex-col">
       
       <ProductDetail productId={id} />
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

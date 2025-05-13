@@ -57,8 +57,7 @@ export default function CartPage() {
         <DealsOfTheDay />
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

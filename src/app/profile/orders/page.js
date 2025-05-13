@@ -49,8 +49,7 @@ export default async function OrdersPage() {
         <ProfileContent user={session.user} defaultTab="orders" />
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

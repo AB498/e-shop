@@ -132,8 +132,7 @@ function CancelledContent() {
         </div>
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }
@@ -155,8 +154,7 @@ function CancelledPageSkeleton() {
           </div>
         </div>
       </div>
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

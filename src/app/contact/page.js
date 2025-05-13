@@ -34,8 +34,7 @@ export default function ContactPage() {
       <ResponsiveContainer>
         <NewsletterSection />
       </ResponsiveContainer>
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

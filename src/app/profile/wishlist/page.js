@@ -51,8 +51,7 @@ export default function ProfileWishlistPage() {
         )}
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

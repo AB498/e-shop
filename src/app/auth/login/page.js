@@ -48,8 +48,7 @@ export default async function LoginPage({ searchParams }) {
 
       <BottomBanner />
       
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

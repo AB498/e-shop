@@ -49,8 +49,7 @@ export default async function ProfilePage() {
         <ProfileContent user={session.user} />
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

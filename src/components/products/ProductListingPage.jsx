@@ -76,8 +76,7 @@ export default async function ProductListingPage({ searchParams }) {
 
       <BottomBanner />
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

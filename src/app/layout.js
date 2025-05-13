@@ -10,6 +10,8 @@ import { Toaster } from "react-hot-toast";
 import Navigation from "@/components/layout/Navigation";
 import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
 import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
+import Footer from "@/components/layout/Footer";
+import Copyright from "@/components/layout/Copyright";
 
 export const dynamic = 'force-dynamic';
 
@@ -46,6 +48,8 @@ export default function RootLayout({ children }) {
                     <AuthProvider />
                     <Navigation />
                     {children}
+                    <Footer />
+                    <Copyright />
                   </div>
                 </div>
                 <Toaster position="top-center" />

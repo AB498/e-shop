@@ -64,7 +64,6 @@ const Navigation = () => {
                   alt="Thai Bangla Logo"
                   fill
                   className="object-contain"
-                  priority
                 />
               </div>
             </Link>
@@ -151,7 +150,7 @@ const Navigation = () => {
                 src="/images/logo.png"
                 alt="Thai Bangla Logo"
                 className="w-full h-full object-contain"
-                priority
+                
               />
             </div>
           </Link>
@@ -208,9 +207,9 @@ const Navigation = () => {
           </div>
 
           {/* Cart */}
-          <Link href="/cart" className="relative cursor-pointer flex-shrink-0">
-            <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#006B51] flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 lg:w-5 lg:h-5">
+          <Link href="/cart" className="relative flex cursor-pointer flex-shrink-0">
+            <div className="p-1.5 cursor-pointer rounded-full bg-[#006B51] flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 lg:w-5 lg:h-5">
                 <circle cx="9" cy="21" r="1"></circle>
                 <circle cx="20" cy="21" r="1"></circle>
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>

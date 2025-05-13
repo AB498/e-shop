@@ -132,8 +132,7 @@ function FailedContent() {
         </div>
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }
@@ -155,8 +154,7 @@ function FailedPageSkeleton() {
           </div>
         </div>
       </div>
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

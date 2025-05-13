@@ -55,8 +55,7 @@ function ErrorContent() {
         </div>
       </div>
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }
@@ -78,8 +77,7 @@ function ErrorPageSkeleton() {
           </div>
         </div>
       </div>
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

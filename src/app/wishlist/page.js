@@ -119,8 +119,7 @@ export default function WishlistPage() {
 
       <BottomBanner />
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

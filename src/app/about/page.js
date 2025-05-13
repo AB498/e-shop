@@ -59,8 +59,7 @@ export default function AboutPage() {
       </main>
 
       {/* Footer with Newsletter */}
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

@@ -39,8 +39,7 @@ export default function RegisterPage() {
 
       <BottomBanner />
 
-      <Footer />
-      <Copyright />
+      
     </div>
   );
 }

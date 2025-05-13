@@ -64,11 +64,6 @@ export default function LandingPage({ featuredCarouselComponent, weeklyDealsComp
 
                 {/* Product Quick View Modal */}
             </div>
-            {/* Footer */}
-            <Footer />
-
-            {/* Copyright */}
-            <Copyright />
         </>
     );
 }

@@ -1,6 +1,12 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+
 const Copyright = () => {
+  const pathname = usePathname();
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
   return (
     <div className="w-full bg-[#BC0000] text-white">
       <div className="container mx-auto px-3 py-3">

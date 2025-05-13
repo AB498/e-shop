@@ -1,6 +1,12 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+
 const Footer = () => {
+   const pathname = usePathname();
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
   return (
     <footer className="relative w-full text-white">
       {/* Background Image */}
@@ -21,7 +27,7 @@ const Footer = () => {
           {/* Column 1 - Logo and Contact */}
           <div className="lg:col-span-2">
             <img
-              src="/images/footer/logo.png"
+              src="/images/logo.png"
               alt="Thai Bangla Store"
               className="h-12 mb-3"
             />

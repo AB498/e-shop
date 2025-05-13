@@ -238,40 +238,40 @@ export default function CheckoutPage() {
 
 
       {/* Breadcrumb */}
-      <div className="container mx-auto px-4 py-4 border-b border-[#ECECEC]">
-        <div className="flex items-center space-x-2">
-          <Link href="/" className="text-[#3BB77E] font-semibold text-sm uppercase flex items-center">
-            <Image src="/images/breadcrumb/home-icon.svg" alt="Home" width={14} height={14} className="mr-1" />
+      <div className="container mx-auto px-3 py-2 border-b border-[#ECECEC]">
+        <div className="flex items-center space-x-1">
+          <Link href="/" className="text-[#3BB77E] font-semibold text-xs uppercase flex items-center">
+            <Image src="/images/breadcrumb/home-icon.svg" alt="Home" width={12} height={12} className="mr-1" />
             Home
           </Link>
-          <Image src="/images/breadcrumb/arrow-icon.svg" alt=">" width={3} height={6} className="mx-2" />
-          <Link href="/cart" className="text-[#3BB77E] font-semibold text-sm uppercase">
+          <Image src="/images/breadcrumb/arrow-icon.svg" alt=">" width={3} height={6} className="mx-1" />
+          <Link href="/cart" className="text-[#3BB77E] font-semibold text-xs uppercase">
             Cart
           </Link>
-          <Image src="/images/breadcrumb/arrow-icon.svg" alt=">" width={3} height={6} className="mx-2" />
-          <span className="text-[#7E7E7E] font-semibold text-sm uppercase">Checkout</span>
+          <Image src="/images/breadcrumb/arrow-icon.svg" alt=">" width={3} height={6} className="mx-1" />
+          <span className="text-[#7E7E7E] font-semibold text-xs uppercase">Checkout</span>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-[#253D4E] mb-8">Checkout</h1>
+      <div className="container mx-auto px-3 py-5">
+        <h1 className="text-2xl font-bold text-[#253D4E] mb-4">Checkout</h1>
 
         {errors.submit && (
-          <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
+          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">
             {errors.submit}
           </div>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* Checkout Form */}
           <div className="flex-1">
-            <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-6 border border-[rgba(0,0,0,0.1)]">
-              <h2 className="text-xl font-semibold text-[#253D4E] mb-6">Shipping Information</h2>
+            <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-4 border border-[rgba(0,0,0,0.1)]">
+              <h2 className="text-lg font-semibold text-[#253D4E] mb-3">Shipping Information</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* First Name */}
                 <div>
-                  <label htmlFor="firstName" className="block text-[#444444] mb-2">
+                  <label htmlFor="firstName" className="block text-[#444444] text-sm mb-1">
                     First Name*
                   </label>
                   <input
@@ -281,16 +281,16 @@ export default function CheckoutPage() {
                     value={formData.firstName}
                     onChange={handleChange}
                     placeholder="Enter Your First Name"
-                    className={`w-full p-3 border ${errors.firstName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.firstName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.firstName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
                   )}
                 </div>
 
                 {/* Last Name */}
                 <div>
-                  <label htmlFor="lastName" className="block text-[#444444] mb-2">
+                  <label htmlFor="lastName" className="block text-[#444444] text-sm mb-1">
                     Last Name*
                   </label>
                   <input
@@ -300,16 +300,16 @@ export default function CheckoutPage() {
                     value={formData.lastName}
                     onChange={handleChange}
                     placeholder="Enter Your Last Name"
-                    className={`w-full p-3 border ${errors.lastName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.lastName ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.lastName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
                   )}
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-[#444444] mb-2">
+                  <label htmlFor="email" className="block text-[#444444] text-sm mb-1">
                     Email*
                   </label>
                   <input
@@ -319,16 +319,16 @@ export default function CheckoutPage() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Enter Your Email"
-                    className={`w-full p-3 border ${errors.email ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.email ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.email}</p>
                   )}
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label htmlFor="phone" className="block text-[#444444] mb-2">
+                  <label htmlFor="phone" className="block text-[#444444] text-sm mb-1">
                     Phone*
                   </label>
                   <input
@@ -338,10 +338,10 @@ export default function CheckoutPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Enter Your Phone Number (e.g., 01712345678)"
-                    className={`w-full p-3 border ${errors.phone ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.phone ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.phone && (
-                    <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
                   )}
                   {formData.country === 'Bangladesh' && (
                     <p className="text-gray-500 text-xs mt-1">For Bangladesh, please enter a number starting with 01 (e.g., 01712345678)</p>
@@ -350,7 +350,7 @@ export default function CheckoutPage() {
 
                 {/* Address */}
                 <div className="md:col-span-2">
-                  <label htmlFor="address" className="block text-[#444444] mb-2">
+                  <label htmlFor="address" className="block text-[#444444] text-sm mb-1">
                     Address*
                   </label>
                   <input
@@ -360,16 +360,16 @@ export default function CheckoutPage() {
                     value={formData.address}
                     onChange={handleChange}
                     placeholder="Enter Your Address"
-                    className={`w-full p-3 border ${errors.address ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.address ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.address && (
-                    <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.address}</p>
                   )}
                 </div>
 
                 {/* City */}
                 <div>
-                  <label htmlFor="city" className="block text-[#444444] mb-2">
+                  <label htmlFor="city" className="block text-[#444444] text-sm mb-1">
                     City*
                   </label>
                   <input
@@ -379,16 +379,16 @@ export default function CheckoutPage() {
                     value={formData.city}
                     onChange={handleChange}
                     placeholder="Enter Your City"
-                    className={`w-full p-3 border ${errors.city ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.city ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.city && (
-                    <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.city}</p>
                   )}
                 </div>
 
                 {/* Post Code */}
                 <div>
-                  <label htmlFor="postCode" className="block text-[#444444] mb-2">
+                  <label htmlFor="postCode" className="block text-[#444444] text-sm mb-1">
                     Post Code*
                   </label>
                   <input
@@ -398,16 +398,16 @@ export default function CheckoutPage() {
                     value={formData.postCode}
                     onChange={handleChange}
                     placeholder="Enter Your Post Code"
-                    className={`w-full p-3 border ${errors.postCode ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.postCode ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.postCode && (
-                    <p className="text-red-500 text-sm mt-1">{errors.postCode}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.postCode}</p>
                   )}
                 </div>
 
                 {/* Country */}
                 <div>
-                  <label htmlFor="country" className="block text-[#444444] mb-2">
+                  <label htmlFor="country" className="block text-[#444444] text-sm mb-1">
                     Country*
                   </label>
                   <select
@@ -415,7 +415,7 @@ export default function CheckoutPage() {
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
-                    className={`w-full p-3 border ${errors.country ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.country ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   >
                     <option value="Bangladesh">Bangladesh</option>
                     <option value="Thailand">Thailand</option>
@@ -423,13 +423,13 @@ export default function CheckoutPage() {
                     <option value="Other">Other</option>
                   </select>
                   {errors.country && (
-                    <p className="text-red-500 text-sm mt-1">{errors.country}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.country}</p>
                   )}
                 </div>
 
                 {/* Area */}
                 <div>
-                  <label htmlFor="area" className="block text-[#444444] mb-2">
+                  <label htmlFor="area" className="block text-[#444444] text-sm mb-1">
                     Area/Zone*
                   </label>
                   <input
@@ -439,17 +439,17 @@ export default function CheckoutPage() {
                     value={formData.area}
                     onChange={handleChange}
                     placeholder="Enter Your Area or Zone (min 10 characters)"
-                    className={`w-full p-3 border ${errors.area ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]`}
+                    className={`w-full p-2 text-sm border ${errors.area ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.area && (
-                    <p className="text-red-500 text-sm mt-1">{errors.area}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.area}</p>
                   )}
                   <p className="text-gray-500 text-xs mt-1">Please provide a detailed area description with at least 10 characters for accurate delivery.</p>
                 </div>
 
                 {/* Landmark */}
                 <div>
-                  <label htmlFor="landmark" className="block text-[#444444] mb-2">
+                  <label htmlFor="landmark" className="block text-[#444444] text-sm mb-1">
                     Landmark (Optional)
                   </label>
                   <input
@@ -459,13 +459,13 @@ export default function CheckoutPage() {
                     value={formData.landmark}
                     onChange={handleChange}
                     placeholder="Nearby landmark for easier delivery"
-                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
+                    className="w-full p-2 text-sm border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]"
                   />
                 </div>
 
                 {/* Special Instructions */}
                 <div className="md:col-span-2">
-                  <label htmlFor="specialInstructions" className="block text-[#444444] mb-2">
+                  <label htmlFor="specialInstructions" className="block text-[#444444] text-sm mb-1">
                     Special Instructions (Optional)
                   </label>
                   <textarea
@@ -474,16 +474,16 @@ export default function CheckoutPage() {
                     value={formData.specialInstructions}
                     onChange={handleChange}
                     placeholder="Any special instructions for delivery"
-                    rows="3"
-                    className="w-full p-3 border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-2 focus:ring-[#3BB77E]"
+                    rows="2"
+                    className="w-full p-2 text-sm border border-[#E9E9E9] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]"
                   ></textarea>
                 </div>
               </div>
 
-              <div className="mt-8">
-                <h2 className="text-xl font-semibold text-[#253D4E] mb-6">Payment Method</h2>
+              <div className="mt-5">
+                <h2 className="text-lg font-semibold text-[#253D4E] mb-3">Payment Method</h2>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex items-center">
                     <input
                       type="radio"
@@ -492,19 +492,19 @@ export default function CheckoutPage() {
                       value="sslcommerz"
                       checked={formData.paymentMethod === 'sslcommerz'}
                       onChange={handleChange}
-                      className="h-5 w-5 text-[#3BB77E] focus:ring-[#3BB77E]"
+                      className="h-4 w-4 text-[#3BB77E] focus:ring-[#3BB77E]"
                     />
-                    <label htmlFor="sslcommerz" className="ml-3 block text-[#444444]">
+                    <label htmlFor="sslcommerz" className="ml-2 block text-[#444444]">
                       <div className="flex items-center">
-                        <span className="font-medium">SSL Commerz</span>
-                        <div className="ml-4 flex space-x-2">
-                          <img src="/images/footer/payment-1.png" alt="Visa" className="h-6" />
-                          <img src="/images/footer/payment-2.png" alt="Mastercard" className="h-6" />
-                          <img src="/images/footer/payment-3.png" alt="American Express" className="h-6" />
-                          <img src="/images/footer/payment-4.png" alt="Other Cards" className="h-6" />
+                        <span className="font-medium text-sm">SSL Commerz</span>
+                        <div className="ml-3 flex space-x-1">
+                          <img src="/images/footer/payment-1.png" alt="Visa" className="h-5" />
+                          <img src="/images/footer/payment-2.png" alt="Mastercard" className="h-5" />
+                          <img src="/images/footer/payment-3.png" alt="American Express" className="h-5" />
+                          <img src="/images/footer/payment-4.png" alt="Other Cards" className="h-5" />
                         </div>
                       </div>
-                      <p className="text-sm text-[#7E7E7E] mt-1">
+                      <p className="text-xs text-[#7E7E7E] mt-1">
                         Pay securely with credit/debit card, mobile banking, or internet banking through SSL Commerz.
                       </p>
                     </label>
@@ -518,18 +518,18 @@ export default function CheckoutPage() {
                       value="cod"
                       checked={formData.paymentMethod === 'cod'}
                       onChange={handleChange}
-                      className="h-5 w-5 text-[#3BB77E] focus:ring-[#3BB77E]"
+                      className="h-4 w-4 text-[#3BB77E] focus:ring-[#3BB77E]"
                     />
-                    <label htmlFor="cod" className="ml-3 block text-[#444444]">
+                    <label htmlFor="cod" className="ml-2 block text-[#444444]">
                       <div className="flex items-center">
-                        <span className="font-medium">Cash on Delivery</span>
-                        <div className="ml-4 flex space-x-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#3BB77E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <span className="font-medium text-sm">Cash on Delivery</span>
+                        <div className="ml-3 flex space-x-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#3BB77E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
                           </svg>
                         </div>
                       </div>
-                      <p className="text-sm text-[#7E7E7E] mt-1">
+                      <p className="text-xs text-[#7E7E7E] mt-1">
                         Pay with cash when your order is delivered. Available for all areas served by our delivery partners.
                       </p>
                     </label>
@@ -537,15 +537,15 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="mt-8">
+              <div className="mt-5">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full bg-[#006B51] text-white font-semibold py-4 rounded-full flex items-center justify-center ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#005541] transition-colors'}`}
+                  className={`w-full bg-[#006B51] text-white font-medium py-3 text-sm rounded-full flex items-center justify-center ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#005541] transition-colors'}`}
                 >
                   {isSubmitting ? (
                     <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -557,8 +557,8 @@ export default function CheckoutPage() {
                       <Image
                         src="/images/cart/arrow-right-icon.svg"
                         alt="Checkout"
-                        width={16}
-                        height={16}
+                        width={14}
+                        height={14}
                         className="ml-2"
                       />
                     </>
@@ -570,13 +570,13 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="lg:w-1/3">
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-[rgba(0,0,0,0.1)]">
-              <h2 className="text-xl font-semibold text-[#253D4E] mb-6">Order Summary</h2>
+            <div className="bg-white rounded-lg shadow-sm p-4 border border-[rgba(0,0,0,0.1)]">
+              <h2 className="text-lg font-semibold text-[#253D4E] mb-3">Order Summary</h2>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-3 mb-4">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex items-start gap-3">
-                    <div className="relative overflow-hidden w-16 h-16 bg-[#F0EEED] rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div key={item.id} className="flex items-start gap-2">
+                    <div className="relative overflow-hidden w-12 h-12 bg-[#F0EEED] rounded-md flex items-center justify-center flex-shrink-0">
                       <Image
                         src={item.image || "/images/product-image.png"}
                         alt={item.name}
@@ -585,35 +585,35 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-[#253D4E] font-medium">{item.name}</h3>
-                      <p className="text-[#7E7E7E] text-sm">{item.quantity} × ৳{parseFloat(item.price).toFixed(2)}</p>
+                      <h3 className="text-[#253D4E] font-medium text-sm">{item.name}</h3>
+                      <p className="text-[#7E7E7E] text-xs">{item.quantity} × ৳{parseFloat(item.price).toFixed(2)}</p>
                     </div>
-                    <div className="text-[#3BB77E] font-semibold">
+                    <div className="text-[#3BB77E] font-semibold text-sm">
                       ৳{(parseFloat(item.price) * item.quantity).toFixed(2)}
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="border-t border-[#ECECEC] pt-4 space-y-3">
+              <div className="border-t border-[#ECECEC] pt-3 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-[#7E7E7E]">Subtotal</span>
-                  <span className="text-[#253D4E] font-semibold">৳{subtotal.toFixed(2)}</span>
+                  <span className="text-[#7E7E7E] text-sm">Subtotal</span>
+                  <span className="text-[#253D4E] font-medium text-sm">৳{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#7E7E7E]">Discount (20%)</span>
-                  <span className="text-[#3BB77E] font-semibold">-৳{discountAmount.toFixed(2)}</span>
+                  <span className="text-[#7E7E7E] text-sm">Discount (20%)</span>
+                  <span className="text-[#3BB77E] font-medium text-sm">-৳{discountAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#7E7E7E]">Delivery Fee</span>
-                  <span className="text-[#253D4E] font-semibold">৳{deliveryFee.toFixed(2)}</span>
+                  <span className="text-[#7E7E7E] text-sm">Delivery Fee</span>
+                  <span className="text-[#253D4E] font-medium text-sm">৳{deliveryFee.toFixed(2)}</span>
                 </div>
               </div>
 
-              <div className="border-t border-[#ECECEC] mt-4 pt-4">
+              <div className="border-t border-[#ECECEC] mt-3 pt-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#253D4E] font-semibold">Total</span>
-                  <span className="text-[#3BB77E] font-bold text-xl">৳{total.toFixed(2)}</span>
+                  <span className="text-[#253D4E] font-medium text-sm">Total</span>
+                  <span className="text-[#3BB77E] font-bold text-lg">৳{total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -621,8 +621,7 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <Footer />
-      <Copyright />
+
     </div>
   );
 }
