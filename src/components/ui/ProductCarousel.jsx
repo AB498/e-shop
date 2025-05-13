@@ -121,17 +121,29 @@ export default function ProductCarousel({
     },
   }
 }) {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const prevRefRow1 = useRef(null);
+  const nextRefRow1 = useRef(null);
+  const prevRefRow2 = useRef(null);
+  const nextRefRow2 = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { openQuickView } = useProductQuickView();
   const pathname = usePathname();
+
+  // Split products into two rows
+  const splitProducts = () => {
+    if (!products.length) return [[], []];
+    const midpoint = Math.ceil(products.length / 2);
+    return [products.slice(0, midpoint), products.slice(midpoint)];
+  };
+
+  const [firstRowProducts, secondRowProducts] = splitProducts();
 
   // Check if we're on the landing page
   const isLandingPage = pathname === "/";
 
-  // Check if we have enough products to enable swiping
-  const enableSwiping = products.length > 1;
+  // Check if we have enough products to enable swiping for each row
+  const enableSwipingRow1 = firstRowProducts.length > 1;
+  const enableSwipingRow2 = secondRowProducts.length > 1;
 
   // Set loading to false after Swiper is initialized
   useEffect(() => {
@@ -167,7 +179,7 @@ export default function ProductCarousel({
       {/* Section title */}
       {(title || icon) && (
         <div className="container mx-auto px-2 sm:px-3">
-          <div className="flex items-center relative">
+          <div className="flex items-center mb-2 sm:mb-3 relative">
             <div className="flex items-center gap-1 sm:gap-2">
               {icon && (
                 <img
@@ -189,159 +201,292 @@ export default function ProductCarousel({
           <p className="text-gray-500 text-sm sm:text-base">No products found.</p>
         </div>
       ) : (
-        <div className={`relative carousel-container overflow-visible ${!enableSwiping ? 'px-4 sm:container sm:mx-auto' : ''}`}>
-          {/* Navigation Arrows - Positioned on the edges with 50% offset */}
+        <div className="space-y-4">
+          {/* First Row */}
+          {firstRowProducts.length > 0 && (
+            <div className={`relative carousel-container overflow-visible ${!enableSwipingRow1 ? 'px-4 sm:container sm:mx-auto' : ''}`}>
+              {/* Navigation Arrows - First Row */}
+              {enableSwipingRow1 && (
+                <>
+                  <div className="absolute top-1/2 transform -translate-x-1/3 -translate-y-full z-10 hidden sm:block">
+                    <button
+                      ref={prevRefRow1}
+                      className="bg-white left-0 rounded-sm p-1 sm:p-1.5 shadow-sm hover:bg-gray-50 transition-colors"
+                      aria-label="Previous slide"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                  </div>
 
+                  <div className="absolute right-0 top-1/2 transform translate-x-1/3 -translate-y-full z-10 hidden sm:block">
+                    <button
+                      ref={nextRefRow1}
+                      className="bg-white rounded-sm p-1 sm:p-1.5 shadow-md hover:bg-gray-50 transition-colors"
+                      aria-label="Next slide"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </>
+              )}
 
-          {enableSwiping && (
-            <>
-              <div className="absolute top-1/2 transform -translate-x-1/3 -translate-y-full z-10 hidden sm:block">
-                <button
-                  ref={prevRef}
-                  className="bg-white left-0 rounded-sm p-1 sm:p-1.5 shadow-sm hover:bg-gray-50 transition-colors"
-                  aria-label="Previous slide"
+              <div className={`overflow-hidden ${!enableSwipingRow1 ? 'w-full' : ''}`}>
+                <Swiper
+                  modules={[Navigation, Pagination, A11y]}
+                  spaceBetween={18}
+                  slidesPerView="auto"
+                  navigation={{
+                    prevEl: prevRefRow1.current,
+                    nextEl: nextRefRow1.current,
+                  }}
+                  pagination={enableSwipingRow1 ? {
+                    clickable: true,
+                    dynamicBullets: true,
+                    dynamicMainBullets: 1
+                  } : false}
+                  onInit={(swiper) => {
+                    // Override navigation after swiper initialization
+                    swiper.params.navigation.prevEl = prevRefRow1.current;
+                    swiper.params.navigation.nextEl = nextRefRow1.current;
+                    swiper.navigation.init();
+                    swiper.navigation.update();
+                  }}
+                  className={`px-2 sm:px-0 overflow-visible py-4`}
+                  loop={false}
+                  loopFillGroupWithBlank={false}
+                  slidesPerGroupAuto={true}
+                  rewind={false}
+                  allowTouchMove={enableSwipingRow1}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              </div>
+                  {firstRowProducts.map((product) => (
+                    <SwiperSlide key={product.id} className={`${enableSwipingRow1 ? '!w-[calc(40vw-16px)] sm:!w-[calc(25vw-16px)] md:!w-[calc(20vw-16px)] lg:!w-[calc(12.666vw-16px)] xl:!w-[calc(10.285vw-16px)] 2xl:!w-[calc(8.5vw-16px)]' : 'w-full sm:max-w-[220px] mx-auto'}`}>
+                      <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[280px]">
+                        {/* Product Image with Link or Quick View */}
+                        {isLandingPage ? (
+                          <div
+                            className="block cursor-pointer"
+                            onClick={() => openQuickView(product)}
+                          >
+                            <div className="aspect-square relative">
+                              <Image
+                                src={product.image || "/images/product-image.png"}
+                                alt={product.name}
+                                width={140}
+                                height={140}
+                                className="w-full h-full object-cover rounded-[4px] sm:rounded-[6px] transition-transform duration-300 hover:scale-105"
+                              />
 
-              <div className="absolute right-0 top-1/2 transform translate-x-1/3 -translate-y-full z-10 hidden sm:block">
-                <button
-                  ref={nextRef}
-                  className="bg-white rounded-sm p-1 sm:p-1.5 shadow-md hover:bg-gray-50 transition-colors"
-                  aria-label="Next slide"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+                              {/* Quick view overlay */}
+                              <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                                <span className="bg-white text-black px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full font-medium text-[8px] sm:text-[10px]">View</span>
+                              </div>
+
+                              {/* Discount tag */}
+                              <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
+                                <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
+                                  -10%
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <Link href={`/products/${product.id}`} className="block">
+                            <div className="aspect-square relative">
+                              <Image
+                                src={product.image || "/images/product-image.png"}
+                                alt={product.name}
+                                width={220}
+                                height={220}
+                                className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
+                              />
+
+                              {/* Discount tag */}
+                              <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+                                <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
+                                  -10%
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        )}
+
+                        {/* Wishlist icon */}
+                        <div className="absolute top-0.5 sm:top-1 right-0.5 sm:right-1">
+                          <WishlistButton product={product} />
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="p-1 sm:p-1.5 text-center">
+                          <p className="text-[#A9A9A9] text-[8px] sm:text-[9px] font-semibold uppercase">{product.category}</p>
+                          <Link href={`/products/${product.id}`}>
+                            <h3 className="text-[#3F3F3F] text-[10px] sm:text-xs font-semibold mt-0.5 line-clamp-1 hover:text-[#006B51] transition-colors">
+                              {product.name}
+                            </h3>
+                          </Link>
+
+                          {/* Price */}
+                          <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
+                            <span className="text-[#006B51] text-[9px] sm:text-[10px] font-semibold">৳{product.discountPrice}</span>
+                            <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
-            </>
+            </div>
           )}
 
-          <div className={`overflow-hidden ${!enableSwiping ? 'w-full' : ''}`}>
-            <Swiper
-              modules={[Navigation, Pagination, A11y]}
-              spaceBetween={18}
-              slidesPerView={"auto"}
-              wrapperClass="swiper-wrapper !justify-start"
-              navigation={{
-                prevEl: prevRef.current,
-                nextEl: nextRef.current,
-              }}
-              pagination={enableSwiping ? {
-                clickable: true,
-                dynamicBullets: true,
-                dynamicMainBullets: 1
-              } : false}
-              onInit={(swiper) => {
-                // Override navigation after swiper initialization
-                swiper.params.navigation.prevEl = prevRef.current;
-                swiper.params.navigation.nextEl = nextRef.current;
-                swiper.navigation.init();
-                swiper.navigation.update();
-
-                // Ensure loading state is set to false when Swiper is fully initialized
-                setIsLoading(false);
-              }}
-              className={`px-2 overflow-visible py-6`}
-              loop={false}
-              loopFillGroupWithBlank={false}
-              rewind={false}
-              allowTouchMove={enableSwiping}
-              watchOverflow={true}
-              centeredSlides={false}
-              cssMode={false}
-              slidesOffsetBefore={0}
-              slidesOffsetAfter={0}
-              slidesPerGroup={1}
-              grid={{
-                rows: 1,
-                fill: 'row'
-              }}
-              breakpoints={breakpoints}
-            >
-              {products.map((product) => (
-                <SwiperSlide key={product.id} className={'w-full sm:max-w-[220px]'}>
-                  <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[280px]">
-                    {/* Product Image with Link or Quick View */}
-                    {isLandingPage ? (
-                      <div
-                        className="block cursor-pointer"
-                        onClick={() => openQuickView(product)}
-                      >
-                        <div className="aspect-square relative">
-                          <Image
-                            src={product.image || "/images/product-image.png"}
-                            alt={product.name}
-                            width={140}
-                            height={140}
-                            className="w-full h-full object-cover rounded-[4px] sm:rounded-[6px] transition-transform duration-300 hover:scale-105"
-                          />
-
-                          {/* Quick view overlay */}
-                          <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
-                            <span className="bg-white text-black px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full font-medium text-[8px] sm:text-[10px]">View</span>
-                          </div>
-
-                          {/* Discount tag */}
-                          <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
-                            <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
-                              -10%
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <Link href={`/products/${product.id}`} className="block">
-                        <div className="aspect-square relative">
-                          <Image
-                            src={product.image || "/images/product-image.png"}
-                            alt={product.name}
-                            width={220}
-                            height={220}
-                            className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
-                          />
-
-                          {/* Discount tag */}
-                          <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
-                            <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
-                              -10%
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    )}
-
-                    {/* Wishlist icon */}
-                    <div className="absolute top-0.5 sm:top-1 right-0.5 sm:right-1">
-                      <WishlistButton product={product} />
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="p-1 sm:p-1.5 text-center">
-                      <p className="text-[#A9A9A9] text-[8px] sm:text-[9px] font-semibold uppercase">{product.category}</p>
-                      <Link href={`/products/${product.id}`}>
-                        <h3 className="text-[#3F3F3F] text-[10px] sm:text-xs font-semibold mt-0.5 line-clamp-1 hover:text-[#006B51] transition-colors">
-                          {product.name}
-                        </h3>
-                      </Link>
-
-                      {/* Price */}
-                      <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
-                        <span className="text-[#006B51] text-[9px] sm:text-[10px] font-semibold">৳{product.discountPrice}</span>
-                        <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
-                      </div>
-                    </div>
+          {/* Second Row */}
+          {secondRowProducts.length > 0 && (
+            <div className={`relative carousel-container overflow-visible ${!enableSwipingRow2 ? 'px-4 sm:container sm:mx-auto' : ''}`}>
+              {/* Navigation Arrows - Second Row */}
+              {enableSwipingRow2 && (
+                <>
+                  <div className="absolute top-1/2 transform -translate-x-1/3 -translate-y-full z-10 hidden sm:block">
+                    <button
+                      ref={prevRefRow2}
+                      className="bg-white left-0 rounded-sm p-1 sm:p-1.5 shadow-sm hover:bg-gray-50 transition-colors"
+                      aria-label="Previous slide"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
                   </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+
+                  <div className="absolute right-0 top-1/2 transform translate-x-1/3 -translate-y-full z-10 hidden sm:block">
+                    <button
+                      ref={nextRefRow2}
+                      className="bg-white rounded-sm p-1 sm:p-1.5 shadow-md hover:bg-gray-50 transition-colors"
+                      aria-label="Next slide"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </>
+              )}
+
+              <div className={`overflow-hidden ${!enableSwipingRow2 ? 'w-full' : ''}`}>
+                <Swiper
+                  modules={[Navigation, Pagination, A11y]}
+                  spaceBetween={18}
+                  slidesPerView="auto"
+                  navigation={{
+                    prevEl: prevRefRow2.current,
+                    nextEl: nextRefRow2.current,
+                  }}
+                  pagination={enableSwipingRow2 ? {
+                    clickable: true,
+                    dynamicBullets: true,
+                    dynamicMainBullets: 1
+                  } : false}
+                  onInit={(swiper) => {
+                    // Override navigation after swiper initialization
+                    swiper.params.navigation.prevEl = prevRefRow2.current;
+                    swiper.params.navigation.nextEl = nextRefRow2.current;
+                    swiper.navigation.init();
+                    swiper.navigation.update();
+
+                    // Ensure loading state is set to false when Swiper is fully initialized
+                    setIsLoading(false);
+                  }}
+                  className={`px-2 sm:px-0 overflow-visible py-4`}
+                  loop={false}
+                  loopFillGroupWithBlank={false}
+                  slidesPerGroupAuto={true}
+                  rewind={false}
+                  allowTouchMove={enableSwipingRow2}
+                >
+                  {secondRowProducts.map((product) => (
+                    <SwiperSlide key={product.id} className={`${enableSwipingRow2 ? '!w-[calc(40vw-16px)] sm:!w-[calc(25vw-16px)] md:!w-[calc(20vw-16px)] lg:!w-[calc(12.666vw-16px)] xl:!w-[calc(10.285vw-16px)] 2xl:!w-[calc(8.5vw-16px)]' : 'w-full sm:max-w-[220px] mx-auto'}`}>
+                      <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[280px]">
+                        {/* Product Image with Link or Quick View */}
+                        {isLandingPage ? (
+                          <div
+                            className="block cursor-pointer"
+                            onClick={() => openQuickView(product)}
+                          >
+                            <div className="aspect-square relative">
+                              <Image
+                                src={product.image || "/images/product-image.png"}
+                                alt={product.name}
+                                width={140}
+                                height={140}
+                                className="w-full h-full object-cover rounded-[4px] sm:rounded-[6px] transition-transform duration-300 hover:scale-105"
+                              />
+
+                              {/* Quick view overlay */}
+                              <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                                <span className="bg-white text-black px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full font-medium text-[8px] sm:text-[10px]">View</span>
+                              </div>
+
+                              {/* Discount tag */}
+                              <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
+                                <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
+                                  -10%
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <Link href={`/products/${product.id}`} className="block">
+                            <div className="aspect-square relative">
+                              <Image
+                                src={product.image || "/images/product-image.png"}
+                                alt={product.name}
+                                width={220}
+                                height={220}
+                                className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
+                              />
+
+                              {/* Discount tag */}
+                              <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+                                <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
+                                  -10%
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        )}
+
+                        {/* Wishlist icon */}
+                        <div className="absolute top-0.5 sm:top-1 right-0.5 sm:right-1">
+                          <WishlistButton product={product} />
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="p-1 sm:p-1.5 text-center">
+                          <p className="text-[#A9A9A9] text-[8px] sm:text-[9px] font-semibold uppercase">{product.category}</p>
+                          <Link href={`/products/${product.id}`}>
+                            <h3 className="text-[#3F3F3F] text-[10px] sm:text-xs font-semibold mt-0.5 line-clamp-1 hover:text-[#006B51] transition-colors">
+                              {product.name}
+                            </h3>
+                          </Link>
+
+                          {/* Price */}
+                          <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
+                            <span className="text-[#006B51] text-[9px] sm:text-[10px] font-semibold">৳{product.discountPrice}</span>
+                            <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </section>
   );
 }
+  
