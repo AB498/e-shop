@@ -224,8 +224,8 @@ export default function ProductsPage() {
     <div className="space-y-6">
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Products</h1>
+          <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-700">
             A list of all the products in your store including their name, SKU, category, price, and stock.
           </p>
         </div>
@@ -233,26 +233,26 @@ export default function ProductsPage() {
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+            className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
           >
-            <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+            <PlusIcon className="-ml-1 mr-1.5 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
             Add Product
           </button>
         </div>
       </div>
 
       <div className="bg-white shadow rounded-lg overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4">
+        <div className="p-3 sm:p-4 border-b border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-between space-y-2 sm:space-y-0 sm:space-x-3">
             <div className="relative flex-grow max-w-lg">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" aria-hidden="true" />
               </div>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                className="block w-full pl-9 sm:pl-10 pr-3 py-1.5 sm:py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-xs sm:text-sm"
                 placeholder="Search products..."
               />
             </div>
@@ -260,7 +260,7 @@ export default function ProductsPage() {
               <select
                 value={filterStock}
                 onChange={(e) => setFilterStock(e.target.value)}
-                className="block pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
+                className="block pl-2 sm:pl-3 pr-8 sm:pr-10 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 rounded-md"
               >
                 <option value="all">All Stock</option>
                 <option value="low">Low Stock</option>
@@ -270,24 +270,24 @@ export default function ProductsPage() {
                 <button
                   type="button"
                   onClick={() => setFilterMenuOpen(!filterMenuOpen)}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="inline-flex items-center px-2.5 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
-                  <FunnelIcon className="-ml-1 mr-2 h-5 w-5 text-gray-400" aria-hidden="true" />
+                  <FunnelIcon className="-ml-1 mr-1.5 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" aria-hidden="true" />
                   Filter
                 </button>
                 {filterMenuOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 sm:w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                     <div className="py-1" role="menu" aria-orientation="vertical">
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                      <a href="#" className="block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                         All Products
                       </a>
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                      <a href="#" className="block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                         Active Products
                       </a>
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                      <a href="#" className="block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                         Out of Stock
                       </a>
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                      <a href="#" className="block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                         Low Stock
                       </a>
                     </div>
@@ -313,9 +313,9 @@ export default function ProductsPage() {
                     });
                 }}
                 disabled={isLoading}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                className="inline-flex items-center px-2.5 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
               >
-                <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${isLoading ? 'animate-spin text-emerald-500' : 'text-gray-400'}`} aria-hidden="true" />
+                <ArrowPathIcon className={`-ml-1 mr-1.5 h-4 w-4 sm:h-5 sm:w-5 ${isLoading ? 'animate-spin text-emerald-500' : 'text-gray-400'}`} aria-hidden="true" />
                 {isLoading ? 'Refreshing...' : 'Refresh'}
               </button>
             </div>
@@ -323,11 +323,11 @@ export default function ProductsPage() {
         </div>
 
         {error && (
-          <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+          <div className="p-3 mb-3 text-xs sm:text-sm text-red-700 bg-red-100 rounded-lg">
             <p>{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-2 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-md text-sm px-5 py-2"
+              className="mt-1.5 text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-300 font-medium rounded-md text-xs sm:text-sm px-3 sm:px-4 py-1 sm:py-1.5"
             >
               Retry
             </button>
@@ -345,21 +345,21 @@ export default function ProductsPage() {
         />
 
         {selectedProducts.length > 0 && (
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+          <div className="px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border-t border-gray-200">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-700">
+              <div className="text-xs sm:text-sm text-gray-700">
                 {selectedProducts.length} {selectedProducts.length === 1 ? 'product' : 'products'} selected
               </div>
               <div className="flex space-x-2">
                 <button
                   type="button"
-                  className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   Edit Selected
                 </button>
                 <button
                   type="button"
-                  className="inline-flex items-center px-3 py-1.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
                   Delete Selected
                 </button>
@@ -403,26 +403,26 @@ export default function ProductsPage() {
               <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={() => !isLoading && setShowAddStockModal(false)}></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-6 sm:align-middle sm:max-w-md sm:w-full">
+              <div className="bg-white px-3 pt-4 pb-3 sm:p-5 sm:pb-4">
                 <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Add Stock: {currentProduct.name}</h3>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500">
+                  <div className="mt-2 text-center sm:mt-0 sm:ml-3 sm:text-left w-full">
+                    <h3 className="text-base sm:text-lg leading-6 font-medium text-gray-900">Add Stock: {currentProduct.name}</h3>
+                    <div className="mt-1 sm:mt-2">
+                      <p className="text-xs sm:text-sm text-gray-500">
                         Current stock: <span className="font-medium">{currentProduct.stock}</span> units
                       </p>
                     </div>
 
                     {error && (
-                      <div className="mt-2 p-2 text-sm text-red-700 bg-red-100 rounded-md">
+                      <div className="mt-1.5 sm:mt-2 p-1.5 sm:p-2 text-xs sm:text-sm text-red-700 bg-red-100 rounded-md">
                         {error}
                       </div>
                     )}
 
-                    <div className="mt-4">
+                    <div className="mt-3 sm:mt-4">
                       <div>
-                        <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="quantity" className="block text-xs sm:text-sm font-medium text-gray-700">
                           Quantity to Add
                         </label>
                         <div className="mt-1">
@@ -432,7 +432,7 @@ export default function ProductsPage() {
                             id="quantity"
                             min="1"
                             disabled={isLoading}
-                            className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                             placeholder="Enter quantity"
                           />
                         </div>
@@ -441,18 +441,18 @@ export default function ProductsPage() {
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="bg-gray-50 px-3 py-2 sm:px-5 sm:py-3 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
                   disabled={isLoading}
                   onClick={() => handleStockUpdate(currentProduct.id, document.getElementById('quantity').value)}
-                  className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 ${
+                  className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-3 py-1.5 sm:px-4 sm:py-2 ${
                     isLoading ? 'bg-emerald-400' : 'bg-emerald-600 hover:bg-emerald-700'
-                  } text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:ml-3 sm:w-auto sm:text-sm`}
+                  } text-xs sm:text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:ml-3 sm:w-auto`}
                 >
                   {isLoading ? (
                     <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin -ml-1 mr-1.5 h-3 w-3 sm:h-4 sm:w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -466,9 +466,9 @@ export default function ProductsPage() {
                   type="button"
                   disabled={isLoading}
                   onClick={() => setShowAddStockModal(false)}
-                  className={`mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 ${
+                  className={`mt-2 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-3 py-1.5 sm:px-4 sm:py-2 ${
                     isLoading ? 'bg-gray-200 text-gray-500' : 'bg-white text-gray-700 hover:bg-gray-50'
-                  } text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`}
+                  } text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto`}
                 >
                   Cancel
                 </button>

@@ -54,15 +54,15 @@ export default function StatCard({ title, value, change, trend, icon: Icon, colo
       {/* Gradient overlay at the top */}
       <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradientClass}`}></div>
 
-      <div className="p-6">
+      <div className="p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">{title}</p>
-            <div className="mt-2 flex items-baseline">
+            <p className="text-xs sm:text-sm font-medium text-gray-500">{title}</p>
+            <div className="mt-1.5 sm:mt-2 flex items-baseline">
               {isLoading ? (
-                <div className="h-8 w-24 animate-pulse rounded bg-gray-200"></div>
+                <div className="h-6 sm:h-7 w-20 sm:w-24 animate-pulse rounded bg-gray-200"></div>
               ) : (
-                <h3 className="text-2xl font-bold tracking-tight text-gray-900">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-gray-900">
                   {isCurrency && '$'}
                   <CountUp
                     end={isCurrency ? numericValue : numericValue}
@@ -76,21 +76,21 @@ export default function StatCard({ title, value, change, trend, icon: Icon, colo
             </div>
           </div>
 
-          <div className={`rounded-full ${iconBgClass} p-3`}>
-            <Icon className={`h-6 w-6 ${textClass}`} aria-hidden="true" />
+          <div className={`rounded-full ${iconBgClass} p-2 sm:p-3`}>
+            <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${textClass}`} aria-hidden="true" />
           </div>
         </div>
 
         {/* Change indicator */}
         {change && (
-          <div className="mt-4 flex items-center">
+          <div className="mt-3 sm:mt-4 flex items-center">
             {trend === 'up' ? (
-              <FiTrendingUp className="mr-1 h-4 w-4 text-green-500" />
+              <FiTrendingUp className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-500" />
             ) : (
-              <FiTrendingDown className="mr-1 h-4 w-4 text-red-500" />
+              <FiTrendingDown className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-500" />
             )}
             <span
-              className={`text-sm font-medium ${
+              className={`text-xs sm:text-sm font-medium ${
                 trend === 'up' ? 'text-green-600' : 'text-red-600'
               }`}
             >

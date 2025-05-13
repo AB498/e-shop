@@ -18,11 +18,11 @@ export default function TableHead({ enableSorting = true, enableSelection = fals
       <tr>
         {/* Selection checkbox column */}
         {enableSelection && (
-          <th className="px-3 sm:px-6 py-3 w-10">
+          <th className="px-2 sm:px-4 py-2 w-8">
             <div className="flex items-center">
               <input
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                className="h-3.5 w-3.5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
                 checked={selectAll}
                 onChange={toggleSelectAll}
                 disabled={!rawData.length}
@@ -57,7 +57,7 @@ export default function TableHead({ enableSorting = true, enableSelection = fals
             <th
               key={columnKey}
               className={`
-                px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
+                px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
                 ${isSortable ? 'cursor-pointer select-none' : ''}
                 ${responsiveClasses}
                 ${column.className || ''}
@@ -71,10 +71,10 @@ export default function TableHead({ enableSorting = true, enableSelection = fals
                 {isSortable && (
                   <span className="inline-flex flex-col flex-shrink-0">
                     <ChevronUpIcon
-                      className={`h-3 w-3 ${sortDirection === 'asc' && isSorted ? 'text-emerald-600' : 'text-gray-400'}`}
+                      className={`h-2.5 w-2.5 ${sortDirection === 'asc' && isSorted ? 'text-emerald-600' : 'text-gray-400'}`}
                     />
                     <ChevronDownIcon
-                      className={`h-3 w-3 -mt-1 ${sortDirection === 'desc' && isSorted ? 'text-emerald-600' : 'text-gray-400'}`}
+                      className={`h-2.5 w-2.5 -mt-1 ${sortDirection === 'desc' && isSorted ? 'text-emerald-600' : 'text-gray-400'}`}
                     />
                   </span>
                 )}

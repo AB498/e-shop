@@ -52,19 +52,19 @@ export default function AdminCard({
       <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradientClass}`}></div>
 
       {/* Card Header */}
-      <div className="p-4 border-b border-gray-100">
+      <div className="p-3 sm:p-4 border-b border-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             {Icon && (
-              <div className={`mr-3 p-2 rounded-md ${iconBgClass}`}>
-                <Icon className={`h-5 w-5 ${textClass}`} aria-hidden="true" />
+              <div className={`mr-2 sm:mr-3 p-1.5 sm:p-2 rounded-md ${iconBgClass}`}>
+                <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${textClass}`} aria-hidden="true" />
               </div>
             )}
-            <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+            <h3 className="text-base sm:text-lg font-medium text-gray-900">{title}</h3>
           </div>
-          
+
           {actions.length > 0 && (
-            <div className="flex space-x-2">
+            <div className="flex space-x-1 sm:space-x-2">
               {actions.map((action, index) => (
                 <button
                   key={index}
@@ -72,7 +72,7 @@ export default function AdminCard({
                   className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none"
                   title={action.title}
                 >
-                  <action.icon className="h-5 w-5" aria-hidden="true" />
+                  <action.icon className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
                 </button>
               ))}
             </div>
@@ -81,21 +81,21 @@ export default function AdminCard({
       </div>
 
       {/* Card Content */}
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         {children}
       </div>
 
       {/* Card Footer */}
       {footerLink && footerText && (
-        <div className="border-t border-gray-100 p-4">
+        <div className="border-t border-gray-100 p-3 sm:p-4">
           <Link
             href={footerLink}
-            className={`flex items-center justify-center text-sm font-medium ${textClass} hover:underline`}
+            className={`flex items-center justify-center text-xs sm:text-sm font-medium ${textClass} hover:underline`}
           >
             {footerText}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="ml-1 h-4 w-4"
+              className="ml-1 h-3.5 w-3.5 sm:h-4 sm:w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

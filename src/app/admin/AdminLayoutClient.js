@@ -44,14 +44,14 @@ const iconComponents = {
 
 // Custom icon mapping object
 const customIconComponents = {
-  FiPackage: () => <FiPackage className="w-5 h-5" />,
-  FiTruck: () => <FiTruck className="w-5 h-5" />,
-  FiShoppingCart: () => <FiShoppingCart className="w-5 h-5" />,
-  FiUsers: () => <FiUsers className="w-5 h-5" />,
-  FiUser: () => <FiUsers className="w-5 h-5" />,
-  FiSettings: () => <FiSettings className="w-5 h-5" />,
-  FiDollarSign: () => <FiDollarSign className="w-5 h-5" />,
-  FiMail: () => <FiMail className="w-5 h-5" />
+  FiPackage: () => <FiPackage className="w-4 h-4 sm:w-5 sm:h-5" />,
+  FiTruck: () => <FiTruck className="w-4 h-4 sm:w-5 sm:h-5" />,
+  FiShoppingCart: () => <FiShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />,
+  FiUsers: () => <FiUsers className="w-4 h-4 sm:w-5 sm:h-5" />,
+  FiUser: () => <FiUsers className="w-4 h-4 sm:w-5 sm:h-5" />,
+  FiSettings: () => <FiSettings className="w-4 h-4 sm:w-5 sm:h-5" />,
+  FiDollarSign: () => <FiDollarSign className="w-4 h-4 sm:w-5 sm:h-5" />,
+  FiMail: () => <FiMail className="w-4 h-4 sm:w-5 sm:h-5" />
 };
 
 export default function AdminLayoutClient({
@@ -272,7 +272,7 @@ export default function AdminLayoutClient({
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-all duration-200 ${item.current
+                  className={`group flex items-center px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${item.current
                     ? 'bg-gradient-to-r from-emerald-50 to-emerald-100 text-emerald-800 border-l-4 border-emerald-500'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-700 hover:border-l-4 hover:border-emerald-300'
                     }`}
@@ -283,7 +283,7 @@ export default function AdminLayoutClient({
                     </span>
                   ) : (
                     <item.icon
-                      className={`mr-3 flex-shrink-0 h-5 w-5 ${item.current ? 'text-emerald-600' : 'text-gray-400 group-hover:text-emerald-500'}`}
+                      className={`mr-2 sm:mr-3 flex-shrink-0 h-4 w-4 sm:h-5 sm:w-5 ${item.current ? 'text-emerald-600' : 'text-gray-400 group-hover:text-emerald-500'}`}
                       aria-hidden="true"
                     />
                   )}
@@ -373,16 +373,16 @@ export default function AdminLayoutClient({
         <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 shadow-sm">
           <div className="flex-1 px-4 flex justify-between">
             <div className="flex-1 flex items-center">
-              <h1 className="text-xl font-semibold text-gray-800 px-4">
+              <h1 className="text-base sm:text-lg font-semibold text-gray-800 px-2 sm:px-4">
                 Admin Dashboard
               </h1>
             </div>
             <div className="ml-4 flex items-center md:ml-6 space-x-3">
               <Link
                 href="/"
-                className="flex items-center px-3 py-1.5 rounded-md border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 hover:text-emerald-600 transition-colors duration-200"
+                className="flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-md border border-gray-300 text-gray-700 text-xs sm:text-sm hover:bg-gray-50 hover:text-emerald-600 transition-colors duration-200"
               >
-                <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
+                <ArrowLeftIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
                 Back to Site
               </Link>
 
@@ -401,10 +401,10 @@ export default function AdminLayoutClient({
                       alt={userData.name}
                       width={32}
                       height={32}
-                      className="h-8 w-8 rounded-full object-cover"
+                      className="h-7 w-7 sm:h-8 sm:w-8 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-sm sm:text-base">
                       {userData.name.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -439,8 +439,8 @@ export default function AdminLayoutClient({
         </div>
 
         <main className="flex-1">
-          <div className="py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+          <div className="py-4 sm:py-5">
+            <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
               {children}
             </div>
           </div>

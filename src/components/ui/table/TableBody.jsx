@@ -28,14 +28,14 @@ export default function TableBody({
         {Array.from({ length: loadingRows }).map((_, rowIndex) => (
           <tr key={`loading-${rowIndex}`}>
             {enableSelection && (
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+              <td className="px-2 sm:px-4 py-2 whitespace-nowrap">
+                <div className="h-3.5 w-3.5 bg-gray-200 rounded animate-pulse"></div>
               </td>
             )}
             {columns.map((column) => (
               <td
                 key={`loading-cell-${column.id || column.key}-${rowIndex}`}
-                className="px-6 py-4"
+                className="px-2 sm:px-4 py-2"
               >
                 <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
               </td>
@@ -57,7 +57,7 @@ export default function TableBody({
         <tr>
           <td
             colSpan={enableSelection ? columns.length + 1 : columns.length}
-            className="px-6 py-8 text-center text-sm text-gray-500"
+            className="px-2 sm:px-4 py-4 text-center text-sm text-gray-500"
           >
             {emptyMessage}
           </td>
@@ -83,11 +83,11 @@ export default function TableBody({
           >
             {/* Selection checkbox */}
             {enableSelection && (
-              <td className="px-3 sm:px-6 py-4 w-10">
+              <td className="px-2 sm:px-4 py-2 w-8">
                 <div className="flex items-center">
                   <input
                     type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    className="h-3.5 w-3.5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
                     checked={isSelected}
                     onChange={() => toggleRowSelection(rowId)}
                   />
@@ -120,7 +120,7 @@ export default function TableBody({
               return (
                 <td
                   key={`cell-${column.id || column.key}-${rowIndex}`}
-                  className={`px-3 sm:px-6 py-4 text-sm ${textHandlingClass} ${responsiveClasses} ${column.cellClassName || ''}`}
+                  className={`px-2 sm:px-4 py-2 text-xs sm:text-sm ${textHandlingClass} ${responsiveClasses} ${column.cellClassName || ''}`}
                   style={cellStyle}
                   title={column.truncate && typeof row[column.key] === 'string' ? row[column.key] : undefined}
                 >

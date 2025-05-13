@@ -351,8 +351,8 @@ export default function AdminDashboardContent() {
   }
 
   return (
-    <div className="py-6 bg-gray-50 min-h-screen">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="py-4 sm:py-5 bg-gray-50 min-h-screen">
+      <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
         {/* Dashboard Header */}
         <DashboardHeader onRefresh={() => {
           setIsLoading(true);
@@ -378,7 +378,7 @@ export default function AdminDashboardContent() {
         }} />
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {dashboardData.stats.map((stat, index) => (
             <StatCard
               key={index}
@@ -394,7 +394,7 @@ export default function AdminDashboardContent() {
         </div>
 
         {/* Charts Section */}
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="mt-6 sm:mt-7 grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2">
           <AdminCard
             title="Sales Overview"
             color="primary"
@@ -402,7 +402,7 @@ export default function AdminDashboardContent() {
             className="h-full"
           >
             {dashboardData.salesChartData && dashboardData.salesChartData.datasets && dashboardData.salesChartData.datasets.length > 0 ? (
-              <div className="h-80">
+              <div className="h-64 sm:h-72 lg:h-80">
                 <Line options={salesChartOptions} data={dashboardData.salesChartData} />
               </div>
             ) : (
@@ -419,7 +419,7 @@ export default function AdminDashboardContent() {
             className="h-full"
           >
             {dashboardData.categoryChartData && dashboardData.categoryChartData.datasets && dashboardData.categoryChartData.datasets.length > 0 ? (
-              <div className="h-80">
+              <div className="h-64 sm:h-72 lg:h-80">
                 <DonutChart data={dashboardData.categoryChartData} options={categoryChartOptions} />
               </div>
             ) : (
@@ -431,7 +431,7 @@ export default function AdminDashboardContent() {
         </div>
 
         {/* Orders and Inventory Section */}
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="mt-6 sm:mt-7 grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2">
           {/* Recent Orders */}
           <AdminCard
             title="Recent Orders"
@@ -445,19 +445,19 @@ export default function AdminDashboardContent() {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                      <th scope="col" className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+                      <th scope="col" className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                      <th scope="col" className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th scope="col" className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {dashboardData.recentOrders.slice(0, 5).map((order) => (
                       <tr key={order.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-emerald-600">#{order.id}</td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{order.customer}</td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                        <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm font-medium text-emerald-600">#{order.id}</td>
+                        <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-gray-900">{order.customer}</td>
+                        <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm">
+                          <span className={`px-1.5 py-0.5 sm:px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                             ${order.status === 'Completed' ? 'bg-green-100 text-green-800' :
                               order.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
                               order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
@@ -465,7 +465,7 @@ export default function AdminDashboardContent() {
                             {order.status}
                           </span>
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">${order.total}</td>
+                        <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-gray-900">${order.total}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -487,10 +487,10 @@ export default function AdminDashboardContent() {
             {dashboardData.lowStockProducts && dashboardData.lowStockProducts.length > 0 ? (
               <div className="space-y-4">
                 {dashboardData.lowStockProducts.slice(0, 5).map((item, index) => (
-                  <div key={index} className="rounded-lg bg-gray-50 p-4">
-                    <div className="mb-2 flex items-center justify-between">
-                      <div className="font-medium text-gray-800">{item.name}</div>
-                      <div className="rounded-full px-2 py-1 text-xs font-semibold text-red-600 bg-red-100">
+                  <div key={index} className="rounded-lg bg-gray-50 p-3 sm:p-4">
+                    <div className="mb-1.5 sm:mb-2 flex items-center justify-between">
+                      <div className="font-medium text-gray-800 text-xs sm:text-sm">{item.name}</div>
+                      <div className="rounded-full px-1.5 py-0.5 sm:px-2 sm:py-1 text-xs font-semibold text-red-600 bg-red-100">
                         {item.value}
                       </div>
                     </div>
