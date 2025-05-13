@@ -17,6 +17,15 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+// Custom styles for hiding pagination on mobile
+const customStyles = `
+  @media (max-width: 640px) {
+    .swiper-pagination {
+      display: none !important;
+    }
+  }
+`;
+
 // Wishlist Button Component
 const WishlistButton = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -126,8 +135,25 @@ export default function ProductCarousel({
   const prevRefRow2 = useRef(null);
   const nextRefRow2 = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const { openQuickView } = useProductQuickView();
   const pathname = usePathname();
+
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Split products into two rows
   const splitProducts = () => {
@@ -145,6 +171,10 @@ export default function ProductCarousel({
   const enableSwipingRow1 = firstRowProducts.length > 1;
   const enableSwipingRow2 = secondRowProducts.length > 1;
 
+  // References to swiper instances
+  const swiperRef1 = useRef(null);
+  const swiperRef2 = useRef(null);
+
   // Set loading to false after Swiper is initialized
   useEffect(() => {
     // Check if products are loaded
@@ -161,6 +191,19 @@ export default function ProductCarousel({
     }
   }, [products]);
 
+  // Update pagination when mobile state changes
+  useEffect(() => {
+    if (swiperRef1.current) {
+      swiperRef1.current.pagination.enabled = !isMobile && enableSwipingRow1;
+      swiperRef1.current.pagination.update();
+    }
+
+    if (swiperRef2.current) {
+      swiperRef2.current.pagination.enabled = !isMobile && enableSwipingRow2;
+      swiperRef2.current.pagination.update();
+    }
+  }, [isMobile, enableSwipingRow1, enableSwipingRow2]);
+
   // Show skeleton while loading
   if (isLoading || !products.length) {
     return (
@@ -176,6 +219,8 @@ export default function ProductCarousel({
 
   return (
     <section className={`py-2 sm:py-3 md:py-4 relative ${className}`}>
+      {/* Apply custom styles */}
+      <style dangerouslySetInnerHTML={{ __html: customStyles }} />
       {/* Section title */}
       {(title || icon) && (
         <div className="container mx-auto px-2 sm:px-3">
@@ -235,6 +280,8 @@ export default function ProductCarousel({
               )}
 
               <div className={`overflow-hidden ${!enableSwipingRow1 ? 'w-full' : ''}`}>
+                {/* Custom pagination container - hidden on mobile */}
+                <div className="swiper-pagination-row1 hidden sm:block"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
                   spaceBetween={18}
@@ -243,10 +290,12 @@ export default function ProductCarousel({
                     prevEl: prevRefRow1.current,
                     nextEl: nextRefRow1.current,
                   }}
-                  pagination={enableSwipingRow1 ? {
+                  pagination={enableSwipingRow1 && !isMobile ? {
                     clickable: true,
                     dynamicBullets: true,
-                    dynamicMainBullets: 1
+                    dynamicMainBullets: 1,
+                    el: '.swiper-pagination-row1',
+                    enabled: true
                   } : false}
                   onInit={(swiper) => {
                     // Override navigation after swiper initialization
@@ -254,6 +303,13 @@ export default function ProductCarousel({
                     swiper.params.navigation.nextEl = nextRefRow1.current;
                     swiper.navigation.init();
                     swiper.navigation.update();
+
+                    // Store swiper instance
+                    swiperRef1.current = swiper;
+
+                    // Update pagination based on mobile state
+                    swiper.pagination.enabled = !isMobile && enableSwipingRow1;
+                    swiper.pagination.update();
                   }}
                   className={`px-2 sm:px-0 overflow-visible py-4`}
                   loop={false}
@@ -375,6 +431,8 @@ export default function ProductCarousel({
               )}
 
               <div className={`overflow-hidden ${!enableSwipingRow2 ? 'w-full' : ''}`}>
+                {/* Custom pagination container - hidden on mobile */}
+                <div className="swiper-pagination-row2 hidden sm:block"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
                   spaceBetween={18}
@@ -383,10 +441,12 @@ export default function ProductCarousel({
                     prevEl: prevRefRow2.current,
                     nextEl: nextRefRow2.current,
                   }}
-                  pagination={enableSwipingRow2 ? {
+                  pagination={enableSwipingRow2 && !isMobile ? {
                     clickable: true,
                     dynamicBullets: true,
-                    dynamicMainBullets: 1
+                    dynamicMainBullets: 1,
+                    el: '.swiper-pagination-row2',
+                    enabled: true
                   } : false}
                   onInit={(swiper) => {
                     // Override navigation after swiper initialization
@@ -394,6 +454,13 @@ export default function ProductCarousel({
                     swiper.params.navigation.nextEl = nextRefRow2.current;
                     swiper.navigation.init();
                     swiper.navigation.update();
+
+                    // Store swiper instance
+                    swiperRef2.current = swiper;
+
+                    // Update pagination based on mobile state
+                    swiper.pagination.enabled = !isMobile && enableSwipingRow2;
+                    swiper.pagination.update();
 
                     // Ensure loading state is set to false when Swiper is fully initialized
                     setIsLoading(false);
@@ -489,4 +556,3 @@ export default function ProductCarousel({
     </section>
   );
 }
-  
