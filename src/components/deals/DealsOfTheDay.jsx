@@ -1,17 +1,29 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getResponsiveTextClass } from '@/utils/responsiveUtils';
 import StarRating from '@/components/ui/StarRating';
 import { useCart } from '@/context/CartContext';
-import { toast } from 'react-hot-toast';
 
 const DealsOfTheDay = () => {
   const [dealProducts, setDealProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
+  const scrollContainerRef = useRef(null);
+
+  // Function to scroll the container left or right
+  const scroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 200; // Adjust this value based on your card width + gap
+      const scrollLeft = scrollContainerRef.current.scrollLeft;
+
+      scrollContainerRef.current.scrollTo({
+        left: direction === 'left' ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchDealProducts = async () => {
@@ -67,49 +79,96 @@ const DealsOfTheDay = () => {
   const displayProducts = loading ? placeholderProducts : dealProducts;
 
   return (
-    <div className="py-6 sm:py-8 md:py-10">
+    <div className="py-3 sm:py-4 md:py-5">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-4 sm:mb-6 md:mb-8">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <h2 className={`${getResponsiveTextClass('xl')} font-semibold text-black`}>Deals Of The Day</h2>
+      <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-black">Deals Of The Day</h2>
           <Image
             src="/images/deals/discount-coupon-icon.png"
             alt="Discount"
-            width={24}
-            height={24}
-            className="object-contain w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
+            width={20}
+            height={20}
+            className="object-contain w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
           />
         </div>
-        <div className="flex items-center text-[#7E7E7E]">
-          <Link href="/products" className="flex items-center hover:text-[#006B51] transition-colors">
-            <span className={`${getResponsiveTextClass('sm')} font-normal`}>All Deals</span>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-1"
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* Navigation Buttons */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => scroll('left')}
+              className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white border border-[#ECECEC] flex items-center justify-center hover:bg-[#F9F9F9] transition-colors"
+              aria-label="Scroll left"
             >
-              <path
-                d="M9 6L15 12L9 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15 18L9 12L15 6"
+                  stroke="#7E7E7E"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              onClick={() => scroll('right')}
+              className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white border border-[#ECECEC] flex items-center justify-center hover:bg-[#F9F9F9] transition-colors"
+              aria-label="Scroll right"
+            >
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 6L15 12L9 18"
+                  stroke="#7E7E7E"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="flex items-center text-[#7E7E7E]">
+            <Link href="/products" className="flex items-center hover:text-[#006B51] transition-colors">
+              <span className="text-xs sm:text-sm font-normal">All Deals</span>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="ml-0.5"
+              >
+                <path
+                  d="M9 6L15 12L9 18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Deals Grid */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+      {/* Deals Row */}
+      <div ref={scrollContainerRef} className="flex flex-nowrap overflow-x-auto gap-2 sm:gap-3 md:gap-4 pb-2 scrollbar-hide">
         {displayProducts.map((product, index) => (
-          <div key={product.id || index} className="bg-white rounded-[15px] overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
+          <div key={product.id || index} className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col min-w-[140px] sm:min-w-[160px] md:min-w-[180px] flex-shrink-0">
             {/* Product Image */}
             <Link href={`/products/${product.id}`}>
-              <div className="relative h-48 xs:h-52 sm:h-56 md:h-64">
+              <div className="relative h-32 xs:h-36 sm:h-40">
                 <Image
                   src={product.image || '/images/product-image.png'}
                   alt={product.name}
@@ -140,49 +199,49 @@ const DealsOfTheDay = () => {
             </Link>
 
             {/* Product Details */}
-            <div className="p-3 sm:p-4 md:p-5 grow shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] rounded-[10px] -mt-4 sm:-mt-5 mb-4 mx-3 sm:mx-4 bg-white relative">
+            <div className="p-1.5 sm:p-2 grow shadow-[2px_2px_8px_0px_rgba(0,0,0,0.03)] rounded-md -mt-2 sm:-mt-3 mb-2 mx-1.5 sm:mx-2 bg-white relative">
               <Link href={`/products/${product.id}`}>
-                <h3 className={`text-[#253D4E] ${getResponsiveTextClass('sm')} font-bold leading-tight mb-1 sm:mb-2`}>
+                <h3 className="text-[#253D4E] text-xs sm:text-sm font-semibold leading-tight mb-0.5 sm:mb-1 line-clamp-1">
                   {product.name}
                 </h3>
               </Link>
 
-              <div className="mb-1">
+              <div className="mb-0.5">
                 <StarRating
                   rating={parseFloat(product.rating)}
                   reviewCount={product.reviewCount}
-                  size="sm"
+                  size="xs"
                 />
               </div>
 
-              <div className="flex justify-between items-center mt-1 sm:mt-2">
+              <div className="flex justify-between items-center mt-0.5 sm:mt-1">
                 {index === 2 ? (
                   <div>
-                    <span className={`text-[#006B51] ${getResponsiveTextClass('xs')} mr-2`}>{product.category}</span>
-                    <div className="mt-1">
-                      <span className={`text-[#006B51] font-bold ${getResponsiveTextClass('base')}`}>
+                    <span className="text-[#006B51] text-[9px] sm:text-[10px] mr-1">{product.category}</span>
+                    <div className="mt-0.5">
+                      <span className="text-[#006B51] font-semibold text-[10px] sm:text-xs">
                         ৳{parseFloat(product.discountPrice).toFixed(2)}
                       </span>
-                      <span className={`text-[#ADADAD] font-bold ${getResponsiveTextClass('xs')} ml-1 sm:ml-2 line-through`}>
+                      <span className="text-[#ADADAD] font-medium text-[8px] sm:text-[9px] ml-0.5 sm:ml-1 line-through">
                         ৳{parseFloat(product.price).toFixed(2)}
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <span className={`text-[#006B51] ${getResponsiveTextClass('xs')}`}>{product.category}</span>
+                  <span className="text-[#006B51] text-[9px] sm:text-[10px]">{product.category}</span>
                 )}
                 <button
-                  className="bg-[#006B51] text-white text-xs sm:text-sm font-bold py-1 px-2 sm:px-3 rounded-md flex items-center"
+                  className="bg-[#006B51] text-white text-[8px] sm:text-[9px] font-medium py-0.5 px-1 sm:px-1.5 rounded-sm flex items-center"
                   onClick={() => handleAddToCart(product)}
                   disabled={loading}
                 >
                   <svg
-                    width="14"
-                    height="14"
+                    width="10"
+                    height="10"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="mr-1"
+                    className="mr-0.5"
                   >
                     <path
                       d="M12 5V19M5 12H19"

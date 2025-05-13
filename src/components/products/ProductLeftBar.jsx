@@ -200,13 +200,12 @@ const ProductLeftBar = ({ categories = [], isMobile = false }) => {
                                     }`}
                                 >
                                     <div className="flex gap-3">
-                                        <div className="w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
+                                        <div className="relative overflow-hidden w-20 h-20 bg-[#F2F3F4] rounded-md flex-shrink-0 flex items-center justify-center">
                                             <Image
                                                 src={product.image || "/images/product-image.png"}
                                                 alt={product.name}
-                                                width={70}
-                                                height={70}
-                                                className="object-contain"
+                                                fill
+                                                className="object-cover"
                                                 unoptimized={product.image && product.image.startsWith('http')}
                                                 onError={(e) => {
                                                     e.target.src = "/images/product-image.png";

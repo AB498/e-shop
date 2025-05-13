@@ -1,13 +1,12 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 
 const ProductListControls = ({ totalProducts }) => {
   const searchParams = useSearchParams();
 
   // Get current values from URL
-  const currentLimit = Number(searchParams.get('limit')) || 12;
+  const currentLimit = Number(searchParams.get('limit')) || 24;
   const currentSortBy = searchParams.get('sortBy') || 'id';
   const currentSortOrder = searchParams.get('sortOrder') || 'asc';
 
@@ -73,37 +72,46 @@ const ProductListControls = ({ totalProducts }) => {
   }, []);
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-6 gap-2 sm:gap-0">
-      <h2 className="text-[#7E7E7E] text-xs sm:text-sm md:text-base whitespace-nowrap">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 sm:mb-3 md:mb-4 gap-1 sm:gap-0">
+      <h2 className="text-[#7E7E7E] text-[10px] sm:text-xs whitespace-nowrap">
         We found {totalProducts} items for you!
       </h2>
 
-      <div className="flex w-full sm:w-auto space-x-2 sm:space-x-4">
+      <div className="flex w-full sm:w-auto space-x-1 sm:space-x-2">
         {/* Limit Dropdown */}
         <div className="relative flex-1 sm:flex-none" ref={limitDropdownRef}>
           <div
-            className="flex items-center border border-[#ECECEC] rounded-md sm:rounded-[10px] px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 cursor-pointer hover:bg-[#F9F9F9] transition-colors"
+            className="flex items-center border border-[#ECECEC] rounded px-1.5 sm:px-2 py-0.5 sm:py-1 cursor-pointer hover:bg-[#F9F9F9] transition-colors"
             onClick={() => setShowLimitDropdown(!showLimitDropdown)}
           >
-            <Image src="/images/navigation/filter.png" alt="Filter" width={12} height={12} className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
-            <span className="text-[#777777] text-[10px] xs:text-xs sm:text-xs md:text-sm ml-1 sm:ml-1.5 md:ml-2 font-semibold">Show:</span>
-            <span className="text-[#7E7E7E] text-[10px] xs:text-xs sm:text-xs md:text-sm font-semibold ml-1 sm:ml-1.5 md:ml-2">{currentLimit}</span>
-            <Image
-              src="/images/navigation/chevron-down.png"
-              alt="Dropdown"
-              width={8}
-              height={8}
-              className={`w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 ml-1 sm:ml-1.5 md:ml-2 transition-transform ${showLimitDropdown ? 'rotate-180' : ''}`}
-            />
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#777777" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5 sm:w-3 sm:h-3">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            </svg>
+            <span className="text-[#777777] text-[9px] sm:text-[10px] ml-0.5 sm:ml-1 font-medium">Show:</span>
+            <span className="text-[#7E7E7E] text-[9px] sm:text-[10px] font-medium ml-0.5 sm:ml-1">{currentLimit}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="8"
+              height="8"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#777777"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ml-0.5 sm:ml-1 transition-transform ${showLimitDropdown ? 'rotate-180' : ''}`}
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
 
           {showLimitDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-white border border-[#ECECEC] rounded-md sm:rounded-[10px] shadow-lg z-10">
+            <div className="absolute top-full left-0 mt-0.5 w-full bg-white border border-[#ECECEC] rounded shadow-sm z-10">
               {limitOptions.map((limit) => (
                 <div
                   key={limit}
-                  className={`px-2 py-1 sm:px-3 md:px-4 sm:py-1.5 md:py-2 text-[10px] xs:text-xs sm:text-xs md:text-sm cursor-pointer hover:bg-[#F9F9F9] transition-colors ${
-                    limit === currentLimit ? 'bg-[#F9F9F9] text-[#006B51] font-semibold' : 'text-[#7E7E7E]'
+                  className={`px-1.5 py-0.5 sm:px-2 sm:py-1 text-[9px] sm:text-[10px] cursor-pointer hover:bg-[#F9F9F9] transition-colors ${
+                    limit === currentLimit ? 'bg-[#F9F9F9] text-[#006B51] font-medium' : 'text-[#7E7E7E]'
                   }`}
                   onClick={() => handleLimitChange(limit)}
                 >
@@ -117,31 +125,43 @@ const ProductListControls = ({ totalProducts }) => {
         {/* Sort Dropdown */}
         <div className="relative flex-1 sm:flex-none" ref={sortDropdownRef}>
           <div
-            className="flex items-center border border-[#ECECEC] rounded-md sm:rounded-[10px] px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 cursor-pointer hover:bg-[#F9F9F9] transition-colors"
+            className="flex items-center border border-[#ECECEC] rounded px-1.5 sm:px-2 py-0.5 sm:py-1 cursor-pointer hover:bg-[#F9F9F9] transition-colors"
             onClick={() => setShowSortDropdown(!showSortDropdown)}
           >
-            <Image src="/images/navigation/sort.png" alt="Sort" width={12} height={12} className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
-            <span className="text-[#777777] text-[10px] xs:text-xs sm:text-xs md:text-sm ml-1 sm:ml-1.5 md:ml-2 font-semibold whitespace-nowrap">Sort:</span>
-            <span className="text-[#7E7E7E] text-[10px] xs:text-xs sm:text-xs md:text-sm font-semibold ml-1 sm:ml-1.5 md:ml-2 truncate max-w-[40px] xs:max-w-[50px] sm:max-w-[60px] md:max-w-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#777777" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5 sm:w-3 sm:h-3">
+              <line x1="4" y1="9" x2="20" y2="9"></line>
+              <line x1="4" y1="15" x2="14" y2="15"></line>
+              <line x1="4" y1="21" x2="9" y2="21"></line>
+              <line x1="4" y1="3" x2="9" y2="3"></line>
+            </svg>
+            <span className="text-[#777777] text-[9px] sm:text-[10px] ml-0.5 sm:ml-1 font-medium whitespace-nowrap">Sort:</span>
+            <span className="text-[#7E7E7E] text-[9px] sm:text-[10px] font-medium ml-0.5 sm:ml-1 truncate max-w-[40px] sm:max-w-[50px]">
               {getCurrentSortLabel()}
             </span>
-            <Image
-              src="/images/navigation/chevron-down.png"
-              alt="Dropdown"
-              width={8}
-              height={8}
-              className={`w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 ml-1 sm:ml-1.5 md:ml-2 transition-transform ${showSortDropdown ? 'rotate-180' : ''}`}
-            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="8"
+              height="8"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#777777"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ml-0.5 sm:ml-1 transition-transform ${showSortDropdown ? 'rotate-180' : ''}`}
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
 
           {showSortDropdown && (
-            <div className="absolute top-full right-0 mt-1 w-36 sm:w-40 md:w-48 bg-white border border-[#ECECEC] rounded-md sm:rounded-[10px] shadow-lg z-10">
+            <div className="absolute top-full right-0 mt-0.5 w-28 sm:w-32 bg-white border border-[#ECECEC] rounded shadow-sm z-10">
               {sortOptions.map((option, index) => (
                 <div
                   key={index}
-                  className={`px-2 py-1 sm:px-3 md:px-4 sm:py-1.5 md:py-2 text-[10px] xs:text-xs sm:text-xs md:text-sm cursor-pointer hover:bg-[#F9F9F9] transition-colors ${
+                  className={`px-1.5 py-0.5 sm:px-2 sm:py-1 text-[9px] sm:text-[10px] cursor-pointer hover:bg-[#F9F9F9] transition-colors ${
                     option.value === currentSortBy && option.order === currentSortOrder
-                      ? 'bg-[#F9F9F9] text-[#006B51] font-semibold'
+                      ? 'bg-[#F9F9F9] text-[#006B51] font-medium'
                       : 'text-[#7E7E7E]'
                   }`}
                   onClick={() => handleSortChange(option.value, option.order)}

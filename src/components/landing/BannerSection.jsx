@@ -1,50 +1,68 @@
 "use client";
 
+import ResponsiveText from '@/components/ui/ResponsiveText';
+
 const BannerSection = () => {
   return (
-    <section className="container mx-auto py-6 md:py-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-6 md:mt-10">
+    <section className="container mx-auto py-3 sm:py-4 grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mt-3 sm:mt-4">
       {/* Promo Banner */}
-      <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-lg overflow-visible bg-emerald-300">
+      <div className="relative h-[150px] sm:h-[180px] md:h-[200px] rounded-md overflow-visible bg-emerald-300">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/images/banner-background.png')" }}
         />
-        <div className="absolute inset-0 flex flex-col justify-center p-4 md:p-8">
+        <div className="absolute inset-0 flex flex-col justify-center p-3 sm:p-4">
           <img
             src="/images/banners/gluta-product.png"
             alt="Sanil Gluta Product"
-            className="absolute right-0 bottom-0 w-1/2 h-[100%] h-[110%] md:h-[120%] object-contain z-10"
+            className="absolute right-0 bottom-0 w-1/2 h-[100%] h-[105%] sm:h-[110%] object-contain z-10"
           />
           <div className="max-w-[70%] sm:max-w-[60%] z-20">
-            <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-semibold leading-tight mb-2 md:mb-4">
+            <ResponsiveText
+              as="h3"
+              size="lg"
+              className="text-white font-medium leading-tight mb-1 sm:mb-2"
+            >
               Buy Sanil Gluta &<br />
               Save Up to 25% With<br />
               Promo Code
-            </h3>
-            <span className="text-white text-base sm:text-lg font-semibold">
+            </ResponsiveText>
+            <ResponsiveText
+              as="span"
+              size="sm"
+              className="text-white font-semibold"
+            >
               THAIB25
-            </span>
+            </ResponsiveText>
           </div>
         </div>
       </div>
 
       {/* Free Delivery Banner */}
-      <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-lg overflow-hidden">
+      <div className="relative h-[150px] sm:h-[180px] md:h-[200px] rounded-md overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-right"
           style={{ backgroundImage: "url('/images/banners/delivery-bg.png')" }}
         />
-        <div className="absolute inset-0 flex flex-col justify-center p-4 md:p-8">
+        <div className="absolute inset-0 flex flex-col justify-center p-3 sm:p-4">
           <div className="max-w-[90%] sm:max-w-[80%]">
-            <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-semibold leading-tight mb-2 md:mb-4">
+            <ResponsiveText
+              as="h3"
+              size="lg"
+              className="text-white font-medium leading-tight mb-1 sm:mb-2"
+            >
               Free Delivery To<br />
               Your Door
-            </h3>
-            <p className="text-white text-sm sm:text-base md:text-lg font-semibold mb-3 md:mb-6 leading-relaxed">
+            </ResponsiveText>
+            <ResponsiveText
+              as="p"
+              size="sm"
+              className="text-white font-normal mb-2 sm:mb-3 leading-relaxed"
+            >
               Collect a basket worth more than ৳1500 and<br className="hidden sm:block" />
               get free delivery to your door.
-            </p>
-            <button className="bg-[#CB1111] text-white px-4 sm:px-6 md:px-8 py-1.5 md:py-2 rounded-full font-semibold hover:bg-[#a80e0e] transition-colors text-sm sm:text-base">
+            </ResponsiveText>
+            <button className="bg-[#CB1111] text-white px-2 sm:px-3 py-1 rounded-full font-medium hover:bg-[#a80e0e] transition-colors text-responsive-xs">
               SHOP NOW
             </button>
           </div>

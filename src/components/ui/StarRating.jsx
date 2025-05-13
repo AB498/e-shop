@@ -22,10 +22,10 @@ const StarRating = ({
 
   // Determine star size based on the size prop
   const starSizes = {
-    'xs': { width: 12, height: 12 },
-    'sm': { width: 14, height: 14 },
-    'md': { width: 16, height: 16 },
-    'lg': { width: 20, height: 20 }
+    'xs': { width: 10, height: 10 },
+    'sm': { width: 12, height: 12 },
+    'md': { width: 14, height: 14 },
+    'lg': { width: 16, height: 16 }
   };
 
   const { width, height } = starSizes[size] || starSizes.md;
@@ -70,10 +70,10 @@ const StarRating = ({
   });
 
   return (
-    <div className="flex items-center gap-1 sm:gap-2">
+    <div className="flex items-center gap-0.5 sm:gap-1">
       <div className="flex items-center">{stars}</div>
       {showCount && (
-        <span className={`text-[#B6B6B6] ${getResponsiveTextClass('xs')}`}>
+        <span className={`text-[#B6B6B6] ${size === 'xs' ? 'text-[8px]' : size === 'sm' ? 'text-[9px]' : 'text-[10px] sm:text-xs'}`}>
           {reviewCount > 0 ? `(${reviewCount})` : `(${normalizedRating.toFixed(1)})`}
         </span>
       )}

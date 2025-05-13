@@ -82,6 +82,17 @@ export default function ProductsTable({
       responsive: 'lg'
     },
     {
+      key: 'description',
+      label: 'Description',
+      sortable: true,
+      responsive: 'lg',
+      render: (product) => (
+        <div className="max-w-xs truncate" title={product.description}>
+          {product.description ? product.description.substring(0, 50) + (product.description.length > 50 ? '...' : '') : ''}
+        </div>
+      )
+    },
+    {
       key: 'stockStatus',
       label: 'Stock Status',
       sortable: true,
@@ -114,7 +125,7 @@ export default function ProductsTable({
             <PlusIcon className="h-5 w-5" />
           </button>
           <button
-            onClick={() => onDelete(product.id)}
+            onClick={() => onDelete(product)}
             className="text-red-600 hover:text-red-900"
             title="Delete Product"
           >

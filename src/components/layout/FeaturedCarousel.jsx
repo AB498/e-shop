@@ -164,8 +164,8 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
 
     // Base styles
     const baseZIndex = 10;
-    const baseScale = 0.9;
-    const activeScale = 1.1;
+    const baseScale = 0.85;
+    const activeScale = 1.05;
     const baseOpacity = 0.7;
 
     // Mobile view - show only one slide at a time with animation
@@ -206,7 +206,7 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
 
     // Position cards horizontally - responsive calculation
     // Use a percentage of container width or fallback to a reasonable default
-    const slideWidth = containerWidth ? containerWidth / 3 : 350; // Each slide takes ~1/3 of container
+    const slideWidth = containerWidth ? containerWidth / 3 : 320; // Each slide takes ~1/3 of container
     const translateX = distance * slideWidth;
 
     return {
@@ -218,11 +218,11 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
   };
 
   return (
-    <div className="relative w-full mb-10 mt-6 overflow-visible">
+    <div className="relative w-full mb-8 mt-4 overflow-visible">
       {/* Carousel Container */}
       <div
         ref={containerRef}
-        className="w-full aspect-video max-h-[480px] inset-0 flex items-center justify-center relative"
+        className="w-full aspect-[16/9] max-h-[260px] sm:aspect-[calc(3*3+1)/3]  inset-0 flex items-center justify-center relative"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -231,12 +231,12 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute ${isMobile ? 'w-full' : 'w-[40%]'} aspect-video`}
+            className={`absolute ${isMobile ? 'h-full w-full' : 'w-[38%]'} aspect-video`}
             style={getSlideStyle(index)}
           >
             <div
               onClick={() => goToSlide(index)}
-              className="relative w-full h-full rounded-lg shadow-lg overflow-hidden cursor-pointer"
+              className="relative w-full h-full rounded-md shadow-md overflow-hidden cursor-pointer"
               aria-label={`Go to slide ${index + 1}`}
             >
               {slide.link_url && (
@@ -247,7 +247,7 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
                 alt={slide.title || 'Promotional slide'}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, 480px"
+                sizes="(max-width: 768px) 100vw, 420px"
                 priority={index === currentSlide}
               />
               {/* Optional overlay for inactive slides */}
@@ -262,31 +262,31 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
       {/* Navigation Arrows - Positioned outside the component */}
       <button
         onClick={prevSlide}
-        className="flex absolute left-2 sm:-left-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-8 h-8 sm:w-12 sm:h-12 rounded-full items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+        className="flex absolute left-1.5 sm:-left-3 top-1/2 transform -translate-y-1/2 z-40 bg-white w-7 h-7 sm:w-10 sm:h-10 rounded-full items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
         aria-label="Previous slide"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
       <button
         onClick={nextSlide}
-        className="flex absolute right-2 sm:-right-4 top-1/2 transform -translate-y-1/2 z-40 bg-white w-8 h-8 sm:w-12 sm:h-12 rounded-full items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+        className="flex absolute right-1.5 sm:-right-3 top-1/2 transform -translate-y-1/2 z-40 bg-white w-7 h-7 sm:w-10 sm:h-10 rounded-full items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
         aria-label="Next slide"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
 
       {/* Pagination Indicators */}
-      <div className="absolute translate-y-full left-1/2 transform -translate-x-1/2 z-40 flex space-x-3">
+      <div className="absolute translate-y-full left-1/2 transform -translate-x-1/2 z-40 flex space-x-2 mt-1">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
+            className={`w-2.5 h-2.5 rounded-full transition-all ${
               index === currentSlide
                 ? 'bg-black'
                 : 'bg-gray-400'

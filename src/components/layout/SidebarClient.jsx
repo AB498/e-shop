@@ -111,25 +111,25 @@ const SidebarClient = ({ categories = [] }) => {
     <>
       {/* fake div to make the sidebar occupy width */}
       <div
-        className="transition-all duration-300 w-[0px] sm:w-[60px]"
+        className="transition-all duration-300 w-[0px] sm:w-[50px]"
       ></div>
       <div
-        className={`${collapsed ? 'w-[0px] sm:w-[60px]' : 'w-[16rem]'} h-screen bg-white sm:border-r sm:border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
+        className={`${collapsed ? 'w-[0px] sm:w-[50px]' : 'w-[16rem]'} h-screen bg-white sm:border-r sm:border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
 
       >
         {/* Menu Toggle Button */}
         <div className="px-3 py-6 flex items-center justify-start">
           <button
             type="button"
-            className="p-2 aspect-square rounded-full bg-[#372B86] flex items-center justify-center cursor-pointer  "
+            className="p-2 h-10aspect-square rounded-full bg-[#372B86] flex items-center justify-center cursor-pointer  "
             onClick={toggleSidebar}
             title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             <div className="relative flex items-center justify-center duration-300">
               {collapsed ? (
-                <Bars3Icon className="h-[20px] w-[20px] text-white" />
+                <Bars3Icon className="h-[15px] w-[15px] text-white" />
               ) : (
-                <XMarkIcon className="h-[20px] w-[20px] text-white" />
+                <XMarkIcon className="h-[15px] w-[15px] text-white" />
               )}
             </div>
           </button>
@@ -143,7 +143,7 @@ const SidebarClient = ({ categories = [] }) => {
               className={`
               relative flex items-center
               cursor-pointer hover:opacity-90 transition-all duration-300 rounded-md
-              ${pathname === '/products' && !currentCategoryId ? 'bg-[#F2F7F2] border-l-4 border-[#3BB77E]' : ''}
+              ${pathname === '/products' && !currentCategoryId ? 'bg-[#F2F7F2] border-l-2 border-[#3BB77E]' : ''}
             `}
               title={collapsed ? "All Products" : ''}
             >
@@ -173,7 +173,7 @@ const SidebarClient = ({ categories = [] }) => {
                 className={`
                 relative flex items-center
                 cursor-pointer hover:opacity-90 transition-all duration-300 rounded-md
-                ${getActiveCategoryIndex() === index ? 'bg-[#F2F7F2] border-l-4 border-[#3BB77E]' : ''}
+                ${getActiveCategoryIndex() === index ? 'bg-[#F2F7F2] border-l-2 border-[#3BB77E]' : ''}
               `}
                 title={collapsed ? category.name : ''}
               >

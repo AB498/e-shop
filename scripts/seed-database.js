@@ -22,6 +22,7 @@ import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
+import { getProductsFromSheets } from './seed-products-from-sheets.js';
 
 // Load environment variables first - must happen before any database connections
 dotenv.config();
@@ -563,11 +564,43 @@ async function seedDatabase() {
         insertData('settings', schema.settings, settingsSeed)
       ]);
 
-      // Insert dependent tables in sequence
-      await insertData('products', schema.products, productsSeed);
+      // Fetch products from Google Sheets
+      console.log('Fetching products from Google Sheets...');
+      const sheetsData = await getProductsFromSheets();
+      console.log(`Fetched ${sheetsData.products.length} products from Google Sheets`);
 
-      // Insert product images after products are inserted
-      await insertData('product_images', schema.productImages, productImagesSeed);
+      // Adjust IDs of hardcoded products to start after Google Sheets products
+      const sheetProductsCount = sheetsData.products.length;
+      if (sheetProductsCount > 0) {
+        console.log(`Adjusting IDs of ${productsSeed.length} hardcoded products to start after Google Sheets products`);
+        productsSeed.forEach((product, index) => {
+          product.id = sheetProductsCount + index + 1;
+        });
+
+        // Also adjust product_id in product images
+        productImagesSeed.forEach(image => {
+          image.product_id = sheetProductsCount + image.product_id;
+        });
+      }
+
+      // Combine Google Sheets products with hardcoded products
+      const combinedProducts = [...sheetsData.products, ...productsSeed];
+      console.log(`Total products to insert: ${combinedProducts.length}`);
+
+      // Insert products
+      await insertData('products', schema.products, combinedProducts);
+
+      // Combine Google Sheets product images with hardcoded product images
+      const combinedProductImages = [...sheetsData.productImages, ...productImagesSeed];
+      console.log(`Total product images to insert: ${combinedProductImages.length}`);
+
+      // Store these for stats at the end
+      global.totalProducts = combinedProducts.length;
+      global.totalProductImages = combinedProductImages.length;
+      global.sheetsProductCount = sheetsData.products.length;
+
+      // Insert product images
+      await insertData('product_images', schema.productImages, combinedProductImages);
 
       // Insert wishlist items after products and users are inserted
       await insertData('wishlist_items', schema.wishlistItems, wishlistItemsSeed);
@@ -583,8 +616,10 @@ async function seedDatabase() {
     console.log('Database seeding completed successfully!');
     console.log(`Total execution time: ${totalDuration} seconds`);
     console.log('Stats:');
-    console.log(`  Products: ${productsSeed.length}`);
-    console.log(`  Product Images: ${productImagesSeed.length}`);
+    console.log(`  Products from Google Sheets: ${global.sheetsProductCount || 0}`);
+    console.log(`  Products from seed file: ${productsSeed.length}`);
+    console.log(`  Total Products: ${global.totalProducts || productsSeed.length}`);
+    console.log(`  Product Images: ${global.totalProductImages || productImagesSeed.length}`);
     console.log(`  Categories: ${categoriesSeed.length}`);
     console.log(`  Users: ${usersSeed.length}`);
     console.log(`  Files: ${filesSeed.length}`);

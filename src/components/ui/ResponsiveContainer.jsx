@@ -30,11 +30,11 @@ export default function ResponsiveContainer({
     full: 'max-w-full',
   };
 
-  // Combine classes - more compact padding on mobile
+  // Combine classes - more compact padding on all screens
   const containerClasses = `
     w-full
     mx-auto
-    ${fluid ? 'px-3 sm:px-4 md:px-6 lg:px-8' : ''}
+    ${fluid ? 'px-2 sm:px-3 md:px-4 lg:px-6' : ''}
     ${sizeClasses[size] || sizeClasses.content}
     ${className}
   `.trim();

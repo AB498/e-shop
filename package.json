@@ -8,10 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "node scripts/seed-database.js",
+    "seed-sheets": "node scripts/seed-products-from-sheets.js",
+    "list-products": "node scripts/list-products.js",
     "test-order": "node scripts/test-order.js",
     "test-webhook": "node scripts/test-webhook.js",
     "migrate-courier": "node scripts/migrate-courier-status.js",
-    "reset-sequence": "node scripts/reset-sequence.js"
+    "reset-sequence": "node scripts/reset-sequence.js",
+    "reset-products": "node scripts/reset-products-sequence.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.787.0",

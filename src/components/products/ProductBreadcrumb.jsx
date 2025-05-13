@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { getAllCategories } from '@/lib/actions/products';
 
@@ -18,53 +17,82 @@ export default async function ProductBreadcrumb({ categoryId = null }) {
     const popularCategories = categories.slice(0, 5);
 
     return (
-        <div className="container my-6 md:my-12 mx-auto bg-cover bg-center px-4 sm:px-6 md:px-12 py-8 md:py-12 rounded-[20px]" style={{ backgroundImage: "url('/images/breadcrumb/breadcrumb-bg.png')" }}>
-            <div className="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
-                <div className="flex flex-col space-y-2 md:space-y-4 py-2 md:py-4 w-full md:w-auto">
+        <div className="container my-3 md:my-6 mx-auto bg-cover bg-center px-3 sm:px-4 md:px-6 py-4 md:py-8 rounded-lg" style={{ backgroundImage: "url('/images/breadcrumb/breadcrumb-bg.png')" }}>
+            <div className="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-3">
+                <div className="flex flex-col space-y-1 md:space-y-1 py-1 md:py-2 w-full md:w-auto">
                     {/* Page Title */}
-                    <h1 className="text-[#253D4E] text-3xl sm:text-4xl md:text-5xl font-bold break-words">{categoryName}</h1>
+                    <h1 className="text-[#253D4E] text-2xl sm:text-3xl md:text-4xl font-bold break-words">{categoryName}</h1>
 
                     {/* Breadcrumb Navigation */}
                     <div className="flex items-center flex-wrap">
-                        <Link href="/" className="text-[#3BB77E] font-semibold text-xs sm:text-sm uppercase flex items-center hover:text-[#2A9D6E] transition-colors">
-                            <Image src="/images/breadcrumb/home-icon.svg" alt="Home" width={14} height={14} className="mr-1" />
+                        <Link href="/" className="text-[#3BB77E] font-medium text-[10px] sm:text-xs uppercase flex items-center hover:text-[#2A9D6E] transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-0.5">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
                             Home
                         </Link>
-                        <Image src="/images/breadcrumb/arrow-icon.svg" alt=">" width={3} height={6} className="mx-2" />
-                        <Link href="/products" className="text-[#7E7E7E] font-semibold text-xs sm:text-sm uppercase hover:text-[#3BB77E] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#7E7E7E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-1">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        <Link href="/products" className="text-[#7E7E7E] font-medium text-[10px] sm:text-xs uppercase hover:text-[#3BB77E] transition-colors">
                             Shop
                         </Link>
                         {currentCategory && (
                             <>
-                                <Image src="/images/breadcrumb/arrow-icon2.svg" alt=">" width={3} height={6} className="mx-2" />
-                                <span className="text-[#7E7E7E] font-semibold text-xs sm:text-sm uppercase truncate max-w-[150px] sm:max-w-none">{categoryName}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#7E7E7E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-1">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                                <span className="text-[#7E7E7E] font-medium text-[10px] sm:text-xs uppercase truncate max-w-[120px] sm:max-w-[150px]">{categoryName}</span>
                             </>
                         )}
                     </div>
                 </div>
 
                 {/* Category Pills */}
-                <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 mt-4 md:mt-0 w-full md:w-auto justify-start md:justify-end">
+                <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2 mt-2 md:mt-0 w-full md:w-auto justify-start md:justify-end">
                     {popularCategories.map((category, index) => (
                         <Link
                             key={category.id}
                             href={`/products?categoryId=${category.id}`}
-                            className="flex items-center bg-white rounded-[30px] px-3 sm:px-4 md:px-5 py-2 md:py-3 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] border border-[#ECECEC] hover:shadow-md transition-shadow"
+                            className="flex items-center bg-white rounded-full px-2 sm:px-2.5 md:px-3 py-1 md:py-1.5 shadow-sm border border-[#ECECEC] hover:shadow transition-shadow"
                         >
-                            <span className={`font-bold text-sm sm:text-base md:text-[17px] truncate max-w-[100px] sm:max-w-[120px] md:max-w-none ${
+                            <span className={`font-medium text-xs sm:text-sm truncate max-w-[80px] sm:max-w-[100px] md:max-w-[120px] ${
                                 currentCategory && currentCategory.id === category.id
                                     ? 'text-[#253D4E]'
                                     : 'text-[#3BB77E]'
                             }`}>
                                 {category.name}
                             </span>
-                            <Image
-                                src={`/images/breadcrumb/${index === 0 ? 'beauty' : index === 1 ? 'skincare' : index === 2 ? 'face' : index === 3 ? 'toner' : 'cosmetics'}-icon.svg`}
-                                alt={category.name}
-                                width={10}
-                                height={10}
-                                className="ml-2 md:ml-3 flex-shrink-0"
-                            />
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="8"
+                                height="8"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke={currentCategory && currentCategory.id === category.id ? "#253D4E" : "#3BB77E"}
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="ml-1 md:ml-1.5 flex-shrink-0"
+                            >
+                                {index === 0 ? (
+                                    // Beauty icon (flower)
+                                    <path d="M12 2s.35 3.9 3.6 7.15a9.08 9.08 0 0 1 0 12.85c-3.25 3.25-7.15 3.6-7.15 3.6s-.35-3.9-3.6-7.15a9.08 9.08 0 0 1 0-12.85C8.1 2.35 12 2 12 2z"></path>
+                                ) : index === 1 ? (
+                                    // Skincare icon (droplet)
+                                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                ) : index === 2 ? (
+                                    // Face icon (smile)
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                ) : index === 3 ? (
+                                    // Toner icon (bottle)
+                                    <path d="M8 2h8l4 10v10H4V12L8 2z"></path>
+                                ) : (
+                                    // Cosmetics icon (star)
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                )}
+                            </svg>
                         </Link>
                     ))}
                 </div>

@@ -17,7 +17,7 @@ export default async function ProductListingPage({ searchParams }) {
   // Extract query parameters with defaults
   await searchParams;
   const page = searchParams?.page || '1';
-  const limit = searchParams?.limit || '12';
+  const limit = searchParams?.limit || '24';
   const sortBy = searchParams?.sortBy || 'id';
   const sortOrder = searchParams?.sortOrder || 'asc';
   const categoryId = searchParams?.categoryId || null;

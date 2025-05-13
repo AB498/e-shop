@@ -23,9 +23,9 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
   };
 
   return (
-    <div className="w-full md:w-1/2 lg:w-2/5 fluid-p">
+    <div className="w-full md:w-1/2 lg:w-2/5">
       {/* Main Product Image */}
-      <div className="relative aspect-square mb-4 border border-[#ECECEC] rounded-[15px] overflow-hidden bg-white">
+      <div className="relative aspect-square mb-2 sm:mb-3 border border-[#ECECEC] rounded-md overflow-hidden bg-white">
         <Image
           src={activeImage}
           alt={productImages[activeImageIndex]?.altText || name || "Product"}
@@ -35,8 +35,8 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
           priority
         />
         {discountPercentage > 0 && (
-          <div className="absolute top-4 left-4">
-            <div className="bg-[#E12625] text-white text-responsive-xs font-bold py-1 px-3 rounded-[5px]">
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
+            <div className="bg-[#E12625] text-white text-[10px] sm:text-xs font-semibold py-0.5 px-1.5 sm:px-2 rounded-sm">
               {discountPercentage}% Off
             </div>
           </div>
@@ -44,18 +44,18 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
       </div>
 
       {/* Thumbnail Images */}
-      <div className="flex fluid-gap overflow-x-auto pb-2 justify-center md:justify-start">
+      <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1 justify-center md:justify-start">
         {productImages.map((image, index) => (
           <div
             key={image.id || index}
-            className={`relative border rounded-[10px] overflow-hidden flex-shrink-0 cursor-pointer ${
+            className={`relative border rounded-md overflow-hidden flex-shrink-0 cursor-pointer ${
               index === activeImageIndex
-                ? 'border-[#3BB77E] shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)]'
+                ? 'border-[#3BB77E] shadow-sm'
                 : 'border-[#ECECEC]'
             }`}
             style={{
-              width: 'clamp(60px, 15vw, 96px)',
-              height: 'clamp(60px, 15vw, 96px)'
+              width: 'clamp(50px, 12vw, 80px)',
+              height: 'clamp(50px, 12vw, 80px)'
             }}
             onClick={() => handleThumbnailClick(index)}
           >
@@ -64,7 +64,7 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
               alt={image.altText || `${name || "Product"} Thumbnail ${index + 1}`}
               fill
               className="object-contain"
-              sizes="(max-width: 768px) 15vw, 96px"
+              sizes="(max-width: 768px) 12vw, 80px"
             />
           </div>
         ))}

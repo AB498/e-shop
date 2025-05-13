@@ -126,10 +126,17 @@ export default function AdminLayoutClient({
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
             <div className="flex-shrink-0 flex items-center px-4">
               <div className="flex items-center space-x-2">
-                <div className="w-10 h-10 rounded-full bg-[#006B51] flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">E</span>
-                </div>
-                <span className="text-xl font-bold text-emerald-600">Thai Bangla Store</span>
+                <Link href="/">
+                  <div className="relative w-10 h-10 ">
+                    <Image
+                      src="/images/logo.png"
+                      alt="Thai Bangla Logo"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </Link>
+                <span className="text-md font-bold text-emerald-600">Thai Bangla Store</span>
               </div>
             </div>
             <nav className="mt-5 px-2 space-y-0.5">
@@ -220,14 +227,6 @@ export default function AdminLayoutClient({
               </div>
             </div>
 
-            {/* Back to Site button for mobile */}
-            <Link
-              href="/"
-              className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 hover:text-emerald-600 transition-all duration-200"
-            >
-              <ArrowLeftIcon className="h-5 w-5 mr-2" aria-hidden="true" />
-              Back to Site
-            </Link>
           </div>
         </div>
 
@@ -246,7 +245,7 @@ export default function AdminLayoutClient({
                 <Link href="/">
                   <div className="relative w-10 h-10 ">
                     <Image
-                      src="/images/navigation/logo.png"
+                      src="/images/logo.png"
                       alt="Thai Bangla Logo"
                       fill
                       className="object-contain"
@@ -254,7 +253,7 @@ export default function AdminLayoutClient({
                   </div>
                 </Link>
 
-                <span className="text-xl font-bold text-emerald-600">Thai Bangla Store</span>
+                <span className="text-md font-bold text-emerald-600">Thai Bangla Store</span>
               </div>
             </div>
             <nav className="mt-5 flex-1 px-2 bg-white space-y-0.5 flex flex-col">
@@ -368,8 +367,8 @@ export default function AdminLayoutClient({
         <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 shadow-sm">
           <div className="flex-1 px-4 flex justify-between">
             <div className="flex-1 flex items-center">
-              <h1 className="text-xl font-semibold text-gray-800">
-                <span className="text-emerald-600 mr-1">|</span> Admin Dashboard
+              <h1 className="text-xl font-semibold text-gray-800 px-4">
+                Admin Dashboard
               </h1>
             </div>
             <div className="ml-4 flex items-center md:ml-6 space-x-3">

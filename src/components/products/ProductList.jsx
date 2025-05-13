@@ -8,7 +8,7 @@ import { getAllProducts } from '@/lib/actions/products';
 // This is a Server Component that fetches data
 export default async function ProductList({
   page = 1,
-  limit = 12,
+  limit = 24,
   sortBy = 'id',
   sortOrder = 'asc',
   categoryId = null,

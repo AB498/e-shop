@@ -58,20 +58,20 @@ const WishlistButton = ({ product }) => {
   return (
     <button
       onClick={handleWishlistClick}
-      className="p-0.5 transition-all"
+      className="p-0 transition-all"
       aria-label={productInWishlist ? "Remove from wishlist" : "Add to wishlist"}
     >
       {isWishlistLoading ? (
-        <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-3 h-3 sm:w-4 sm:h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
       ) : (
         <Image
           src={productInWishlist
             ? "/images/wishlist/wishlist-icon-filled.svg"
             : "/images/wishlist/wishlist-icon-outline.svg"}
           alt="Wishlist"
-          width={20}
-          height={20}
-          className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer transition-all"
+          width={16}
+          height={16}
+          className="w-3 h-3 sm:w-4 sm:h-4 cursor-pointer transition-all"
         />
       )}
     </button>
@@ -87,7 +87,6 @@ const WishlistButton = ({ product }) => {
  * @param {string} props.icon - Path to the icon image
  * @param {string} props.className - Additional CSS classes
  * @param {Object} props.breakpoints - Custom breakpoints for responsive design
- * @param {string} props.carouselClassName - Additional CSS classes for the carousel
  * @returns {JSX.Element}
  */
 export default function ProductCarousel({
@@ -97,31 +96,30 @@ export default function ProductCarousel({
   className = "",
   breakpoints = {
     320: {
-      slidesPerView: 1.5,
-      spaceBetween: 8,
+      slidesPerView: 2,
+      spaceBetween: 4,
     },
     480: {
-      slidesPerView: 2,
-      spaceBetween: 12,
+      slidesPerView: 2.5,
+      spaceBetween: 6,
     },
     640: {
-      slidesPerView: 2.5,
-      spaceBetween: 16,
+      slidesPerView: 3,
+      spaceBetween: 8,
     },
     768: {
-      slidesPerView: 3,
-      spaceBetween: 16,
+      slidesPerView: 4,
+      spaceBetween: 8,
     },
     1024: {
-      slidesPerView: 5,
-      spaceBetween: 16,
+      slidesPerView: 6,
+      spaceBetween: 8,
     },
     1280: {
-      slidesPerView: 6,
-      spaceBetween: 16,
+      slidesPerView: 7,
+      spaceBetween: 8,
     },
-  },
-  carouselClassName = "product-carousel"
+  }
 }) {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
@@ -166,20 +164,20 @@ export default function ProductCarousel({
 
   console.log('products',products);
   return (
-    <section className={`py-4 sm:py-6 md:py-8 relative ${className}`}>
+    <section className={`py-2 sm:py-3 md:py-4 relative ${className}`}>
       {/* Section title */}
       {(title || icon) && (
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex items-center mb-4 sm:mb-6 relative">
-            <div className="flex items-center gap-2 sm:gap-4">
+        <div className="container mx-auto px-2 sm:px-3">
+          <div className="flex items-center mb-2 sm:mb-3 relative">
+            <div className="flex items-center gap-1 sm:gap-2">
               {icon && (
                 <img
                   src={icon}
-                  className="h-7 w-7 sm:h-10 sm:w-10 aspect-square object-contain"
+                  className="h-5 w-5 sm:h-6 sm:w-6 aspect-square object-contain"
                   alt={title}
                 />
               )}
-              {title && <h2 className="text-lg sm:text-xl md:text-2xl font-semibold">{title}</h2>}
+              {title && <h2 className="text-sm sm:text-base md:text-lg font-semibold">{title}</h2>}
             </div>
           </div>
         </div>
@@ -198,25 +196,25 @@ export default function ProductCarousel({
 
           {enableSwiping && (
             <>
-              <div className="absolute top-1/2 transform -translate-x-1/2 -translate-y-full z-10 hidden sm:block">
+              <div className="absolute top-1/2 transform -translate-x-1/3 -translate-y-full z-10 hidden sm:block">
                 <button
                   ref={prevRef}
-                  className="bg-white left-0 rounded-lg p-2 sm:p-3 shadow-lg hover:bg-gray-50 transition-colors"
+                  className="bg-white left-0 rounded-sm p-1 sm:p-1.5 shadow-sm hover:bg-gray-50 transition-colors"
                   aria-label="Previous slide"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
               </div>
 
-              <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-full z-10 hidden sm:block">
+              <div className="absolute right-0 top-1/2 transform translate-x-1/3 -translate-y-full z-10 hidden sm:block">
                 <button
                   ref={nextRef}
-                  className="bg-white rounded-lg p-2 sm:p-3 shadow-lg hover:bg-gray-50 transition-colors"
+                  className="bg-white rounded-sm p-1 sm:p-1.5 shadow-md hover:bg-gray-50 transition-colors"
                   aria-label="Next slide"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
@@ -227,7 +225,7 @@ export default function ProductCarousel({
           <div className={`overflow-hidden ${!enableSwiping ? 'w-full' : ''}`}>
             <Swiper
               modules={[Navigation, Pagination, A11y]}
-              spaceBetween={8}
+              spaceBetween={18}
               slidesPerView="auto"
               navigation={{
                 prevEl: prevRef.current,
@@ -236,7 +234,7 @@ export default function ProductCarousel({
               pagination={enableSwiping ? {
                 clickable: true,
                 dynamicBullets: true,
-                dynamicMainBullets: 3
+                dynamicMainBullets: 1
               } : false}
               onInit={(swiper) => {
                 // Override navigation after swiper initialization
@@ -248,7 +246,7 @@ export default function ProductCarousel({
                 // Ensure loading state is set to false when Swiper is fully initialized
                 setIsLoading(false);
               }}
-              className={`px-4 sm:px-0 ${carouselClassName}`}
+              className={`px-2 sm:px-0 overflow-visible py-6`}
               loop={false}
               loopFillGroupWithBlank={false}
               slidesPerGroupAuto={true}
@@ -256,8 +254,8 @@ export default function ProductCarousel({
               allowTouchMove={enableSwiping}
             >
               {products.map((product) => (
-                <SwiperSlide key={product.id} className={`${enableSwiping ? '!w-[calc(100vw-32px)] sm:!w-[calc(50vw-32px)] md:!w-[calc(33.333vw-32px)] lg:!w-[calc(25vw-32px)] xl:!w-[calc(20vw-32px)] 2xl:!w-[calc(16.666vw-32px)]' : 'w-full sm:max-w-[320px] mx-auto'}`}>
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden relative h-full max-h-[320px] sm:max-h-[360px]">
+                <SwiperSlide key={product.id} className={`${enableSwiping ? '!w-[calc(40vw-16px)] sm:!w-[calc(25vw-16px)] md:!w-[calc(20vw-16px)] lg:!w-[calc(12.666vw-16px)] xl:!w-[calc(10.285vw-16px)] 2xl:!w-[calc(8.5vw-16px)]' : 'w-full sm:max-w-[220px] mx-auto'}`}>
+                  <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[280px]">
                     {/* Product Image with Link or Quick View */}
                     {isLandingPage ? (
                       <div
@@ -268,19 +266,19 @@ export default function ProductCarousel({
                           <Image
                             src={product.image || "/images/product-image.png"}
                             alt={product.name}
-                            width={240}
-                            height={240}
-                            className="w-full h-full object-cover rounded-[8px] sm:rounded-[10px] transition-transform duration-300 hover:scale-105"
+                            width={140}
+                            height={140}
+                            className="w-full h-full object-cover rounded-[4px] sm:rounded-[6px] transition-transform duration-300 hover:scale-105"
                           />
 
                           {/* Quick view overlay */}
                           <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
-                            <span className="bg-white text-black px-3 py-1 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm">View</span>
+                            <span className="bg-white text-black px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full font-medium text-[8px] sm:text-[10px]">View</span>
                           </div>
 
                           {/* Discount tag */}
-                          <div className="absolute top-1 sm:top-2 left-1 sm:left-2">
-                            <div className="bg-[#006B51] text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg text-[10px] sm:text-xs font-semibold">
+                          <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
+                            <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
                               -10%
                             </div>
                           </div>
@@ -292,14 +290,14 @@ export default function ProductCarousel({
                           <Image
                             src={product.image || "/images/product-image.png"}
                             alt={product.name}
-                            width={240}
-                            height={240}
-                            className="w-full h-full object-cover rounded-[8px] sm:rounded-[10px] transition-transform duration-300 hover:scale-105"
+                            width={220}
+                            height={220}
+                            className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
                           />
 
                           {/* Discount tag */}
-                          <div className="absolute top-1 sm:top-2 left-1 sm:left-2">
-                            <div className="bg-[#006B51] text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg text-[10px] sm:text-xs font-semibold">
+                          <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+                            <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
                               -10%
                             </div>
                           </div>
@@ -308,23 +306,23 @@ export default function ProductCarousel({
                     )}
 
                     {/* Wishlist icon */}
-                    <div className="absolute top-1 sm:top-2 right-1 sm:right-2">
+                    <div className="absolute top-0.5 sm:top-1 right-0.5 sm:right-1">
                       <WishlistButton product={product} />
                     </div>
 
                     {/* Product Info */}
-                    <div className="p-2 sm:p-3 text-center">
-                      <p className="text-[#A9A9A9] text-[10px] sm:text-xs font-semibold uppercase">{product.category}</p>
+                    <div className="p-1 sm:p-1.5 text-center">
+                      <p className="text-[#A9A9A9] text-[8px] sm:text-[9px] font-semibold uppercase">{product.category}</p>
                       <Link href={`/products/${product.id}`}>
-                        <h3 className="text-[#3F3F3F] text-sm sm:text-base font-semibold mt-0.5 sm:mt-1 line-clamp-1 hover:text-[#006B51] transition-colors">
+                        <h3 className="text-[#3F3F3F] text-[10px] sm:text-xs font-semibold mt-0.5 line-clamp-1 hover:text-[#006B51] transition-colors">
                           {product.name}
                         </h3>
                       </Link>
 
                       {/* Price */}
-                      <div className="mt-1 sm:mt-2 flex items-center justify-center gap-1 sm:gap-2">
-                        <span className="text-[#006B51] text-xs sm:text-sm font-semibold">৳{product.discountPrice}</span>
-                        <span className="text-[#E12625] text-xs sm:text-sm font-normal line-through">৳{product.price}</span>
+                      <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
+                        <span className="text-[#006B51] text-[9px] sm:text-[10px] font-semibold">৳{product.discountPrice}</span>
+                        <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
                       </div>
                     </div>
                   </div>

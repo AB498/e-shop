@@ -1,7 +1,7 @@
 'use server';
 
-import { db } from '@/lib/db';
-import { orders, orderItems, products, users, categories, couriers, deliveryPersons, productImages } from '@/db/schema';
+import { db, pool } from '@/lib/db';
+import { orders, orderItems, products, users, categories, couriers, deliveryPersons, productImages, wishlistItems } from '@/db/schema';
 import { eq, desc, sql, and, gte, lte, inArray } from 'drizzle-orm';
 
 /**
@@ -451,6 +451,7 @@ export async function getAllProductsWithInventory() {
         stock: products.stock,
         categoryId: products.category_id,
         image: products.image,
+        description: products.description,
         createdAt: products.created_at
       })
       .from(products)
@@ -491,7 +492,9 @@ export async function getAllProductsWithInventory() {
       category: categoryMap[product.categoryId] || 'Uncategorized',
       price: `$${parseFloat(product.price).toFixed(2)}`,
       createdAt: product.createdAt.toISOString().split('T')[0],
-      stockStatus: product.stock <= 10 ? 'low' : product.stock <= 50 ? 'medium' : 'high'
+      stockStatus: product.stock <= 10 ? 'low' : product.stock <= 50 ? 'medium' : 'high',
+      // Ensure description is included
+      description: product.description || ''
     }));
   } catch (error) {
     console.error('Error fetching products with inventory:', error);
@@ -608,28 +611,69 @@ export async function createProduct(productData) {
       throw new Error('SKU already exists');
     }
 
-    // Create new product
-    const newProduct = await db
-      .insert(products)
-      .values({
-        name: productData.name,
-        sku: productData.sku,
-        category_id: productData.category_id || null,
-        price: productData.price,
-        stock: productData.stock || 0,
-        weight: productData.weight || 0.5,
-        description: productData.description || '',
-        image: productData.image || '',
-        created_at: new Date(),
-        updated_at: new Date()
-      })
-      .returning();
-
-    if (!newProduct.length) {
-      return null;
+    // Reset the sequence for the products table to avoid primary key conflicts
+    try {
+      await pool.query(`
+        SELECT setval(pg_get_serial_sequence('products', 'id'),
+          (SELECT COALESCE(MAX(id), 0) + 1 FROM products), false);
+      `);
+      console.log('Products table sequence has been reset');
+    } catch (seqError) {
+      console.error('Error resetting sequence:', seqError);
+      // Continue anyway, as we'll handle duplicate key errors below
     }
 
-    return newProduct[0];
+    // Create new product with error handling for duplicate keys
+    const createProductOperation = async () => {
+      return await db
+        .insert(products)
+        .values({
+          name: productData.name,
+          sku: productData.sku,
+          category_id: productData.category_id || null,
+          price: productData.price,
+          stock: productData.stock || 0,
+          weight: productData.weight || 0.5,
+          description: productData.description || '',
+          image: productData.image || '',
+          created_at: new Date(),
+          updated_at: new Date()
+        })
+        .returning();
+    };
+
+    try {
+      const newProduct = await createProductOperation();
+
+      if (!newProduct.length) {
+        return null;
+      }
+
+      return newProduct[0];
+    } catch (insertError) {
+      // If it's a duplicate key error, try to fix the sequence and retry
+      if (insertError.code === '23505' && insertError.constraint === 'products_pkey') {
+        console.log('Detected duplicate key error, attempting to fix sequence and retry...');
+
+        // Force reset the sequence to a higher value
+        await pool.query(`
+          SELECT setval(pg_get_serial_sequence('products', 'id'),
+            (SELECT COALESCE(MAX(id), 0) + 10 FROM products), false);
+        `);
+
+        // Retry the operation
+        const newProduct = await createProductOperation();
+
+        if (!newProduct.length) {
+          return null;
+        }
+
+        return newProduct[0];
+      } else {
+        // If it's not a duplicate key error or retry failed, rethrow
+        throw insertError;
+      }
+    }
   } catch (error) {
     console.error('Error creating product:', error);
     throw error;
@@ -663,28 +707,38 @@ export async function updateProduct(productId, productData) {
       throw new Error('SKU already exists for another product');
     }
 
-    // Update product
-    const updatedProduct = await db
-      .update(products)
-      .set({
-        name: productData.name,
-        sku: productData.sku,
-        category_id: productData.category_id || null,
-        price: productData.price,
-        stock: productData.stock !== undefined ? productData.stock : products.stock,
-        weight: productData.weight || products.weight,
-        description: productData.description || products.description,
-        image: productData.image || products.image,
-        updated_at: new Date()
-      })
-      .where(eq(products.id, productId))
-      .returning();
+    // Update product with error handling
+    const updateProductOperation = async () => {
+      return await db
+        .update(products)
+        .set({
+          name: productData.name,
+          sku: productData.sku,
+          category_id: productData.category_id || null,
+          price: productData.price,
+          stock: productData.stock !== undefined ? productData.stock : products.stock,
+          weight: productData.weight || products.weight,
+          description: productData.description || products.description,
+          image: productData.image || products.image,
+          updated_at: new Date()
+        })
+        .where(eq(products.id, productId))
+        .returning();
+    };
 
-    if (!updatedProduct.length) {
-      return null;
+    try {
+      const updatedProduct = await updateProductOperation();
+
+      if (!updatedProduct.length) {
+        return null;
+      }
+
+      return updatedProduct[0];
+    } catch (updateError) {
+      // If it's a database error, log it and rethrow
+      console.error('Database error during product update:', updateError);
+      throw updateError;
     }
-
-    return updatedProduct[0];
   } catch (error) {
     console.error('Error updating product:', error);
     throw error;
@@ -709,7 +763,17 @@ export async function deleteProduct(productId) {
       return false;
     }
 
-    // Delete product
+    // First, delete all related product images
+    await db
+      .delete(productImages)
+      .where(eq(productImages.product_id, productId));
+
+    // Then, delete any wishlist items referencing this product
+    await db
+      .delete(wishlistItems)
+      .where(eq(wishlistItems.product_id, productId));
+
+    // Finally, delete the product
     const result = await db
       .delete(products)
       .where(eq(products.id, productId))

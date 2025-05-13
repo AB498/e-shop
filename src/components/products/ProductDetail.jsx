@@ -35,12 +35,12 @@ export default async function ProductDetail({ productId }) {
       />
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+      <div className="container mx-auto px-3 py-3 sm:py-4 flex flex-col lg:flex-row gap-3 sm:gap-4">
         {/* Left Column - Main Content */}
         <div className="flex-1">
           {/* Product Images and Details Section */}
-          <div className="bg-white rounded-[15px] p-6 shadow-[5px_5px_15px_0px_rgba(0,0,0,0.05)] mb-6 border border-[#ECECEC]">
-            <div className="flex flex-col md:flex-row gap-8">
+          <div className="bg-white rounded-md p-3 sm:p-4 shadow-sm mb-3 sm:mb-4 border border-[#ECECEC]">
+            <div className="flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-5">
               <ProductImageGallery
                 images={product.images}
                 image={product.image}

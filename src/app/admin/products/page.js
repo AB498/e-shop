@@ -81,7 +81,8 @@ export default function ProductsPage() {
     const matchesSearch =
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchTerm.toLowerCase());
+      product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (product.description && product.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesFilter =
       filterStock === 'all' ||
@@ -153,7 +154,6 @@ export default function ProductsPage() {
     setShowDeleteModal(false);
     // Remove the product from the UI
     setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
-    toast.success('Product deleted successfully');
   };
 
   // Handle add stock

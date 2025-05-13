@@ -1,7 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { getResponsiveTextClass } from '@/utils/responsiveUtils';
 
 const PopularCategories = () => {
   const containerRef = useRef(null);
@@ -162,8 +161,7 @@ const PopularCategories = () => {
     }
   ];
 
-  // Total number of categories
-  const totalCategories = categories.length;
+  // No need to track total categories here
 
   // Handle next slide - scroll by a fixed distance
   const nextSlide = () => {
@@ -217,10 +215,10 @@ const PopularCategories = () => {
   };
 
   return (
-    <section className="container mx-auto py-4 sm:py-6 md:py-10">
+    <section className="container mx-auto py-2 sm:py-3 md:py-4">
       {/* Section title */}
-      <div className="flex items-center justify-start mb-3 sm:mb-4 md:mb-6 relative h-7 sm:h-8 md:h-10 gap-2 md:gap-4">
-        <h2 className={getResponsiveTextClass('xl', { weight: 'font-semibold' })}>Popular Categories</h2>
+      <div className="flex items-center justify-start mb-1 sm:mb-1.5 md:mb-2 relative h-4 sm:h-5 md:h-6 gap-0.5 md:gap-1">
+        <h2 className="text-sm sm:text-base md:text-lg font-semibold">Popular Categories</h2>
       </div>
 
       {/* Categories Container with Overflow Hidden */}
@@ -228,42 +226,44 @@ const PopularCategories = () => {
         {/* Scrollable Container */}
         <div
           ref={scrollContainerRef}
-          className="relative w-full left-0 p-0.5 xs:p-1 sm:p-2 overflow-x-scroll webkit-scrollbar-hidden"
+          className="relative w-full left-0 p-0.5 xs:p-0.5 sm:p-0.5 overflow-x-scroll webkit-scrollbar-hidden"
         >
           {/* Categories Flex Container */}
           <div
             ref={containerRef}
-            className={`flex gap-2 xs:gap-3 sm:gap-4 md:gap-6 flex-nowrap w-full`}
+            className={`flex gap-1 xs:gap-1.5 sm:gap-2 md:gap-3 flex-nowrap w-full`}
           >
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="flex w-[240px] sm:w-[360px] aspect-video bg-white rounded-[8px] xs:rounded-[10px] sm:rounded-[20px] shadow-md overflow-hidden hover:shadow-lg transition-shadow flex-none"
+                className="flex w-[180px] sm:w-[200px] md:w-[220px] aspect-video bg-white rounded-[4px] xs:rounded-[5px] sm:rounded-[6px] shadow-sm overflow-hidden hover:shadow-md transition-shadow flex-none"
               >
                 {/* Category Image */}
-                <div className="relative w-1/3 h-full min-h-[120px] xs:min-h-[140px] sm:min-h-[180px] md:min-h-[200px]">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    fill
-                    className="object-cover rounded-[8px] sm:rounded-[10px]"
-                  />
+                <div className="relative p-2 w-2/5 h-full min-h-[80px] xs:min-h-[90px] sm:min-h-[100px] md:min-h-[110px]">
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      className="object-cover rounded-[4px] sm:rounded-[5px]"
+                    />
+                  </div>
                 </div>
 
                 {/* Category Content */}
-                <div className="p-2 xs:p-3 sm:p-4 md:p-5 grow">
-                  <h3 className={getResponsiveTextClass('base', { weight: 'font-semibold' }) + ' mb-1 sm:mb-2 md:mb-3'}>{category.name}</h3>
-                  <ul className="space-y-0.5 sm:space-y-1 md:space-y-1.5">
+                <div className="p-0.5 xs:p-1 sm:p-1.5 md:p-2 grow">
+                  <h3 className="text-[10px] xs:text-[11px] sm:text-xs font-semibold mb-0.5">{category.name}</h3>
+                  <ul className="space-y-0">
                     {category.subcategories.slice(0, screenWidth < 480 ? 3 : category.subcategories.length).map((subcategory, index) => (
                       <li
                         key={index}
-                        className={getResponsiveTextClass('xs', { color: 'text-[#535353]' }) + ' hover:text-black transition-colors cursor-pointer'}
+                        className="text-[8px] xs:text-[9px] sm:text-[10px] text-[#535353] hover:text-black transition-colors cursor-pointer"
                       >
                         {subcategory}
                       </li>
                     ))}
                     {screenWidth > 0 && screenWidth < 480 && category.subcategories.length > 3 && (
-                      <li className={getResponsiveTextClass('xs', { color: 'text-[#B74B4B]', weight: 'font-medium' }) + ' cursor-pointer'}>
+                      <li className="text-[8px] xs:text-[9px] sm:text-[10px] text-[#B74B4B] font-medium cursor-pointer">
                         + {category.subcategories.length - 3} more
                       </li>
                     )}
@@ -277,26 +277,26 @@ const PopularCategories = () => {
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className={`hidden sm:flex absolute left-0 top-1/2 transform -translate-x-1/3 sm:-translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${isAtStart ? 'cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
+          className={`hidden sm:flex absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-sm sm:rounded-[3px] w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center shadow-sm transition-colors ${isAtStart ? 'cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
             }`}
           aria-label="Previous categories"
           disabled={isAtStart}
         >
 
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-1.5 h-1.5 sm:w-2 sm:h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
         <button
           onClick={nextSlide}
-          className={`hidden sm:flex absolute right-0 top-1/2 transform translate-x-1/3 sm:translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-[5px] sm:rounded-[7px] w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md transition-colors ${isAtEnd ? 'cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
+          className={`hidden sm:flex absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-sm sm:rounded-[3px] w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center shadow-sm transition-colors ${isAtEnd ? 'cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
             }`}
           aria-label="Next categories"
           disabled={isAtEnd}
         >
 
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-1.5 h-1.5 sm:w-2 sm:h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
