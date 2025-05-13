@@ -15,6 +15,11 @@ import DealsOfTheDay from "@/components/deals/DealsOfTheDay";
 import WeeklyDiscountsClient from "@/components/categories/WeeklyDiscountsClient";
 import GroomingSectionClient from "@/components/categories/GroomingSectionClient";
 import BeautyMakeupSectionClient from "@/components/categories/BeautyMakeupSectionClient";
+import HairCareSectionClient from "@/components/categories/HairCareSectionClient";
+import HotOffersSectionClient from "@/components/categories/HotOffersSectionClient";
+import KidsBabySectionClient from "@/components/categories/KidsBabySectionClient";
+import PerfumeSectionClient from "@/components/categories/PerfumeSectionClient";
+import TopBrandsSectionClient from "@/components/categories/TopBrandsSectionClient";
 
 /**
  * Landing page component that uses responsive design system
@@ -40,17 +45,32 @@ export default function LandingPage({ featuredCarouselComponent, weeklyDealsComp
                 {/* Featured Carousel */}
                 {featuredCarouselComponent || <FeaturedCarousel />}
 
-                {/* Discounted Products */}
-                <WeeklyDiscountsClient />
-
                 {/* Grooming Products */}
                 <GroomingSectionClient />
+
+                {/* Hair Care Products */}
+                <HairCareSectionClient />
+
+                {/* Health and Beauty Products */}
+                <BeautyMakeupSectionClient />
+
+                {/* Hot Offers */}
+                <HotOffersSectionClient />
 
                 {/* Banner Section */}
                 <BannerSection />
 
-                {/* Beauty & Makeup Section */}
-                <BeautyMakeupSectionClient />
+                {/* Kids & Baby Products */}
+                <KidsBabySectionClient />
+
+                {/* Makeup Products */}
+                <WeeklyDiscountsClient />
+
+                {/* Perfume Products */}
+                <PerfumeSectionClient />
+
+                {/* Top Brands */}
+                <TopBrandsSectionClient />
 
                 {/* Deals Of The Day */}
                 <DealsOfTheDay />
@@ -58,8 +78,6 @@ export default function LandingPage({ featuredCarouselComponent, weeklyDealsComp
                 {/* Product Showcase */}
                 <ProductShowcase />
 
-
-                {/* Product Quick View Modal */}
             </div>
         </>
     );

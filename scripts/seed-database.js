@@ -586,14 +586,111 @@ async function seedDatabase() {
       }
 
       // Combine Google Sheets products with hardcoded products
-      const combinedProducts = [...sheetsData.products, ...productsSeed];
+      let combinedProducts = [...sheetsData.products, ...productsSeed];
+
+      // Triple the number of products by creating variations
+      console.log(`Original product count: ${combinedProducts.length}`);
+      console.log('Tripling the number of products per category...');
+
+      // Group products by category
+      const productsByCategory = {};
+      combinedProducts.forEach(product => {
+        if (!productsByCategory[product.category_id]) {
+          productsByCategory[product.category_id] = [];
+        }
+        productsByCategory[product.category_id].push(product);
+      });
+
+      // Create additional product variations
+      const additionalProducts = [];
+      const additionalImages = [];
+      let nextProductId = Math.max(...combinedProducts.map(p => p.id)) + 1;
+
+      // Make sure we have a high enough starting ID for images to avoid conflicts
+      let nextImageId = 1000; // Start from a high number to avoid conflicts
+
+      // For each category
+      for (const categoryId in productsByCategory) {
+        const categoryProducts = productsByCategory[categoryId];
+        console.log(`Processing category ${categoryId} with ${categoryProducts.length} products`);
+
+        // For each product in the category
+        for (const product of categoryProducts) {
+          // Create two variations of the product
+          for (let i = 1; i <= 2; i++) {
+            const suffix = i === 1 ? 'Premium' : 'Deluxe';
+            const priceMultiplier = i === 1 ? 1.1 : 1.2; // 10% or 20% more expensive
+
+            const newProduct = {
+              id: nextProductId++,
+              name: `${product.name} ${suffix}`,
+              sku: `${product.sku}-${suffix.toUpperCase()}`,
+              category_id: product.category_id,
+              price: Math.round(product.price * priceMultiplier * 100) / 100,
+              stock: Math.max(10, product.stock - 10 * i), // Slightly less stock
+              weight: product.weight || 0.5,
+              description: `${suffix} version of ${product.description || 'No description available'}`,
+              image: product.image,
+              created_at: new Date(),
+              updated_at: new Date()
+            };
+
+            additionalProducts.push(newProduct);
+
+            // Create images for the new product
+            // Find original product images
+            const originalImages = [...sheetsData.productImages, ...productImagesSeed].filter(img =>
+              img.product_id === product.id
+            );
+
+            if (originalImages.length > 0) {
+              // Create new images based on original ones
+              for (const img of originalImages) {
+                const newImage = {
+                  id: nextImageId++,
+                  product_id: newProduct.id,
+                  url: img.url,
+                  key: `products/${newProduct.id}-image-${img.position || 0}`,
+                  alt_text: `${newProduct.name} ${img.is_primary ? 'main image' : `variant ${img.position || 0}`}`,
+                  position: img.position || 0,
+                  is_primary: img.is_primary || false,
+                  created_at: new Date(),
+                  updated_at: new Date()
+                };
+
+                additionalImages.push(newImage);
+              }
+            } else {
+              // Create a default primary image if no original images exist
+              const newImage = {
+                id: nextImageId++,
+                product_id: newProduct.id,
+                url: newProduct.image,
+                key: `products/${newProduct.id}-image-0`,
+                alt_text: `${newProduct.name} main image`,
+                position: 0,
+                is_primary: true,
+                created_at: new Date(),
+                updated_at: new Date()
+              };
+
+              additionalImages.push(newImage);
+            }
+          }
+        }
+      }
+
+      // Add the additional products to the combined products
+      combinedProducts = [...combinedProducts, ...additionalProducts];
+      console.log(`Added ${additionalProducts.length} additional product variations`);
       console.log(`Total products to insert: ${combinedProducts.length}`);
 
       // Insert products
       await insertData('products', schema.products, combinedProducts);
 
-      // Combine Google Sheets product images with hardcoded product images
-      const combinedProductImages = [...sheetsData.productImages, ...productImagesSeed];
+      // Combine all product images
+      const combinedProductImages = [...sheetsData.productImages, ...productImagesSeed, ...additionalImages];
+      console.log(`Added ${additionalImages.length} additional product images`);
       console.log(`Total product images to insert: ${combinedProductImages.length}`);
 
       // Store these for stats at the end
