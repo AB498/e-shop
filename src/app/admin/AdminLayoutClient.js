@@ -9,6 +9,7 @@ import {
   ChartBarIcon,
   ShoppingBagIcon,
   UserGroupIcon,
+  UserIcon,
   CogIcon,
   TagIcon,
   Bars3Icon,
@@ -28,6 +29,7 @@ const iconComponents = {
   ChartBarIcon,
   ShoppingBagIcon,
   UserGroupIcon,
+  UserIcon,
   CogIcon,
   TagIcon,
   TruckIcon,
@@ -44,6 +46,7 @@ const customIconComponents = {
   FiTruck: () => <FiTruck className="w-5 h-5" />,
   FiShoppingCart: () => <FiShoppingCart className="w-5 h-5" />,
   FiUsers: () => <FiUsers className="w-5 h-5" />,
+  FiUser: () => <FiUsers className="w-5 h-5" />,
   FiSettings: () => <FiSettings className="w-5 h-5" />,
   FiDollarSign: () => <FiDollarSign className="w-5 h-5" />
 };

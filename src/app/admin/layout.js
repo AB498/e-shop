@@ -81,6 +81,12 @@ export default async function AdminLayout({ children }) {
       customIconName: 'FiUsers'
     },
     {
+      name: 'Admin Users',
+      href: '/admin/users',
+      iconName: 'UserIcon',
+      customIconName: 'FiUser'
+    },
+    {
       name: 'Files',
       href: '/admin/files',
       iconName: 'PhotoIcon'
