@@ -1,8 +1,34 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 const Hero = () => {
+    const searchParams = useSearchParams();
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+
+        // Create new URLSearchParams object
+        const params = new URLSearchParams(searchParams.toString());
+
+        // Update or remove search parameter
+        if (searchTerm.trim()) {
+            params.set('search', searchTerm.trim());
+        } else {
+            params.delete('search');
+        }
+
+        // Reset to page 1 when searching
+        params.set('page', '1');
+
+        // Navigate to products page with search parameters
+        const queryString = params.toString();
+
+        // Use window.location for a full page refresh to ensure server components re-render
+        window.location.href = `/products?${queryString}`;
+    };
 
     return (
         <div className="rounded-2xl mt-0 sm:mt-10 relative">
@@ -13,7 +39,7 @@ const Hero = () => {
                     alt="Thai Bangla Background"
                     className="w-full h-full object-contain opacity-90"
                 />
-                <div className="absolute top-1/2 w-1/2 left-[5%] flex flex-col h-1/2 pt-2 break-words">
+                <div className="absolute top-1/2 w-1/2 pl-[5%] flex flex-col h-1/2 pt-2 break-words">
                     {/* Subtitle with shape */}
                     <div className="flex items-center mb-2 max-w-[480px]">
                         <img
@@ -28,18 +54,27 @@ const Hero = () => {
 
                     {/* Search Box */}
                     <div className="relative max-w-1/2 mb-2">
-                        <div className="w-[300px] h-[28px] rounded-[28px] bg-white/40 border border-[#BABABA] flex items-center px-3">
-                            <input
-                                type="text"
-                                placeholder="Search for products (e.g. eggs, milk, potato)"
-                                className="w-full bg-transparent border-none outline-none text-[11px] text-white placeholder-white"
-                            />
-                            <img
-                                src="/images/hero/search-icon.png"
-                                alt="Search"
-                                className="w-3.5 h-3.5 ml-2"
-                            />
-                        </div>
+                        <form onSubmit={handleSearch}>
+                            <div className="w-[300px] h-[28px] rounded-[28px] bg-white/40 border border-[#BABABA] flex items-center px-3">
+                                <input
+                                    type="text"
+                                    placeholder="Search for products (e.g. eggs, milk, potato)"
+                                    className="w-full bg-transparent border-none outline-none text-[11px] text-white placeholder-white"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                                <button
+                                    type="submit"
+                                    className="cursor-pointer"
+                                >
+                                    <img
+                                        src="/images/hero/search-icon.png"
+                                        alt="Search"
+                                        className="w-3.5 h-3.5 ml-2"
+                                    />
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     {/* Description text */}
@@ -71,18 +106,27 @@ const Hero = () => {
 
                     {/* Search Box */}
                     <div className="relative mb-3">
-                        <div className="w-full h-[30px] rounded-[30px] bg-white/40 border border-[#BABABA] flex items-center px-3">
-                            <input
-                                type="text"
-                                placeholder="Search products..."
-                                className="w-full bg-transparent border-none outline-none text-[12px] text-white placeholder-white"
-                            />
-                            <img
-                                src="/images/hero/search-icon.png"
-                                alt="Search"
-                                className="w-4 h-4 ml-2"
-                            />
-                        </div>
+                        <form onSubmit={handleSearch}>
+                            <div className="w-full h-[30px] rounded-[30px] bg-white/40 border border-[#BABABA] flex items-center px-3">
+                                <input
+                                    type="text"
+                                    placeholder="Search products..."
+                                    className="w-full bg-transparent border-none outline-none text-[12px] text-white placeholder-white"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                                <button
+                                    type="submit"
+                                    className="cursor-pointer"
+                                >
+                                    <img
+                                        src="/images/hero/search-icon.png"
+                                        alt="Search"
+                                        className="w-4 h-4 ml-2"
+                                    />
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     {/* Description text */}

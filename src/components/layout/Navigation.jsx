@@ -57,13 +57,14 @@ const Navigation = () => {
         <div className="md:hidden w-full">
           <div className="flex items-center justify-between mb-2">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0">
-              <div className="relative w-18 h-7 sm:w-20 sm:h-7">
+            <Link href="/" className="flex-shrink-0 block">
+              <div className="relative w-16 h-7 sm:w-20 sm:h-7 flex items-center">
                 <Image
                   src="/images/logo.png"
                   alt="Thai Bangla Logo"
                   fill
                   className="object-contain"
+                  priority
                 />
               </div>
             </Link>
@@ -144,13 +145,15 @@ const Navigation = () => {
         {/* Tablet and Desktop View */}
         <div className="hidden md:flex flex-wrap items-center justify-between gap-2 lg:gap-3 h-10">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 h-full">
+          <Link href="/" className="flex-shrink-0 h-full block">
             <div className="relative h-full aspect-video">
-              <img
+              <Image
                 src="/images/logo.png"
                 alt="Thai Bangla Logo"
                 className="w-full h-full object-contain"
-                
+                width={120}
+                height={40}
+                priority
               />
             </div>
           </Link>

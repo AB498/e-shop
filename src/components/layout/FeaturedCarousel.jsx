@@ -222,7 +222,7 @@ const FeaturedCarousel = ({ initialPromotions = [] }) => {
       {/* Carousel Container */}
       <div
         ref={containerRef}
-        className="w-full aspect-[16/9] max-h-[260px] sm:aspect-[calc(3*3+1)/3]  inset-0 flex items-center justify-center relative"
+        className="w-full aspect-[16/9] sm:aspect-[calc(3*3+1)/3]  inset-0 flex items-center justify-center relative"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
