@@ -5,7 +5,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import ModalProductImages from './ModalProductImages';
 import ModalProductDetails from './ModalProductDetails';
-import ModalRelatedProducts from './ModalRelatedProducts';
+import ProductListSection from './ProductListSection';
 
 const ProductQuickViewModal = () => {
   const {
@@ -103,7 +103,7 @@ const ProductQuickViewModal = () => {
                   className="bg-white rounded-full p-1.5 sm:p-1 shadow-sm hover:bg-gray-100 transition-colors"
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L13 13M1 13L13 1" stroke="#666666" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M1 1L13 13M1 13L13 1" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" />
                   </svg>
                 </button>
               </div>
@@ -128,7 +128,6 @@ const ProductQuickViewModal = () => {
     };
     // Use the showToast parameter to control toast notifications
     addToCart(cartItem, quantity);
-    closeQuickView();
   };
 
   return (
@@ -148,7 +147,7 @@ const ProductQuickViewModal = () => {
                 className="bg-white rounded-full p-1.5 sm:p-1 shadow-sm hover:bg-gray-100 transition-colors"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 1L13 13M1 13L13 1" stroke="#666666" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M1 1L13 13M1 13L13 1" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               </button>
             </div>
@@ -176,10 +175,23 @@ const ProductQuickViewModal = () => {
 
             <div className="w-full p-2 sm:p-1.5 md:p-2">
               {/* Related Products Section - Spans full width */}
-              <ModalRelatedProducts
+              <ProductListSection
                 products={relatedProducts}
-                isLoading={false}
-                formatPrice={formatPrice}
+                category={product.category || 'Products'}
+                title="Related Products"
+                viewType="grid"
+                showWishlist={true}
+                titleIcon="/images/deals/discount-coupon-icon.png"
+                allItemsLink="/products"
+                allItemsText={`All ${product.category || 'Products'}`}
+                emptyStateText="No related products found."
+                gridCols={{
+                  default: 2,
+                  xs: 2,
+                  sm: 2,
+                  lg: 3,
+                  xl: 4
+                }}
               />
             </div>
           </div>

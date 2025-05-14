@@ -287,9 +287,17 @@ export async function getAllProducts({
 
     // Count total products for pagination
     let countQuery = db.select({ count: sql`count(*)` }).from(products);
+
+    // Apply the same conditions as the main query
     if (conditions.length > 0) {
       countQuery = countQuery.where(and(...conditions));
     }
+
+    // Apply promotion filter to count query if we have product IDs
+    if (productIds) {
+      countQuery = countQuery.where(inArray(products.id, productIds));
+    }
+
     const [{ count }] = await countQuery;
     const totalProducts = Number(count);
 
@@ -586,13 +594,74 @@ export async function getRelatedProducts(productId, categoryId, limit = 4) {
 
     const categoryName = categoryData.length > 0 ? categoryData[0].name : 'Unknown';
 
-    // Add category name to each product
-    const productsWithCategory = productData.map(product => ({
-      ...product,
-      category: categoryName,
-      // Calculate a 10% discount for display purposes
-      discountPrice: (parseFloat(product.price) * 0.9).toFixed(2),
-    }));
+    // Get product IDs for fetching promotions
+    const resultProductIds = productData.map(product => product.id);
+
+    // Fetch all product promotions for these products
+    let productDiscounts = {};
+    if (resultProductIds.length > 0) {
+      const productPromotionsData = await db
+        .select({
+          productId: productPromotions.product_id,
+          promotionId: productPromotions.promotion_id,
+          discountPercentage: productPromotions.discount_percentage,
+          promotionTitle: promotions.title,
+          promotionType: promotions.type,
+        })
+        .from(productPromotions)
+        .innerJoin(promotions, eq(productPromotions.promotion_id, promotions.id))
+        .where(
+          and(
+            inArray(productPromotions.product_id, resultProductIds),
+            eq(promotions.is_active, true)
+          )
+        );
+
+      // Create a map of product ID to its best discount
+      productPromotionsData.forEach(promo => {
+        const productId = promo.productId;
+        const discount = parseFloat(promo.discountPercentage);
+
+        // If this product doesn't have a discount yet, or this discount is better
+        if (!productDiscounts[productId] || discount > productDiscounts[productId].discount) {
+          productDiscounts[productId] = {
+            discount,
+            promotionId: promo.promotionId,
+            promotionTitle: promo.promotionTitle,
+            promotionType: promo.promotionType,
+          };
+        }
+      });
+    }
+
+    // Add category name and calculate discount for each product
+    const productsWithCategory = productData.map(product => {
+      // Get the best discount for this product (if any)
+      const productDiscount = productDiscounts[product.id];
+      const discountPercentage = productDiscount ? productDiscount.discount : 0;
+
+      // Calculate the discounted price
+      const originalPrice = parseFloat(product.price);
+      const discountPrice = discountPercentage > 0
+        ? (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
+        : originalPrice.toFixed(2);
+
+      return {
+        ...product,
+        category: categoryName,
+        discountPrice,
+        discountPercentage,
+        // Add promotion information if available
+        promotion: productDiscount ? {
+          id: productDiscount.promotionId,
+          title: productDiscount.promotionTitle,
+          type: productDiscount.promotionType,
+        } : null,
+        // Add mock rating and review count for display
+        rating: (Math.random() * 2 + 3).toFixed(1), // Random rating between 3.0 and 5.0
+        reviewCount: Math.floor(Math.random() * 20) + 1, // Random review count between 1 and 20
+      };
+    });
 
     return productsWithCategory;
   } catch (error) {
@@ -709,16 +778,74 @@ export async function getNewProducts(limit = 3) {
       return map;
     }, {});
 
-    // Add category name to each product and calculate discount price
-    const productsWithCategory = productData.map(product => ({
-      ...product,
-      category: categoryMap[product.categoryId] || 'Unknown',
-      // Calculate a 10% discount for display purposes
-      discountPrice: (parseFloat(product.price) * 0.9).toFixed(2),
-      // Add mock rating and review count for display
-      rating: (Math.random() * 2 + 3).toFixed(1), // Random rating between 3.0 and 5.0
-      reviewCount: Math.floor(Math.random() * 20) + 1, // Random review count between 1 and 20
-    }));
+    // Get product IDs for fetching promotions
+    const resultProductIds = productData.map(product => product.id);
+
+    // Fetch all product promotions for these products
+    let productDiscounts = {};
+    if (resultProductIds.length > 0) {
+      const productPromotionsData = await db
+        .select({
+          productId: productPromotions.product_id,
+          promotionId: productPromotions.promotion_id,
+          discountPercentage: productPromotions.discount_percentage,
+          promotionTitle: promotions.title,
+          promotionType: promotions.type,
+        })
+        .from(productPromotions)
+        .innerJoin(promotions, eq(productPromotions.promotion_id, promotions.id))
+        .where(
+          and(
+            inArray(productPromotions.product_id, resultProductIds),
+            eq(promotions.is_active, true)
+          )
+        );
+
+      // Create a map of product ID to its best discount
+      productPromotionsData.forEach(promo => {
+        const productId = promo.productId;
+        const discount = parseFloat(promo.discountPercentage);
+
+        // If this product doesn't have a discount yet, or this discount is better
+        if (!productDiscounts[productId] || discount > productDiscounts[productId].discount) {
+          productDiscounts[productId] = {
+            discount,
+            promotionId: promo.promotionId,
+            promotionTitle: promo.promotionTitle,
+            promotionType: promo.promotionType,
+          };
+        }
+      });
+    }
+
+    // Add category name and calculate discount for each product
+    const productsWithCategory = productData.map(product => {
+      // Get the best discount for this product (if any)
+      const productDiscount = productDiscounts[product.id];
+      const discountPercentage = productDiscount ? productDiscount.discount : 0;
+
+      // Calculate the discounted price
+      const originalPrice = parseFloat(product.price);
+      const discountPrice = discountPercentage > 0
+        ? (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
+        : originalPrice.toFixed(2);
+
+      return {
+        ...product,
+        category: categoryMap[product.categoryId] || 'Unknown',
+        discountPrice,
+        discountPercentage,
+        // Add promotion information if available
+        promotion: productDiscount ? {
+          id: productDiscount.promotionId,
+          title: productDiscount.promotionTitle,
+          type: productDiscount.promotionType,
+        } : null,
+        // Add mock rating and review count for display
+        rating: (Math.random() * 2 + 3).toFixed(1), // Random rating between 3.0 and 5.0
+        reviewCount: Math.floor(Math.random() * 20) + 1, // Random review count between 1 and 20
+      };
+    });
 
     return productsWithCategory;
   } catch (error) {

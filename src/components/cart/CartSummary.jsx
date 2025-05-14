@@ -71,8 +71,9 @@ const CartSummary = () => {
       </div>
 
       {/* Promo Code Section */}
-      <div className="flex gap-2 mt-4">
-        <div className="flex-1 bg-[#F0F0F0] rounded-full flex items-center px-3">
+      {/* Unused so Disabled */}
+      {/* <div className="flex gap-2 mt-4">
+         <div className="flex-1 bg-[#F0F0F0] rounded-full flex items-center px-3">
           <div className="flex items-center justify-center mr-2">
             <Image
               src="/images/cart/promo-icon.svg"
@@ -88,14 +89,14 @@ const CartSummary = () => {
             value={promoCode}
             onChange={(e) => setPromoCode(e.target.value)}
           />
-        </div>
+        </div> 
         <button
           onClick={handleApplyPromo}
           className="bg-[#006B51] text-white font-medium text-xs px-3 py-2 rounded-full"
         >
           Apply
         </button>
-      </div>
+      </div>*/}
 
       {/* Checkout Button */}
       <Link href="/checkout" className="mt-4 bg-[#006B51] text-white font-medium text-sm py-2.5 rounded-full flex items-center justify-center">

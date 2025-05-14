@@ -10,6 +10,7 @@ import Footer from '../layout/Footer';
 import Copyright from '../layout/Copyright';
 import BottomBanner from './BottomBanner';
 import MobileFilterButton from './MobileFilterButton';
+import ActiveFiltersServer from './ActiveFiltersServer';
 
 // This is a Server Component that fetches data
 export default async function ProductListingPage({ searchParams }) {
@@ -51,6 +52,9 @@ export default async function ProductListingPage({ searchParams }) {
 
           {/* Main Content */}
           <div className="flex-1 px-0 md:px-6">
+            {/* Active Filters - Only shown when filters are applied */}
+            <ActiveFiltersServer promotionId={promotionId} />
+
             {/* Product Listing */}
             <ProductList
               page={page}
