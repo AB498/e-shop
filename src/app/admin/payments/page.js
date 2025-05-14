@@ -186,34 +186,34 @@ export default function PaymentsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <CurrencyDollarIcon className="h-6 w-6 mr-2 text-emerald-600" />
+          <h1 className="text-xl font-bold text-gray-900 flex items-center">
+            <CurrencyDollarIcon className="h-5 w-5 mr-1.5 text-emerald-600" />
             Payments
           </h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-0.5 text-xs text-gray-600">
             View and manage all payment transactions processed through SSLCommerz
           </p>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex space-x-2">
           <button
             onClick={() => {
               setLoading(true);
               router.refresh();
               setTimeout(() => setLoading(false), 500);
             }}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-emerald-500"
           >
-            <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
+            <ArrowPathIcon className={`-ml-0.5 mr-1.5 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md mb-6">
+        <div className="bg-red-50 border border-red-200 text-red-800 px-3 py-2 rounded-md mb-4 text-xs">
           <p className="font-medium">Error:</p>
           <p>{error}</p>
         </div>
@@ -223,25 +223,25 @@ export default function PaymentsPage() {
       <PaymentStatsCards stats={stats} isLoading={loading} />
 
       {/* Filters */}
-      <div className="bg-white shadow rounded-lg p-4 sm:p-6 mb-6">
-        <div className="flex flex-wrap gap-4">
+      <div className="bg-white shadow rounded-md p-3 mb-4">
+        <div className="flex flex-wrap gap-3">
           <div className="w-full sm:flex-1">
             <form onSubmit={handleSearch} className="flex flex-wrap gap-2">
               <div className="relative flex-grow">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                  <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
                 </div>
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search by ID or transaction ID"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-xs"
                 />
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-emerald-500"
               >
                 Search
               </button>
@@ -252,7 +252,7 @@ export default function PaymentsPage() {
             <select
               value={statusFilter}
               onChange={handleStatusFilterChange}
-              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
+              className="block w-full pl-2 pr-8 py-1.5 text-xs border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 rounded-md"
             >
               <option value="">All Statuses</option>
               <option value="VALID">Valid</option>
@@ -265,7 +265,7 @@ export default function PaymentsPage() {
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div className="bg-white shadow overflow-hidden rounded-md">
         <PaymentsTable
           transactions={transactions}
           isLoading={loading}
@@ -274,10 +274,10 @@ export default function PaymentsPage() {
 
         {/* Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+          <div className="bg-white px-3 py-2 flex items-center justify-between border-t border-gray-200 sm:px-4">
             <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm text-gray-700">
+                <p className="text-xs text-gray-700">
                   Showing <span className="font-medium">{((pagination.currentPage - 1) * pagination.limit) + 1}</span> to{' '}
                   <span className="font-medium">
                     {Math.min(pagination.currentPage * pagination.limit, pagination.total)}
@@ -290,12 +290,12 @@ export default function PaymentsPage() {
                   <button
                     onClick={() => handlePageChange(pagination.currentPage - 1)}
                     disabled={!pagination.hasPrevPage}
-                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
+                    className={`relative inline-flex items-center px-1.5 py-1 rounded-l-md border border-gray-300 bg-white text-xs font-medium ${
                       pagination.hasPrevPage ? 'text-gray-500 hover:bg-gray-50' : 'text-gray-300 cursor-not-allowed'
                     }`}
                   >
                     <span className="sr-only">Previous</span>
-                    <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+                    <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
                   </button>
 
                   {[...Array(pagination.totalPages).keys()].map((pageIdx) => {
@@ -312,7 +312,7 @@ export default function PaymentsPage() {
                         <button
                           key={pageNumber}
                           onClick={() => handlePageChange(pageNumber)}
-                          className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                          className={`relative inline-flex items-center px-2.5 py-1 border text-xs font-medium ${
                             isCurrentPage
                               ? 'z-10 bg-emerald-50 border-emerald-500 text-emerald-600'
                               : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
@@ -331,7 +331,7 @@ export default function PaymentsPage() {
                       return (
                         <span
                           key={`ellipsis-${pageNumber}`}
-                          className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                          className="relative inline-flex items-center px-2.5 py-1 border border-gray-300 bg-white text-xs font-medium text-gray-700"
                         >
                           ...
                         </span>
@@ -344,12 +344,12 @@ export default function PaymentsPage() {
                   <button
                     onClick={() => handlePageChange(pagination.currentPage + 1)}
                     disabled={!pagination.hasNextPage}
-                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
+                    className={`relative inline-flex items-center px-1.5 py-1 rounded-r-md border border-gray-300 bg-white text-xs font-medium ${
                       pagination.hasNextPage ? 'text-gray-500 hover:bg-gray-50' : 'text-gray-300 cursor-not-allowed'
                     }`}
                   >
                     <span className="sr-only">Next</span>
-                    <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+                    <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </nav>
               </div>

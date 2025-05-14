@@ -1,10 +1,10 @@
 'use client';
 
-import { 
-  CurrencyDollarIcon, 
-  CheckCircleIcon, 
-  XCircleIcon, 
-  ClockIcon 
+import {
+  CurrencyDollarIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ClockIcon
 } from '@heroicons/react/24/outline';
 import CountUp from 'react-countup';
 
@@ -66,14 +66,14 @@ export default function PaymentStatsCards({ stats, isLoading }) {
   // Render loading skeleton
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
         {[...Array(5)].map((_, index) => (
-          <div key={index} className="bg-white rounded-lg shadow p-6 animate-pulse">
+          <div key={index} className="bg-white rounded-md shadow p-3 animate-pulse">
             <div className="flex items-center">
-              <div className="h-10 w-10 rounded-full bg-gray-200"></div>
-              <div className="ml-4 flex-1">
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-8 w-8 rounded-full bg-gray-200"></div>
+              <div className="ml-3 flex-1">
+                <div className="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
+                <div className="h-5 bg-gray-200 rounded w-3/4"></div>
               </div>
             </div>
           </div>
@@ -84,19 +84,19 @@ export default function PaymentStatsCards({ stats, isLoading }) {
 
   // Render stat cards
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
       {statCards.map((card, index) => (
-        <div key={index} className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="p-5">
+        <div key={index} className="bg-white rounded-md shadow overflow-hidden">
+          <div className="p-3">
             <div className="flex items-center">
-              <div className={`flex-shrink-0 rounded-md p-3 ${card.color} bg-opacity-10`}>
-                <card.icon className={`h-6 w-6 ${card.color.replace('bg-', 'text-')}`} />
+              <div className={`flex-shrink-0 rounded-md p-2 ${card.color} bg-opacity-10`}>
+                <card.icon className={`h-5 w-5 ${card.color.replace('bg-', 'text-')}`} />
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500 truncate">
+              <div className="ml-3">
+                <p className="text-xs font-medium text-gray-500 truncate">
                   {card.title}
                 </p>
-                <div className="mt-1 text-xl font-semibold text-gray-900">
+                <div className="text-lg font-semibold text-gray-900">
                   {card.prefix}
                   <CountUp
                     end={parseFloat(card.value)}
@@ -110,7 +110,7 @@ export default function PaymentStatsCards({ stats, isLoading }) {
               </div>
             </div>
           </div>
-          <div className={`px-5 py-2 ${card.color} bg-opacity-10`}>
+          <div className={`px-3 py-1 ${card.color} bg-opacity-10`}>
             <div className="text-xs font-medium text-right">
               <span className={card.color.replace('bg-', 'text-')}>
                 {card.title === 'Success Rate' ? 'Based on all transactions' : 'Total to date'}
