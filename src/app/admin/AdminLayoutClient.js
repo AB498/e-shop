@@ -358,29 +358,26 @@ export default function AdminLayoutClient({
 
       {/* Main content */}
       <div className="md:pl-64 flex flex-col flex-1">
-        <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-white">
+        {/* Header */}
+        <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 shadow-sm items-center">
           <button
             type="button"
-            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
+            className="h-6 w-6 ml-4 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-        </div>
-
-        {/* Header */}
-        <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 shadow-sm">
           <div className="flex-1 px-4 flex justify-between">
             <div className="flex-1 flex items-center">
-              <h1 className="text-base sm:text-lg font-semibold text-gray-800 px-2 sm:px-4">
+              <h1 className="flex items-center text-lg sm:text-lg font-semibold text-gray-800 px-2 sm:px-4">
                 Admin Dashboard
               </h1>
             </div>
             <div className="ml-4 flex items-center md:ml-6 space-x-3">
               <Link
                 href="/"
-                className="flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-md border border-gray-300 text-gray-700 text-xs sm:text-sm hover:bg-gray-50 hover:text-emerald-600 transition-colors duration-200"
+                className="hidden md:flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-md border border-gray-300 text-gray-700 text-xs sm:text-sm hover:bg-gray-50 hover:text-emerald-600 transition-colors duration-200"
               >
                 <ArrowLeftIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
                 Back to Site

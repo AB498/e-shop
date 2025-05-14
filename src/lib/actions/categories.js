@@ -384,5 +384,6 @@ export {
   updateCategoriesOrder,
   moveCategoryUp,
   moveCategoryDown,
-  getProductCountsByCategory
+  getProductCountsByCategory,
+  normalizeCategoryOrder
 };

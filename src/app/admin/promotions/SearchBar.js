@@ -2,7 +2,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export default function SearchBar({ searchTerm, onSearchChange }) {
   return (
-    <div className="max-w-lg w-full lg:max-w-xs">
+    <div className="w-full sm:max-w-xs">
       <label htmlFor="search" className="sr-only">
         Search promotions
       </label>
@@ -12,7 +12,7 @@ export default function SearchBar({ searchTerm, onSearchChange }) {
         </div>
         <input
           id="search"
-          className="block w-full bg-white py-2 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="block w-full bg-white py-2 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
           placeholder="Search promotions..."
           type="search"
           value={searchTerm}

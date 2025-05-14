@@ -2,7 +2,6 @@
 
 import { useState, useRef } from 'react';
 import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
 
 export default function MultipleImageUpload({ onImagesChange, initialImages = [] }) {
   const [images, setImages] = useState(initialImages);
@@ -116,15 +115,15 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+        <div className="bg-red-50 border border-red-200 text-red-800 px-3 py-2 sm:px-4 sm:py-3 rounded-md text-xs sm:text-sm">
           {error}
         </div>
       )}
 
       {/* Image grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
         {images.map((image, index) => (
           <div
             key={image.id || index}
@@ -139,17 +138,17 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
                 className="object-cover w-full h-full"
               />
 
-              {/* Overlay with actions - visible on mobile without hover */}
-              <div className="absolute inset-0 bg-black bg-opacity-20 md:bg-opacity-0 md:group-hover:bg-opacity-40 transition-all flex items-center justify-center md:opacity-0 md:group-hover:opacity-100">
-                <div className="flex space-x-3">
+              {/* Overlay with actions - always visible on mobile, hover on desktop */}
+              <div className="absolute inset-0 bg-black bg-opacity-20 md:bg-opacity-0 md:group-hover:bg-opacity-40 transition-all flex items-center justify-center">
+                <div className="flex space-x-2 sm:space-x-3">
                   {!image.isPrimary && (
                     <button
                       type="button"
                       onClick={() => handleSetPrimary(index)}
-                      className="bg-white rounded-full p-2 md:p-1.5 text-gray-700 hover:text-emerald-600"
+                      className="bg-white rounded-full p-1.5 sm:p-2 text-gray-700 hover:text-emerald-600"
                       title="Set as primary image"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 md:w-4 md:h-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
                       </svg>
                     </button>
@@ -157,17 +156,17 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(index)}
-                    className="bg-white rounded-full p-2 md:p-1.5 text-gray-700 hover:text-red-600"
+                    className="bg-white rounded-full p-1.5 sm:p-2 text-gray-700 hover:text-red-600"
                     title="Remove image"
                   >
-                    <XMarkIcon className="w-5 h-5 md:w-4 md:h-4" />
+                    <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>
 
               {/* Primary badge */}
               {image.isPrimary && (
-                <div className="absolute top-2 left-2 md:top-1 md:left-1 bg-emerald-500 text-white text-sm md:text-xs px-2 py-1 md:px-1.5 md:py-0.5 rounded">
+                <div className="absolute top-1 left-1 sm:top-2 sm:left-2 bg-emerald-500 text-white text-xs sm:text-sm px-1.5 py-0.5 sm:px-2 sm:py-1 rounded">
                   Primary
                 </div>
               )}
@@ -180,8 +179,8 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
           className="border-2 border-dashed border-gray-300 rounded-md aspect-square flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 transition-colors"
           onClick={() => fileInputRef.current.click()}
         >
-          <PhotoIcon className="h-12 w-12 md:h-10 md:w-10 text-gray-400" />
-          <span className="mt-2 block text-base md:text-sm font-medium text-gray-700">
+          <PhotoIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400" />
+          <span className="mt-1 sm:mt-2 block text-sm sm:text-base font-medium text-gray-700 text-center px-2">
             {uploadingImage ? 'Uploading...' : 'Add Images'}
           </span>
           <input
@@ -196,7 +195,7 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
         </div>
       </div>
 
-      <p className="text-sm md:text-xs text-gray-500">
+      <p className="text-xs sm:text-sm text-gray-500">
         PNG, JPG, GIF up to 5MB. Tap on an image to set as primary or remove it.
       </p>
     </div>

@@ -243,8 +243,8 @@ export default function ProductsPage() {
 
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="p-3 sm:p-4 border-b border-gray-200">
-          <div className="flex flex-col sm:flex-row justify-between space-y-2 sm:space-y-0 sm:space-x-3">
-            <div className="relative flex-grow max-w-lg">
+          <div className="flex flex-wrap gap-3">
+            <div className="relative w-full sm:flex-1 sm:max-w-lg">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" aria-hidden="true" />
               </div>
@@ -256,7 +256,7 @@ export default function ProductsPage() {
                 placeholder="Search products..."
               />
             </div>
-            <div className="flex space-x-2">
+            <div className="flex flex-wrap gap-2">
               <select
                 value={filterStock}
                 onChange={(e) => setFilterStock(e.target.value)}

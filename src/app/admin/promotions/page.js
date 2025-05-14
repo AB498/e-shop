@@ -100,7 +100,7 @@ export default function PromotionsPage() {
     try {
       setLoading(true);
       const success = await deletePromotion(currentPromotion.id);
-      
+
       if (success) {
         await fetchPromotions();
       } else {
@@ -130,56 +130,58 @@ export default function PromotionsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="space-y-6">
       <PageHeader
         onAddClick={() => setShowAddModal(true)}
       />
 
-      <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between">
-        <SearchBar
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-        />
-        
-        <div className="flex gap-2">
+      <div className="mb-6 space-y-4">
+        <div className="w-full">
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2">
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            className="rounded-md border-gray-300 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm"
           >
             <option value="">All Types</option>
             <option value="banner">Banner</option>
             <option value="carousel">Carousel</option>
             <option value="deal">Deal</option>
           </select>
-          
+
           <select
             value={filterPosition}
             onChange={(e) => setFilterPosition(e.target.value)}
-            className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            className="rounded-md border-gray-300 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm"
           >
             <option value="">All Positions</option>
             <option value="home">Home</option>
             <option value="category">Category</option>
             <option value="product">Product</option>
           </select>
-          
+
           <div className="flex items-center">
             <input
               type="checkbox"
               id="activeOnly"
               checked={filterActive}
               onChange={(e) => setFilterActive(e.target.checked)}
-              className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="rounded border-gray-300 text-emerald-600 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50"
             />
             <label htmlFor="activeOnly" className="ml-2 text-sm text-gray-700">
               Active Only
             </label>
           </div>
-          
+
           <button
             onClick={() => fetchPromotions()}
-            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
           >
             <ArrowPathIcon className={`-ml-0.5 mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh

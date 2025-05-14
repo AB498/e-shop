@@ -276,9 +276,9 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
       )}
 
       <div className="bg-white shadow rounded-lg overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4">
-            <div className="relative flex-grow max-w-lg">
+        <div className="p-4 sm:p-6 border-b border-gray-200">
+          <div className="flex flex-wrap gap-3">
+            <div className="relative w-full sm:flex-1 sm:max-w-lg">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </div>
@@ -291,7 +291,7 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                 disabled={isLoading}
               />
             </div>
-            <div className="flex space-x-2">
+            <div className="w-full sm:w-auto">
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}

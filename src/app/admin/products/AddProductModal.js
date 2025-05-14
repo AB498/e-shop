@@ -144,8 +144,8 @@ export default function AddProductModal({ onClose, onSubmit }) {
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-3 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-xl w-full max-h-[85vh] overflow-hidden">
-        <div className="flex justify-between items-center px-4 py-3 border-b">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[85vh] overflow-hidden">
+        <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3 border-b">
           <h2 className="text-base sm:text-lg font-semibold text-gray-900">Add New Product</h2>
           <button
             type="button"
@@ -156,15 +156,15 @@ export default function AddProductModal({ onClose, onSubmit }) {
           </button>
         </div>
 
-        <div className="px-4 py-3 overflow-y-auto max-h-[calc(85vh-7rem)]">
+        <div className="px-3 sm:px-4 py-2 sm:py-3 overflow-y-auto max-h-[calc(85vh-7rem)]">
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+            <div className="mb-3 sm:mb-4 bg-red-50 border border-red-200 text-red-800 px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-y-4 gap-x-3 sm:grid-cols-6">
+            <div className="grid grid-cols-1 gap-y-3 sm:gap-y-4 gap-x-2 sm:gap-x-3 sm:grid-cols-6">
               {/* Product Name */}
               <div className="sm:col-span-6">
                 <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700">
@@ -184,7 +184,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
               </div>
 
               {/* SKU */}
-              <div className="sm:col-span-3">
+              <div className="col-span-1 sm:col-span-3">
                 <label htmlFor="sku" className="block text-xs sm:text-sm font-medium text-gray-700">
                   SKU *
                 </label>
@@ -202,7 +202,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
               </div>
 
               {/* Category */}
-              <div className="sm:col-span-3">
+              <div className="col-span-1 sm:col-span-3">
                 <label htmlFor="category_id" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Category
                 </label>
@@ -225,7 +225,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
               </div>
 
               {/* Price */}
-              <div className="sm:col-span-2">
+              <div className="col-span-1 sm:col-span-2">
                 <label htmlFor="price" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Price *
                 </label>
@@ -249,7 +249,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
               </div>
 
               {/* Stock */}
-              <div className="sm:col-span-2">
+              <div className="col-span-1 sm:col-span-2">
                 <label htmlFor="stock" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Stock
                 </label>
@@ -267,7 +267,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
               </div>
 
               {/* Weight */}
-              <div className="sm:col-span-2">
+              <div className="col-span-1 sm:col-span-2">
                 <label htmlFor="weight" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Weight (kg)
                 </label>
@@ -304,7 +304,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
 
               {/* Multiple Image Upload */}
               <div className="sm:col-span-6">
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Product Images
                 </label>
                 <MultipleImageUpload
@@ -314,18 +314,18 @@ export default function AddProductModal({ onClose, onSubmit }) {
               </div>
             </div>
 
-            <div className="mt-4 sm:mt-5 flex justify-end space-x-2 sm:space-x-3">
+            <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                className="w-full sm:w-auto px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Creating...' : 'Create Product'}
               </button>

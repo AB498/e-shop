@@ -96,31 +96,31 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div className="flex justify-between items-center px-6 py-4 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">Edit Promotion</h2>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-3 sm:p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+        <div className="flex justify-between items-center px-3 sm:px-6 py-3 sm:py-4 border-b">
+          <h2 className="text-base sm:text-xl font-semibold text-gray-900">Edit Promotion</h2>
           <button
             type="button"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-500"
           >
-            <XMarkIcon className="h-6 w-6" />
+            <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
         </div>
 
-        <div className="px-6 py-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
+        <div className="px-3 sm:px-6 py-3 sm:py-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+            <div className="mb-3 sm:mb-4 bg-red-50 border border-red-200 text-red-800 px-3 py-2 sm:px-4 sm:py-3 rounded-md text-xs sm:text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div className="grid grid-cols-1 gap-y-3 sm:gap-y-6 gap-x-2 sm:gap-x-4 sm:grid-cols-6">
               {/* Title */}
               <div className="sm:col-span-6">
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="title" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Title *
                 </label>
                 <div className="mt-1">
@@ -131,14 +131,14 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     required
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div className="sm:col-span-6">
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="description" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Description
                 </label>
                 <div className="mt-1">
@@ -148,20 +148,20 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     rows={3}
                     value={formData.description || ''}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
               {/* Image Upload */}
               <div className="sm:col-span-6">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700">
                   Image *
                 </label>
-                <div className="mt-1 flex items-center">
-                  <div className="flex-shrink-0">
+                <div className="mt-1 flex flex-col sm:flex-row items-start sm:items-center">
+                  <div className="flex-shrink-0 mb-2 sm:mb-0">
                     {imagePreview ? (
-                      <div className="relative h-32 w-32 rounded-md overflow-hidden">
+                      <div className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-md overflow-hidden">
                         <Image
                           src={imagePreview}
                           alt="Preview"
@@ -170,12 +170,12 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                         />
                       </div>
                     ) : (
-                      <div className="h-32 w-32 border-2 border-gray-300 border-dashed rounded-md flex items-center justify-center">
-                        <PhotoIcon className="h-12 w-12 text-gray-400" />
+                      <div className="h-24 w-24 sm:h-32 sm:w-32 border-2 border-gray-300 border-dashed rounded-md flex items-center justify-center">
+                        <PhotoIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400" />
                       </div>
                     )}
                   </div>
-                  <div className="ml-4 flex flex-col">
+                  <div className="sm:ml-4 flex flex-col">
                     <input
                       type="file"
                       ref={fileInputRef}
@@ -186,7 +186,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current.click()}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       disabled={uploadingImage}
                     >
                       {uploadingImage ? 'Uploading...' : 'Change Image'}
@@ -200,7 +200,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
 
               {/* Image URL (alternative to upload) */}
               <div className="sm:col-span-6">
-                <label htmlFor="image_url" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="image_url" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Image URL
                 </label>
                 <div className="mt-1">
@@ -210,7 +210,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="image_url"
                     value={formData.image_url || ''}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                     placeholder="https://example.com/image.jpg"
                   />
                 </div>
@@ -221,7 +221,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
 
               {/* Link URL */}
               <div className="sm:col-span-6">
-                <label htmlFor="link_url" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="link_url" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Link URL
                 </label>
                 <div className="mt-1">
@@ -231,15 +231,15 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="link_url"
                     value={formData.link_url || ''}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                     placeholder="https://example.com/page"
                   />
                 </div>
               </div>
 
               {/* Type and Position */}
-              <div className="sm:col-span-3">
-                <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-3">
+                <label htmlFor="type" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Type
                 </label>
                 <div className="mt-1">
@@ -248,7 +248,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   >
                     <option value="carousel">Carousel</option>
                     <option value="banner">Banner</option>
@@ -258,8 +258,8 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
-                <label htmlFor="position" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-3">
+                <label htmlFor="position" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Position
                 </label>
                 <div className="mt-1">
@@ -268,7 +268,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     name="position"
                     value={formData.position}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   >
                     <option value="home">Home Page</option>
                     <option value="category">Category Page</option>
@@ -279,8 +279,8 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
               </div>
 
               {/* Start and End Dates */}
-              <div className="sm:col-span-3">
-                <label htmlFor="start_date" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-3">
+                <label htmlFor="start_date" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Start Date
                 </label>
                 <div className="mt-1">
@@ -290,13 +290,13 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="start_date"
                     value={formData.start_date}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
-                <label htmlFor="end_date" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-3">
+                <label htmlFor="end_date" className="block text-xs sm:text-sm font-medium text-gray-700">
                   End Date
                 </label>
                 <div className="mt-1">
@@ -306,14 +306,14 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="end_date"
                     value={formData.end_date}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
               {/* Discount (for deals) */}
-              <div className="sm:col-span-3">
-                <label htmlFor="discount" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-3">
+                <label htmlFor="discount" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Discount Percentage
                 </label>
                 <div className="mt-1">
@@ -323,7 +323,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="discount"
                     value={formData.discount || ''}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                     placeholder="e.g., 25"
                   />
                 </div>
@@ -333,8 +333,8 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
               </div>
 
               {/* Priority and Active Status */}
-              <div className="sm:col-span-3">
-                <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-3">
+                <label htmlFor="priority" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Priority
                 </label>
                 <div className="mt-1">
@@ -346,7 +346,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     max="100"
                     value={formData.priority}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
                 <p className="mt-1 text-xs text-gray-500">
@@ -354,8 +354,8 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                 </p>
               </div>
 
-              <div className="sm:col-span-3">
-                <div className="flex items-center h-full mt-6">
+              <div className="col-span-1 sm:col-span-3">
+                <div className="flex items-center h-full mt-3 sm:mt-6">
                   <input
                     id="is_active"
                     name="is_active"
@@ -364,25 +364,25 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     onChange={handleInputChange}
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700">
+                  <label htmlFor="is_active" className="ml-2 block text-xs sm:text-sm text-gray-700">
                     Active
                   </label>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end space-x-3">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || (!formData.image_url && !formData.imageFile && !imagePreview)}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>

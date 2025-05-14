@@ -91,7 +91,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -102,29 +102,29 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
     // Only include password if it's provided
     const { confirmPassword, password, ...restData } = formData;
     const submitData = password ? { ...restData, password } : restData;
-    
+
     onSubmit(submitData);
     setIsSubmitting(false);
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Edit Admin User</h2>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+          <h2 className="text-base sm:text-lg font-medium text-gray-900">Edit Admin User</h2>
           <button
             type="button"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-500"
           >
-            <XMarkIcon className="h-6 w-6" />
+            <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-4">
-          <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="px-4 sm:px-6 py-3 sm:py-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* Name fields */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
                   First Name *
@@ -135,10 +135,10 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                   id="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${errors.firstName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
+                  className={`mt-1 block w-full border ${errors.firstName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
                 />
                 {errors.firstName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                  <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.firstName}</p>
                 )}
               </div>
               <div>
@@ -151,10 +151,10 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                   id="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${errors.lastName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
+                  className={`mt-1 block w-full border ${errors.lastName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
                 />
                 {errors.lastName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                  <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.lastName}</p>
                 )}
               </div>
             </div>
@@ -170,15 +170,15 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                 id="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`mt-1 block w-full border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
+                className={`mt-1 block w-full border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.email}</p>
               )}
             </div>
 
             {/* Password fields (optional on edit) */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password (leave blank to keep current)
@@ -189,10 +189,10 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                   id="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${errors.password ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
+                  className={`mt-1 block w-full border ${errors.password ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
                 />
                 {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                  <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.password}</p>
                 )}
               </div>
               <div>
@@ -205,10 +205,10 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                   id="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
+                  className={`mt-1 block w-full border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
                 />
                 {errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                  <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.confirmPassword}</p>
                 )}
               </div>
             </div>
@@ -224,7 +224,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                 id="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm"
               />
             </div>
 
@@ -233,18 +233,18 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end space-x-3">
+          <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+              className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-emerald-300"
+              className="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-emerald-300"
             >
               {isSubmitting ? 'Saving...' : 'Save Changes'}
             </button>

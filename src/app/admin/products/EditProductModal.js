@@ -180,31 +180,33 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div className="flex justify-between items-center px-6 py-4 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">Edit Product: {product.name}</h2>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-3 sm:p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+        <div className="flex justify-between items-center px-3 sm:px-6 py-3 sm:py-4 border-b">
+          <h2 className="text-base sm:text-xl font-semibold text-gray-900 truncate">
+            Edit Product: {product.name}
+          </h2>
           <button
             type="button"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-500"
           >
-            <XMarkIcon className="h-6 w-6" />
+            <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
         </div>
 
-        <div className="px-6 py-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
+        <div className="px-3 sm:px-6 py-3 sm:py-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+            <div className="mb-3 sm:mb-4 bg-red-50 border border-red-200 text-red-800 px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div className="grid grid-cols-1 gap-y-3 sm:gap-y-6 gap-x-2 sm:gap-x-4 sm:grid-cols-6">
               {/* Product Name */}
               <div className="sm:col-span-6">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Product Name *
                 </label>
                 <div className="mt-1">
@@ -215,14 +217,14 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
               {/* SKU */}
-              <div className="sm:col-span-3">
-                <label htmlFor="sku" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-3">
+                <label htmlFor="sku" className="block text-xs sm:text-sm font-medium text-gray-700">
                   SKU *
                 </label>
                 <div className="mt-1">
@@ -233,14 +235,14 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     required
                     value={formData.sku}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
               {/* Category */}
-              <div className="sm:col-span-3">
-                <label htmlFor="category_id" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-3">
+                <label htmlFor="category_id" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Category
                 </label>
                 <div className="mt-1">
@@ -249,7 +251,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     name="category_id"
                     value={formData.category_id}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   >
                     <option value="">Select a category</option>
                     {categories.map((category) => (
@@ -262,13 +264,13 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
               </div>
 
               {/* Price */}
-              <div className="sm:col-span-2">
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-2">
+                <label htmlFor="price" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Price *
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">$</span>
+                    <span className="text-gray-500 text-xs sm:text-sm">$</span>
                   </div>
                   <input
                     type="number"
@@ -279,15 +281,15 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     step="0.01"
                     value={formData.price}
                     onChange={handleInputChange}
-                    className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                    className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-7 pr-12 text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                     placeholder="0.00"
                   />
                 </div>
               </div>
 
               {/* Stock */}
-              <div className="sm:col-span-2">
-                <label htmlFor="stock" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-2">
+                <label htmlFor="stock" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Stock
                 </label>
                 <div className="mt-1">
@@ -298,14 +300,14 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     min="0"
                     value={formData.stock}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
               {/* Weight */}
-              <div className="sm:col-span-2">
-                <label htmlFor="weight" className="block text-sm font-medium text-gray-700">
+              <div className="col-span-1 sm:col-span-2">
+                <label htmlFor="weight" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Weight (kg)
                 </label>
                 <div className="mt-1">
@@ -317,14 +319,14 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     step="0.01"
                     value={formData.weight}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div className="sm:col-span-6">
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="description" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Description
                 </label>
                 <div className="mt-1">
@@ -334,19 +336,19 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     rows={3}
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>
               </div>
 
               {/* Multiple Image Upload */}
               <div className="sm:col-span-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Product Images
                 </label>
                 {loadingImages ? (
-                  <div className="flex items-center justify-center h-32">
-                    <p>Loading images...</p>
+                  <div className="flex items-center justify-center h-24 sm:h-32">
+                    <p className="text-sm text-gray-500">Loading images...</p>
                   </div>
                 ) : (
                   <MultipleImageUpload
@@ -357,18 +359,18 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end space-x-3">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>

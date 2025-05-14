@@ -282,19 +282,25 @@ export default function StoreLocationsPage() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8">
-      <PageHeader
-        onAddClick={() => {
-          setCurrentLocation(null);
-          setSelectedCityId('');
-          setSelectedZoneId('');
-          setShowAddModal(true);
-        }}
-      />
+      <div className="flex flex-wrap gap-4 mb-4">
+        <div className="w-full">
+          <PageHeader
+            onAddClick={() => {
+              setCurrentLocation(null);
+              setSelectedCityId('');
+              setSelectedZoneId('');
+              setShowAddModal(true);
+            }}
+          />
+        </div>
 
-      <SearchBar
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-      />
+        <div className="w-full">
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+          />
+        </div>
+      </div>
 
       {/* Error message */}
       {error && (

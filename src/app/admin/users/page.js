@@ -28,7 +28,7 @@ export default function AdminUsersPage() {
       setError(null);
 
       const response = await fetch('/api/admin/users');
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch admin users');
@@ -48,7 +48,7 @@ export default function AdminUsersPage() {
   const handleAddUser = async (data) => {
     try {
       setError(null);
-      
+
       const response = await fetch('/api/admin/users', {
         method: 'POST',
         headers: {
@@ -75,7 +75,7 @@ export default function AdminUsersPage() {
   const handleEditUser = async (id, data) => {
     try {
       setError(null);
-      
+
       const response = await fetch(`/api/admin/users/${id}`, {
         method: 'PUT',
         headers: {
@@ -102,7 +102,7 @@ export default function AdminUsersPage() {
   const handleDeleteUser = async (id) => {
     try {
       setError(null);
-      
+
       const response = await fetch(`/api/admin/users/${id}`, {
         method: 'DELETE',
       });
@@ -142,25 +142,25 @@ export default function AdminUsersPage() {
   }, [session]);
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-6">
+      <div className="flex flex-wrap gap-4 justify-between items-start mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Users</h1>
           <p className="mt-1 text-sm text-gray-500">
             Manage admin users who have access to the admin panel
           </p>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={fetchAdminUsers}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+            className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
           >
             <ArrowPathIcon className={`-ml-1 mr-2 h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+            className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
           >
             <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
             Add Admin User
@@ -170,7 +170,7 @@ export default function AdminUsersPage() {
 
       {/* Search bar */}
       <div className="mb-6">
-        <div className="relative rounded-md shadow-sm max-w-md">
+        <div className="relative rounded-md shadow-sm w-full sm:max-w-md">
           <input
             type="text"
             value={searchTerm}

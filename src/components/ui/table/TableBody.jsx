@@ -105,11 +105,10 @@ export default function TableBody({
                 : '';
 
               // Determine text handling based on column configuration
+              // Only apply whitespace-nowrap or break-words to the td element
               const textHandlingClass = column.noWrap
                 ? 'whitespace-nowrap'
-                : column.truncate
-                  ? 'truncate'
-                  : 'break-words';
+                : 'break-words';
 
               // Apply max width if specified
               const cellStyle = {
@@ -117,14 +116,39 @@ export default function TableBody({
                 ...column.cellStyle
               };
 
+              // Determine title for tooltip
+              const cellContent = column.key && row[column.key];
+
+              // By default, show tooltip for all string content unless explicitly disabled
+              const shouldShowTooltip =
+                typeof cellContent === 'string' &&
+                cellContent.length > 0 &&
+                !(column.noWrap || column.showTooltip === false);
+
+              // Get tooltip content - either from the raw data or from a custom tooltip function
+              let tooltipTitle;
+              if (column.tooltip) {
+                tooltipTitle = typeof column.tooltip === 'function' ? column.tooltip(row) : column.tooltip;
+              } else if (shouldShowTooltip) {
+                tooltipTitle = cellContent;
+              }
+
               return (
                 <td
                   key={`cell-${column.id || column.key}-${rowIndex}`}
                   className={`px-2 sm:px-4 py-2 text-xs sm:text-sm ${textHandlingClass} ${responsiveClasses} ${column.cellClassName || ''}`}
                   style={cellStyle}
-                  title={column.truncate && typeof row[column.key] === 'string' ? row[column.key] : undefined}
+                  title={tooltipTitle}
                 >
-                  <div className={column.truncate ? 'truncate' : ''}>
+                  <div className={
+                    column.truncate
+                      ? 'truncate'
+                      : column.noWrap
+                        ? ''
+                        : column.clampLines === false
+                          ? ''
+                          : 'line-clamp-4'
+                  }>
                     {column.cell ? column.cell({ row, rowIndex }) : (column.render ? column.render(row, rowIndex) : row[column.key])}
                   </div>
                 </td>
