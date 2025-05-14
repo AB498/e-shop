@@ -447,7 +447,7 @@ export default function ProductCarousel({
                     swiper.pagination.enabled = !isMobile && enableSwipingRow1;
                     swiper.pagination.update();
                   }}
-                  className={`px-2 sm:px-0 overflow-visible py-4`}
+                  className={`px-2 sm:px-0 overflow-visible pb-2`}
                   loop={false}
                   loopFillGroupWithBlank={false}
                   slidesPerGroupAuto={true}
@@ -603,7 +603,7 @@ export default function ProductCarousel({
                     // Ensure loading state is set to false when Swiper is fully initialized
                     setIsLoading(false);
                   }}
-                  className={`px-2 sm:px-0 overflow-visible py-4`}
+                  className={`px-2 sm:px-0 overflow-visible pb-2`}
                   loop={false}
                   loopFillGroupWithBlank={false}
                   slidesPerGroupAuto={true}

@@ -24,6 +24,30 @@ const settingsSeed = [
     created_at: new Date(),
     updated_at: new Date(),
   },
+  {
+    id: 4,
+    key: 'notify_orders',
+    value: 'true',
+    description: 'Get notified when a new order is placed',
+    created_at: new Date(),
+    updated_at: new Date(),
+  },
+  {
+    id: 5,
+    key: 'notify_stock',
+    value: 'true',
+    description: 'Get notified when products are running low',
+    created_at: new Date(),
+    updated_at: new Date(),
+  },
+  {
+    id: 6,
+    key: 'notify_customers',
+    value: 'false',
+    description: 'Get notified when a new customer registers',
+    created_at: new Date(),
+    updated_at: new Date(),
+  },
 ];
 
 export default settingsSeed;

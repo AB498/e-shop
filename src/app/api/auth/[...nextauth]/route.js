@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { authenticateUser, getUserById } from '@/lib/auth';
+import { getUserById as getUserByIdFromActions } from '@/lib/actions/users';
 
 export const authOptions = {
   providers: [
@@ -32,6 +33,23 @@ export const authOptions = {
     },
     async session({ session, token }) {
       if (token) {
+        // Always fetch fresh user data from the database
+        try {
+          const freshUserData = await getUserByIdFromActions(token.id);
+          if (freshUserData) {
+            // Use the fresh data from the database
+            session.user.id = freshUserData.id;
+            session.user.role = freshUserData.role;
+            session.user.firstName = freshUserData.firstName;
+            session.user.lastName = freshUserData.lastName;
+            session.user.email = freshUserData.email;
+            return session;
+          }
+        } catch (error) {
+          console.error('Error fetching fresh user data:', error);
+        }
+
+        // Fallback to token data if fresh data fetch fails
         session.user.id = token.id;
         session.user.role = token.role;
         session.user.firstName = token.firstName;

@@ -68,6 +68,33 @@ export default function AdminLayoutClient({
   const userMenuRef = useRef(null);
   const sidebarUserMenuRef = useRef(null);
 
+  // Use session data for user info if available, otherwise fall back to props
+  const userInfo = session?.user ? {
+    name: `${session.user.firstName || ''} ${session.user.lastName || ''}`.trim() || userData.name,
+    email: session.user.email || userData.email,
+    image: session.user.image || userData.image,
+    role: session.user.role || userData.role
+  } : userData;
+
+  // Force session refresh on component mount
+  useEffect(() => {
+    const refreshSession = async () => {
+      try {
+        // This will trigger a session refresh using our updated callback
+        await fetch('/api/auth/session');
+      } catch (error) {
+        console.error('Error refreshing session:', error);
+      }
+    };
+
+    refreshSession();
+  }, []);
+
+  // Log session data for debugging
+  useEffect(() => {
+    console.log('Current session data:', session);
+  }, [session]);
+
   // Handle sign out
   const handleSignOut = async () => {
     await signOut({ redirect: true, callbackUrl: '/' });
@@ -209,30 +236,30 @@ export default function AdminLayoutClient({
             <div className="flex-shrink-0 group block mb-4">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  {userData.image ? (
+                  {userInfo.image ? (
                     <Image
-                      src={userData.image}
-                      alt={userData.name}
+                      src={userInfo.image}
+                      alt={userInfo.name}
                       width={40}
                       height={40}
                       className="h-10 w-10 rounded-full object-cover border-2 border-emerald-100"
                     />
                   ) : (
                     <div className="h-10 w-10 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-medium text-lg">
-                      {userData.name.charAt(0).toUpperCase()}
+                      {userInfo.name.charAt(0).toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div className="ml-3">
                   <p className="text-base font-medium text-gray-800">
-                    {userData.name}
+                    {userInfo.name}
                   </p>
                   <p className="text-sm text-gray-500 truncate max-w-[180px]">
-                    {userData.email}
+                    {userInfo.email}
                   </p>
                   <div className="mt-1 flex items-center">
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800">
-                      {userData.role === 'admin' ? 'Administrator' : userData.role}
+                      {userInfo.role === 'admin' ? 'Administrator' : userInfo.role}
                     </span>
                   </div>
                 </div>
@@ -308,30 +335,30 @@ export default function AdminLayoutClient({
               >
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    {userData.image ? (
+                    {userInfo.image ? (
                       <Image
-                        src={userData.image}
-                        alt={userData.name}
+                        src={userInfo.image}
+                        alt={userInfo.name}
                         width={40}
                         height={40}
                         className="h-10 w-10 rounded-full object-cover border-2 border-emerald-100"
                       />
                     ) : (
                       <div className="h-10 w-10 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-medium text-lg">
-                        {userData.name.charAt(0).toUpperCase()}
+                        {userInfo.name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-800">
-                      {userData.name}
+                      {userInfo.name}
                     </p>
                     <p className="text-xs text-gray-500 truncate max-w-[140px]">
-                      {userData.email}
+                      {userInfo.email}
                     </p>
                     <div className="mt-1 flex items-center">
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800">
-                        {userData.role === 'admin' ? 'Administrator' : userData.role}
+                        {userInfo.role === 'admin' ? 'Administrator' : userInfo.role}
                       </span>
                     </div>
                   </div>
@@ -398,17 +425,17 @@ export default function AdminLayoutClient({
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                 >
                   <span className="sr-only">Open user menu</span>
-                  {userData.image ? (
+                  {userInfo.image ? (
                     <Image
-                      src={userData.image}
-                      alt={userData.name}
+                      src={userInfo.image}
+                      alt={userInfo.name}
                       width={32}
                       height={32}
                       className="h-7 w-7 sm:h-8 sm:w-8 rounded-full object-cover"
                     />
                   ) : (
                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-sm sm:text-base">
-                      {userData.name.charAt(0).toUpperCase()}
+                      {userInfo.name.charAt(0).toUpperCase()}
                     </div>
                   )}
                 </button>
@@ -416,8 +443,8 @@ export default function AdminLayoutClient({
                 {userMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 border border-gray-200">
                     <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900 truncate">{userData.name}</p>
-                      <p className="text-xs text-gray-500 truncate">{userData.email}</p>
+                      <p className="text-sm font-medium text-gray-900 truncate">{userInfo.name}</p>
+                      <p className="text-xs text-gray-500 truncate">{userInfo.email}</p>
                     </div>
                     <Link
                       href="/profile"

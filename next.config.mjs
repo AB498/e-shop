@@ -10,9 +10,7 @@ const nextConfig = {
         ],
     },
     // Allow image uploads up to 5MB
-    experimental: {
-        serverComponentsExternalPackages: ['sharp'],
-    },
+    serverExternalPackages: ['sharp'],
 };
 
 export default nextConfig;
