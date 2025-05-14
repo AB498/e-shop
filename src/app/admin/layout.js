@@ -3,10 +3,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getDashboardStats, isInternalCourierActive } from "@/lib/actions/admin";
 import AdminLayoutClient from "./AdminLayoutClient";
+import { redirect } from "next/navigation";
 
 export default async function AdminLayout({ children }) {
   // Fetch user session data
   const session = await getServerSession(authOptions);
+
+  // Check if user is authenticated and has admin role
+  if (!session || session.user.role !== 'admin') {
+    // Redirect to home page with query parameter for notification
+    redirect('/?adminRedirect=true');
+  }
 
   // Fetch notification count and other dashboard stats
   const dashboardStats = await getDashboardStats();
@@ -102,11 +109,7 @@ export default async function AdminLayout({ children }) {
       href: '/admin/promotions',
       iconName: 'SparklesIcon'
     },
-    {
-      name: 'Analytics',
-      href: '/admin/analytics',
-      iconName: 'ChartBarIcon'
-    },
+
     {
       name: 'Payments',
       href: '/admin/payments',

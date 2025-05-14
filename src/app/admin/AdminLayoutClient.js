@@ -90,6 +90,11 @@ export default function AdminLayoutClient({
     };
   }, []);
 
+  // Function to close the sidebar
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
+
   // Add current property based on the current pathname and resolve icon components
   const navigation = navigationItems.map(item => {
     const current = pathname === item.href ||
@@ -155,6 +160,7 @@ export default function AdminLayoutClient({
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={closeSidebar}
                   className={`group flex items-center px-3 py-2.5 text-base font-medium rounded-md transition-all duration-200 ${item.current
                     ? 'bg-gradient-to-r from-emerald-50 to-emerald-100 text-emerald-800 border-l-4 border-emerald-500'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-700 hover:border-l-4 hover:border-emerald-300'
@@ -362,13 +368,13 @@ export default function AdminLayoutClient({
         <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 shadow-sm items-center">
           <button
             type="button"
-            className="h-6 w-6 ml-4 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
+            className="md:hidden h-6 w-6 ml-4 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 px-4 flex justify-between">
+          <div className="md:ml-10 flex-1 px-4 flex justify-between">
             <div className="flex-1 flex items-center">
               <h1 className="flex items-center text-lg sm:text-lg font-semibold text-gray-800 px-2 sm:px-4">
                 Admin Dashboard

@@ -873,13 +873,21 @@ export async function getAllOrders() {
           ? `${userData[0].firstName} ${userData[0].lastName}`
           : 'Unknown';
 
-        // Get order items count
-        const itemsResult = await db
-          .select({ count: sql`COUNT(*)` })
+        // Get order items with product details
+        const orderItemsData = await db
+          .select({
+            id: orderItems.id,
+            quantity: orderItems.quantity,
+            price: orderItems.price,
+            product_id: orderItems.product_id,
+            product_name: products.name,
+            product_image: products.image,
+          })
           .from(orderItems)
+          .leftJoin(products, eq(orderItems.product_id, products.id))
           .where(eq(orderItems.order_id, order.id));
 
-        const itemsCount = itemsResult[0]?.count || 0;
+        const itemsCount = orderItemsData.length;
 
         // Get courier information if available
         const courier = order.courierId ? courierMap[order.courierId] : null;
@@ -899,6 +907,15 @@ export async function getAllOrders() {
           date: order.createdAt.toISOString().split('T')[0],
           time: order.createdAt.toLocaleTimeString(),
           itemsCount,
+          items: orderItemsData.map(item => ({
+            id: item.id,
+            product_id: item.product_id,
+            product_name: item.product_name,
+            product_image: item.product_image,
+            quantity: item.quantity,
+            price: `$${parseFloat(item.price).toFixed(2)}`,
+            total: `$${(parseFloat(item.price) * item.quantity).toFixed(2)}`
+          })),
           shippingAddress: order.shippingAddress,
           shippingCity: order.shippingCity,
           shippingPostCode: order.shippingPostCode,

@@ -328,7 +328,7 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
               <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={() => setShowOrderDetails(false)}></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
@@ -379,6 +379,75 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                             )}
                           </dd>
                         </div>
+
+                        {/* Order Items Section */}
+                        <div className="sm:col-span-2">
+                          <dt className="text-sm font-medium text-gray-500 mb-2">Order Items</dt>
+                          <dd className="mt-1 text-sm text-gray-900">
+                            <div className="overflow-x-auto -mx-4 sm:-mx-6">
+                              <div className="inline-block min-w-full py-2 align-middle px-4 sm:px-6">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                  <thead className="bg-gray-50">
+                                    <tr>
+                                      <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Product
+                                      </th>
+                                      <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Price
+                                      </th>
+                                      <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Qty
+                                      </th>
+                                      <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Total
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="bg-white divide-y divide-gray-200">
+                                    {selectedOrder.items && selectedOrder.items.map((item) => (
+                                      <tr key={item.id}>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                          <div className="flex items-center">
+                                            <div className="flex-shrink-0 h-8 w-8 bg-gray-100 rounded-md overflow-hidden">
+                                              {item.product_image ? (
+                                                <img
+                                                  src={item.product_image}
+                                                  alt={item.product_name}
+                                                  className="h-full w-full object-cover"
+                                                />
+                                              ) : (
+                                                <div className="h-full w-full flex items-center justify-center text-gray-400">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                  </svg>
+                                                </div>
+                                              )}
+                                            </div>
+                                            <div className="ml-3">
+                                              <div className="text-xs font-medium text-gray-900 line-clamp-2">{item.product_name}</div>
+                                              <div className="text-xs text-gray-500">ID: {item.product_id}</div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap text-xs text-gray-900">{item.price}</td>
+                                        <td className="px-3 py-2 whitespace-nowrap text-xs text-gray-900">{item.quantity}</td>
+                                        <td className="px-3 py-2 whitespace-nowrap text-xs text-gray-900">{item.total}</td>
+                                      </tr>
+                                    ))}
+                                    {(!selectedOrder.items || selectedOrder.items.length === 0) && (
+                                      <tr>
+                                        <td colSpan="4" className="px-3 py-2 text-center text-xs text-gray-500">
+                                          No items found for this order
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </dd>
+                        </div>
+
                         {selectedOrder.courier_id && (
                           <div className="sm:col-span-2">
                             <dt className="text-sm font-medium text-gray-500">Courier Information</dt>

@@ -12,6 +12,7 @@ import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
 import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
 import Footer from "@/components/layout/Footer";
 import Copyright from "@/components/layout/Copyright";
+import AdminRedirectNotification from "@/components/auth/AdminRedirectNotification";
 
 export const dynamic = 'force-dynamic';
 
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
           <SessionProvider>
             <CartProvider>
               <WishlistProvider>
+                <AdminRedirectNotification />
                 <div className="flex w-full h-screen relative">
                   <div className="flex-none translate-0 relative z-10">
                     <ProductQuickViewModal />

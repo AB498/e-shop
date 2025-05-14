@@ -25,7 +25,6 @@ export default function CheckoutPage() {
     city: '',
     postCode: '',
     country: 'Bangladesh',
-    area: '',
     landmark: '',
     specialInstructions: '',
     paymentMethod: 'sslcommerz',
@@ -44,15 +43,48 @@ export default function CheckoutPage() {
 
   // Populate form with user data if logged in
   useEffect(() => {
-    if (session?.user) {
-      setFormData(prevData => ({
-        ...prevData,
-        firstName: session.user.firstName || '',
-        lastName: session.user.lastName || '',
-        email: session.user.email || '',
-      }));
-    }
-  }, []);
+    const fetchUserData = async () => {
+      if (session?.user?.id) {
+        try {
+          // Fetch complete user data including address information
+          const response = await fetch(`/api/user/profile`);
+          if (response.ok) {
+            const userData = await response.json();
+            setFormData(prevData => ({
+              ...prevData,
+              firstName: userData.firstName || session.user.firstName || '',
+              lastName: userData.lastName || session.user.lastName || '',
+              email: userData.email || session.user.email || '',
+              phone: userData.phone || '',
+              address: userData.address || '',
+              city: userData.city || '',
+              postCode: userData.postCode || '',
+              country: userData.country || 'Bangladesh',
+            }));
+          } else {
+            // Fallback to session data if API fails
+            setFormData(prevData => ({
+              ...prevData,
+              firstName: session.user.firstName || '',
+              lastName: session.user.lastName || '',
+              email: session.user.email || '',
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          // Fallback to session data if API fails
+          setFormData(prevData => ({
+            ...prevData,
+            firstName: session.user.firstName || '',
+            lastName: session.user.lastName || '',
+            email: session.user.email || '',
+          }));
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [session]);
 
   // Redirect if cart is empty
   useEffect(() => {
@@ -89,7 +121,7 @@ export default function CheckoutPage() {
     // Required fields
     const requiredFields = [
       'firstName', 'lastName', 'email', 'phone',
-      'address', 'city', 'postCode', 'country', 'area'
+      'address', 'city', 'postCode', 'country'
     ];
 
     requiredFields.forEach(field => {
@@ -114,10 +146,13 @@ export default function CheckoutPage() {
       }
     }
 
-    // Area/Zone validation - must be at least 10 characters
-    if (formData.area && formData.area.length < 10) {
-      newErrors.area = 'Area/Zone must be at least 10 characters long';
+    // Address validation - must be at least 10 characters for delivery purposes
+    if (formData.address && formData.address.length < 10) {
+      newErrors.address = 'Address must be at least 10 characters long for accurate delivery';
     }
+
+    // Set area field to match address for zone information
+    formData.area = formData.address;
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -134,6 +169,9 @@ export default function CheckoutPage() {
     setIsProcessing(true);
 
     try {
+      // Ensure area is set to address value
+      formData.area = formData.address;
+
       // Prepare order data
       const orderData = {
         customer: {
@@ -145,7 +183,7 @@ export default function CheckoutPage() {
           city: formData.city,
           postCode: formData.postCode,
           country: formData.country,
-          area: formData.area,
+          area: formData.address, // Use address as area/zone
           landmark: formData.landmark,
           specialInstructions: formData.specialInstructions,
         },
@@ -351,7 +389,7 @@ export default function CheckoutPage() {
                 {/* Address */}
                 <div className="md:col-span-2">
                   <label htmlFor="address" className="block text-[#444444] text-sm mb-1">
-                    Address*
+                    Address* (Will be used as delivery zone)
                   </label>
                   <input
                     type="text"
@@ -359,12 +397,13 @@ export default function CheckoutPage() {
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                    placeholder="Enter Your Address"
+                    placeholder="Enter Your Full Address (min 10 characters)"
                     className={`w-full p-2 text-sm border ${errors.address ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
                   />
                   {errors.address && (
                     <p className="text-red-500 text-xs mt-1">{errors.address}</p>
                   )}
+                  <p className="text-gray-500 text-xs mt-1">Please provide a detailed address with at least 10 characters for accurate delivery. This will also be used as your delivery zone.</p>
                 </div>
 
                 {/* City */}
@@ -427,25 +466,7 @@ export default function CheckoutPage() {
                   )}
                 </div>
 
-                {/* Area */}
-                <div>
-                  <label htmlFor="area" className="block text-[#444444] text-sm mb-1">
-                    Area/Zone*
-                  </label>
-                  <input
-                    type="text"
-                    id="area"
-                    name="area"
-                    value={formData.area}
-                    onChange={handleChange}
-                    placeholder="Enter Your Area or Zone (min 10 characters)"
-                    className={`w-full p-2 text-sm border ${errors.area ? 'border-red-500' : 'border-[#E9E9E9]'} rounded-md focus:outline-none focus:ring-1 focus:ring-[#3BB77E]`}
-                  />
-                  {errors.area && (
-                    <p className="text-red-500 text-xs mt-1">{errors.area}</p>
-                  )}
-                  <p className="text-gray-500 text-xs mt-1">Please provide a detailed area description with at least 10 characters for accurate delivery.</p>
-                </div>
+
 
                 {/* Landmark */}
                 <div>
