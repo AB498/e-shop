@@ -14,9 +14,10 @@ export async function GET(request) {
     const maxPrice = searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')) : null;
     const color = searchParams.get('color') || null;
     const condition = searchParams.get('condition') || null;
+    const promotionId = searchParams.get('promotion') ? parseInt(searchParams.get('promotion')) : null;
 
     let products;
-    
+
     if (categoryId) {
       // Convert comma-separated category IDs to an array of numbers
       const categoryIds = categoryId.split(',').map(id => parseInt(id));
@@ -33,9 +34,10 @@ export async function GET(request) {
         minPrice,
         maxPrice,
         color,
-        condition
+        condition,
+        promotionId
       });
-      
+
       products = result.products;
     }
 

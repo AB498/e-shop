@@ -10,10 +10,17 @@ const CartSummary = () => {
 
   // Calculate summary values
   const subtotal = cartTotal;
-  const discountRate = 0.2; // 20% discount
-  const discountAmount = subtotal * discountRate;
+
+  // Calculate the actual discount amount based on the difference between original and discounted prices
+  let discountAmount = 0;
+  for (const item of cart) {
+    const originalPrice = parseFloat(item.price || 0);
+    const discountedPrice = item.discountPrice ? parseFloat(item.discountPrice) : originalPrice;
+    discountAmount += (originalPrice - discountedPrice) * item.quantity;
+  }
+
   const deliveryFee = 15;
-  const total = subtotal - discountAmount + deliveryFee;
+  const total = subtotal + deliveryFee; // Subtotal already includes discounts
 
   const handleApplyPromo = () => {
     // This would handle promo code application logic
@@ -33,7 +40,7 @@ const CartSummary = () => {
 
         {/* Discount */}
         <div className="flex justify-between items-center">
-          <span className="text-[rgba(0,0,0,0.6)] text-sm">Discount (-20%)</span>
+          <span className="text-[rgba(0,0,0,0.6)] text-sm">Discount (Promotions)</span>
           <span className="text-[#FF3333] font-bold text-sm">-৳{discountAmount.toFixed(2)}</span>
         </div>
 

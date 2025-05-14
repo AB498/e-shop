@@ -7,7 +7,7 @@ import { useWishlist } from '@/context/WishlistContext';
 import { toast } from 'react-hot-toast';
 
 const ProductCard = ({ product, showAddToCart = true }) => {
-  const { id, name, price, image, category, discountPrice } = product;
+  const { id, name, price, image, category, discountPrice, discountPercentage, promotion } = product;
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
@@ -16,8 +16,10 @@ const ProductCard = ({ product, showAddToCart = true }) => {
   // State to track wishlist operation in progress
   const [isWishlistLoading, setIsWishlistLoading] = React.useState(false);
 
-  // Calculate discount percentage
-  const discountPercentage = Math.round((1 - (parseFloat(discountPrice) / parseFloat(price))) * 100);
+  // Use provided discount percentage or calculate it
+  const displayDiscountPercentage = discountPercentage ||
+    (price && discountPrice && price !== discountPrice) ?
+      Math.round((1 - (parseFloat(discountPrice) / parseFloat(price))) * 100) : 0;
 
   return (
     <div className="responsive-card bg-white rounded-[6px] shadow-sm w-full">
@@ -35,10 +37,18 @@ const ProductCard = ({ product, showAddToCart = true }) => {
           </div>
         </Link>
 
-        {discountPercentage > 0 && (
+        {displayDiscountPercentage > 0 && (
           <div className="absolute top-1 left-1 md:top-1.5 md:left-1.5">
             <div className="bg-[#006B51] text-white text-responsive-xs font-semibold py-0.5 px-1 md:py-0.5 md:px-1.5 rounded-[4px] text-[10px] xs:text-[11px] md:text-xs">
-              -{discountPercentage}%
+              -{displayDiscountPercentage}%
+            </div>
+          </div>
+        )}
+
+        {promotion && (
+          <div className="absolute bottom-1 left-1 md:bottom-1.5 md:left-1.5">
+            <div className="bg-[#FF3E3E] text-white text-responsive-xs font-semibold py-0.5 px-1 md:py-0.5 md:px-1.5 rounded-[4px] text-[10px] xs:text-[11px] md:text-xs">
+              {promotion.title}
             </div>
           </div>
         )}

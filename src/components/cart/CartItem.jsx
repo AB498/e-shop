@@ -13,10 +13,12 @@ const CartItem = ({ item }) => {
   const id = isProductNested ? item.product.id : item.id;
   const name = isProductNested ? item.product.name : item.name;
   const price = isProductNested ? item.product.price : item.price;
+  const discountPrice = isProductNested ? item.product.discountPrice : item.discountPrice;
   const image = isProductNested ? item.product.image : item.image;
   const category = isProductNested ? (item.product.category?.name || '') : item.category;
   const quantity = item.quantity || 1;
   const size = item.size || 'Standard';
+  const promotion = isProductNested ? item.product.promotion : item.promotion;
 
   const handleQuantityChange = (newQuantity) => {
     if (newQuantity >= 1) {
@@ -44,7 +46,19 @@ const CartItem = ({ item }) => {
           <div className="flex flex-col gap-0.5">
             <p className="text-black text-xs">Size: {size || 'Standard'}</p>
             <p className="text-black text-xs">Category: {category}</p>
-            <span className="text-[#3BB77E] font-bold text-lg">৳{parseFloat(price).toFixed(2)}</span>
+            {discountPrice && discountPrice !== price ? (
+              <div className="flex items-center gap-2">
+                <span className="text-[#FF3333] text-xs line-through">৳{parseFloat(price).toFixed(2)}</span>
+                <span className="text-[#3BB77E] font-bold text-lg">৳{parseFloat(discountPrice).toFixed(2)}</span>
+                {promotion && (
+                  <span className="bg-[#FF3E3E] text-white text-[10px] px-1.5 py-0.5 rounded-sm">
+                    {promotion.title}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <span className="text-[#3BB77E] font-bold text-lg">৳{parseFloat(price).toFixed(2)}</span>
+            )}
           </div>
         </div>
 

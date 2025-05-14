@@ -27,6 +27,7 @@ export default async function ProductListingPage({ searchParams }) {
   const maxPrice = searchParams?.maxPrice || null;
   const color = searchParams?.color || null;
   const condition = searchParams?.condition || null;
+  const promotionId = searchParams?.promotion || null;
 
   console.log('ProductListingPage - Search param:', search);
 
@@ -62,6 +63,7 @@ export default async function ProductListingPage({ searchParams }) {
               maxPrice={maxPrice}
               color={color}
               condition={condition}
+              promotionId={promotionId}
             />
 
             {/* Deals Of The Day Section */}

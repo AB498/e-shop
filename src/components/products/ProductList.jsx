@@ -16,7 +16,8 @@ export default async function ProductList({
   minPrice = null,
   maxPrice = null,
   color = null,
-  condition = null
+  condition = null,
+  promotionId = null
 }) {
   // Fetch products with pagination and all filters
   const { products, pagination } = await getAllProducts({
@@ -29,7 +30,8 @@ export default async function ProductList({
     minPrice: minPrice ? Number(minPrice) : null,
     maxPrice: maxPrice ? Number(maxPrice) : null,
     color,
-    condition
+    condition,
+    promotionId: promotionId ? Number(promotionId) : null
   });
 
   console.log('Search term:', search);

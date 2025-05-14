@@ -15,6 +15,7 @@ export default function GroomingSectionClient() {
           throw new Error('Failed to fetch products');
         }
         const data = await response.json();
+        console.log(data.products)
         setProducts(data.products || []);
       } catch (error) {
         console.error('Error fetching grooming products:', error);

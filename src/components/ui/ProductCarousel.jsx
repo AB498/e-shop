@@ -479,11 +479,13 @@ export default function ProductCarousel({
                               </div>
 
                               {/* Discount tag */}
-                              <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
-                                <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
-                                  -10%
+                              {product.discountPercentage > 0 && (
+                                <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
+                                  <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
+                                    -{Math.round(product.discountPercentage)}%
+                                  </div>
                                 </div>
-                              </div>
+                              )}
                             </div>
                           </div>
                         ) : (
@@ -499,11 +501,13 @@ export default function ProductCarousel({
                               />
 
                               {/* Discount tag */}
-                              <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
-                                <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
-                                  -10%
+                              {product.discountPercentage > 0 && (
+                                <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+                                  <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
+                                    -{Math.round(product.discountPercentage)}%
+                                  </div>
                                 </div>
-                              </div>
+                              )}
                             </div>
                           </Link>
                         )}
@@ -525,7 +529,9 @@ export default function ProductCarousel({
                           {/* Price */}
                           <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
                             <span className="text-[#006B51] text-[9px] sm:text-[10px] font-semibold">৳{product.discountPrice}</span>
-                            <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
+                            {product.discountPercentage > 0 && (
+                              <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -635,11 +641,13 @@ export default function ProductCarousel({
                               </div>
 
                               {/* Discount tag */}
-                              <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
-                                <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
-                                  -10%
+                              {product.discountPercentage > 0 && (
+                                <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
+                                  <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
+                                    -{Math.round(product.discountPercentage)}%
+                                  </div>
                                 </div>
-                              </div>
+                              )}
                             </div>
                           </div>
                         ) : (
@@ -655,11 +663,13 @@ export default function ProductCarousel({
                               />
 
                               {/* Discount tag */}
-                              <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
-                                <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
-                                  -10%
+                              {product.discountPercentage > 0 && (
+                                <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+                                  <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
+                                    -{Math.round(product.discountPercentage)}%
+                                  </div>
                                 </div>
-                              </div>
+                              )}
                             </div>
                           </Link>
                         )}
@@ -681,7 +691,9 @@ export default function ProductCarousel({
                           {/* Price */}
                           <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
                             <span className="text-[#006B51] text-[9px] sm:text-[10px] font-semibold">৳{product.discountPrice}</span>
-                            <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
+                            {product.discountPercentage > 0 && (
+                              <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
+                            )}
                           </div>
                         </div>
                       </div>

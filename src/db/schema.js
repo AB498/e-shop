@@ -210,6 +210,16 @@ const promotions = pgTable('promotions', {
   updated_at: timestamp('updated_at').defaultNow(),
 })
 
+// Product promotions junction table
+const productPromotions = pgTable('product_promotions', {
+  id: serial('id').primaryKey(),
+  product_id: integer('product_id').references(() => products.id).notNull(),
+  promotion_id: integer('promotion_id').references(() => promotions.id).notNull(),
+  discount_percentage: decimal('discount_percentage', { precision: 5, scale: 2 }),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+})
+
 // Payment transactions table for SSLCommerz
 const paymentTransactions = pgTable('payment_transactions', {
   id: serial('id').primaryKey(),
@@ -263,6 +273,7 @@ export {
   deliveryPersons,
   wishlistItems,
   promotions,
+  productPromotions,
   paymentTransactions,
   settings,
   contactMessages,

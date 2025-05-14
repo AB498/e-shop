@@ -40,7 +40,9 @@ export function CartProvider({ children }) {
 
       for (const item of cart) {
         count += item.quantity;
-        total += parseFloat(item.price || 0) * item.quantity;
+        // Use discounted price if available, otherwise use regular price
+        const itemPrice = item.discountPrice ? parseFloat(item.discountPrice) : parseFloat(item.price || 0);
+        total += itemPrice * item.quantity;
       }
 
       // Batch state updates

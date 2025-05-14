@@ -1,8 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { products, categories, productImages } from '@/db/schema';
-import { eq, or, desc, asc, like, sql, and } from 'drizzle-orm';
+import { products, categories, productImages, productPromotions, promotions } from '@/db/schema';
+import { eq, or, desc, asc, like, sql, and, inArray } from 'drizzle-orm';
 
 /**
  * Fetch products by category IDs
@@ -47,13 +47,70 @@ export async function getProductsByCategories(categoryIds, limit = 6) {
       categoryMap[category.id] = category.name;
     });
 
-    // Add category name to each product
-    const productsWithCategory = productData.map(product => ({
-      ...product,
-      category: categoryMap[product.categoryId] || 'Unknown',
-      // Calculate a 10% discount for display purposes
-      discountPrice: (parseFloat(product.price) * 0.9).toFixed(2),
-    }));
+    // Get product promotions for all products in the result
+    const resultProductIds = productData.map(product => product.id);
+
+    // Fetch all product promotions for these products
+    let productDiscounts = {};
+    if (resultProductIds.length > 0) {
+      const productPromotionsData = await db
+        .select({
+          productId: productPromotions.product_id,
+          promotionId: productPromotions.promotion_id,
+          discountPercentage: productPromotions.discount_percentage,
+          promotionTitle: promotions.title,
+          promotionType: promotions.type,
+        })
+        .from(productPromotions)
+        .innerJoin(promotions, eq(productPromotions.promotion_id, promotions.id))
+        .where(
+          and(
+            inArray(productPromotions.product_id, resultProductIds),
+            eq(promotions.is_active, true)
+          )
+        );
+
+      // Create a map of product ID to its best discount
+      productPromotionsData.forEach(promo => {
+        const productId = promo.productId;
+        const discount = parseFloat(promo.discountPercentage);
+
+        // If this product doesn't have a discount yet, or this discount is better
+        if (!productDiscounts[productId] || discount > productDiscounts[productId].discount) {
+          productDiscounts[productId] = {
+            discount,
+            promotionId: promo.promotionId,
+            promotionTitle: promo.promotionTitle,
+            promotionType: promo.promotionType,
+          };
+        }
+      });
+    }
+
+    // Add category name and calculate discount for each product
+    const productsWithCategory = productData.map(product => {
+      // Get the best discount for this product (if any)
+      const productDiscount = productDiscounts[product.id];
+      const discountPercentage = productDiscount ? productDiscount.discount : 0;
+
+      // Calculate the discounted price
+      const originalPrice = parseFloat(product.price);
+      const discountPrice = discountPercentage > 0
+        ? (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
+        : originalPrice.toFixed(2);
+
+      return {
+        ...product,
+        category: categoryMap[product.categoryId] || 'Unknown',
+        discountPrice,
+        discountPercentage,
+        promotion: productDiscount ? {
+          id: productDiscount.promotionId,
+          title: productDiscount.promotionTitle,
+          type: productDiscount.promotionType,
+        } : null,
+      };
+    });
 
     return productsWithCategory;
   } catch (error) {
@@ -75,6 +132,7 @@ export async function getProductsByCategories(categoryIds, limit = 6) {
  * @param {number} options.maxPrice - Maximum price filter
  * @param {string} options.color - Color filter (comma-separated values)
  * @param {string} options.condition - Condition filter (comma-separated values)
+ * @param {number} options.promotionId - Filter by promotion ID
  * @returns {Promise<Object>} - Object containing products and pagination info
  */
 export async function getAllProducts({
@@ -88,6 +146,7 @@ export async function getAllProducts({
   maxPrice = null,
   color = null,
   condition = null,
+  promotionId = null,
 } = {}) {
   console.log('getAllProducts called with search:', search);
   try {
@@ -151,6 +210,40 @@ export async function getAllProducts({
       }
     }
 
+    // Handle promotion filter
+    let productIds = null;
+    if (promotionId) {
+      console.log('Filtering by promotion ID:', promotionId);
+
+      // Get all product IDs that are part of this promotion
+      const promotionProducts = await db
+        .select({
+          productId: productPromotions.product_id,
+          discountPercentage: productPromotions.discount_percentage
+        })
+        .from(productPromotions)
+        .where(eq(productPromotions.promotion_id, promotionId));
+
+      if (promotionProducts.length > 0) {
+        productIds = promotionProducts.map(p => p.productId);
+        console.log(`Found ${productIds.length} products in promotion ${promotionId}`);
+      } else {
+        console.log(`No products found for promotion ${promotionId}`);
+        // Return empty result if no products in this promotion
+        return {
+          products: [],
+          pagination: {
+            page: Number(page),
+            limit: Number(limit),
+            totalProducts: 0,
+            totalPages: 0,
+            hasNextPage: false,
+            hasPrevPage: false,
+          },
+        };
+      }
+    }
+
     // Build the base query
     let query = db
       .select({
@@ -168,6 +261,15 @@ export async function getAllProducts({
     // Add conditions if any
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
+    }
+
+    // Add promotion filter if we have product IDs
+    if (productIds) {
+      if (conditions.length > 0) {
+        query = query.where(inArray(products.id, productIds));
+      } else {
+        query = query.where(inArray(products.id, productIds));
+      }
     }
 
     // Add sorting
@@ -212,13 +314,70 @@ export async function getAllProducts({
       categoryMap[category.id] = category.name;
     });
 
-    // Add category name to each product
-    const productsWithCategory = productData.map(product => ({
-      ...product,
-      category: categoryMap[product.categoryId] || 'Unknown',
-      // Calculate a 10% discount for display purposes
-      discountPrice: (parseFloat(product.price) * 0.9).toFixed(2),
-    }));
+    // Get product promotions for all products in the result
+    const resultProductIds = productData.map(product => product.id);
+
+    // Fetch all product promotions for these products
+    let productDiscounts = {};
+    if (resultProductIds.length > 0) {
+      const productPromotionsData = await db
+        .select({
+          productId: productPromotions.product_id,
+          promotionId: productPromotions.promotion_id,
+          discountPercentage: productPromotions.discount_percentage,
+          promotionTitle: promotions.title,
+          promotionType: promotions.type,
+        })
+        .from(productPromotions)
+        .innerJoin(promotions, eq(productPromotions.promotion_id, promotions.id))
+        .where(
+          and(
+            inArray(productPromotions.product_id, resultProductIds),
+            eq(promotions.is_active, true)
+          )
+        );
+
+      // Create a map of product ID to its best discount
+      productPromotionsData.forEach(promo => {
+        const productId = promo.productId;
+        const discount = parseFloat(promo.discountPercentage);
+
+        // If this product doesn't have a discount yet, or this discount is better
+        if (!productDiscounts[productId] || discount > productDiscounts[productId].discount) {
+          productDiscounts[productId] = {
+            discount,
+            promotionId: promo.promotionId,
+            promotionTitle: promo.promotionTitle,
+            promotionType: promo.promotionType,
+          };
+        }
+      });
+    }
+
+    // Add category name and calculate discount for each product
+    const productsWithCategory = productData.map(product => {
+      // Get the best discount for this product (if any)
+      const productDiscount = productDiscounts[product.id];
+      const discountPercentage = productDiscount ? productDiscount.discount : 0;
+
+      // Calculate the discounted price
+      const originalPrice = parseFloat(product.price);
+      const discountPrice = discountPercentage > 0
+        ? (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
+        : originalPrice.toFixed(2);
+
+      return {
+        ...product,
+        category: categoryMap[product.categoryId] || 'Unknown',
+        discountPrice,
+        discountPercentage,
+        promotion: productDiscount ? {
+          id: productDiscount.promotionId,
+          title: productDiscount.promotionTitle,
+          type: productDiscount.promotionType,
+        } : null,
+      };
+    });
 
     // Calculate pagination info
     const totalPages = Math.ceil(totalProducts / limit);
@@ -310,9 +469,41 @@ export async function getProductById(id) {
       .where(eq(productImages.product_id, id))
       .orderBy(asc(productImages.position));
 
-    // Calculate discount price (10% off for demo purposes)
-    const discountPrice = (parseFloat(product.price) * 0.9).toFixed(2);
-    const discountPercentage = 10;
+    // Get promotion information for this product
+    const productPromotionsData = await db
+      .select({
+        promotionId: productPromotions.promotion_id,
+        discountPercentage: productPromotions.discount_percentage,
+        promotionTitle: promotions.title,
+        promotionType: promotions.type,
+      })
+      .from(productPromotions)
+      .innerJoin(promotions, eq(productPromotions.promotion_id, promotions.id))
+      .where(
+        and(
+          eq(productPromotions.product_id, id),
+          eq(promotions.is_active, true)
+        )
+      );
+
+    // Find the best discount
+    let bestDiscount = null;
+    let discountPercentage = 0;
+
+    if (productPromotionsData.length > 0) {
+      bestDiscount = productPromotionsData.reduce((best, current) => {
+        const currentDiscount = parseFloat(current.discountPercentage);
+        return !best || currentDiscount > parseFloat(best.discountPercentage) ? current : best;
+      }, null);
+
+      discountPercentage = bestDiscount ? parseFloat(bestDiscount.discountPercentage) : 0;
+    }
+
+    // Calculate discount price
+    const originalPrice = parseFloat(product.price);
+    const discountPrice = discountPercentage > 0
+      ? (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
+      : originalPrice.toFixed(2);
 
     // Return the product with additional info
     return {
@@ -321,6 +512,13 @@ export async function getProductById(id) {
       categorySlug: category.slug,
       discountPrice,
       discountPercentage,
+      // Add promotion information if available
+      promotion: bestDiscount ? {
+        id: bestDiscount.promotionId,
+        title: bestDiscount.promotionTitle,
+        type: bestDiscount.promotionType,
+        discountPercentage: discountPercentage,
+      } : null,
       // Add product images
       images: productImagesData.length > 0 ? productImagesData : [
         // If no images found, create a default one from the main image
