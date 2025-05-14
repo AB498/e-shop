@@ -177,6 +177,7 @@ const ProductQuickViewModal = () => {
               {/* Related Products Section - Spans full width */}
               <ProductListSection
                 products={relatedProducts}
+                fetchUrl={`/api/products`}
                 category={product.category || 'Products'}
                 title="Related Products"
                 viewType="grid"
@@ -188,9 +189,9 @@ const ProductQuickViewModal = () => {
                 gridCols={{
                   default: 2,
                   xs: 2,
-                  sm: 2,
-                  lg: 3,
-                  xl: 4
+                  sm: 3,
+                  lg: 4,
+                  xl: 5
                 }}
               />
             </div>

@@ -102,6 +102,7 @@ const ProductListSection = ({
   // Use actual products when not loading
   const itemsToDisplay = displayProducts;
 
+          console.log(`Fetched products from ${fetchUrl}:`, displayProducts);
   // If no products and not loading, show empty state
   if (!loading && (!displayProducts || displayProducts.length === 0)) {
     return (
