@@ -3,7 +3,7 @@ import { getProductById } from '@/lib/actions/products';
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     // Validate ID
     if (!id || isNaN(parseInt(id))) {
