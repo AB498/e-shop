@@ -48,6 +48,14 @@ const settingsSeed = [
     created_at: new Date(),
     updated_at: new Date(),
   },
+  {
+    id: 7,
+    key: 'sslcommerz_enabled',
+    value: 'true',
+    description: 'Enable SSLCommerz payment gateway',
+    created_at: new Date(),
+    updated_at: new Date(),
+  },
 ];
 
 export default settingsSeed;

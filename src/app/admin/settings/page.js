@@ -6,18 +6,20 @@ import {
   BellIcon,
   ShieldCheckIcon,
   CubeIcon,
-  KeyIcon
+  CreditCardIcon
 } from '@heroicons/react/24/outline';
 import CourierSettings from './CourierSettings';
 import AccountSettings from './AccountSettings';
 import NotificationSettings from './NotificationSettings';
 import SecuritySettings from './SecuritySettings';
+import PaymentSettings from './PaymentSettings';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('courier');
 
   const tabs = [
     { id: 'courier', name: 'Courier Settings', icon: CubeIcon },
+    { id: 'payment', name: 'Payment Settings', icon: CreditCardIcon },
     { id: 'account', name: 'Account Settings', icon: UserIcon },
     { id: 'notifications', name: 'Notifications', icon: BellIcon },
     { id: 'security', name: 'Security', icon: ShieldCheckIcon },
@@ -83,6 +85,10 @@ export default function SettingsPage() {
         <div className="p-3 md:p-6">
           {activeTab === 'courier' && (
             <CourierSettings />
+          )}
+
+          {activeTab === 'payment' && (
+            <PaymentSettings />
           )}
 
           {activeTab === 'account' && (

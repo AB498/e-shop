@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { db } from '@/lib/db';
-import { orders, orderItems } from '@/db/schema';
+import { orders, orderItems, settings } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { resetSequence, handleDuplicateKeyError } from '@/lib/utils/db-utils';
@@ -192,6 +192,18 @@ export async function POST(request) {
         console.error('Error updating COD order status or creating courier order:', error);
         return NextResponse.json({ error: 'Failed to process COD order' }, { status: 500 });
       }
+    }
+
+    // Check if SSLCommerz is enabled
+    const sslcommerzSetting = await db.select().from(settings).where(eq(settings.key, 'sslcommerz_enabled')).limit(1);
+    const sslcommerzEnabled = sslcommerzSetting.length > 0 ? sslcommerzSetting[0].value === 'true' : true;
+
+    if (!sslcommerzEnabled) {
+      console.error('SSLCommerz payment attempted but SSLCommerz is disabled');
+      return NextResponse.json({
+        error: 'Online payment is currently unavailable. Please use Cash on Delivery instead.',
+        code: 'SSLCOMMERZ_DISABLED'
+      }, { status: 400 });
     }
 
     // For online payments, proceed with SSL Commerz

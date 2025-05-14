@@ -14,7 +14,7 @@ export async function GET(request) {
 
     // Get all settings
     const settings = await getAllSettings();
-    
+
     return NextResponse.json(settings);
   } catch (error) {
     console.error('Error retrieving settings:', error);
@@ -33,22 +33,36 @@ export async function PUT(request) {
 
     // Get request body
     const body = await request.json();
-    
+
     // Validate required fields
     if (!body.key || body.value === undefined) {
       return NextResponse.json({ error: 'Key and value are required' }, { status: 400 });
     }
 
-    // Update setting
-    const success = await updateSetting(body.key, body.value);
-    
-    if (!success) {
-      return NextResponse.json({ error: 'Failed to update setting' }, { status: 500 });
+    console.log(`API route: Updating setting ${body.key} to ${body.value}`);
+
+    // Update setting using the server action
+    try {
+      const success = await updateSetting(body.key, body.value);
+
+      if (!success) {
+        console.error(`Failed to update setting ${body.key}`);
+        return NextResponse.json({ error: 'Failed to update setting' }, { status: 500 });
+      }
+
+      return NextResponse.json({ success: true });
+    } catch (actionError) {
+      console.error('Server action error:', actionError);
+      return NextResponse.json({
+        error: 'Failed to update setting',
+        details: actionError.message
+      }, { status: 500 });
     }
-    
-    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error updating setting:', error);
-    return NextResponse.json({ error: 'Failed to update setting' }, { status: 500 });
+    console.error('Error in settings PUT handler:', error);
+    return NextResponse.json({
+      error: 'Failed to update setting',
+      details: error.message
+    }, { status: 500 });
   }
 }

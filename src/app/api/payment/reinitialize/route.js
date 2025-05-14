@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { db } from '@/lib/db';
-import { orders, orderItems, products } from '@/db/schema';
+import { orders, orderItems, products, settings } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -104,6 +104,18 @@ export async function POST(request) {
 
     // Generate a unique transaction ID
     const tranId = `TXN-${Date.now()}-${uuidv4().substring(0, 8)}`;
+
+    // Check if SSLCommerz is enabled
+    const sslcommerzSetting = await db.select().from(settings).where(eq(settings.key, 'sslcommerz_enabled')).limit(1);
+    const sslcommerzEnabled = sslcommerzSetting.length > 0 ? sslcommerzSetting[0].value === 'true' : true;
+
+    if (!sslcommerzEnabled) {
+      console.error('SSLCommerz payment attempted but SSLCommerz is disabled');
+      return NextResponse.json({
+        error: 'Online payment is currently unavailable. Please use Cash on Delivery instead.',
+        code: 'SSLCOMMERZ_DISABLED'
+      }, { status: 400 });
+    }
 
     // Ensure we have a valid app URL
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
