@@ -199,7 +199,7 @@ const ProductLeftBar = ({
                                                     {product.name}
                                                 </h4>
                                             </Link>
-                                            <p className="text-[#7E7E7E] text-base">${parseFloat(product.price).toFixed(2)}</p>
+                                            <p className="text-[#7E7E7E] text-base">৳{parseFloat(product.price).toFixed(2)}</p>
                                             <div className="flex mt-1">
                                                 <StarRating
                                                     rating={parseFloat(product.rating) || 4.0}

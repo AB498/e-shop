@@ -465,7 +465,7 @@ export default function AdminDashboardContent() {
                             {order.status}
                           </span>
                         </td>
-                        <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-gray-900">${order.total}</td>
+                        <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-gray-900">৳{order.total}</td>
                       </tr>
                     ))}
                   </tbody>

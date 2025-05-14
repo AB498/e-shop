@@ -68,7 +68,7 @@ export default function TableDemo() {
       maxWidth: '100px',
       noWrap: true,
       render: (row) => (
-        <div className="font-medium">${row.price.toFixed(2)}</div>
+        <div className="font-medium">৳{row.price.toFixed(2)}</div>
       )
     },
     {

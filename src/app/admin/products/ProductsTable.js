@@ -62,7 +62,7 @@ export default function ProductsTable({
       label: 'Price',
       sortable: true,
       render: (product) => (
-        <div className="font-medium">${product.price.toFixed(2)}</div>
+        <div className="font-medium">৳{product.price.toFixed(2)}</div>
       )
     },
     {

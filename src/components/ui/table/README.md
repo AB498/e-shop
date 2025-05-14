@@ -74,7 +74,7 @@ export default function AdvancedTable() {
       label: 'Price',
       sortable: true,
       render: (row) => (
-        <div className="font-medium">${row.price.toFixed(2)}</div>
+        <div className="font-medium">৳{row.price.toFixed(2)}</div>
       )
     },
     {

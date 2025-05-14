@@ -178,7 +178,7 @@ export default function ProductsPage() {
       headerName: 'Price',
       width: 100,
       renderCell: (params) => (
-        <div className="font-medium">${params.value.toFixed(2)}</div>
+        <div className="font-medium">৳{params.value.toFixed(2)}</div>
       ),
     },
     {

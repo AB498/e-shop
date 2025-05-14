@@ -392,77 +392,79 @@ export default function AdminLayoutClient({
       {/* Main content */}
       <div className="md:pl-64 flex flex-col flex-1">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 shadow-sm items-center">
-          <button
-            type="button"
-            className="md:hidden h-6 w-6 ml-4 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <span className="sr-only">Open sidebar</span>
-            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-          </button>
-          <div className="md:ml-10 flex-1 px-4 flex justify-between">
-            <div className="flex-1 flex items-center">
-              <h1 className="flex items-center text-lg sm:text-lg font-semibold text-gray-800 px-2 sm:px-4">
-                Admin Dashboard
-              </h1>
-            </div>
-            <div className="ml-4 flex items-center md:ml-6 space-x-3">
-              <Link
-                href="/"
-                className="hidden md:flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-md border border-gray-300 text-gray-700 text-xs sm:text-sm hover:bg-gray-50 hover:text-emerald-600 transition-colors duration-200"
-              >
-                <ArrowLeftIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
-                Back to Site
-              </Link>
-
-              {/* Profile dropdown */}
-              <div className="relative ml-1" ref={userMenuRef}>
-                <button
-                  type="button"
-                  className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 p-1"
-                  id="user-menu-button"
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+        <div className="sticky top-0 z-10 h-16 flex-shrink-0 bg-white border-b border-gray-200 shadow-sm flex items-center">
+          <div className="w-full max-w-7xl mx-auto flex items-center">
+            <button
+              type="button"
+              className="md:hidden h-6 w-6 ml-4 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <span className="sr-only">Open sidebar</span>
+              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+            </button>
+            <div className="flex-1 px-2 flex justify-between">
+              <div className="flex-1 flex items-center">
+                <h1 className="flex items-center text-lg sm:text-lg font-semibold text-gray-800 px-2 sm:px-4">
+                  Admin Dashboard
+                </h1>
+              </div>
+              <div className="ml-4 flex items-center md:ml-6 space-x-3">
+                <Link
+                  href="/"
+                  className="hidden md:flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-md border border-gray-300 text-gray-700 text-xs sm:text-sm hover:bg-gray-50 hover:text-emerald-600 transition-colors duration-200"
                 >
-                  <span className="sr-only">Open user menu</span>
-                  {userInfo.image ? (
-                    <Image
-                      src={userInfo.image}
-                      alt={userInfo.name}
-                      width={32}
-                      height={32}
-                      className="h-7 w-7 sm:h-8 sm:w-8 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-sm sm:text-base">
-                      {userInfo.name.charAt(0).toUpperCase()}
+                  <ArrowLeftIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
+                  Back to Site
+                </Link>
+
+                {/* Profile dropdown */}
+                <div className="relative ml-1" ref={userMenuRef}>
+                  <button
+                    type="button"
+                    className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 p-1"
+                    id="user-menu-button"
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  >
+                    <span className="sr-only">Open user menu</span>
+                    {userInfo.image ? (
+                      <Image
+                        src={userInfo.image}
+                        alt={userInfo.name}
+                        width={32}
+                        height={32}
+                        className="h-7 w-7 sm:h-8 sm:w-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-sm sm:text-base">
+                        {userInfo.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </button>
+
+                  {userMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 border border-gray-200">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900 truncate">{userInfo.name}</p>
+                        <p className="text-xs text-gray-500 truncate">{userInfo.email}</p>
+                      </div>
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <FiUsers className="mr-2 h-4 w-4 text-gray-500" />
+                        My Profile
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
+                      >
+                        <FiLogOut className="mr-2 h-4 w-4 text-red-500" />
+                        Sign Out
+                      </button>
                     </div>
                   )}
-                </button>
-
-                {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 border border-gray-200">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900 truncate">{userInfo.name}</p>
-                      <p className="text-xs text-gray-500 truncate">{userInfo.email}</p>
-                    </div>
-                    <Link
-                      href="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      <FiUsers className="mr-2 h-4 w-4 text-gray-500" />
-                      My Profile
-                    </Link>
-                    <button
-                      onClick={handleSignOut}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
-                    >
-                      <FiLogOut className="mr-2 h-4 w-4 text-red-500" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
