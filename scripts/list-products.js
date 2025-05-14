@@ -30,7 +30,7 @@ async function listProducts() {
       console.log(`ID: ${product.id}`);
       console.log(`Name: ${product.name}`);
       console.log(`Category ID: ${product.category_id}`);
-      console.log(`Price: $${product.price}`);
+      console.log(`Price: ৳${product.price}`);
       console.log(`Stock: ${product.stock}`);
       console.log(`Description: ${product.description?.substring(0, 50)}${product.description?.length > 50 ? '...' : ''}`);
       console.log('---------------------------------------------------');

@@ -129,7 +129,7 @@ export default function AdminDashboardContent() {
         const stats = [
           {
             name: 'Total Revenue',
-            value: `$${parseFloat(statsData.totalRevenue || 0).toFixed(2)}`,
+            value: `৳${parseFloat(statsData.totalRevenue || 0).toFixed(2)}`,
             change: `${(statsData.revenueGrowth || 0) > 0 ? '+' : ''}${(statsData.revenueGrowth || 0).toFixed(1)}%`,
             trend: (statsData.revenueGrowth || 0) >= 0 ? 'up' : 'down',
             icon: CurrencyDollarIcon,

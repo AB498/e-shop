@@ -296,7 +296,7 @@ export async function getRecentOrders(limit = 5) {
           customer,
           date: order.createdAt.toISOString().split('T')[0],
           status: order.status.charAt(0).toUpperCase() + order.status.slice(1),
-          amount: `$${parseFloat(order.total).toFixed(2)}`
+          amount: `৳${parseFloat(order.total).toFixed(2)}`
         };
       })
     );
@@ -427,7 +427,7 @@ export async function getCustomerById(id) {
         ...order,
         createdAt: order.createdAt.toISOString().split('T')[0],
         status: order.status.charAt(0).toUpperCase() + order.status.slice(1),
-        total: `$${parseFloat(order.total).toFixed(2)}`
+        total: `৳${parseFloat(order.total).toFixed(2)}`
       }))
     };
   } catch (error) {
@@ -490,7 +490,7 @@ export async function getAllProductsWithInventory() {
       // Use primary image from product_images if available, otherwise use the legacy image field
       image: primaryImageMap[product.id] || product.image,
       category: categoryMap[product.categoryId] || 'Uncategorized',
-      price: `$${parseFloat(product.price).toFixed(2)}`,
+      price: `৳${parseFloat(product.price).toFixed(2)}`,
       createdAt: product.createdAt.toISOString().split('T')[0],
       stockStatus: product.stock <= 10 ? 'low' : product.stock <= 50 ? 'medium' : 'high',
       // Ensure description is included
@@ -902,7 +902,7 @@ export async function getAllOrders() {
           customer,
           customerId: order.userId,
           status: order.status.charAt(0).toUpperCase() + order.status.slice(1),
-          total: `$${parseFloat(order.total).toFixed(2)}`,
+          total: `৳${parseFloat(order.total).toFixed(2)}`,
           payment_method: order.payment_method,
           date: order.createdAt.toISOString().split('T')[0],
           time: order.createdAt.toLocaleTimeString(),
@@ -913,8 +913,8 @@ export async function getAllOrders() {
             product_name: item.product_name,
             product_image: item.product_image,
             quantity: item.quantity,
-            price: `$${parseFloat(item.price).toFixed(2)}`,
-            total: `$${(parseFloat(item.price) * item.quantity).toFixed(2)}`
+            price: `৳${parseFloat(item.price).toFixed(2)}`,
+            total: `৳${(parseFloat(item.price) * item.quantity).toFixed(2)}`
           })),
           shippingAddress: order.shippingAddress,
           shippingCity: order.shippingCity,

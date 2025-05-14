@@ -46,7 +46,7 @@ export default function StatCard({ title, value, change, trend, icon: Icon, colo
     : value;
 
   // Determine if the value is a currency
-  const isCurrency = typeof value === 'string' && value.startsWith('$');
+  const isCurrency = typeof value === 'string' && value.startsWith('৳');
   const numericValue = isCurrency ? parseFloat(value.substring(1)) : parseFloat(value);
 
   return (
@@ -63,7 +63,7 @@ export default function StatCard({ title, value, change, trend, icon: Icon, colo
                 <div className="h-6 sm:h-7 w-20 sm:w-24 animate-pulse rounded bg-gray-200"></div>
               ) : (
                 <h3 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-gray-900">
-                  {isCurrency && '$'}
+                  {isCurrency && '৳'}
                   <CountUp
                     end={isCurrency ? numericValue : numericValue}
                     duration={2.5}

@@ -36,9 +36,9 @@ export default function ProductsPage() {
 
         // Process the data to add stockStatus based on stock levels
         const processedData = data.map(product => {
-          // Convert price string like "$129.99" to number 129.99
+          // Convert price string like "৳129.99" to number 129.99
           const numericPrice = typeof product.price === 'string'
-            ? parseFloat(product.price.replace('$', ''))
+            ? parseFloat(product.price.replace('৳', ''))
             : product.price;
 
           // Determine stock status based on stock level and threshold

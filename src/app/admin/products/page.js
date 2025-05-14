@@ -17,9 +17,9 @@ import ConfirmDeleteModal from './ConfirmDeleteModal';
 // Helper function to process product data
 const processProductData = (data) => {
   return data.map(product => {
-    // Convert price string like "$129.99" to number 129.99
+    // Convert price string like "৳129.99" to number 129.99
     const numericPrice = typeof product.price === 'string'
-      ? parseFloat(product.price.replace('$', ''))
+      ? parseFloat(product.price.replace('৳', ''))
       : product.price;
 
     // Determine stock status based on stock level and threshold

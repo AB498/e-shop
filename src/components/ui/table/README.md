@@ -34,7 +34,7 @@ export default function MyPage() {
   const columns = [
     { key: 'id', label: 'ID' },
     { key: 'name', label: 'Product Name' },
-    { key: 'price', label: 'Price', render: (row) => `$${row.price.toFixed(2)}` },
+    { key: 'price', label: 'Price', render: (row) => `৳${row.price.toFixed(2)}` },
   ];
 
   return (

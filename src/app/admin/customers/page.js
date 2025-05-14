@@ -73,7 +73,7 @@ export default function CustomersPage() {
 
       if (data.orders && data.orders.length > 0) {
         data.orders.forEach(order => {
-          totalSpent += parseFloat(order.total.replace('$', ''));
+          totalSpent += parseFloat(order.total.replace('৳', ''));
         });
 
         // Get the most recent order date
@@ -84,7 +84,7 @@ export default function CustomersPage() {
         ...data,
         name: data.fullName,
         orders: data.orders ? data.orders.length : 0,
-        totalSpent: `$${totalSpent.toFixed(2)}`,
+        totalSpent: `৳${totalSpent.toFixed(2)}`,
         lastOrder: lastOrderDate || 'No orders',
         status: 'Active' // Default status
       };

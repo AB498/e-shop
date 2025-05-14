@@ -265,7 +265,7 @@ async function createTestOrder(options, orderIndex = 1) {
     // Only show detailed product info for single orders to reduce log noise
     if (!orderIndex || orderIndex === 1) {
       products.forEach(product => {
-        console.log(chalk.green(`${orderPrefix}- ${product.name} (${product.sku}) - $${product.price}`));
+        console.log(chalk.green(`${orderPrefix}- ${product.name} (${product.sku}) - ৳${product.price}`));
       });
     }
 
@@ -305,7 +305,7 @@ async function createTestOrder(options, orderIndex = 1) {
       shipping_phone: testUser.phone || '+8801712345678'
     }).returning();
 
-    console.log(chalk.green(`${orderPrefix}Created order #${order.id} with total $${order.total}`));
+    console.log(chalk.green(`${orderPrefix}Created order #${order.id} with total ৳${order.total}`));
 
     // Step 4: Create order items
     console.log(chalk.blue(`${orderPrefix}Adding items to order...`));
@@ -335,7 +335,7 @@ async function createTestOrder(options, orderIndex = 1) {
     // Only show detailed item info for single orders to reduce log noise
     if (!orderIndex || orderIndex === 1) {
       items.forEach(item => {
-        console.log(chalk.green(`${orderPrefix}- ${item.quantity}x ${item.name} @ $${item.price} each`));
+        console.log(chalk.green(`${orderPrefix}- ${item.quantity}x ${item.name} @ ৳${item.price} each`));
       });
     }
 
@@ -360,7 +360,7 @@ async function createTestOrder(options, orderIndex = 1) {
     console.log(chalk.yellow(`${orderPrefix}Order Summary:`));
     console.log(chalk.yellow(`${orderPrefix}Order ID: ${order.id}`));
     console.log(chalk.yellow(`${orderPrefix}Customer: ${testUser.first_name} ${testUser.last_name}`));
-    console.log(chalk.yellow(`${orderPrefix}Total: $${order.total}`));
+    console.log(chalk.yellow(`${orderPrefix}Total: ৳${order.total}`));
     console.log(chalk.yellow(`${orderPrefix}Status: ${order.status}`));
     console.log(chalk.yellow(`${orderPrefix}Items: ${items.length}`));
 
