@@ -60,11 +60,22 @@ export function CartProvider({ children }) {
             id: product.product.id,
             name: product.product.name,
             price: product.product.price,
+            discountPrice: product.product.discountPrice,
+            discountPercentage: product.product.discountPercentage,
+            promotion: product.product.promotion,
             image: product.product.image,
             category: product.product.category?.name || '',
             ...product
           }
         : product;
+
+      // Calculate discount percentage if not provided but we have price and discountPrice
+      if (!normalizedProduct.discountPercentage && normalizedProduct.price && normalizedProduct.discountPrice &&
+          normalizedProduct.price !== normalizedProduct.discountPrice) {
+        normalizedProduct.discountPercentage = Math.round(
+          (1 - (parseFloat(normalizedProduct.discountPrice) / parseFloat(normalizedProduct.price))) * 100
+        );
+      }
 
       // Check if product already exists in cart
       const existingItemIndex = prevCart.findIndex(item => item.id === normalizedProduct.id);
@@ -142,8 +153,6 @@ export function CartProvider({ children }) {
       localStorage.removeItem('cart');
     }
 
-    // Show toast notification for clearing cart
-    toast.success('Cart has been cleared!');
   };
 
   return (

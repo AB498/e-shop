@@ -10,6 +10,7 @@ const promotionsSeed = [
     position: 'home',
     is_active: true,
     priority: 10,
+    discount: '15',
   },
   {
     id: 2,
@@ -21,6 +22,7 @@ const promotionsSeed = [
     position: 'home',
     is_active: true,
     priority: 9,
+    discount: '10',
   },
   {
     id: 3,
@@ -32,6 +34,7 @@ const promotionsSeed = [
     position: 'home',
     is_active: true,
     priority: 8,
+    discount: '20',
   },
 
   // Banner promotions
@@ -45,6 +48,7 @@ const promotionsSeed = [
     position: 'home',
     is_active: true,
     priority: 5,
+    discount: '25',
   },
 
   // Weekly deals promotions
@@ -108,6 +112,7 @@ const promotionsSeed = [
     position: 'category',
     is_active: true,
     priority: 3,
+    discount: '5',
   }
 ];
 

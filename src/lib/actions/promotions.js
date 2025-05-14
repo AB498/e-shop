@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { promotions } from '@/db/schema';
+import { promotions, productPromotions } from '@/db/schema';
 import { eq, desc, and, gte, lte, sql, or } from 'drizzle-orm';
 import { uploadFromBuffer } from '@/lib/s3';
 
@@ -233,9 +233,17 @@ export async function createPromotion(data, imageFile = null) {
 
     // If image file is provided, upload it to S3
     if (imageFile) {
+      console.log('Image file provided for upload:', {
+        name: imageFile.name,
+        type: imageFile.type,
+        size: imageFile.size
+      });
+
       const buffer = await imageFile.arrayBuffer();
       const fileName = `promotions/${Date.now()}-${imageFile.name.replace(/\s+/g, '-')}`;
       const contentType = imageFile.type;
+
+      console.log('Uploading image to S3:', { fileName, contentType });
 
       const uploadResult = await uploadFromBuffer(
         Buffer.from(buffer),
@@ -244,25 +252,46 @@ export async function createPromotion(data, imageFile = null) {
       );
 
       if (uploadResult.success) {
+        // Use the URL returned from the uploadFromBuffer function
         imageUrl = uploadResult.url;
+        console.log('Image uploaded successfully, URL:', imageUrl);
       } else {
+        console.error('Failed to upload image:', uploadResult.error);
         throw new Error('Failed to upload image');
       }
     }
 
+    // Ensure we have an image URL
+    if (!imageUrl) {
+      // Use a default image if none is provided
+      imageUrl = '/images/default-promotion.jpg';
+      console.log('Using default image URL:', imageUrl);
+    }
+
+    // Create promotion - ensure we don't include an ID to let the database auto-generate it
+    // Check if data contains an id and remove it to prevent duplicate key errors
+    const { id, ...insertData } = data;
+
+    // Log the data being inserted for debugging
+    console.log('Creating promotion with data:', {
+      title: insertData.title,
+      image_url: imageUrl ? imageUrl.substring(0, 50) + '...' : 'null',
+      type: insertData.type || 'banner',
+    });
+
     // Create promotion
     const result = await db.insert(promotions).values({
-      title: data.title,
-      description: data.description || null,
+      title: insertData.title,
+      description: insertData.description || null,
       image_url: imageUrl,
-      link_url: data.link_url || null,
-      type: data.type || 'banner',
-      position: data.position || 'home',
-      start_date: data.start_date ? new Date(data.start_date) : null,
-      end_date: data.end_date ? new Date(data.end_date) : null,
-      is_active: data.is_active !== undefined ? data.is_active : true,
-      priority: data.priority || 0,
-      discount: data.discount || null,
+      link_url: insertData.link_url || null,
+      type: insertData.type || 'banner',
+      position: insertData.position || 'home',
+      start_date: insertData.start_date ? new Date(insertData.start_date) : null,
+      end_date: insertData.end_date ? new Date(insertData.end_date) : null,
+      is_active: insertData.is_active !== undefined ? insertData.is_active : true,
+      priority: insertData.priority || 0,
+      discount: insertData.discount || null,
     }).returning();
 
     return result.length ? result[0] : null;
@@ -285,9 +314,17 @@ export async function updatePromotion(id, data, imageFile = null) {
 
     // If image file is provided, upload it to S3
     if (imageFile) {
+      console.log('Image file provided for update:', {
+        name: imageFile.name,
+        type: imageFile.type,
+        size: imageFile.size
+      });
+
       const buffer = await imageFile.arrayBuffer();
       const fileName = `promotions/${Date.now()}-${imageFile.name.replace(/\s+/g, '-')}`;
       const contentType = imageFile.type;
+
+      console.log('Uploading image to S3 for update:', { fileName, contentType });
 
       const uploadResult = await uploadFromBuffer(
         Buffer.from(buffer),
@@ -296,32 +333,65 @@ export async function updatePromotion(id, data, imageFile = null) {
       );
 
       if (uploadResult.success) {
+        // Use the URL returned from the uploadFromBuffer function
         imageUrl = uploadResult.url;
+        console.log('Image uploaded successfully, URL:', imageUrl);
       } else {
+        console.error('Failed to upload image:', uploadResult.error);
         throw new Error('Failed to upload image');
       }
     }
 
-    // Update promotion
-    const result = await db.update(promotions)
-      .set({
-        title: data.title,
-        description: data.description !== undefined ? data.description : null,
-        image_url: imageUrl,
-        link_url: data.link_url !== undefined ? data.link_url : null,
-        type: data.type || 'banner',
-        position: data.position || 'home',
-        start_date: data.start_date ? new Date(data.start_date) : null,
-        end_date: data.end_date ? new Date(data.end_date) : null,
-        is_active: data.is_active !== undefined ? data.is_active : true,
-        priority: data.priority !== undefined ? data.priority : 0,
-        discount: data.discount || null,
-        updated_at: new Date(),
-      })
-      .where(eq(promotions.id, id))
-      .returning();
+    // Ensure we have an image URL
+    if (!imageUrl) {
+      // Use a default image if none is provided
+      imageUrl = '/images/default-promotion.jpg';
+      console.log('Using default image URL:', imageUrl);
+    }
 
-    return result.length ? result[0] : null;
+    // Check if discount has changed
+    const oldPromotion = await getPromotionById(id);
+    const discountChanged = oldPromotion && oldPromotion.discount !== data.discount;
+    const newDiscount = data.discount || null;
+
+    // Use a transaction to update both the promotion and its related product-promotion entries
+    return await db.transaction(async (tx) => {
+      // Update promotion
+      const result = await tx.update(promotions)
+        .set({
+          title: data.title,
+          description: data.description !== undefined ? data.description : null,
+          image_url: imageUrl,
+          link_url: data.link_url !== undefined ? data.link_url : null,
+          type: data.type || 'banner',
+          position: data.position || 'home',
+          start_date: data.start_date ? new Date(data.start_date) : null,
+          end_date: data.end_date ? new Date(data.end_date) : null,
+          is_active: data.is_active !== undefined ? data.is_active : true,
+          priority: data.priority !== undefined ? data.priority : 0,
+          discount: newDiscount,
+          updated_at: new Date(),
+        })
+        .where(eq(promotions.id, id))
+        .returning();
+
+      // If discount has changed, update all related product-promotion entries
+      if (discountChanged) {
+        const discountValue = newDiscount ? parseFloat(newDiscount) : 0;
+
+        // Update all product-promotion entries for this promotion
+        await tx.update(productPromotions)
+          .set({
+            discount_percentage: discountValue,
+            updated_at: new Date(),
+          })
+          .where(eq(productPromotions.promotion_id, id));
+
+        console.log(`Updated discount for all products in promotion ID ${id} to ${discountValue}%`);
+      }
+
+      return result.length ? result[0] : null;
+    });
   } catch (error) {
     console.error(`Error updating promotion with ID ${id}:`, error);
     throw new Error('Failed to update promotion');
@@ -335,13 +405,29 @@ export async function updatePromotion(id, data, imageFile = null) {
  */
 export async function deletePromotion(id) {
   try {
-    const result = await db.delete(promotions)
-      .where(eq(promotions.id, id))
-      .returning();
+    // Use a transaction to ensure both operations succeed or fail together
+    return await db.transaction(async (tx) => {
+      console.log(`Deleting promotion with ID ${id}...`);
 
-    return result.length > 0;
+      // First, delete all product_promotions entries that reference this promotion
+      console.log(`Deleting product_promotions entries for promotion ID ${id}...`);
+      const deletedRelations = await tx.delete(productPromotions)
+        .where(eq(productPromotions.promotion_id, id))
+        .returning();
+
+      console.log(`Deleted ${deletedRelations.length} product_promotions entries for promotion ID ${id}`);
+
+      // Then, delete the promotion itself
+      const result = await tx.delete(promotions)
+        .where(eq(promotions.id, id))
+        .returning();
+
+      console.log(`Deleted promotion with ID ${id}: ${result.length > 0 ? 'success' : 'failed'}`);
+
+      return result.length > 0;
+    });
   } catch (error) {
     console.error(`Error deleting promotion with ID ${id}:`, error);
-    return false;
+    throw new Error('Failed to delete promotion');
   }
 }

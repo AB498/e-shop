@@ -128,8 +128,19 @@ export async function uploadFromBuffer(buffer, fileName, contentType) {
     });
 
     const response = await s3Client.send(command);
-    return { success: true, data: response };
+
+    // Create a public URL using Cloudflare R2's public URL format
+    // This should match the format used in the /api/s3-upload route
+    const publicUrl = `https://pub-212809380b0a456995e6518df4df1d3b.r2.dev/${fileName}`;
+
+    return {
+      success: true,
+      data: response,
+      url: publicUrl,
+      key: fileName
+    };
   } catch (error) {
+    console.error('Error in uploadFromBuffer:', error);
     return { success: false, error: error.message };
   }
 }

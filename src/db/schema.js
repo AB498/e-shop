@@ -137,6 +137,7 @@ const orderItems = pgTable('order_items', {
   product_id: integer('product_id').references(() => products.id),
   quantity: integer('quantity').notNull(),
   price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+  discount_price: decimal('discount_price', { precision: 10, scale: 2 }),
   created_at: timestamp('created_at').defaultNow(),
 })
 

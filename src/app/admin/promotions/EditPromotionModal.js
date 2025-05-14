@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { XMarkIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { updatePromotion } from '@/lib/actions/promotions';
+import { updateProductPromotionRelations, getProductsByPromotionId } from '@/lib/actions/product-promotions';
+import MultiSelectProducts from '@/components/admin/MultiSelectProducts';
 
 export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -18,19 +20,55 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
     discount: promotion.discount || '',
   });
 
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imagePreview, setImagePreview] = useState(promotion.image_url || null);
   const fileInputRef = useRef(null);
 
+  // Fetch existing product-promotion relationships
+  useEffect(() => {
+    const fetchProductRelations = async () => {
+      try {
+        setIsLoadingProducts(true);
+        const products = await getProductsByPromotionId(promotion.id);
+        setSelectedProducts(products);
+      } catch (error) {
+        console.error('Error fetching product relations:', error);
+        // Don't set error state to avoid blocking the form
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+
+    fetchProductRelations();
+  }, [promotion.id]);
+
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: newValue,
     });
+
+    // If discount is changed, update all selected products with the new discount value
+    if (name === 'discount' && selectedProducts.length > 0) {
+      const discountValue = parseFloat(newValue) || 0;
+      console.log(`Updating discount for all products to ${discountValue}%`);
+
+      // Update all selected products with the new discount value
+      const updatedProducts = selectedProducts.map(product => ({
+        ...product,
+        discountPercentage: discountValue
+      }));
+
+      setSelectedProducts(updatedProducts);
+    }
   };
 
   // Handle image upload
@@ -76,6 +114,16 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
       setIsSubmitting(true);
       setError(null);
 
+      // Validate required fields
+      if (!formData.title) {
+        setError('Title is required');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Image is optional now - the server will use a default if none is provided
+      // We've removed the validation to allow updating promotions without explicitly providing an image
+
       // Extract file for upload
       const { imageFile, ...submitData } = formData;
 
@@ -83,6 +131,23 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
       const result = await updatePromotion(promotion.id, submitData, imageFile);
 
       if (result) {
+        // Update product-promotion relationships
+        try {
+          // Format product relations for the API - the server will use the promotion's discount for all products
+          const productRelations = selectedProducts.map(product => ({
+            productId: product.id,
+            // We don't need to set discountPercentage here as the server will use the promotion's discount
+            discountPercentage: 0 // This will be overridden by the server with the promotion's discount
+          }));
+
+          // Update product-promotion relationships
+          await updateProductPromotionRelations(promotion.id, productRelations);
+        } catch (relationError) {
+          console.error('Error updating product-promotion relationships:', relationError);
+          // Continue with success even if relationships fail
+          // We don't want to block the promotion update if only the relationships fail
+        }
+
         onSubmit();
       } else {
         setError('Failed to update promotion. Please try again.');
@@ -205,13 +270,13 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                 </label>
                 <div className="mt-1">
                   <input
-                    type="url"
+                    type="text"
                     name="image_url"
                     id="image_url"
                     value={formData.image_url || ''}
                     onChange={handleInputChange}
                     className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
-                    placeholder="https://example.com/image.jpg"
+                    placeholder="https://example.com/image.jpg or /images/custom.jpg"
                   />
                 </div>
                 <p className="mt-1 text-xs text-gray-500">
@@ -226,13 +291,13 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                 </label>
                 <div className="mt-1">
                   <input
-                    type="url"
+                    type="text"
                     name="link_url"
                     id="link_url"
                     value={formData.link_url || ''}
                     onChange={handleInputChange}
                     className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
-                    placeholder="https://example.com/page"
+                    placeholder="https://example.com/page or /products?category=1"
                   />
                 </div>
               </div>
@@ -327,9 +392,6 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     placeholder="e.g., 25"
                   />
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
-                  Only applicable for deal type promotions
-                </p>
               </div>
 
               {/* Priority and Active Status */}
@@ -371,7 +433,30 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
               </div>
             </div>
 
-            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+            {/* Product Selection Section */}
+            <div className="mt-6 sm:mt-8">
+              <h3 className="text-sm sm:text-base font-medium text-gray-900 mb-3">
+                Apply Promotion to Products
+              </h3>
+              <p className="text-xs text-gray-500 mb-4">
+                Search and select products to apply this promotion to. All selected products will use the promotion's discount percentage.
+              </p>
+
+              {isLoadingProducts ? (
+                <div className="flex justify-center items-center py-8">
+                  <div className="animate-spin h-6 w-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+                  <span className="ml-2 text-sm text-gray-500">Loading products...</span>
+                </div>
+              ) : (
+                <MultiSelectProducts
+                  selectedProducts={selectedProducts}
+                  onChange={setSelectedProducts}
+                  defaultDiscountPercentage={formData.type === 'deal' && formData.discount ? parseFloat(formData.discount) : 10}
+                />
+              )}
+            </div>
+
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 type="button"
                 onClick={onClose}
@@ -381,7 +466,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting || (!formData.image_url && !formData.imageFile && !imagePreview)}
+                disabled={isSubmitting}
                 className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}

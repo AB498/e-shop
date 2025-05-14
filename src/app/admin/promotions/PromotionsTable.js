@@ -69,7 +69,7 @@ export default function PromotionsTable({
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             {row.type}
           </span>
-          {row.type === 'deal' && row.discount && (
+          {row.discount && (
             <span className="mt-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
               {row.discount}% OFF
             </span>

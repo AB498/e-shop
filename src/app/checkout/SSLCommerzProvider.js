@@ -38,10 +38,17 @@ export default function CheckoutClient({ sslcommerzEnabled }) {
 
   // Calculate summary values
   const subtotal = cartTotal;
-  const discountRate = 0.2; // 20% discount
-  const discountAmount = subtotal * discountRate;
+
+  // Calculate the actual discount amount based on the difference between original and discounted prices
+  let discountAmount = 0;
+  for (const item of cart) {
+    const originalPrice = parseFloat(item.price || 0);
+    const discountedPrice = item.discountPrice ? parseFloat(item.discountPrice) : originalPrice;
+    discountAmount += (originalPrice - discountedPrice) * item.quantity;
+  }
+
   const deliveryFee = 15;
-  const total = subtotal - discountAmount + deliveryFee;
+  const total = subtotal + deliveryFee; // Subtotal already includes discounts
 
   // Populate form with user data if logged in
   useEffect(() => {
@@ -204,6 +211,7 @@ export default function CheckoutClient({ sslcommerzEnabled }) {
           id: item.id,
           name: item.name,
           price: item.price,
+          discountPrice: item.discountPrice || item.price,
           quantity: item.quantity,
           image: item.image,
         })),
@@ -636,24 +644,42 @@ export default function CheckoutClient({ sslcommerzEnabled }) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-[#253D4E] font-medium text-xs truncate">{item.name}</h3>
-                      <p className="text-[#7E7E7E] text-xs">{item.quantity} × ৳{parseFloat(item.price).toFixed(2)}</p>
+                      <p className="text-[#7E7E7E] text-xs">
+                        {item.quantity} ×
+                        {item.discountPrice && item.discountPrice !== item.price ? (
+                          <>
+                            <span className="text-[#3BB77E]"> ৳{parseFloat(item.discountPrice).toFixed(2)}</span>
+                            <span className="text-[#E12625] line-through ml-1">৳{parseFloat(item.price).toFixed(2)}</span>
+                          </>
+                        ) : (
+                          <span> ৳{parseFloat(item.price).toFixed(2)}</span>
+                        )}
+                      </p>
                     </div>
                     <div className="text-[#3BB77E] font-medium text-xs whitespace-nowrap">
-                      ৳{(parseFloat(item.price) * item.quantity).toFixed(2)}
+                      ৳{((item.discountPrice ? parseFloat(item.discountPrice) : parseFloat(item.price)) * item.quantity).toFixed(2)}
                     </div>
                   </div>
                 ))}
               </div>
 
               <div className="border-t border-[#ECECEC] pt-2 space-y-1.5">
+                {discountAmount > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-[#7E7E7E] text-xs">Original Price</span>
+                    <span className="text-[#7E7E7E] text-xs line-through">৳{(subtotal + discountAmount).toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-[#7E7E7E] text-xs">Subtotal</span>
                   <span className="text-[#253D4E] font-medium text-xs">৳{subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-[#7E7E7E] text-xs">Discount (20%)</span>
-                  <span className="text-[#3BB77E] font-medium text-xs">-৳{discountAmount.toFixed(2)}</span>
-                </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-[#7E7E7E] text-xs">Discount (Promotions)</span>
+                    <span className="text-[#3BB77E] font-medium text-xs">-৳{discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-[#7E7E7E] text-xs">Delivery Fee</span>
                   <span className="text-[#253D4E] font-medium text-xs">৳{deliveryFee.toFixed(2)}</span>

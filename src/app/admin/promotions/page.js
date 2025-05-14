@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-hot-toast';
 import PageHeader from './PageHeader';
 import SearchBar from './SearchBar';
 import PromotionsTable from './PromotionsTable';
@@ -84,12 +85,14 @@ export default function PromotionsPage() {
 
   // Handle add promotion
   const handleAddPromotion = async () => {
+    toast.success('Promotion created successfully');
     await fetchPromotions();
     setShowAddModal(false);
   };
 
   // Handle edit promotion
   const handleEditPromotion = async () => {
+    toast.success('Promotion updated successfully');
     await fetchPromotions();
     setShowEditModal(false);
     setCurrentPromotion(null);
@@ -99,16 +102,19 @@ export default function PromotionsPage() {
   const handleDeletePromotion = async () => {
     try {
       setLoading(true);
+      setError(null); // Clear any previous errors
+
       const success = await deletePromotion(currentPromotion.id);
 
       if (success) {
+        toast.success('Promotion deleted successfully');
         await fetchPromotions();
       } else {
         setError('Failed to delete promotion. Please try again.');
       }
     } catch (err) {
       console.error('Error deleting promotion:', err);
-      setError('Failed to delete promotion. Please try again.');
+      setError(`Failed to delete promotion: ${err.message || 'Please try again.'}`);
     } finally {
       setLoading(false);
       setShowDeleteModal(false);

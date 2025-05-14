@@ -116,6 +116,7 @@ export async function POST(request) {
         product_id: item.id,
         quantity: item.quantity,
         price: item.price,
+        discount_price: item.discountPrice || item.price,
       }));
 
       // Define the operation to create order items

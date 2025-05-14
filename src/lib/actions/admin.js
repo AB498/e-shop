@@ -879,6 +879,7 @@ export async function getAllOrders() {
             id: orderItems.id,
             quantity: orderItems.quantity,
             price: orderItems.price,
+            discount_price: orderItems.discount_price,
             product_id: orderItems.product_id,
             product_name: products.name,
             product_image: products.image,
@@ -907,15 +908,21 @@ export async function getAllOrders() {
           date: order.createdAt.toISOString().split('T')[0],
           time: order.createdAt.toLocaleTimeString(),
           itemsCount,
-          items: orderItemsData.map(item => ({
-            id: item.id,
-            product_id: item.product_id,
-            product_name: item.product_name,
-            product_image: item.product_image,
-            quantity: item.quantity,
-            price: `৳${parseFloat(item.price).toFixed(2)}`,
-            total: `৳${(parseFloat(item.price) * item.quantity).toFixed(2)}`
-          })),
+          items: orderItemsData.map(item => {
+            const hasDiscount = item.discount_price && parseFloat(item.discount_price) < parseFloat(item.price);
+            const priceToUse = hasDiscount ? parseFloat(item.discount_price) : parseFloat(item.price);
+
+            return {
+              id: item.id,
+              product_id: item.product_id,
+              product_name: item.product_name,
+              product_image: item.product_image,
+              quantity: item.quantity,
+              price: parseFloat(item.price).toFixed(2),
+              discount_price: item.discount_price ? parseFloat(item.discount_price).toFixed(2) : null,
+              total: (priceToUse * item.quantity).toFixed(2)
+            };
+          }),
           shippingAddress: order.shippingAddress,
           shippingCity: order.shippingCity,
           shippingPostCode: order.shippingPostCode,

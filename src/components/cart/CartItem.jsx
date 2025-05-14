@@ -20,6 +20,12 @@ const CartItem = ({ item }) => {
   const size = item.size || 'Standard';
   const promotion = isProductNested ? item.product.promotion : item.promotion;
 
+  // Calculate discount percentage if not already provided
+  let discountPercentage = isProductNested ? item.product.discountPercentage : item.discountPercentage;
+  if (!discountPercentage && price && discountPrice && price !== discountPrice) {
+    discountPercentage = Math.round((1 - (parseFloat(discountPrice) / parseFloat(price))) * 100);
+  }
+
   const handleQuantityChange = (newQuantity) => {
     if (newQuantity >= 1) {
       updateQuantity(id, newQuantity);
@@ -47,9 +53,12 @@ const CartItem = ({ item }) => {
             <p className="text-black text-xs">Size: {size || 'Standard'}</p>
             <p className="text-black text-xs">Category: {category}</p>
             {discountPrice && discountPrice !== price ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[#FF3333] text-xs line-through">৳{parseFloat(price).toFixed(2)}</span>
                 <span className="text-[#3BB77E] font-bold text-lg">৳{parseFloat(discountPrice).toFixed(2)}</span>
+                <span className="bg-[#006B51] text-white text-[10px] px-1.5 py-0.5 rounded-sm">
+                  -{discountPercentage}%
+                </span>
                 {promotion && (
                   <span className="bg-[#FF3E3E] text-white text-[10px] px-1.5 py-0.5 rounded-sm">
                     {promotion.title}

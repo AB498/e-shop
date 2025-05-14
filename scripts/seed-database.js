@@ -153,6 +153,7 @@ async function seedDatabase() {
       deliveryPersonsSeed,
       wishlistItemsSeed,
       promotionsSeed,
+      productPromotionsSeed,
       settingsSeed,
       contactMessagesSeed
     ] = await Promise.all([
@@ -166,6 +167,7 @@ async function seedDatabase() {
       importSeedData('delivery-persons-seed.js'),
       importSeedData('wishlist-seed.js'),
       importSeedData('promotions-seed.js'),
+      importSeedData('product-promotions-seed.js'),
       importSeedData('settings-seed.js'),
       importSeedData('contact-messages-seed.js')
     ]);
@@ -182,6 +184,7 @@ async function seedDatabase() {
         'DROP TABLE IF EXISTS order_items CASCADE',
         'DROP TABLE IF EXISTS orders CASCADE',
         'DROP TABLE IF EXISTS product_images CASCADE',
+        'DROP TABLE IF EXISTS product_promotions CASCADE',
         'DROP TABLE IF EXISTS products CASCADE',
         'DROP TABLE IF EXISTS categories CASCADE',
         'DROP TABLE IF EXISTS promotions CASCADE',
@@ -358,6 +361,7 @@ async function seedDatabase() {
           product_id INTEGER REFERENCES products(id),
           quantity INTEGER NOT NULL,
           price DECIMAL(10, 2) NOT NULL,
+          discount_price DECIMAL(10, 2),
           created_at TIMESTAMP DEFAULT NOW()
         )`,
         `CREATE TABLE courier_tracking (
@@ -423,6 +427,19 @@ async function seedDatabase() {
           discount TEXT,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+
+      // Product promotions junction table
+      await pool.query(`
+        CREATE TABLE product_promotions (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER REFERENCES products(id) NOT NULL,
+          promotion_id INTEGER REFERENCES promotions(id) NOT NULL,
+          discount_percentage DECIMAL(5,2),
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW(),
+          UNIQUE(product_id, promotion_id)
         )
       `);
 
@@ -720,6 +737,94 @@ async function seedDatabase() {
 
       // Insert wishlist items after products and users are inserted
       await insertData('wishlist_items', schema.wishlistItems, wishlistItemsSeed);
+
+      // Insert product promotions after products and promotions are inserted
+      console.log(`Inserting ${productPromotionsSeed.length} product promotions...`);
+
+      // First, insert the original product promotions with conflict handling
+      console.log('Inserting original product promotions with conflict handling...');
+      for (const promotion of productPromotionsSeed) {
+        try {
+          await db.insert(schema.productPromotions)
+            .values(promotion)
+            .onConflictDoUpdate({
+              target: [schema.productPromotions.product_id, schema.productPromotions.promotion_id],
+              set: {
+                discount_percentage: promotion.discount_percentage,
+                updated_at: new Date()
+              }
+            });
+        } catch (error) {
+          console.error(`Error inserting product promotion for product ${promotion.product_id}, promotion ${promotion.promotion_id}:`, error.message);
+        }
+      }
+
+      // Now create product promotions for the additional products we created
+      const additionalProductPromotions = [];
+
+      // For each promotion
+      for (let promotionId = 1; promotionId <= 9; promotionId++) {
+        // Find the discount percentage for this promotion
+        const promotion = promotionsSeed.find(p => p.id === promotionId);
+        if (!promotion || !promotion.discount) continue;
+
+        const discountPercentage = parseFloat(promotion.discount);
+
+        // For each of the original products in this promotion
+        const originalProductIds = productPromotionsSeed
+          .filter(pp => pp.promotion_id === promotionId)
+          .map(pp => pp.product_id);
+
+        // For each original product, find its variations
+        for (const originalProductId of originalProductIds) {
+          // Find the variations we created (Premium and Deluxe versions)
+          const variations = additionalProducts.filter(p =>
+            p.name.includes(combinedProducts.find(op => op.id === originalProductId)?.name || '')
+          );
+
+          // Add product promotion entries for each variation
+          for (const variation of variations) {
+            additionalProductPromotions.push({
+              product_id: variation.id,
+              promotion_id: promotionId,
+              discount_percentage: discountPercentage
+            });
+          }
+        }
+      }
+
+      // Insert the additional product promotions with conflict handling
+      if (additionalProductPromotions.length > 0) {
+        console.log(`Adding ${additionalProductPromotions.length} product promotions for additional products...`);
+
+        // Use batching for better performance but with conflict handling
+        const batchSize = 50;
+        for (let i = 0; i < additionalProductPromotions.length; i += batchSize) {
+          const batch = additionalProductPromotions.slice(i, i + batchSize);
+          console.log(`Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(additionalProductPromotions.length/batchSize)}`);
+
+          // Process each item in the batch
+          for (const promotion of batch) {
+            try {
+              await db.insert(schema.productPromotions)
+                .values(promotion)
+                .onConflictDoUpdate({
+                  target: [schema.productPromotions.product_id, schema.productPromotions.promotion_id],
+                  set: {
+                    discount_percentage: promotion.discount_percentage,
+                    updated_at: new Date()
+                  }
+                });
+            } catch (error) {
+              console.error(`Error inserting additional product promotion for product ${promotion.product_id}, promotion ${promotion.promotion_id}:`, error.message);
+            }
+          }
+        }
+      }
+
+      // Store the total number of product promotions for stats
+      global.totalProductPromotions = productPromotionsSeed.length + additionalProductPromotions.length;
+      console.log(`Total product promotions: ${global.totalProductPromotions}`);
     } catch (error) {
       console.error('Error inserting sample data:', error);
       throw error;
@@ -744,6 +849,7 @@ async function seedDatabase() {
     console.log(`  Delivery Persons: ${deliveryPersonsSeed.length}`);
     console.log(`  Wishlist Items: ${wishlistItemsSeed.length}`);
     console.log(`  Promotions: ${promotionsSeed.length}`);
+    console.log(`  Product Promotions: ${global.totalProductPromotions || productPromotionsSeed.length}`);
     console.log(`  Settings: ${settingsSeed.length}`);
     console.log(`  Contact Messages: ${contactMessagesSeed.length}`);
     console.log(`  Payment Transactions: 0 (table created but no seed data)`);
@@ -765,6 +871,7 @@ async function seedDatabase() {
         deliveryPersons: deliveryPersonsSeed.length,
         wishlistItems: wishlistItemsSeed.length,
         promotions: promotionsSeed.length,
+        productPromotions: global.totalProductPromotions || productPromotionsSeed.length,
         settings: settingsSeed.length,
         contactMessages: contactMessagesSeed.length,
         paymentTransactions: 0

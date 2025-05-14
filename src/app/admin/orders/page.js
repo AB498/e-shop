@@ -429,7 +429,19 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                                             </div>
                                           </div>
                                         </td>
-                                        <td className="px-3 py-2 whitespace-nowrap text-xs text-gray-900">{item.price}</td>
+                                        <td className="px-3 py-2 whitespace-nowrap text-xs">
+                                          {item.discount_price && parseFloat(item.discount_price) < parseFloat(item.price) ? (
+                                            <div className="flex flex-col">
+                                              <span className="text-emerald-600 font-medium">৳{item.discount_price}</span>
+                                              <span className="text-red-500 line-through text-[10px]">৳{item.price}</span>
+                                              <span className="bg-emerald-100 text-emerald-800 text-[9px] px-1 py-0.5 rounded-sm inline-block w-fit mt-0.5">
+                                                -{Math.round((1 - (parseFloat(item.discount_price) / parseFloat(item.price))) * 100)}%
+                                              </span>
+                                            </div>
+                                          ) : (
+                                            <span className="text-gray-900">৳{item.price}</span>
+                                          )}
+                                        </td>
                                         <td className="px-3 py-2 whitespace-nowrap text-xs text-gray-900">{item.quantity}</td>
                                         <td className="px-3 py-2 whitespace-nowrap text-xs text-gray-900">{item.total}</td>
                                       </tr>

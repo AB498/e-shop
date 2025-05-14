@@ -32,17 +32,27 @@ const CartSummary = () => {
       <h2 className="text-[#006B51] font-bold text-lg mb-3">Order Summary</h2>
 
       <div className="flex flex-col gap-3">
+        {/* Original Price (only shown if there are discounts) */}
+        {discountAmount > 0 && (
+          <div className="flex justify-between items-center">
+            <span className="text-[rgba(0,0,0,0.6)] text-sm">Original Price</span>
+            <span className="text-[rgba(0,0,0,0.6)] text-sm line-through">৳{(subtotal + discountAmount).toFixed(2)}</span>
+          </div>
+        )}
+
         {/* Subtotal */}
         <div className="flex justify-between items-center">
           <span className="text-[rgba(0,0,0,0.6)] text-sm">Subtotal</span>
           <span className="text-[#006B51] font-bold text-sm">৳{subtotal.toFixed(2)}</span>
         </div>
 
-        {/* Discount */}
-        <div className="flex justify-between items-center">
-          <span className="text-[rgba(0,0,0,0.6)] text-sm">Discount (Promotions)</span>
-          <span className="text-[#FF3333] font-bold text-sm">-৳{discountAmount.toFixed(2)}</span>
-        </div>
+        {/* Discount (only shown if there are discounts) */}
+        {discountAmount > 0 && (
+          <div className="flex justify-between items-center">
+            <span className="text-[rgba(0,0,0,0.6)] text-sm">Discount (Promotions)</span>
+            <span className="text-[#FF3333] font-bold text-sm">-৳{discountAmount.toFixed(2)}</span>
+          </div>
+        )}
 
         {/* Delivery Fee */}
         <div className="flex justify-between items-center">

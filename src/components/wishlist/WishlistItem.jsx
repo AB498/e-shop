@@ -45,7 +45,10 @@ const WishlistItem = ({ item }) => {
     const cartItem = {
       id: product.id,
       name: product.name,
-      price: hasDiscount ? product.discountPrice : product.price,
+      price: product.price,
+      discountPrice: hasDiscount ? product.discountPrice : null,
+      discountPercentage: discountPercentage > 0 ? discountPercentage : null,
+      promotion: product.promotion,
       image: product.image,
       category: product.category?.name || '',
       quantity: 1
