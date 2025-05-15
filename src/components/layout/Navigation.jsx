@@ -228,7 +228,7 @@ const Navigation = () => {
               {/* Tooltip */}
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-1.5 bg-[#006B51] text-white text-[8px] rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-40 z-50">
                 <div className="relative">
-                  <p className="text-center leading-tight">Check out our special weekly deals and discounts on selected products. We update our offers every week with new seasonal items, bestsellers, and customer favorites at unbeatable prices.</p>
+                  <p className="leading-tight text-sm">Check out our special weekly deals and discounts on selected products. We update our offers every week with new seasonal items, bestsellers, and customer favorites at unbeatable prices.</p>
                   {/* Arrow */}
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[4px] border-b-[#006B51]"></div>
                 </div>

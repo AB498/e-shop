@@ -10,13 +10,35 @@ import BottomBanner from '@/components/products/BottomBanner';
 
 export const metadata = {
   title: 'Register - Thai Bangla Store',
-  description: 'Create a new account at Thai Bangla Store',
+  description: 'Create a new account at Thai Bangla Store to enjoy personalized shopping, order tracking, and exclusive offers.',
+  keywords: 'register, sign up, create account, Thai Bangla Store, customer registration',
+  openGraph: {
+    title: 'Register - Thai Bangla Store',
+    description: 'Create a new account at Thai Bangla Store to enjoy personalized shopping, order tracking, and exclusive offers.',
+    type: 'website',
+    url: 'https://thaibanglastore.com/auth/register',
+    siteName: 'Thai Bangla Store',
+    images: [
+      {
+        url: '/images/logo.png',
+        width: 800,
+        height: 600,
+        alt: 'Thai Bangla Store Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Register - Thai Bangla Store',
+    description: 'Create a new account at Thai Bangla Store to enjoy personalized shopping, order tracking, and exclusive offers.',
+    images: ['/images/logo.png'],
+  },
 };
 
 export default function RegisterPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      
+
 
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4 border-b border-[#ECECEC]">
@@ -39,7 +61,7 @@ export default function RegisterPage() {
 
       <BottomBanner />
 
-      
+
     </div>
   );
 }

@@ -18,8 +18,60 @@ export const dynamic = 'force-dynamic';
 
 
 export const metadata = {
-  title: "Thai Bangla E-Shop",
-  description: "Thai Bangla E-Commerce Platform",
+  title: "Thai Bangla Store - Premium Thai Products in Bangladesh",
+  description: "Thai Bangla Store offers premium Thai beauty, health, and lifestyle products in Bangladesh with fast delivery and secure payment options.",
+  keywords: "Thai products, Bangladesh, beauty products, health products, online shopping, e-commerce",
+
+  // Favicon and icon configuration
+  icons: {
+    // Default favicon
+    icon: [
+      { url: '/images/logo.png', sizes: '192x192', type: 'image/png' },
+    ],
+    // Apple touch icon (for iOS devices)
+    apple: [
+      { url: '/images/logo.png', sizes: '180x180', type: 'image/png' },
+    ],
+    // For Android devices
+    shortcut: [
+      { url: '/images/logo.png', sizes: '192x192', type: 'image/png' },
+    ],
+    // For PWA manifest
+    other: [
+      { url: '/images/logo.png', sizes: '512x512', type: 'image/png' },
+    ],
+  },
+
+  // App manifest for PWA
+  manifest: '/manifest.json',
+
+  // Theme color for browser UI
+  themeColor: '#006B51',
+
+  // Open Graph metadata
+  openGraph: {
+    title: "Thai Bangla Store - Premium Thai Products in Bangladesh",
+    description: "Thai Bangla Store offers premium Thai beauty, health, and lifestyle products in Bangladesh with fast delivery and secure payment options.",
+    type: "website",
+    url: "https://thaibanglastore.com",
+    siteName: "Thai Bangla Store",
+    images: [
+      {
+        url: "/images/logo.png",
+        width: 800,
+        height: 600,
+        alt: "Thai Bangla Store Logo",
+      },
+    ],
+  },
+
+  // Twitter card metadata
+  twitter: {
+    card: "summary_large_image",
+    title: "Thai Bangla Store - Premium Thai Products in Bangladesh",
+    description: "Thai Bangla Store offers premium Thai beauty, health, and lifestyle products in Bangladesh with fast delivery and secure payment options.",
+    images: ["/images/logo.png"],
+  },
 };
 
 export default function RootLayout({ children }) {

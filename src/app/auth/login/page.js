@@ -11,7 +11,29 @@ import BottomBanner from '@/components/products/BottomBanner';
 
 export const metadata = {
   title: 'Login - Thai Bangla Store',
-  description: 'Login to your Thai Bangla Store account',
+  description: 'Login to your Thai Bangla Store account to access your orders, wishlist, and personalized shopping experience.',
+  keywords: 'login, sign in, account access, Thai Bangla Store, customer login',
+  openGraph: {
+    title: 'Login - Thai Bangla Store',
+    description: 'Login to your Thai Bangla Store account to access your orders, wishlist, and personalized shopping experience.',
+    type: 'website',
+    url: 'https://thaibanglastore.com/auth/login',
+    siteName: 'Thai Bangla Store',
+    images: [
+      {
+        url: '/images/logo.png',
+        width: 800,
+        height: 600,
+        alt: 'Thai Bangla Store Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Login - Thai Bangla Store',
+    description: 'Login to your Thai Bangla Store account to access your orders, wishlist, and personalized shopping experience.',
+    images: ['/images/logo.png'],
+  },
 };
 
 export default async function LoginPage(props) {
@@ -48,8 +70,8 @@ export default async function LoginPage(props) {
       </div>
 
       <BottomBanner />
-      
-      
+
+
     </div>
   );
 }

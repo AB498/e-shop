@@ -1,10 +1,35 @@
 
-
-
 import { db } from '@/lib/db';
 import { settings } from '@/db/schema';
 import { eq, sql } from 'drizzle-orm';
 import CheckoutClient from './SSLCommerzProvider';
+
+export const metadata = {
+  title: 'Checkout - Thai Bangla Store',
+  description: 'Complete your purchase securely at Thai Bangla Store. Review your order, shipping details, and payment options.',
+  keywords: 'checkout, payment, order confirmation, Thai Bangla Store, secure payment, online shopping',
+  openGraph: {
+    title: 'Checkout - Thai Bangla Store',
+    description: 'Complete your purchase securely at Thai Bangla Store. Review your order, shipping details, and payment options.',
+    type: 'website',
+    url: 'https://thaibanglastore.com/checkout',
+    siteName: 'Thai Bangla Store',
+    images: [
+      {
+        url: '/images/logo.png',
+        width: 800,
+        height: 600,
+        alt: 'Thai Bangla Store Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Checkout - Thai Bangla Store',
+    description: 'Complete your purchase securely at Thai Bangla Store. Review your order, shipping details, and payment options.',
+    images: ['/images/logo.png'],
+  },
+};
 
 export async function getSSLCommerzSetting() {
   try {

@@ -13,7 +13,29 @@ import ProfileContent from '@/components/profile/ProfileContent';
 
 export const metadata = {
   title: 'My Orders - Thai Bangla Store',
-  description: 'View and manage your orders from Thai Bangla Store',
+  description: 'View and track your orders from Thai Bangla Store. Check order status, delivery information, and payment details.',
+  keywords: 'orders, order history, order tracking, purchase history, Thai Bangla Store, delivery status',
+  openGraph: {
+    title: 'My Orders - Thai Bangla Store',
+    description: 'View and track your orders from Thai Bangla Store. Check order status, delivery information, and payment details.',
+    type: 'website',
+    url: 'https://thaibanglastore.com/profile/orders',
+    siteName: 'Thai Bangla Store',
+    images: [
+      {
+        url: '/images/logo.png',
+        width: 800,
+        height: 600,
+        alt: 'Thai Bangla Store Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'My Orders - Thai Bangla Store',
+    description: 'View and track your orders from Thai Bangla Store. Check order status, delivery information, and payment details.',
+    images: ['/images/logo.png'],
+  },
 };
 
 export default async function OrdersPage() {
@@ -49,7 +71,7 @@ export default async function OrdersPage() {
         <ProfileContent user={session.user} defaultTab="orders" />
       </div>
 
-      
+
     </div>
   );
 }

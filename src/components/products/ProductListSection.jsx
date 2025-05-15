@@ -102,7 +102,12 @@ const ProductListSection = ({
   // Use actual products when not loading
   const itemsToDisplay = displayProducts;
 
-          console.log(`Fetched products from ${fetchUrl}:`, displayProducts);
+  // Only log when actually fetching from a URL
+  if (fetchUrl) {
+    console.log(`Fetched products from URL: ${fetchUrl}`, displayProducts.length, 'products');
+  } else {
+    console.log('Using products provided via props:', displayProducts.length, 'products');
+  }
   // If no products and not loading, show empty state
   if (!loading && (!displayProducts || displayProducts.length === 0)) {
     return (
@@ -207,9 +212,8 @@ const ProductListSection = ({
     return (
       <div
         key={product.id || index}
-        className={`bg-white rounded-md overflow-hidden shadow-md hover:shadow-md transition-shadow flex flex-col ${
-          viewType === 'scroll' ? 'basis-1/2 sm:basis-1/4 max-w-[240px] flex-shrink-0' : 'w-full'
-        }`}
+        className={`bg-white rounded-md overflow-hidden shadow-md hover:shadow-md transition-shadow flex flex-col ${viewType === 'scroll' ? 'basis-1/2 sm:basis-1/4 max-w-[240px] flex-shrink-0' : 'w-full'
+          }`}
       >
         {/* Product Image */}
         <Link href={`/products/${product.id}`} onClick={closeQuickView}>

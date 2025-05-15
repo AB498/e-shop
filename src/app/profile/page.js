@@ -13,7 +13,29 @@ import { refreshSession } from '@/lib/actions/session';
 
 export const metadata = {
   title: 'My Profile - Thai Bangla Store',
-  description: 'Manage your Thai Bangla Store account',
+  description: 'Manage your Thai Bangla Store account, update personal information, view order history, and track your wishlist.',
+  keywords: 'profile, account, user profile, order history, wishlist, Thai Bangla Store, account management',
+  openGraph: {
+    title: 'My Profile - Thai Bangla Store',
+    description: 'Manage your Thai Bangla Store account, update personal information, view order history, and track your wishlist.',
+    type: 'website',
+    url: 'https://thaibanglastore.com/profile',
+    siteName: 'Thai Bangla Store',
+    images: [
+      {
+        url: '/images/logo.png',
+        width: 800,
+        height: 600,
+        alt: 'Thai Bangla Store Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'My Profile - Thai Bangla Store',
+    description: 'Manage your Thai Bangla Store account, update personal information, view order history, and track your wishlist.',
+    images: ['/images/logo.png'],
+  },
 };
 
 export default async function ProfilePage() {
@@ -49,7 +71,7 @@ export default async function ProfilePage() {
         <ProfileContent user={session.user} />
       </div>
 
-      
+
     </div>
   );
 }
