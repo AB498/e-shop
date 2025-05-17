@@ -57,8 +57,7 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
             <Image
               src={image.url.trim() || "/images/product-image.png"}
               alt={image.altText || `${name || "Product"} Thumbnail ${index + 1}`}
-              width={140}
-              height={140}
+              fill
               className="w-full h-full object-cover rounded-[4px] sm:rounded-[6px] transition-transform duration-300 hover:scale-105"
               onError={(e) => {
                 e.target.src = "/images/product-image.png"; // Set fallback image
