@@ -15,7 +15,7 @@ export async function addProductImages(productId, images) {
     if (!productId || !images || !Array.isArray(images) || images.length === 0) {
       throw new Error('Invalid product ID or images');
     }
-
+    
     // Ensure only one image is primary
     let hasPrimary = false;
     const processedImages = images.map((image, index) => {
@@ -30,15 +30,16 @@ export async function addProductImages(productId, images) {
         hasPrimary = true;
       }
 
-      // If we don't have a primary image yet and this is the first image,
-      // make it primary
-      if (!hasPrimary && index === 0) {
-        hasPrimary = true;
-        return { ...image, isPrimary: true };
-      }
-
+      
       return image;
     });
+
+    // If we don't have a primary image still,
+    // make the first image primary
+    if (!hasPrimary) {
+      hasPrimary = true;
+      return processedImages[0].isPrimary = true;
+    }
 
     // Insert images into database
     const insertedImages = [];
