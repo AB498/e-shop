@@ -403,8 +403,8 @@ export default function ProductCarousel({
               )}
 
               <div className={`overflow-hidden ${!enableSwipingRow1 ? 'w-full' : ''}`}>
-                {/* Custom pagination container - hidden on mobile */}
-                <div className="swiper-pagination-row1 hidden sm:block"></div>
+                {/* Custom pagination container - hidden on all screens */}
+                <div className="swiper-pagination-row1 hidden"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
                   spaceBetween={18}
@@ -562,8 +562,8 @@ export default function ProductCarousel({
               )}
 
               <div className={`overflow-hidden ${!enableSwipingRow2 ? 'w-full' : ''}`}>
-                {/* Custom pagination container - hidden on mobile */}
-                <div className="swiper-pagination-row2 hidden sm:block"></div>
+                {/* Custom pagination container - hidden on all screens */}
+                <div className="swiper-pagination-row2 hidden"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
                   spaceBetween={18}
