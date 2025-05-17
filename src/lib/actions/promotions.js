@@ -147,8 +147,6 @@ export async function getActivePromotions(type = null, position = null, limit = 
       .orderBy(desc(promotions.priority), desc(promotions.created_at))
       .limit(limit);
 
-    console.log('SQL Query:', query.toSQL());
-
     const activePromotions = await query;
     console.log(`Found ${activePromotions.length} active promotions`);
 

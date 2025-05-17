@@ -109,7 +109,11 @@ export default async function AdminLayout({ children }) {
       href: '/admin/promotions',
       iconName: 'SparklesIcon'
     },
-
+    {
+      name: 'Reviews',
+      href: '/admin/reviews',
+      iconName: 'StarIcon'
+    },
     {
       name: 'Payments',
       href: '/admin/payments',

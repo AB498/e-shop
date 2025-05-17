@@ -16,22 +16,9 @@ import { toast } from "react-hot-toast";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import ImageWithFallback from "./ImageWithFallback";
 
-// Image component with fallback
-const IconWithFallback = ({ src, fallbackSrc, alt, ...props }) => {
-  const [imgSrc, setImgSrc] = useState(src);
 
-  return (
-    <Image
-      {...props}
-      src={imgSrc}
-      alt={alt}
-      onError={() => {
-        setImgSrc(fallbackSrc);
-      }}
-    />
-  );
-};
 
 // Custom styles for hiding pagination on mobile
 const customStyles = `
@@ -89,7 +76,7 @@ const WishlistButton = ({ product }) => {
       {isWishlistLoading ? (
         <div className="w-3 h-3 sm:w-4 sm:h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
       ) : (
-        <IconWithFallback
+        <ImageWithFallback
           src={productInWishlist
             ? "/images/wishlist/wishlist-icon-filled.svg"
             : "/images/wishlist/wishlist-icon-outline.svg"}
@@ -360,7 +347,7 @@ export default function ProductCarousel({
           <div className="flex items-center mb-2 sm:mb-3 relative">
             <div className="flex items-center gap-1 sm:gap-2">
               {icon && (
-                <IconWithFallback
+                <ImageWithFallback
                   src={icon}
                   fallbackSrc="/images/placeholder-icon.svg"
                   width={24}
@@ -464,7 +451,7 @@ export default function ProductCarousel({
                             onClick={() => openQuickView(product)}
                           >
                             <div className="aspect-square relative">
-                              <IconWithFallback
+                              <ImageWithFallback
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
@@ -491,7 +478,7 @@ export default function ProductCarousel({
                         ) : (
                           <Link href={`/products/${product.id}`} className="block">
                             <div className="aspect-square relative">
-                              <IconWithFallback
+                              <ImageWithFallback
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
@@ -626,7 +613,7 @@ export default function ProductCarousel({
                             onClick={() => openQuickView(product)}
                           >
                             <div className="aspect-square relative">
-                              <IconWithFallback
+                              <ImageWithFallback
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
@@ -653,7 +640,7 @@ export default function ProductCarousel({
                         ) : (
                           <Link href={`/products/${product.id}`} className="block">
                             <div className="aspect-square relative">
-                              <IconWithFallback
+                              <ImageWithFallback
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}

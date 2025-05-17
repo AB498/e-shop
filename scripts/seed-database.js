@@ -155,7 +155,8 @@ async function seedDatabase() {
       promotionsSeed,
       productPromotionsSeed,
       settingsSeed,
-      contactMessagesSeed
+      contactMessagesSeed,
+      productReviewsSeed
     ] = await Promise.all([
       importSeedData('categories-seed.js'),
       importSeedData('products-seed.js'),
@@ -169,7 +170,8 @@ async function seedDatabase() {
       importSeedData('promotions-seed.js'),
       importSeedData('product-promotions-seed.js'),
       importSeedData('settings-seed.js'),
-      importSeedData('contact-messages-seed.js')
+      importSeedData('contact-messages-seed.js'),
+      importSeedData('product-reviews-seed.js')
     ]);
 
     // Drop existing tables if they exist (for clean seeding)
@@ -177,6 +179,7 @@ async function seedDatabase() {
     try {
       // Drop tables in reverse order of dependencies using direct pool queries
       const dropQueries = [
+        'DROP TABLE IF EXISTS product_reviews CASCADE',
         'DROP TABLE IF EXISTS payment_transactions CASCADE',
         'DROP TABLE IF EXISTS wishlist_items CASCADE',
         'DROP TABLE IF EXISTS store_locations CASCADE',
@@ -485,6 +488,23 @@ async function seedDatabase() {
           updated_at TIMESTAMP DEFAULT NOW()
         )
       `);
+
+      // Product reviews table
+      await pool.query(`
+        CREATE TABLE product_reviews (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          rating DECIMAL(2, 1) NOT NULL,
+          review_text TEXT,
+          title TEXT,
+          verified_purchase BOOLEAN DEFAULT FALSE,
+          status TEXT DEFAULT 'published' NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW(),
+          UNIQUE(user_id, product_id)
+        )
+      `);
     } catch (error) {
       console.error('Error creating schema:', error);
       throw error;
@@ -738,6 +758,9 @@ async function seedDatabase() {
       // Insert wishlist items after products and users are inserted
       await insertData('wishlist_items', schema.wishlistItems, wishlistItemsSeed);
 
+      // Insert product reviews after products and users are inserted
+      await insertData('product_reviews', schema.productReviews, productReviewsSeed);
+
       // Insert product promotions after products and promotions are inserted
       console.log(`Inserting ${productPromotionsSeed.length} product promotions...`);
 
@@ -850,6 +873,7 @@ async function seedDatabase() {
     console.log(`  Wishlist Items: ${wishlistItemsSeed.length}`);
     console.log(`  Promotions: ${promotionsSeed.length}`);
     console.log(`  Product Promotions: ${global.totalProductPromotions || productPromotionsSeed.length}`);
+    console.log(`  Product Reviews: ${productReviewsSeed.length}`);
     console.log(`  Settings: ${settingsSeed.length}`);
     console.log(`  Contact Messages: ${contactMessagesSeed.length}`);
     console.log(`  Payment Transactions: 0 (table created but no seed data)`);
@@ -872,6 +896,7 @@ async function seedDatabase() {
         wishlistItems: wishlistItemsSeed.length,
         promotions: promotionsSeed.length,
         productPromotions: global.totalProductPromotions || productPromotionsSeed.length,
+        productReviews: productReviewsSeed.length,
         settings: settingsSeed.length,
         contactMessages: contactMessagesSeed.length,
         paymentTransactions: 0

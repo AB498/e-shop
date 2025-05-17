@@ -47,10 +47,14 @@ const ModalProductImages = ({ product }) => {
               onClick={() => handleThumbnailClick(index)}
             >
               <div className="relative aspect-square rounded-sm overflow-hidden h-full w-auto md:w-full md:h-auto aspect-square">
-                <img
-                  src={image.url}
-                  alt={image.altText || `Product thumbnail ${index + 1}`}
-                  className="object-cover w-full h-full"
+                <Image
+                  src={image.url.trim() || "/images/product-image.png"}
+                  alt={image.altText || `${name || "Product"} Thumbnail ${index + 1}`}
+                  fill
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "/images/product-image.png"; // Set fallback image
+                  }}
                 />
               </div>
             </div>
@@ -60,10 +64,12 @@ const ModalProductImages = ({ product }) => {
         {/* Main image */}
         <div className="flex-1 border border-[#E7ECF0] rounded-sm bg-white p-0.5">
           <div className="relative aspect-square rounded-sm overflow-hidden">
-            <img
-              src={activeImage}
-              alt={productImages[activeImageIndex]?.altText || product.name || "Product Image"}
-              className="object-cover w-full h-full"
+            <Image
+              src={activeImage.trim() || "/images/product-image.png"}
+              alt={productImages[activeImageIndex]?.altText || name || "Product"}
+              fill
+              className="object-contain w-full h-full"
+              onError={(e) => { e.target.src = "/images/product-image.png"; }}
             />
             {/* Next/Prev buttons for image gallery */}
             <div className="absolute bottom-3 right-3 sm:bottom-1.5 sm:right-1.5 md:bottom-2 md:right-2 flex gap-3">
@@ -73,7 +79,7 @@ const ModalProductImages = ({ product }) => {
                 onClick={handlePrev}
               >
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 transform rotate-180">
-                  <path d="M7.5 15L12.5 10L7.5 5" stroke="#595959" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M7.5 15L12.5 10L7.5 5" stroke="#595959" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
 
@@ -83,7 +89,7 @@ const ModalProductImages = ({ product }) => {
                 onClick={handleNext}
               >
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3">
-                  <path d="M7.5 15L12.5 10L7.5 5" stroke="#595959" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M7.5 15L12.5 10L7.5 5" stroke="#595959" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
             </div>

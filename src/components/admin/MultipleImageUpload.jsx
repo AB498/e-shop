@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 
 export default function MultipleImageUpload({ onImagesChange, initialImages = [] }) {
   const [images, setImages] = useState(initialImages);
@@ -127,15 +128,16 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
         {images.map((image, index) => (
           <div
             key={image.id || index}
-            className={`relative border rounded-md overflow-hidden group ${
-              image.isPrimary ? 'ring-2 ring-emerald-500' : ''
-            }`}
+            className={`relative border rounded-md overflow-hidden group ${image.isPrimary ? 'ring-2 ring-emerald-500' : ''
+              }`}
           >
             <div className="aspect-square relative">
-              <img
-                src={image.url}
-                alt={image.altText || `Product image ${index + 1}`}
-                className="object-cover w-full h-full"
+              <Image
+                src={image.url.trim() || "/images/product-image.png"}
+                alt={image.altText || "Product"}
+                fill
+                className="object-contain w-full h-full"
+                onError={(e) => { e.target.src = "/images/product-image.png"; }}
               />
 
               {/* Overlay with actions - always visible on mobile, hover on desktop */}

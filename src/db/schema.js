@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, integer, decimal, boolean, json, jsonb, varchar, pgEnum } from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, timestamp, integer, decimal, boolean, json, jsonb, varchar, pgEnum, uniqueIndex } from 'drizzle-orm/pg-core'
 
 // Contact messages status enum
 const contactMessageStatusEnum = pgEnum('contact_message_status', ['new', 'read', 'replied', 'archived'])
@@ -260,6 +260,25 @@ const settings = pgTable('settings', {
   updated_at: timestamp('updated_at').defaultNow(),
 })
 
+// Product reviews table
+const productReviews = pgTable('product_reviews', {
+  id: serial('id').primaryKey(),
+  product_id: integer('product_id').references(() => products.id).notNull(),
+  user_id: integer('user_id').references(() => users.id).notNull(),
+  rating: decimal('rating', { precision: 2, scale: 1 }).notNull(),
+  review_text: text('review_text'),
+  title: text('title'),
+  verified_purchase: boolean('verified_purchase').default(false),
+  status: text('status').default('published').notNull(), // 'published', 'pending', 'rejected'
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => {
+  return {
+    // Ensure a user can only review a product once
+    userProductIdx: uniqueIndex('user_product_idx').on(table.user_id, table.product_id),
+  }
+})
+
 export {
   files,
   users,
@@ -278,6 +297,7 @@ export {
   paymentTransactions,
   settings,
   contactMessages,
+  productReviews,
   userRoleEnum,
   orderStatusEnum,
   contactMessageStatusEnum

@@ -1,9 +1,23 @@
 'use client';
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { toast } from 'react-hot-toast';
 
-const ProductTabs = ({ description, sku, type }) => {
+const ProductTabs = ({ description, sku, type, productId }) => {
+  const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState('description');
+  const [reviews, setReviews] = useState([]);
+  const [reviewStats, setReviewStats] = useState({ averageRating: 0.0, totalReviews: 0 });
+  const [userCanReview, setUserCanReview] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [reviewFormData, setReviewFormData] = useState({
+    rating: 0,
+    title: '',
+    reviewText: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
 
   // Default description if none provided
   const productDescription = description ||
@@ -20,12 +34,112 @@ const ProductTabs = ({ description, sku, type }) => {
     { label: "Type", value: type || "N/A" },
   ];
 
-  // Sample reviews
-  const reviews = [
-    { id: 1, author: "Sarah Johnson", rating: 5, date: "June 15, 2023", comment: "This product is amazing! I've been using it for a month and my skin has never looked better." },
-    { id: 2, author: "Michael Chen", rating: 4, date: "May 22, 2023", comment: "Good product, but a bit pricey. I like the results though." },
-    { id: 3, author: "Emma Wilson", rating: 5, date: "April 10, 2023", comment: "Absolutely love this! Will definitely purchase again." },
-  ];
+  // Fetch reviews when the component mounts or when the productId changes
+  useEffect(() => {
+    if (productId) {
+      fetchReviews();
+    }
+  }, [productId]);
+
+  // Fetch reviews from the API
+  const fetchReviews = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/products/${productId}/reviews`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch reviews');
+      }
+
+      const data = await response.json();
+      setReviews(data.reviews || []);
+
+      // Ensure we have the correct data types for reviewStats
+      const stats = data.stats || { averageRating: 0.0, totalReviews: 0 };
+      setReviewStats({
+        averageRating: typeof stats.averageRating === 'number' ? stats.averageRating : parseFloat(stats.averageRating || 0),
+        totalReviews: typeof stats.totalReviews === 'number' ? stats.totalReviews : parseInt(stats.totalReviews || 0),
+        distribution: stats.distribution || {}
+      });
+
+      setUserCanReview(data.userCanReview || false);
+      setHasReviewed(data.hasReviewed || false);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      toast.error('Failed to load reviews');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle review form input changes
+  const handleReviewInputChange = (e) => {
+    const { name, value } = e.target;
+    setReviewFormData({
+      ...reviewFormData,
+      [name]: value
+    });
+  };
+
+  // Handle star rating click
+  const handleRatingClick = (rating) => {
+    setReviewFormData({
+      ...reviewFormData,
+      rating
+    });
+  };
+
+  // Submit a review
+  const submitReview = async (e) => {
+    e.preventDefault();
+
+    if (!session) {
+      toast.error('Please sign in to leave a review');
+      return;
+    }
+
+    if (reviewFormData.rating === 0) {
+      toast.error('Please select a rating');
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const response = await fetch(`/api/products/${productId}/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reviewFormData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit review');
+      }
+
+      // Reset form and refresh reviews
+      setReviewFormData({
+        rating: 0,
+        title: '',
+        reviewText: ''
+      });
+
+      toast.success('Review submitted successfully');
+      fetchReviews();
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      toast.error(error.message || 'Failed to submit review');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <div className="bg-white rounded-md p-3 sm:p-4 shadow-sm mb-3 sm:mb-4 border border-[#DEDEDE]">
@@ -69,7 +183,7 @@ const ProductTabs = ({ description, sku, type }) => {
               : 'text-[#7E7E7E] hover:bg-[#F9F9F9]'
           }`}
         >
-          Reviews ({reviews.length})
+          Reviews ({reviewStats.totalReviews || 0})
         </button>
       </div>
 
@@ -161,85 +275,154 @@ const ProductTabs = ({ description, sku, type }) => {
       {activeTab === 'reviews' && (
         <div className="text-[#7E7E7E]">
           <h3 className="text-[#253D4E] text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Customer Reviews</h3>
-          <div className="mb-3 sm:mb-4">
-            {reviews.map((review) => (
-              <div key={review.id} className="mb-3 border-b border-[#ECECEC] pb-2 sm:pb-3">
-                <div className="flex justify-between mb-1">
-                  <span className="text-[#253D4E] text-xs sm:text-sm font-semibold">{review.author}</span>
-                  <span className="text-[#B6B6B6] text-[10px] sm:text-xs">{review.date}</span>
-                </div>
-                <div className="flex mb-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill={i < review.rating ? "#FDC040" : "none"}
-                      stroke="#FDC040"
-                      className="mr-0.5"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-[#7E7E7E] text-xs sm:text-sm">{review.comment}</p>
+
+          {/* Review Stats */}
+          <div className="mb-4 bg-[#F9F9F9] p-3 sm:p-4 rounded-md">
+            <div className="flex items-center mb-2">
+              <div className="text-2xl font-bold text-[#253D4E] mr-2">
+                {reviewStats.averageRating ? parseFloat(reviewStats.averageRating).toFixed(1) : '0.0'}
               </div>
-            ))}
-          </div>
-
-          <div className="bg-[#F9F9F9] p-3 sm:p-4 rounded-md">
-            <h4 className="text-[#253D4E] text-sm sm:text-base font-semibold mb-2 sm:mb-3">Add a review</h4>
-            <p className="text-[#7E7E7E] text-xs sm:text-sm mb-2 sm:mb-3">Your email address will not be published. Required fields are marked *</p>
-
-            <div className="flex items-center mb-2 sm:mb-3">
-              <span className="text-[#7E7E7E] text-xs sm:text-sm mr-1.5">Your rating *</span>
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
                   <svg
                     key={i}
-                    width="14"
-                    height="14"
+                    width="16"
+                    height="16"
                     viewBox="0 0 24 24"
-                    fill="none"
+                    fill={i < Math.round(parseFloat(reviewStats.averageRating || 0)) ? "#FDC040" : "none"}
                     stroke="#FDC040"
-                    className="mr-0.5 cursor-pointer hover:fill-[#FDC040]"
+                    className="mr-0.5"
                   >
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 ))}
               </div>
-            </div>
-
-            <div className="mb-2 sm:mb-3">
-              <label className="block text-[#7E7E7E] text-xs sm:text-sm mb-1">Your review *</label>
-              <textarea
-                className="w-full border border-[#ECECEC] rounded text-xs sm:text-sm p-2 focus:outline-none focus:border-[#3BB77E]"
-                rows="3"
-              ></textarea>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-2 sm:mb-3">
-              <div>
-                <label className="block text-[#7E7E7E] text-xs sm:text-sm mb-1">Name *</label>
-                <input
-                  type="text"
-                  className="w-full border border-[#ECECEC] rounded text-xs sm:text-sm p-1.5 sm:p-2 focus:outline-none focus:border-[#3BB77E]"
-                />
-              </div>
-              <div>
-                <label className="block text-[#7E7E7E] text-xs sm:text-sm mb-1">Email *</label>
-                <input
-                  type="email"
-                  className="w-full border border-[#ECECEC] rounded text-xs sm:text-sm p-1.5 sm:p-2 focus:outline-none focus:border-[#3BB77E]"
-                />
+              <div className="ml-2 text-sm text-[#7E7E7E]">
+                ({reviewStats.totalReviews || 0} {reviewStats.totalReviews === 1 ? 'review' : 'reviews'})
               </div>
             </div>
-
-            <button className="bg-[#3BB77E] text-white text-xs sm:text-sm font-semibold py-1.5 sm:py-2 px-3 sm:px-4 rounded-full hover:bg-[#2A9D6E] transition-colors">
-              Submit Review
-            </button>
           </div>
+
+          {/* Reviews List */}
+          <div className="mb-3 sm:mb-4">
+            {isLoading ? (
+              <div className="flex justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#3BB77E]"></div>
+              </div>
+            ) : reviews.length > 0 ? (
+              reviews.map((review) => (
+                <div key={review.id} className="mb-3 border-b border-[#ECECEC] pb-2 sm:pb-3">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-[#253D4E] text-xs sm:text-sm font-semibold">{review.userName}</span>
+                    <span className="text-[#B6B6B6] text-[10px] sm:text-xs">{formatDate(review.createdAt)}</span>
+                  </div>
+                  {review.title && (
+                    <div className="text-[#253D4E] text-xs sm:text-sm font-medium mb-1">{review.title}</div>
+                  )}
+                  <div className="flex mb-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg
+                        key={i}
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill={i < review.rating ? "#FDC040" : "none"}
+                        stroke="#FDC040"
+                        className="mr-0.5"
+                      >
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ))}
+                    {review.verifiedPurchase && (
+                      <span className="ml-2 text-[10px] text-[#3BB77E] bg-[#E8F8F1] px-1 py-0.5 rounded">Verified Purchase</span>
+                    )}
+                  </div>
+                  <p className="text-[#7E7E7E] text-xs sm:text-sm">{review.reviewText}</p>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-4 text-[#7E7E7E]">
+                No reviews yet. Be the first to review this product!
+              </div>
+            )}
+          </div>
+
+          {/* Review Form */}
+          {userCanReview ? (
+            <div className="bg-[#F9F9F9] p-3 sm:p-4 rounded-md">
+              <h4 className="text-[#253D4E] text-sm sm:text-base font-semibold mb-2 sm:mb-3">Add a review</h4>
+              <p className="text-[#7E7E7E] text-xs sm:text-sm mb-2 sm:mb-3">
+                Share your experience with this product. Required fields are marked *
+              </p>
+
+              <form onSubmit={submitReview}>
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <span className="text-[#7E7E7E] text-xs sm:text-sm mr-1.5">Your rating *</span>
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <svg
+                        key={i}
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill={i < reviewFormData.rating ? "#FDC040" : "none"}
+                        stroke="#FDC040"
+                        className="mr-0.5 cursor-pointer hover:fill-[#FDC040]"
+                        onClick={() => handleRatingClick(i + 1)}
+                      >
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-2 sm:mb-3">
+                  <label className="block text-[#7E7E7E] text-xs sm:text-sm mb-1">Review title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={reviewFormData.title}
+                    onChange={handleReviewInputChange}
+                    className="w-full border border-[#ECECEC] rounded text-xs sm:text-sm p-1.5 sm:p-2 focus:outline-none focus:border-[#3BB77E]"
+                    placeholder="Give your review a title"
+                  />
+                </div>
+
+                <div className="mb-2 sm:mb-3">
+                  <label className="block text-[#7E7E7E] text-xs sm:text-sm mb-1">Your review *</label>
+                  <textarea
+                    name="reviewText"
+                    value={reviewFormData.reviewText}
+                    onChange={handleReviewInputChange}
+                    className="w-full border border-[#ECECEC] rounded text-xs sm:text-sm p-2 focus:outline-none focus:border-[#3BB77E]"
+                    rows="3"
+                    placeholder="What did you like or dislike? What did you use this product for?"
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className={`bg-[#3BB77E] text-white text-xs sm:text-sm font-semibold py-1.5 sm:py-2 px-3 sm:px-4 rounded-full hover:bg-[#2A9D6E] transition-colors ${submitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                >
+                  {submitting ? 'Submitting...' : 'Submit Review'}
+                </button>
+              </form>
+            </div>
+          ) : hasReviewed ? (
+            <div className="bg-[#F9F9F9] p-3 sm:p-4 rounded-md text-center">
+              <p className="text-[#3BB77E] font-medium">Thank you! You've already reviewed this product.</p>
+            </div>
+          ) : !session ? (
+            <div className="bg-[#F9F9F9] p-3 sm:p-4 rounded-md text-center">
+              <p className="text-[#7E7E7E] mb-2">Please sign in to leave a review.</p>
+              <a href="/auth/login" className="text-[#3BB77E] font-medium hover:underline">Sign in</a>
+            </div>
+          ) : (
+            <div className="bg-[#F9F9F9] p-3 sm:p-4 rounded-md text-center">
+              <p className="text-[#7E7E7E]">Only customers who have purchased this product can leave a review.</p>
+            </div>
+          )}
         </div>
       )}
     </div>

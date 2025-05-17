@@ -1,8 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { products, categories, productImages, productPromotions, promotions } from '@/db/schema';
-import { eq, or, desc, asc, like, sql, and, inArray } from 'drizzle-orm';
+import { products, categories, productImages, productPromotions, promotions, productReviews } from '@/db/schema';
+import { eq, or, desc, asc, like, sql, and, inArray, avg, count } from 'drizzle-orm';
 
 /**
  * Fetch products by category IDs
@@ -477,6 +477,20 @@ export async function getProductById(id) {
       .where(eq(productImages.product_id, id))
       .orderBy(asc(productImages.position));
 
+    // Fetch review statistics
+    const reviewStats = await db
+      .select({
+        averageRating: avg(productReviews.rating),
+        totalReviews: count(productReviews.id),
+      })
+      .from(productReviews)
+      .where(
+        and(
+          eq(productReviews.product_id, id),
+          eq(productReviews.status, 'published')
+        )
+      );
+
     // Get promotion information for this product
     const productPromotionsData = await db
       .select({
@@ -538,9 +552,10 @@ export async function getProductById(id) {
           isPrimary: true
         }
       ],
+      // Add review data
+      rating: reviewStats[0]?.averageRating ? parseFloat(reviewStats[0].averageRating) : 0.0,
+      reviewCount: reviewStats[0]?.totalReviews ? parseInt(reviewStats[0].totalReviews) : 0,
       // Add some additional fields for the product detail page
-      rating: 4.5, // Mock rating
-      reviewCount: Math.floor(Math.random() * 50) + 5, // Mock review count
       sizes: ['50g', '60g', '80g'], // Mock sizes
       defaultSize: '60g', // Mock default size
       type: 'Thai Brand', // Mock type

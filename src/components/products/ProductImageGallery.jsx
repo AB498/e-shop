@@ -27,13 +27,13 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
       {/* Main Product Image */}
       <div className="relative aspect-square mb-2 sm:mb-3 border border-[#ECECEC] rounded-md overflow-hidden bg-white">
         <Image
-          src={activeImage}
+          src={activeImage.trim() || "/images/product-image.png"}
           alt={productImages[activeImageIndex]?.altText || name || "Product"}
           fill
-          className="object-contain"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority
+          className="object-contain w-full h-full"
+          onError={(e) => { e.target.src = "/images/product-image.png"; }}
         />
+
         {discountPercentage > 0 && (
           <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
             <div className="bg-[#E12625] text-white text-[10px] sm:text-xs font-semibold py-0.5 px-1.5 sm:px-2 rounded-sm">
@@ -48,18 +48,21 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
         {productImages.map((image, index) => (
           <div
             key={image.id || index}
-            className={`relative w-14 h-14 border rounded-md overflow-hidden flex-shrink-0 cursor-pointer ${
-              index === activeImageIndex
-                ? 'border-[#3BB77E] shadow-sm'
-                : 'border-[#ECECEC]'
-            }`}
+            className={`relative w-14 h-14 border rounded-md overflow-hidden flex-shrink-0 cursor-pointer ${index === activeImageIndex
+              ? 'border-[#3BB77E] shadow-sm'
+              : 'border-[#ECECEC]'
+              }`}
             onClick={() => handleThumbnailClick(index)}
           >
-            <img
-              src={image.url}
+            <Image
+              src={image.url.trim() || "/images/product-image.png"}
               alt={image.altText || `${name || "Product"} Thumbnail ${index + 1}`}
-              className="object-cover w-full h-full"
-              sizes="(max-width: 768px) 12vw, 80px"
+              width={140}
+              height={140}
+              className="w-full h-full object-cover rounded-[4px] sm:rounded-[6px] transition-transform duration-300 hover:scale-105"
+              onError={(e) => {
+                e.target.src = "/images/product-image.png"; // Set fallback image
+              }}
             />
           </div>
         ))}
