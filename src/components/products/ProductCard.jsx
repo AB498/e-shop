@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { toast } from 'react-hot-toast';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 const ProductCard = ({ product, showAddToCart = true }) => {
   const { id, name, price, image, category, discountPrice, discountPercentage, promotion } = product;
@@ -26,7 +27,7 @@ const ProductCard = ({ product, showAddToCart = true }) => {
       <div className="relative mb-2 md:mb-2.5">
         <Link href={`/products/${id}`}>
           <div className="relative w-full aspect-square overflow-hidden rounded-[6px]">
-            <Image
+            <ImageWithFallback
               src={image || "/images/products/product-image.png"}
               alt={name}
               fill
