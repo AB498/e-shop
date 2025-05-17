@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) => {
   // Default image if none provided
@@ -26,7 +27,7 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
     <div className="w-full md:w-1/2 lg:w-2/5">
       {/* Main Product Image */}
       <div className="relative aspect-square mb-2 sm:mb-3 border border-[#ECECEC] rounded-md overflow-hidden bg-white">
-        <Image
+        <ImageWithFallback
           src={activeImage.trim() || "/images/product-image.png"}
           alt={productImages[activeImageIndex]?.altText || name || "Product"}
           fill
@@ -54,7 +55,7 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
               }`}
             onClick={() => handleThumbnailClick(index)}
           >
-            <Image
+            <ImageWithFallback
               src={image.url.trim() || "/images/product-image.png"}
               alt={image.altText || `${name || "Product"} Thumbnail ${index + 1}`}
               fill
