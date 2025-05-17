@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 const ModalProductImages = ({ product }) => {
   // Default image if none provided
@@ -47,7 +48,7 @@ const ModalProductImages = ({ product }) => {
               onClick={() => handleThumbnailClick(index)}
             >
               <div className="relative aspect-square rounded-sm overflow-hidden h-full w-auto md:w-full md:h-auto aspect-square">
-                <Image
+                <ImageWithFallback
                   src={image.url.trim() || "/images/product-image.png"}
                   alt={image.altText || `${name || "Product"} Thumbnail ${index + 1}`}
                   fill
@@ -64,7 +65,7 @@ const ModalProductImages = ({ product }) => {
         {/* Main image */}
         <div className="flex-1 border border-[#E7ECF0] rounded-sm bg-white p-0.5">
           <div className="relative aspect-square rounded-sm overflow-hidden">
-            <Image
+            <ImageWithFallback
               src={activeImage.trim() || "/images/product-image.png"}
               alt={productImages[activeImageIndex]?.altText || name || "Product"}
               fill

@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 export default function MultipleImageUpload({ onImagesChange, initialImages = [] }) {
   const [images, setImages] = useState(initialImages);
@@ -132,7 +133,7 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
               }`}
           >
             <div className="aspect-square relative">
-              <Image
+              <ImageWithFallback
                 src={image.url.trim() || "/images/product-image.png"}
                 alt={image.altText || "Product"}
                 fill

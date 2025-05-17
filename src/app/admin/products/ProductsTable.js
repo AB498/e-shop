@@ -30,7 +30,7 @@ export default function ProductsTable({
       sortable: false,
       render: (product) => (
         <div className="relative h-10 w-10 rounded-md overflow-hidden">
-          <Image
+          <Image  
             src={product.image || "/images/product-image.png"}
             alt={product.name}
             fill
