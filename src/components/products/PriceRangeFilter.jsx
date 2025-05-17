@@ -7,7 +7,7 @@ const PriceRangeFilter = () => {
   const sliderRef = useRef(null);
 
   // Set a very high maximum value
-  const MAX_PRICE = 100000;
+  const MAX_PRICE = 10000;
 
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
