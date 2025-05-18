@@ -1,0 +1,5 @@
+Store locations API routes have been removed as store locations are now created from external provider pages.
+
+The following files have been removed:
+- src/app/api/store-locations/route.js
+- src/app/api/store-locations/[id]/route.js

@@ -10,7 +10,7 @@ import productsSeed from './products-seed';
 import usersSeed from './users-seed';
 import filesSeed from './files-seed';
 import couriersSeed from './couriers-seed';
-import storeLocationsSeed from './store-locations-seed';
+// import storeLocationsSeed from './store-locations-seed'; // Removed as store locations are now created from external provider pages
 import deliveryPersonsSeed from './delivery-persons-seed';
 import wishlistItemsSeed from './wishlist-seed';
 
@@ -25,7 +25,7 @@ export async function POST() {
     try {
       // Drop tables in reverse order of dependencies using direct pool queries
       await pool.query('DROP TABLE IF EXISTS wishlist_items CASCADE');
-      await pool.query('DROP TABLE IF EXISTS store_locations CASCADE');
+      // await pool.query('DROP TABLE IF EXISTS store_locations CASCADE'); // Removed as store locations are now created from external provider pages
       await pool.query('DROP TABLE IF EXISTS courier_tracking CASCADE');
       await pool.query('DROP TABLE IF EXISTS order_items CASCADE');
       await pool.query('DROP TABLE IF EXISTS orders CASCADE');
@@ -185,25 +185,7 @@ export async function POST() {
         )
       `);
 
-      // Create store_locations table
-      await pool.query(`
-        CREATE TABLE store_locations (
-          id SERIAL PRIMARY KEY,
-          name TEXT NOT NULL,
-          contact_name TEXT NOT NULL,
-          contact_number TEXT NOT NULL,
-          secondary_contact TEXT,
-          address TEXT NOT NULL,
-          city_id INTEGER NOT NULL,
-          zone_id INTEGER NOT NULL,
-          area_id INTEGER NOT NULL,
-          is_default BOOLEAN DEFAULT FALSE,
-          pathao_store_id TEXT,
-          is_active BOOLEAN DEFAULT TRUE,
-          created_at TIMESTAMP DEFAULT NOW(),
-          updated_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
+      // Store locations table removed as they are now created from external provider pages
 
       // Create wishlist_items table
       await pool.query(`
@@ -288,11 +270,7 @@ export async function POST() {
         await db.insert(schema.files).values(file);
       }
 
-      // Insert store locations using Drizzle ORM
-      console.log('Inserting store locations...');
-      for (const location of storeLocationsSeed) {
-        await db.insert(schema.storeLocations).values(location);
-      }
+      // Store locations insertion removed as they are now created from external provider pages
 
       // Insert delivery persons using Drizzle ORM
       console.log('Inserting delivery persons...');

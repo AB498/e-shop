@@ -36,7 +36,7 @@ async function addSslcommerzSetting() {
       [
         nextId,
         'sslcommerz_enabled',
-        'true',
+        'false', // Disabled by default
         'Enable SSLCommerz payment gateway'
       ]
     );

@@ -154,23 +154,7 @@ const courierTracking = pgTable('courier_tracking', {
   created_at: timestamp('created_at').defaultNow(),
 })
 
-// Store locations table for courier pickups
-const storeLocations = pgTable('store_locations', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  contact_name: text('contact_name').notNull(),
-  contact_number: text('contact_number').notNull(),
-  secondary_contact: text('secondary_contact'),
-  address: text('address').notNull(),
-  city_id: integer('city_id').notNull(),
-  zone_id: integer('zone_id').notNull(),
-  area_id: integer('area_id').notNull(),
-  is_default: boolean('is_default').default(false),
-  pathao_store_id: text('pathao_store_id'),
-  is_active: boolean('is_active').default(true),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
-})
+// Store locations have been removed as they are now created from external provider pages
 
 // Product images table
 const productImages = pgTable('product_images', {
@@ -289,7 +273,6 @@ export {
   orderItems,
   couriers,
   courierTracking,
-  storeLocations,
   deliveryPersons,
   wishlistItems,
   promotions,

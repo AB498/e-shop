@@ -5,7 +5,8 @@ import {
   TruckIcon,
   ArrowPathIcon,
   UserGroupIcon,
-  CreditCardIcon
+  CreditCardIcon,
+  ArrowTopRightOnSquareIcon
 } from '@heroicons/react/24/outline';
 import Table from '@/components/ui/table';
 
@@ -16,7 +17,8 @@ export default function OrdersTable({
   onCreateCourierOrder,
   onAssignDeliveryPerson,
   onShowPaymentPage,
-  internalCourierEnabled = true
+  internalCourierEnabled = true,
+  steadfastEnabled = true
 }) {
   // Define table columns
   const columns = [
@@ -161,6 +163,18 @@ export default function OrdersTable({
                 >
                   <UserGroupIcon className="h-5 w-5" />
                 </button>
+              )}
+              {/* Steadfast manual order link */}
+              {steadfastEnabled && (
+                <a
+                  href="https://steadfast.com.bd/user/add-parcel/regular"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 hover:text-purple-900"
+                  title="Create Manual Order on Steadfast"
+                >
+                  <ArrowTopRightOnSquareIcon className="h-5 w-5" />
+                </a>
               )}
             </>
           )}

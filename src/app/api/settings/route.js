@@ -15,7 +15,7 @@ export async function GET(request) {
 
     if (sslcommerzSetting.length === 0) {
       console.log('SSLCommerz setting not found in public API, creating it...');
-      await createSettingIfNotExists('sslcommerz_enabled', 'true', 'Enable SSLCommerz payment gateway');
+      await createSettingIfNotExists('sslcommerz_enabled', 'false', 'Enable SSLCommerz payment gateway');
     }
 
     // Get all settings

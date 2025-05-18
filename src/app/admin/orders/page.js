@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { initializePaymentForAdmin } from '@/lib/actions/payment';
 import { isInternalCourierActive } from '@/lib/actions/admin';
+import { getDefaultCourierProvider, getSetting } from '@/lib/actions/settings';
 import AssignDeliveryPersonModal from './AssignDeliveryPersonModal';
 import OrdersTable from './OrdersTable';
 import { createAutomaticCourierOrder } from '@/lib/services/auto-courier';
@@ -32,6 +33,7 @@ export default function OrdersPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentOrderId, setPaymentOrderId] = useState(null);
   const [internalCourierEnabled, setInternalCourierEnabled] = useState(true);
+  const [steadfastEnabled, setSteadfastEnabled] = useState(true);
 
   // Check if internal courier system is active
   useEffect(() => {
@@ -47,6 +49,29 @@ export default function OrdersPage() {
     }
 
     checkInternalCourier();
+  }, []);
+
+  // Check if Steadfast courier is enabled
+  useEffect(() => {
+    async function checkSteadfastEnabled() {
+      try {
+        // Check if Steadfast is enabled by looking for a courier with name 'Steadfast'
+        const response = await fetch('/api/admin/couriers');
+        if (response.ok) {
+          const couriers = await response.json();
+          const steadfastCourier = couriers.find(courier =>
+            courier.name.toLowerCase() === 'steadfast' && courier.is_active
+          );
+          setSteadfastEnabled(!!steadfastCourier);
+        }
+      } catch (err) {
+        console.error('Error checking Steadfast courier status:', err);
+        // Default to true in case of error to avoid breaking functionality
+        setSteadfastEnabled(true);
+      }
+    }
+
+    checkSteadfastEnabled();
   }, []);
 
   // Fetch orders data
@@ -152,18 +177,36 @@ export default function OrdersPage() {
         orderToUpdate.isProcessingCourier = true;
       }
 
-      const data = await createAutomaticCourierOrder(orderId)
+      // Get the default courier provider
+      const defaultCourierProvider = await getDefaultCourierProvider();
+      console.log(`Using default courier provider: ${defaultCourierProvider}`);
+
+      // Get the default courier ID from settings
+      const { getSetting } = await import('@/lib/actions/settings');
+      const defaultCourierId = await getSetting('default_courier_id');
+      console.log(`Default courier ID from settings: ${defaultCourierId}`);
+
+      // Create the courier order with the default provider
+      console.log(`Creating courier order with provider: ${defaultCourierProvider}`);
+      const data = await createAutomaticCourierOrder(orderId, true, defaultCourierProvider);
 
       console.log('Courier order created successfully:', JSON.stringify(data, null, 2));
 
       // Show success message with additional info if available
-      if (data.data && data.data.pathao_response) {
+      if (defaultCourierProvider === 'pathao' && data.data && data.data.pathao_response) {
         const pathaoData = data.data.pathao_response;
         alert(`Pathao order created successfully:
 Consignment ID: ${pathaoData.consignment_id}
 Order Status: ${pathaoData.order_status}
 Delivery Fee: ${pathaoData.delivery_fee || 'N/A'}
 Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
+      } else if (defaultCourierProvider === 'steadfast' && data.data && data.data.steadfast_response) {
+        const steadfastData = data.data.steadfast_response;
+        alert(`Steadfast order created successfully:
+Consignment ID: ${steadfastData.consignment_id}
+Tracking Code: ${steadfastData.tracking_code}
+Invoice: ${steadfastData.invoice}
+Status: ${steadfastData.status}`);
       }
 
       // Refresh the orders list
@@ -317,6 +360,7 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
           onAssignDeliveryPerson={handleAssignDeliveryPerson}
           onShowPaymentPage={handleShowPaymentPage}
           internalCourierEnabled={internalCourierEnabled}
+          steadfastEnabled={steadfastEnabled}
         />
       </div>
 
@@ -624,6 +668,20 @@ Merchant Order ID: ${pathaoData.merchant_order_id || 'N/A'}`);
                                   <UserGroupIcon className="-ml-1 mr-2 h-4 w-4" />
                                   Assign Internal Delivery
                                 </button>
+                              )}
+                              {/* Steadfast manual order link */}
+                              {steadfastEnabled && (
+                                <a
+                                  href="https://steadfast.com.bd/user/add-parcel/regular"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="-ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                                  Create Manual Order on Steadfast
+                                </a>
                               )}
                             </div>
                           </div>

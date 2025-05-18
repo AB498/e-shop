@@ -149,7 +149,6 @@ async function seedDatabase() {
       usersSeed,
       filesSeed,
       couriersSeed,
-      storeLocationsSeed,
       deliveryPersonsSeed,
       wishlistItemsSeed,
       promotionsSeed,
@@ -164,7 +163,6 @@ async function seedDatabase() {
       importSeedData('users-seed.js'),
       importSeedData('files-seed.js'),
       importSeedData('couriers-seed.js'),
-      importSeedData('store-locations-seed.js'),
       importSeedData('delivery-persons-seed.js'),
       importSeedData('wishlist-seed.js'),
       importSeedData('promotions-seed.js'),
@@ -182,7 +180,7 @@ async function seedDatabase() {
         'DROP TABLE IF EXISTS product_reviews CASCADE',
         'DROP TABLE IF EXISTS payment_transactions CASCADE',
         'DROP TABLE IF EXISTS wishlist_items CASCADE',
-        'DROP TABLE IF EXISTS store_locations CASCADE',
+        // 'DROP TABLE IF EXISTS store_locations CASCADE', // Removed as store locations are now created from external provider pages
         'DROP TABLE IF EXISTS courier_tracking CASCADE',
         'DROP TABLE IF EXISTS order_items CASCADE',
         'DROP TABLE IF EXISTS orders CASCADE',
@@ -383,25 +381,7 @@ async function seedDatabase() {
       // Execute order-dependent table creation queries in parallel
       await Promise.all(orderDependentTables.map(query => pool.query(query)));
 
-      // Store locations table (independent)
-      await pool.query(`
-        CREATE TABLE store_locations (
-          id SERIAL PRIMARY KEY,
-          name TEXT NOT NULL,
-          contact_name TEXT NOT NULL,
-          contact_number TEXT NOT NULL,
-          secondary_contact TEXT,
-          address TEXT NOT NULL,
-          city_id INTEGER NOT NULL,
-          zone_id INTEGER NOT NULL,
-          area_id INTEGER NOT NULL,
-          pathao_store_id TEXT,
-          is_default BOOLEAN DEFAULT false,
-          is_active BOOLEAN DEFAULT true,
-          created_at TIMESTAMP DEFAULT NOW(),
-          updated_at TIMESTAMP DEFAULT NOW()
-        )
-      `);
+      // Store locations table removed as they are now created from external provider pages
 
       // Wishlist items table (depends on users and products)
       await pool.query(`
@@ -614,7 +594,6 @@ async function seedDatabase() {
         insertData('files', schema.files, filesSeed),
         insertData('couriers', schema.couriers, couriersSeed),
         insertData('delivery_persons', schema.deliveryPersons, deliveryPersonsSeed),
-        insertData('store_locations', schema.storeLocations, storeLocationsSeed),
         insertData('promotions', schema.promotions, promotionsSeed),
         insertData('settings', schema.settings, settingsSeed),
         insertData('contact_messages', schema.contactMessages, contactMessagesSeed)
@@ -868,7 +847,6 @@ async function seedDatabase() {
     console.log(`  Users: ${usersSeed.length}`);
     console.log(`  Files: ${filesSeed.length}`);
     console.log(`  Couriers: ${couriersSeed.length}`);
-    console.log(`  Store Locations: ${storeLocationsSeed.length}`);
     console.log(`  Delivery Persons: ${deliveryPersonsSeed.length}`);
     console.log(`  Wishlist Items: ${wishlistItemsSeed.length}`);
     console.log(`  Promotions: ${promotionsSeed.length}`);
@@ -891,7 +869,6 @@ async function seedDatabase() {
         users: usersSeed.length,
         files: filesSeed.length,
         couriers: couriersSeed.length,
-        storeLocations: storeLocationsSeed.length,
         deliveryPersons: deliveryPersonsSeed.length,
         wishlistItems: wishlistItemsSeed.length,
         promotions: promotionsSeed.length,

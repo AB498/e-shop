@@ -45,7 +45,7 @@ export async function getSSLCommerzSetting() {
     if (sslcommerzSetting.length > 0) {
       return sslcommerzSetting[0].value === 'true';
     } else {
-      // If setting doesn't exist, create it with default value 'true'
+      // If setting doesn't exist, create it with default value 'false'
       console.log('SSLCommerz setting not found, creating it...');
 
       // Get the highest ID currently in the settings table
@@ -61,7 +61,7 @@ export async function getSSLCommerzSetting() {
         .values({
           id: nextId,
           key: 'sslcommerz_enabled',
-          value: 'true',
+          value: 'false', // Disabled by default
           description: 'Enable SSLCommerz payment gateway',
           created_at: new Date(),
           updated_at: new Date()
@@ -72,8 +72,8 @@ export async function getSSLCommerzSetting() {
     }
   } catch (error) {
     console.error('Error fetching SSLCommerz setting:', error);
-    // In case of error, default to true
-    return true;
+    // In case of error, default to false
+    return false;
   }
 }
 

@@ -95,16 +95,96 @@ export async function updateSetting(key, value, description = '') {
 }
 
 /**
+ * Check if automatic courier order creation is enabled
+ * @returns {Promise<boolean>} - True if enabled, false otherwise
+ */
+export async function isAutoCourierOrderEnabled() {
+  try {
+    const value = await getSetting('auto_create_courier_order');
+    return value === 'true';
+  } catch (error) {
+    console.error('Error checking if auto courier order is enabled:', error);
+    return false; // Default to false if error
+  }
+}
+
+/**
  * Check if automatic Pathao courier order creation is enabled
+ * @deprecated Use isAutoCourierOrderEnabled instead
  * @returns {Promise<boolean>} - True if enabled, false otherwise
  */
 export async function isAutoPathaoOrderEnabled() {
   try {
-    const value = await getSetting('auto_create_pathao_order');
-    return value === 'true';
+    return await isAutoCourierOrderEnabled();
   } catch (error) {
     console.error('Error checking if auto Pathao order is enabled:', error);
-    return true; // Default to true if error
+    return false; // Default to false if error
+  }
+}
+
+/**
+ * Check if automatic Steadfast courier order creation is enabled
+ * @deprecated Use isAutoCourierOrderEnabled instead
+ * @returns {Promise<boolean>} - True if enabled, false otherwise
+ */
+export async function isAutoSteadfastOrderEnabled() {
+  try {
+    return await isAutoCourierOrderEnabled();
+  } catch (error) {
+    console.error('Error checking if auto Steadfast order is enabled:', error);
+    return false; // Default to false if error
+  }
+}
+
+/**
+ * Get the default courier provider
+ * @returns {Promise<string>} - Default courier provider ('pathao' or 'steadfast')
+ */
+export async function getDefaultCourierProvider() {
+  try {
+    // Get the default courier ID
+    const defaultCourierId = await getSetting('default_courier_id');
+
+    if (!defaultCourierId) {
+      console.log('Default courier ID not found, defaulting to Pathao');
+      return 'pathao';
+    }
+
+    // Get the courier name from the ID
+    const courierId = parseInt(defaultCourierId, 10);
+
+    // Get the courier from the database
+    const { db } = await import('@/lib/db');
+    const { couriers } = await import('@/db/schema');
+    const { eq } = await import('drizzle-orm');
+
+    const courierData = await db
+      .select({
+        name: couriers.name,
+      })
+      .from(couriers)
+      .where(eq(couriers.id, courierId))
+      .limit(1);
+
+    if (courierData.length > 0) {
+      const courierName = courierData[0].name;
+      console.log(`Found courier name: ${courierName} for ID: ${courierId}`);
+
+      if (courierName.toLowerCase() === 'steadfast') {
+        return 'steadfast';
+      } else if (courierName.toLowerCase() === 'pathao') {
+        return 'pathao';
+      } else {
+        console.log(`Unknown courier name: ${courierName}, defaulting to Pathao`);
+        return 'pathao';
+      }
+    } else {
+      console.log(`No courier found for ID: ${courierId}, defaulting to Pathao`);
+      return 'pathao';
+    }
+  } catch (error) {
+    console.error('Error getting default courier provider:', error);
+    return 'pathao'; // Default to Pathao if error
   }
 }
 

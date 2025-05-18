@@ -4,25 +4,28 @@ import { db } from '@/lib/db';
 import { orders, users, orderItems, products, couriers, courierTracking } from '@/db/schema';
 import { eq, inArray } from 'drizzle-orm';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
-import { isAutoPathaoOrderEnabled } from '@/lib/actions/settings';
+import * as steadfastCourier from '@/lib/services/steadfast-courier';
+import { isAutoCourierOrderEnabled } from '@/lib/actions/settings';
 
 /**
- * Automatically create a Pathao courier order after successful payment
+ * Automatically create a courier order after successful payment
  * @param {number} orderId - Order ID
+ * @param {boolean} forceCreate - Force creation even if automatic creation is disabled
+ * @param {string} courierType - Courier type ('pathao' or 'steadfast')
  * @returns {Promise<object|null>} - Created courier order details
  */
-export async function createAutomaticCourierOrder(orderId, forceCreate = false) {
+export async function createAutomaticCourierOrder(orderId, forceCreate = false, courierType = 'pathao') {
   try {
     console.log(`Creating automatic courier order for order ID: ${orderId}`);
 
-    // Check if automatic Pathao order creation is enabled
+    // Check if automatic courier order creation is enabled
     if (!forceCreate) {
-      const isEnabled = await isAutoPathaoOrderEnabled();
+      const isEnabled = await isAutoCourierOrderEnabled();
       if (!isEnabled) {
-        console.log('Automatic Pathao order creation is disabled. Skipping.');
+        console.log('Automatic courier order creation is disabled. Skipping.');
         return {
           success: false,
-          message: 'Automatic Pathao order creation is disabled',
+          message: 'Automatic courier order creation is disabled',
           skipped: true
         };
       }
@@ -143,27 +146,75 @@ export async function createAutomaticCourierOrder(orderId, forceCreate = false) 
       weight: productMap[item.product_id]?.weight || 0.5,
     }));
 
-    // 6. Get Pathao courier from database or create if not exists
-    let pathao = await db
-      .select({
-        id: couriers.id,
-      })
-      .from(couriers)
-      .where(eq(couriers.name, 'Pathao'))
-      .limit(1);
+    // 6. Get the appropriate courier from database or create if not exists
+    let courierData;
 
-    if (!pathao.length) {
-      // Create Pathao courier if it doesn't exist
-      const newCourier = await db.insert(couriers).values({
-        name: 'Pathao',
-        description: 'Pathao Courier Service',
-        is_active: true,
-      }).returning();
+    if (courierType === 'steadfast') {
+      courierData = await db
+        .select({
+          id: couriers.id,
+        })
+        .from(couriers)
+        .where(eq(couriers.name, 'Steadfast'))
+        .limit(1);
 
-      pathao = [{ id: newCourier[0].id }];
+      if (!courierData.length) {
+        // Create Steadfast courier if it doesn't exist
+        const newCourier = await db.insert(couriers).values({
+          name: 'Steadfast',
+          description: 'Steadfast Courier Limited',
+          courier_type: 'external',
+          is_active: true,
+        }).returning();
+
+        courierData = [{ id: newCourier[0].id }];
+      }
+    } else if (courierType === 'pathao') {
+      // Use Pathao
+      courierData = await db
+        .select({
+          id: couriers.id,
+        })
+        .from(couriers)
+        .where(eq(couriers.name, 'Pathao'))
+        .limit(1);
+
+      if (!courierData.length) {
+        // Create Pathao courier if it doesn't exist
+        const newCourier = await db.insert(couriers).values({
+          name: 'Pathao',
+          description: 'Pathao Courier Service',
+          courier_type: 'external',
+          is_active: true,
+        }).returning();
+
+        courierData = [{ id: newCourier[0].id }];
+      }
+    } else {
+      // Handle unknown courier type - default to Steadfast
+      console.warn(`Unknown courier type: ${courierType}, defaulting to Steadfast`);
+      courierData = await db
+        .select({
+          id: couriers.id,
+        })
+        .from(couriers)
+        .where(eq(couriers.name, 'Steadfast'))
+        .limit(1);
+
+      if (!courierData.length) {
+        // Create Steadfast courier if it doesn't exist
+        const newCourier = await db.insert(couriers).values({
+          name: 'Steadfast',
+          description: 'Steadfast Courier Limited',
+          courier_type: 'external',
+          is_active: true,
+        }).returning();
+
+        courierData = [{ id: newCourier[0].id }];
+      }
     }
 
-    const courierId = pathao[0].id;
+    const courierId = courierData[0].id;
 
     // 7. Get Pathao stores
     const storesResponse = await pathaoCourier.getStores();
@@ -265,50 +316,86 @@ export async function createAutomaticCourierOrder(orderId, forceCreate = false) 
     const isCOD = order.payment_method === 'cod';
     console.log(`Order payment method: ${order.payment_method}, isCOD: ${isCOD}`);
 
-    const pathaoOrderData = {
-      store_id: defaultStore.store_id,
-      merchant_order_id: `order-${order.id}`,
-      recipient_name: `${user.first_name} ${user.last_name}`.trim(),
-      recipient_phone: formattedPhone,
-      recipient_address: deliveryInfo.address,
-      recipient_city: deliveryInfo.city_id,
-      recipient_zone: deliveryInfo.zone_id,
-      recipient_area: deliveryInfo.area_id,
-      delivery_type: 48, // Standard delivery (48 hours)
-      item_type: 2, // Non-food items
-      special_instruction: deliveryInfo.special_instructions || '',
-      item_quantity: enrichedItems.reduce((total, item) => total + item.quantity, 0),
-      item_weight: enrichedItems.reduce((total, item) => total + (item.weight * item.quantity), 0),
-      // For COD orders, set the amount to collect to the order total
-      // For non-COD orders, set it to 0 as payment is already made
-      amount_to_collect: isCOD ? Math.round(parseFloat(order.total) * 100) : 0,
-      item_description: enrichedItems.map(item => item.product_name).join(', ').substring(0, 255)
-    };
+    // 10. Create the courier order based on the selected courier type
+    let courierOrderData;
+    let courierResponse;
+    let consignmentId;
+    let trackingCode;
+    let merchantOrderId;
 
-    // 11. Create order with Pathao API
-    const pathaoResponse = await pathaoCourier.createOrder(pathaoOrderData);
+    if (courierType === 'steadfast') {
+      // Format order data for Steadfast
+      courierOrderData = {
+        invoice: `order-${order.id}`,
+        recipient_name: `${user.first_name} ${user.last_name}`.trim(),
+        recipient_phone: formattedPhone,
+        recipient_address: deliveryInfo.address,
+        cod_amount: isCOD ? parseFloat(order.total) : 0,
+        note: deliveryInfo.special_instructions || '',
+        item_description: enrichedItems.map(item => item.product_name).join(', ').substring(0, 200)
+      };
 
-    if (!pathaoResponse || !pathaoResponse.data || !pathaoResponse.data.consignment_id) {
-      throw new Error('Failed to create Pathao courier order');
+      // Create the Steadfast order
+      courierResponse = await steadfastCourier.createOrder(courierOrderData);
+
+      if (!courierResponse || !courierResponse.consignment || !courierResponse.consignment.consignment_id) {
+        throw new Error('Failed to create Steadfast courier order');
+      }
+
+      consignmentId = courierResponse.consignment.consignment_id;
+      trackingCode = courierResponse.consignment.tracking_code;
+      merchantOrderId = courierOrderData.invoice;
+
+      // Log the full Steadfast response for debugging
+      console.log('Steadfast order created successfully:', JSON.stringify(courierResponse, null, 2));
+    } else {
+      // Format order data for Pathao
+      courierOrderData = {
+        store_id: defaultStore.store_id,
+        merchant_order_id: `order-${order.id}`,
+        recipient_name: `${user.first_name} ${user.last_name}`.trim(),
+        recipient_phone: formattedPhone,
+        recipient_address: deliveryInfo.address,
+        recipient_city: deliveryInfo.city_id,
+        recipient_zone: deliveryInfo.zone_id,
+        recipient_area: deliveryInfo.area_id,
+        delivery_type: 48, // Standard delivery (48 hours)
+        item_type: 2, // Non-food items
+        special_instruction: deliveryInfo.special_instructions || '',
+        item_quantity: enrichedItems.reduce((total, item) => total + item.quantity, 0),
+        item_weight: enrichedItems.reduce((total, item) => total + (item.weight * item.quantity), 0),
+        // For COD orders, set the amount to collect to the order total
+        // For non-COD orders, set it to 0 as payment is already made
+        amount_to_collect: isCOD ? Math.round(parseFloat(order.total) * 100) : 0,
+        item_description: enrichedItems.map(item => item.product_name).join(', ').substring(0, 255)
+      };
+
+      // Create the Pathao order
+      courierResponse = await pathaoCourier.createOrder(courierOrderData);
+
+      if (!courierResponse || !courierResponse.data || !courierResponse.data.consignment_id) {
+        throw new Error('Failed to create Pathao courier order');
+      }
+
+      consignmentId = courierResponse.data.consignment_id;
+      trackingCode = consignmentId; // For Pathao, consignment_id is used as tracking code
+      merchantOrderId = courierOrderData.merchant_order_id;
+
+      // Log the full Pathao response for debugging
+      console.log('Pathao order created successfully:', JSON.stringify(courierResponse, null, 2));
     }
 
-    const consignmentId = pathaoResponse.data.consignment_id;
-
-    // Log the full Pathao response for debugging
-    console.log('Pathao order created successfully:', JSON.stringify(pathaoResponse, null, 2));
-
-    // Extract delivery fee from Pathao response if available
-    const deliveryFee = pathaoResponse.data.delivery_fee || null;
+    // Extract delivery fee from Pathao response if available (only for Pathao)
+    const deliveryFee = courierType === 'pathao' ? (courierResponse.data?.delivery_fee || null) : null;
 
     // 12. Update order with courier information
-    const merchantOrderId = pathaoOrderData.merchant_order_id;
-    console.log(`Using merchant_order_id: ${merchantOrderId} and consignment_id: ${consignmentId}`);
+    console.log(`Using merchant_order_id: ${merchantOrderId} and tracking_code: ${trackingCode}`);
 
     const updatedOrder = await db.update(orders)
       .set({
         courier_id: courierId,
-        courier_order_id: merchantOrderId, // Store the merchant_order_id here
-        courier_tracking_id: consignmentId, // Store the consignment_id here
+        courier_order_id: merchantOrderId,
+        courier_tracking_id: trackingCode,
         courier_status: 'pending',
         status: 'processing', // Update main order status
         shipping_instructions: deliveryFee ? `Delivery Fee: ${deliveryFee}` : null, // Store delivery fee in shipping_instructions field
@@ -322,19 +409,30 @@ export async function createAutomaticCourierOrder(orderId, forceCreate = false) 
     const trackingEntry = await db.insert(courierTracking).values({
       order_id: orderId,
       courier_id: courierId,
-      tracking_id: consignmentId,
+      tracking_id: trackingCode,
       status: 'pending',
       details: 'Order created with courier',
       location: 'Merchant',
       timestamp: timestamp,
     }).returning();
 
-    return {
-      order: updatedOrder[0],
-      tracking: trackingEntry[0],
-      consignment_id: consignmentId,
-      pathao_response: pathaoResponse.data
-    };
+    // Return appropriate response based on courier type
+    if (courierType === 'steadfast') {
+      return {
+        order: updatedOrder[0],
+        tracking: trackingEntry[0],
+        consignment_id: consignmentId,
+        tracking_code: trackingCode,
+        steadfast_response: courierResponse.consignment
+      };
+    } else {
+      return {
+        order: updatedOrder[0],
+        tracking: trackingEntry[0],
+        consignment_id: consignmentId,
+        pathao_response: courierResponse.data
+      };
+    }
   } catch (error) {
     console.error(`Error creating automatic courier order for order ${orderId}:`, error);
     return null;

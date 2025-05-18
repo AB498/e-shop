@@ -1,0 +1,9 @@
+Store locations admin UI has been removed as store locations are now created from external provider pages.
+
+The following files have been removed:
+- src/app/admin/store-locations/page.js
+- src/app/admin/store-locations/PageHeader.js
+- src/app/admin/store-locations/SearchBar.js
+- src/app/admin/store-locations/StoreLocationsTable.js
+- src/app/admin/store-locations/AddLocationModal.js
+- src/app/admin/store-locations/EditLocationModal.js

@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import { couriers, orders, courierTracking, deliveryPersons } from '@/db/schema';
 import { eq, desc, sql, and, isNull } from 'drizzle-orm';
 import * as pathaoCourier from '@/lib/services/pathao-courier';
+import * as steadfastCourier from '@/lib/services/steadfast-courier';
 import { mapCourierStatusToOrderStatus } from '@/lib/utils/status-mapping';
 
 /**
@@ -158,32 +159,55 @@ export async function assignCourierToOrder(orderId, courierId, deliveryInfo) {
 }
 
 /**
- * Create a courier order with Pathao
+ * Create a courier order with Pathao or Steadfast
  * @param {number} orderId - Order ID
- * @param {object} pathaoOrderData - Pathao order data
+ * @param {object} courierOrderData - Courier order data
+ * @param {string} courierType - Courier type ('pathao' or 'steadfast')
  * @returns {Promise<object|null>} - Created courier order
  */
-export async function createCourierOrder(orderId, pathaoOrderData) {
+export async function createCourierOrder(orderId, courierOrderData, courierType = 'pathao') {
   try {
-    // Create order with Pathao API
-    const pathaoResponse = await pathaoCourier.createOrder(pathaoOrderData);
+    let courierResponse;
+    let merchantOrderId;
+    let trackingId;
 
-    if (!pathaoResponse || !pathaoResponse.consignment_id) {
-      throw new Error('Failed to create Pathao courier order');
+    // Create order with the appropriate courier API
+    if (courierType === 'steadfast') {
+      courierResponse = await steadfastCourier.createOrder(courierOrderData);
+
+      if (!courierResponse || !courierResponse.consignment || !courierResponse.consignment.consignment_id) {
+        throw new Error('Failed to create Steadfast courier order');
+      }
+
+      // Log the Steadfast response for debugging
+      console.log('Steadfast response for createCourierOrder:', JSON.stringify(courierResponse, null, 2));
+
+      // Extract tracking information
+      merchantOrderId = courierOrderData.invoice;
+      trackingId = courierResponse.consignment.tracking_code;
+    } else {
+      // Default to Pathao
+      courierResponse = await pathaoCourier.createOrder(courierOrderData);
+
+      if (!courierResponse || !courierResponse.consignment_id) {
+        throw new Error('Failed to create Pathao courier order');
+      }
+
+      // Log the Pathao response for debugging
+      console.log('Pathao response for createCourierOrder:', JSON.stringify(courierResponse, null, 2));
+
+      // Extract tracking information
+      merchantOrderId = courierOrderData.merchant_order_id;
+      trackingId = courierResponse.consignment_id;
     }
 
-    // Log the Pathao response for debugging
-    console.log('Pathao response for createCourierOrder:', JSON.stringify(pathaoResponse, null, 2));
-
-    // Extract merchant_order_id from the request data
-    const merchantOrderId = pathaoOrderData.merchant_order_id;
-    console.log(`Using merchant_order_id: ${merchantOrderId}`);
+    console.log(`Using merchant_order_id: ${merchantOrderId}, tracking_id: ${trackingId}`);
 
     // Update order with courier order information
     const result = await db.update(orders)
       .set({
-        courier_order_id: merchantOrderId, // Store the merchant_order_id here
-        courier_tracking_id: pathaoResponse.consignment_id, // Store the consignment_id here
+        courier_order_id: merchantOrderId,
+        courier_tracking_id: trackingId,
         courier_status: 'pending',
         status: 'processing', // Update main order status
         updated_at: new Date(),
@@ -196,7 +220,7 @@ export async function createCourierOrder(orderId, pathaoOrderData) {
     await db.insert(courierTracking).values({
       order_id: orderId,
       courier_id: result[0].courier_id,
-      tracking_id: pathaoResponse.consignment_id,
+      tracking_id: trackingId,
       status: 'pending',
       details: 'Order created with courier',
       location: 'Merchant',
@@ -223,6 +247,7 @@ export async function updateCourierTracking(orderId) {
         id: orders.id,
         courier_id: orders.courier_id,
         courier_tracking_id: orders.courier_tracking_id,
+        courier_order_id: orders.courier_order_id,
         courier_status: orders.courier_status,
         status: orders.status,
       })
@@ -236,16 +261,59 @@ export async function updateCourierTracking(orderId) {
 
     const order = orderData[0];
 
-    // Get tracking information from Pathao API
-    const trackingInfo = await pathaoCourier.trackOrder(order.courier_tracking_id);
+    // Get courier information
+    const courierInfo = await db
+      .select({
+        id: couriers.id,
+        name: couriers.name,
+      })
+      .from(couriers)
+      .where(eq(couriers.id, order.courier_id))
+      .limit(1);
 
-    if (!trackingInfo || !trackingInfo.data) {
-      throw new Error('Failed to get tracking information from Pathao');
+    if (!courierInfo.length) {
+      throw new Error(`Courier with ID ${order.courier_id} not found`);
     }
 
-    // Map Pathao status to our internal status
-    const courierStatus = await pathaoCourier.mapPathaoStatus(trackingInfo.data.order_status);
-    console.log(`Courier status: ${courierStatus}, Pathao status: ${trackingInfo.data.order_status}`);
+    const courier = courierInfo[0];
+    let trackingInfo;
+    let courierStatus;
+    let statusDetails;
+    let statusLocation;
+    let statusTimestamp;
+
+    // Get tracking information from the appropriate courier API
+    if (courier.name === 'Steadfast') {
+      // Use Steadfast API
+      trackingInfo = await steadfastCourier.trackOrderByTrackingCode(order.courier_tracking_id);
+
+      if (!trackingInfo || !trackingInfo.delivery_status) {
+        throw new Error('Failed to get tracking information from Steadfast');
+      }
+
+      // Map Steadfast status to our internal status
+      courierStatus = await steadfastCourier.mapSteadfastStatus(trackingInfo.delivery_status);
+      console.log(`Courier status: ${courierStatus}, Steadfast status: ${trackingInfo.delivery_status}`);
+
+      statusDetails = trackingInfo.delivery_status;
+      statusLocation = 'Steadfast Courier';
+      statusTimestamp = new Date();
+    } else {
+      // Default to Pathao API
+      trackingInfo = await pathaoCourier.trackOrder(order.courier_tracking_id);
+
+      if (!trackingInfo || !trackingInfo.data) {
+        throw new Error('Failed to get tracking information from Pathao');
+      }
+
+      // Map Pathao status to our internal status
+      courierStatus = await pathaoCourier.mapPathaoStatus(trackingInfo.data.order_status);
+      console.log(`Courier status: ${courierStatus}, Pathao status: ${trackingInfo.data.order_status}`);
+
+      statusDetails = trackingInfo.data.order_status_text || trackingInfo.data.order_status;
+      statusLocation = trackingInfo.data.current_location || 'Unknown';
+      statusTimestamp = trackingInfo.data.updated_at ? new Date(trackingInfo.data.updated_at) : new Date();
+    }
 
     // Only update the order status if the courier status has actually changed
     // First, get the current courier status
@@ -289,7 +357,7 @@ export async function updateCourierTracking(orderId) {
     // Check if a tracking entry with the same status already exists
     const existingEntries = allTrackingEntries.filter(entry =>
       entry.status === courierStatus &&
-      entry.details === (trackingInfo.data.order_status_text || trackingInfo.data.order_status)
+      entry.details === statusDetails
     );
 
     // Check if we should skip creating a new entry
@@ -307,9 +375,9 @@ export async function updateCourierTracking(orderId) {
         courier_id: order.courier_id,
         tracking_id: order.courier_tracking_id,
         status: courierStatus,
-        details: trackingInfo.data.order_status_text || trackingInfo.data.order_status,
-        location: trackingInfo.data.current_location || 'Unknown',
-        timestamp: trackingInfo.data.updated_at ? new Date(trackingInfo.data.updated_at) : new Date(),
+        details: statusDetails,
+        location: statusLocation,
+        timestamp: statusTimestamp,
       }).returning();
     } else {
       // Return the existing entry or the initial "Order created with courier" entry
@@ -506,30 +574,45 @@ export async function updateOrderFromWebhook(webhookData) {
 
     const currentOrderStatus = currentOrderData.length ? currentOrderData[0].status : null;
 
-    // Map courier status to order status using our utility function
-    // Pass the current order status to ensure proper transitions
-    const newOrderStatus = await mapCourierStatusToOrderStatus(webhookData.courierStatus, currentOrderStatus);
+    // Only update order status if this is not just a tracking update
+    // and we have a courier status
+    if (!webhookData.isTrackingUpdate && webhookData.courierStatus) {
+      // Map courier status to order status using our utility function
+      // Pass the current order status to ensure proper transitions
+      const newOrderStatus = await mapCourierStatusToOrderStatus(webhookData.courierStatus, currentOrderStatus);
 
-    console.log(`Webhook: Updating order status from ${currentOrderStatus} to ${newOrderStatus} based on courier status ${webhookData.courierStatus}`);
+      console.log(`Webhook: Updating order status from ${currentOrderStatus} to ${newOrderStatus} based on courier status ${webhookData.courierStatus}`);
 
-    // Update order with latest status
-    await db.update(orders)
-      .set({
-        courier_status: webhookData.courierStatus,
-        status: newOrderStatus,
-        updated_at: new Date(),
-      })
-      .where(eq(orders.id, order.id));
+      // Update order with latest status
+      await db.update(orders)
+        .set({
+          courier_status: webhookData.courierStatus,
+          status: newOrderStatus,
+          updated_at: new Date(),
+        })
+        .where(eq(orders.id, order.id));
+    } else if (webhookData.isTrackingUpdate) {
+      console.log(`Webhook: Processing tracking update without changing order status`);
+    } else {
+      console.log(`Webhook: No courier status provided, skipping order status update`);
+    }
 
     // Always create a new tracking entry for webhook events
     // This ensures that the tracking history is properly updated with each webhook event
+
+    // For tracking updates without status change, use the current status
+    const entryStatus = webhookData.courierStatus || currentOrderStatus || 'pending';
+
+    // Use consignmentId for tracking_id if available, otherwise use merchantOrderId
+    const trackingId = webhookData.consignmentId || webhookData.merchantOrderId;
+
     const trackingEntry = await db.insert(courierTracking).values({
       order_id: order.id,
       courier_id: order.courier_id,
-      tracking_id: webhookData.merchantOrderId,
-      status: webhookData.courierStatus,
+      tracking_id: trackingId,
+      status: entryStatus,
       details: webhookData.details,
-      location: 'Pathao Courier',
+      location: webhookData.location || 'Courier Service',
       timestamp: webhookData.timestamp ? new Date(webhookData.timestamp) : new Date(),
     }).returning();
 
@@ -602,6 +685,39 @@ export async function initializeInternalCourier() {
     return result.length ? result[0] : null;
   } catch (error) {
     console.error('Error initializing internal courier:', error);
+    return null;
+  }
+}
+
+/**
+ * Initialize Steadfast courier in the database
+ * @returns {Promise<object|null>} - Created courier
+ */
+export async function initializeSteadfastCourier() {
+  try {
+    // Check if Steadfast courier already exists
+    const existingCourier = await db
+      .select({ id: couriers.id })
+      .from(couriers)
+      .where(eq(couriers.name, 'Steadfast'))
+      .limit(1);
+
+    if (existingCourier.length) {
+      console.log('Steadfast courier already exists');
+      return existingCourier[0];
+    }
+
+    // Create Steadfast courier
+    const result = await db.insert(couriers).values({
+      name: 'Steadfast',
+      description: 'Steadfast Courier Limited',
+      courier_type: 'external',
+      is_active: true,
+    }).returning();
+
+    return result.length ? result[0] : null;
+  } catch (error) {
+    console.error('Error initializing Steadfast courier:', error);
     return null;
   }
 }

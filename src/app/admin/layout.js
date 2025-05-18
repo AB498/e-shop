@@ -76,11 +76,7 @@ export default async function AdminLayout({ children }) {
       iconName: 'TruckIcon',
       customIconName: 'FiTruck'
     },
-    {
-      name: 'Store Locations',
-      href: '/admin/store-locations',
-      iconName: 'MapPinIcon'
-    },
+    // Store Locations removed as they are now created from external provider pages
     {
       name: 'Customers',
       href: '/admin/customers',

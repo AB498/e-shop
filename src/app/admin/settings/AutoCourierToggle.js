@@ -1,16 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { TruckIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { updateSettingAction } from './actions';
 
-export default function PaymentSettings() {
+export default function AutoCourierToggle() {
   const [settings, setSettings] = useState([]);
-  const [sslcommerzEnabled, setSslcommerzEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [autoCourierEnabled, setAutoCourierEnabled] = useState(false);
 
   // Fetch settings on component mount
   useEffect(() => {
@@ -26,20 +26,10 @@ export default function PaymentSettings() {
         const data = await response.json();
         setSettings(data);
 
-        // Find sslcommerz_enabled setting
-        const sslcommerzSetting = data.find(setting => setting.key === 'sslcommerz_enabled');
-        if (sslcommerzSetting) {
-          setSslcommerzEnabled(sslcommerzSetting.value === 'true');
-        } else {
-          // If the setting doesn't exist, create it with default value 'false'
-          console.log('SSLCommerz setting not found, initializing...');
-          const result = await updateSettingAction('sslcommerz_enabled', 'false');
-          if (result.success) {
-            console.log('Successfully initialized SSLCommerz setting');
-            setSslcommerzEnabled(false);
-          } else {
-            console.error('Failed to initialize SSLCommerz setting:', result.error);
-          }
+        // Find auto_create_courier_order setting
+        const autoCreateSetting = data.find(setting => setting.key === 'auto_create_courier_order');
+        if (autoCreateSetting) {
+          setAutoCourierEnabled(autoCreateSetting.value === 'true');
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
@@ -56,25 +46,26 @@ export default function PaymentSettings() {
   const handleToggleChange = async () => {
     try {
       setSaving(true);
-      const newValue = !sslcommerzEnabled;
+      setError(null);
+      const newValue = !autoCourierEnabled;
 
       // Call the server action directly
-      const result = await updateSettingAction('sslcommerz_enabled', newValue.toString());
+      const result = await updateSettingAction('auto_create_courier_order', newValue.toString());
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to update setting');
       }
 
-      setSslcommerzEnabled(newValue);
-      setSuccess('Payment settings updated successfully');
+      setAutoCourierEnabled(newValue);
+      setSuccess('Auto courier setting updated successfully');
 
       // Clear success message after 3 seconds
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
     } catch (error) {
-      console.error('Error updating setting:', error);
-      setError('Failed to update setting. Please try again.');
+      console.error('Error updating auto courier setting:', error);
+      setError('Failed to update auto courier setting. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -83,9 +74,12 @@ export default function PaymentSettings() {
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="px-3 py-4 md:px-4 md:py-5 border-b border-gray-200 sm:px-6">
-        <h3 className="text-base md:text-lg font-medium leading-6 text-gray-900">Payment Settings</h3>
+        <h3 className="text-base md:text-lg font-medium leading-6 text-gray-900 flex items-center">
+          <TruckIcon className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2 text-gray-500" />
+          Automatic Courier Orders
+        </h3>
         <p className="mt-1 text-xs md:text-sm text-gray-500">
-          Configure payment gateway settings
+          Enable or disable automatic courier order creation
         </p>
       </div>
 
@@ -110,9 +104,9 @@ export default function PaymentSettings() {
 
             <div className="flex flex-row items-center justify-between gap-3">
               <div>
-                <h4 className="text-sm md:text-base font-medium text-gray-900">SSLCommerz Payment Gateway</h4>
+                <h4 className="text-sm md:text-base font-medium text-gray-900">Enable Automatic Courier Orders</h4>
                 <p className="text-xs md:text-sm text-gray-500">
-                  Enable or disable SSLCommerz payment gateway for online payments
+                  When enabled, courier orders will be automatically created for new orders using the default courier provider
                 </p>
               </div>
               <div className="ml-4 flex-shrink-0">
@@ -121,14 +115,14 @@ export default function PaymentSettings() {
                   onClick={handleToggleChange}
                   disabled={saving}
                   className={`${
-                    sslcommerzEnabled ? 'bg-emerald-600' : 'bg-gray-200'
+                    autoCourierEnabled ? 'bg-emerald-600' : 'bg-gray-200'
                   } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2`}
                 >
-                  <span className="sr-only">Toggle SSLCommerz</span>
+                  <span className="sr-only">Toggle Auto Courier</span>
                   <span
                     aria-hidden="true"
                     className={`${
-                      sslcommerzEnabled ? 'translate-x-5' : 'translate-x-0'
+                      autoCourierEnabled ? 'translate-x-5' : 'translate-x-0'
                     } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
                   />
                 </button>
@@ -137,9 +131,9 @@ export default function PaymentSettings() {
 
             <div className="pt-2 text-xs text-gray-500">
               <p>
-                {sslcommerzEnabled
-                  ? 'SSLCommerz is currently enabled. Customers can make online payments.'
-                  : 'SSLCommerz is currently disabled. Only Cash on Delivery will be available.'}
+                {autoCourierEnabled
+                  ? 'Automatic courier orders are enabled. Orders will be created automatically using the default courier provider.'
+                  : 'Automatic courier orders are disabled. You will need to manually create courier orders.'}
               </p>
             </div>
           </div>
