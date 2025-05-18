@@ -1,7 +1,6 @@
-export const metadata = {
-  title: 'Delivery Portal - E-Shop',
-  description: 'Delivery portal for E-Shop internal delivery system',
-};
+import { metadata } from './metadata';
+
+export { metadata };
 
 export default function DeliveryLayout({ children }) {
   return (
