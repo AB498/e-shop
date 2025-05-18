@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-export default function TrackingInfo({ tracking, trackingError, isRefreshing, refreshTracking }) {
+export default function TrackingInfo({ tracking, trackingError, isRefreshing, refreshTracking, payment_method, hasTrackingId }) {
   return (
     <div className="mt-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 md:mb-3">
@@ -30,6 +30,27 @@ export default function TrackingInfo({ tracking, trackingError, isRefreshing, re
         <div className="bg-red-50 p-3 rounded-md text-red-800 mb-3 text-xs">
           <p>{trackingError}</p>
         </div>
+      ) : payment_method === 'cod' && !hasTrackingId ? (
+        <div className="bg-gray-50 p-3 rounded-md text-center">
+          <div className="flex justify-center mb-3">
+            <div className="animate-pulse bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+              Courier being assigned
+            </div>
+          </div>
+          <p className="text-[#7E7E7E] text-xs mb-2">
+            Your Cash on Delivery order is being processed. A courier will be assigned soon.
+          </p>
+          <p className="text-[#7E7E7E] text-xs">
+            Tracking information will be available once a courier is assigned to your order.
+          </p>
+          <button
+            onClick={refreshTracking}
+            className="mt-3 bg-[#006B51] text-white text-xs px-3 py-1.5 rounded-md hover:bg-[#005541] transition-colors"
+            disabled={isRefreshing}
+          >
+            {isRefreshing ? 'Checking status...' : 'Check status'}
+          </button>
+        </div>
       ) : !tracking ? (
         <div className="bg-gray-50 p-3 rounded-md text-center">
           <p className="text-[#7E7E7E] text-xs mb-2">Loading tracking information...</p>
@@ -37,7 +58,7 @@ export default function TrackingInfo({ tracking, trackingError, isRefreshing, re
             <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-[#006B51]"></div>
           </div>
         </div>
-      ) : !tracking.has_tracking ? (
+      ) : !tracking?.has_tracking ? (
         <div className="bg-gray-50 p-3 rounded-md text-center">
           <p className="text-[#7E7E7E] text-xs mb-2">This order doesn't have tracking information yet.</p>
           <p className="text-[#7E7E7E] text-xs">Please check back later or try refreshing.</p>

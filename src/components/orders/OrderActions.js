@@ -50,12 +50,12 @@ export default function OrderActions({ order }) {
         </Link>
 
         {order.status !== 'Cancelled' && (
-          <button
+          <Link
+            href="/contact"
             className="bg-white text-[#006B51] border border-[#006B51] text-xs font-medium py-1.5 px-3 rounded-md hover:bg-[#f9f9f9] transition-colors"
-            onClick={() => alert('Contact support feature coming soon!')}
           >
             Contact Support
-          </button>
+          </Link>
         )}
       </div>
     </div>

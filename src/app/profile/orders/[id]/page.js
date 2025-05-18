@@ -3,10 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
-
-import Navigation from '@/components/layout/Navigation';
-import Footer from '@/components/layout/Footer';
-import Copyright from '@/components/layout/Copyright';
 import Link from 'next/link';
 import { getOrderDetails, getOrderTracking } from '@/lib/actions/orders';
 
@@ -47,8 +43,8 @@ export default function OrderDetailsPage() {
           if (orderData) {
             setOrder(orderData);
 
-            // Also fetch tracking information if available
-            if (orderData.courier_tracking_id) {
+            // Fetch tracking information if available or if it's a COD order
+            if (orderData.courier_tracking_id || orderData.payment_method === 'cod') {
               try {
                 const trackingData = await getOrderTracking(orderId, session.user.id);
                 if (trackingData) {
@@ -101,7 +97,16 @@ export default function OrderDetailsPage() {
       // Get the tracking data directly from the response
       const trackingData = await response.json();
       if (trackingData) {
-        setTracking(trackingData);
+        // If the response includes payment_method, it's a COD order without tracking
+        if (trackingData.payment_method === 'cod' && !trackingData.has_tracking) {
+          // Just update the tracking state with the response
+          setTracking(trackingData);
+        } else if (trackingData.has_tracking) {
+          // Normal tracking data with tracking information
+          setTracking(trackingData);
+        } else {
+          setTrackingError('Tracking information not found');
+        }
       } else {
         setTrackingError('Tracking information not found');
       }
@@ -179,12 +184,14 @@ export default function OrderDetailsPage() {
               <OrderActions order={order} />
 
               {/* Tracking Information */}
-              {order.courier_tracking_id && (
+              {(order.courier_tracking_id || order.payment_method === 'cod') && (
                 <TrackingInfo
                   tracking={tracking}
                   trackingError={trackingError}
                   isRefreshing={isRefreshing}
                   refreshTracking={refreshTracking}
+                  payment_method={order.payment_method}
+                  hasTrackingId={!!order.courier_tracking_id}
                 />
               )}
             </div>

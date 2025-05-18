@@ -283,6 +283,7 @@ export async function getOrderTracking(orderId, userId) {
         courier_id: orders.courier_id,
         courier_tracking_id: orders.courier_tracking_id,
         courier_status: orders.courier_status,
+        payment_method: orders.payment_method,
       })
       .from(orders)
       .where(query)
@@ -296,6 +297,16 @@ export async function getOrderTracking(orderId, userId) {
 
     // If no courier or tracking ID, return empty tracking
     if (!order.courier_id || !order.courier_tracking_id) {
+      // Special handling for COD orders without tracking
+      if (order.payment_method === 'cod') {
+        return {
+          order_id: order.id,
+          has_tracking: false,
+          payment_method: 'cod',
+          tracking: []
+        };
+      }
+
       return {
         order_id: order.id,
         has_tracking: false,
@@ -331,6 +342,7 @@ export async function getOrderTracking(orderId, userId) {
       has_tracking: true,
       courier: courierData.length ? courierData[0] : null,
       tracking_id: order.courier_tracking_id,
+      payment_method: order.payment_method,
       current_status: order.courier_status
         ? order.courier_status.charAt(0).toUpperCase() + order.courier_status.slice(1)
         : 'Pending',

@@ -17,7 +17,7 @@ export async function POST(request) {
 
     // Get request body
     const body = await request.json();
-    
+
     // Validate required fields
     if (!body.orderId) {
       return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
@@ -25,7 +25,7 @@ export async function POST(request) {
 
     // Convert orderId to number if it's a string
     const orderId = typeof body.orderId === 'string' ? parseInt(body.orderId, 10) : body.orderId;
-    
+
     if (isNaN(orderId)) {
       return NextResponse.json({ error: 'Invalid Order ID' }, { status: 400 });
     }
@@ -38,16 +38,32 @@ export async function POST(request) {
         courier_tracking_id: orders.courier_tracking_id,
         courier_status: orders.courier_status,
         status: orders.status,
+        payment_method: orders.payment_method,
       })
       .from(orders)
       .where(eq(orders.id, orderId))
       .limit(1);
 
-    if (!orderData.length || !orderData[0].courier_tracking_id) {
-      return NextResponse.json({ error: 'Order not found or has no tracking ID' }, { status: 404 });
+    if (!orderData.length) {
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
     const order = orderData[0];
+
+    // Check if this is a COD order without tracking ID
+    if (order.payment_method === 'cod' && !order.courier_tracking_id) {
+      return NextResponse.json({
+        order_id: order.id,
+        has_tracking: false,
+        payment_method: 'cod',
+        tracking: []
+      });
+    }
+
+    // For non-COD orders, require a tracking ID
+    if (!order.courier_tracking_id) {
+      return NextResponse.json({ error: 'Order has no tracking ID' }, { status: 404 });
+    }
 
     // Get tracking information from Pathao API
     const trackingInfo = await pathaoCourier.trackOrder(order.courier_tracking_id);
@@ -58,7 +74,7 @@ export async function POST(request) {
 
     // Map Pathao status to our internal status
     const courierStatus = await pathaoCourier.mapPathaoStatus(trackingInfo.data.order_status);
-    
+
     // Get courier information
     const courierData = await db
       .select({
@@ -96,7 +112,8 @@ export async function POST(request) {
       courier: courierData.length ? courierData[0] : null,
       tracking: trackingEntries,
       pathao_status: trackingInfo.data.order_status,
-      pathao_details: trackingInfo.data.order_status_text || trackingInfo.data.order_status
+      pathao_details: trackingInfo.data.order_status_text || trackingInfo.data.order_status,
+      payment_method: order.payment_method
     });
   } catch (error) {
     console.error('Error refreshing tracking information:', error);

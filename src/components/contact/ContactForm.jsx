@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import ResponsiveContainer from '@/components/ui/ResponsiveContainer';
 import ResponsiveText from '@/components/ui/ResponsiveText';
 
-const ContactForm = () => {
+const ContactForm = ({ orderId }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
