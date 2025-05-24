@@ -110,27 +110,27 @@ export default function ProductCarousel({
   breakpoints = {
     320: {
       slidesPerView: 2,
-      spaceBetween: 4,
+      spaceBetween: 6,
     },
     480: {
       slidesPerView: 2.5,
-      spaceBetween: 6,
+      spaceBetween: 8,
     },
     640: {
       slidesPerView: 3,
-      spaceBetween: 8,
+      spaceBetween: 10,
     },
     768: {
       slidesPerView: 4,
-      spaceBetween: 8,
+      spaceBetween: 12,
     },
     1024: {
       slidesPerView: 6,
-      spaceBetween: 8,
+      spaceBetween: 12,
     },
     1280: {
-      slidesPerView: 7,
-      spaceBetween: 8,
+      slidesPerView: 8,
+      spaceBetween: 12,
     },
   }
 }) {
@@ -162,7 +162,7 @@ export default function ProductCarousel({
   // Calculate max items per row based on screen size and breakpoints
   const getMaxItemsPerRow = useCallback(() => {
     // Default to largest breakpoint
-    let maxItems = breakpoints[1280]?.slidesPerView || 7; // Default for 1280+ screens
+    let maxItems = breakpoints[1280]?.slidesPerView || 8; // Default for 1280+ screens
 
     // Check window width and determine max items based on breakpoints
     if (typeof window !== 'undefined') {
@@ -190,7 +190,7 @@ export default function ProductCarousel({
   }, [breakpoints]);
 
   // State to track max items per row
-  const [maxItemsPerRow, setMaxItemsPerRow] = useState(7);
+  const [maxItemsPerRow, setMaxItemsPerRow] = useState(8);
 
   // Update max items on resize
   useEffect(() => {
@@ -407,7 +407,7 @@ export default function ProductCarousel({
                 <div className="swiper-pagination-row1 hidden"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
-                  spaceBetween={18}
+                  spaceBetween={24}
                   slidesPerView="auto"
                   navigation={{
                     prevEl: prevRefRow1.current,
@@ -442,8 +442,8 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow1}
                 >
                   {firstRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${enableSwipingRow1 ? '!w-[calc(40vw-16px)] sm:!w-[calc(25vw-16px)] md:!w-[calc(20vw-16px)] lg:!w-[calc(12.666vw-16px)] xl:!w-[calc(10.285vw-16px)] 2xl:!w-[calc(8.5vw-16px)]' : 'w-full sm:max-w-[220px] mx-auto'}`}>
-                      <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[280px]">
+                    <SwiperSlide key={product.id} className={`${enableSwipingRow1 ? '!w-[calc(45vw-20px)] sm:!w-[calc(30vw-20px)] md:!w-[calc(22vw-20px)] lg:!w-[calc(15vw-20px)] xl:!w-[calc(11.5vw-20px)] 2xl:!w-[calc(10vw-20px)]' : 'w-full sm:max-w-[280px] mx-auto'}`}>
+                      <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[320px]">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
                           <div
@@ -455,9 +455,9 @@ export default function ProductCarousel({
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
-                                width={140}
-                                height={140}
-                                className="w-full h-full object-cover rounded-[4px] sm:rounded-[6px] transition-transform duration-300 hover:scale-105"
+                                width={180}
+                                height={180}
+                                className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
                               />
 
                               {/* Quick view overlay */}
@@ -482,9 +482,9 @@ export default function ProductCarousel({
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
-                                width={220}
-                                height={220}
-                                className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
+                                width={280}
+                                height={280}
+                                className="w-full h-full object-cover rounded-[8px] sm:rounded-[10px] transition-transform duration-300 hover:scale-105"
                               />
 
                               {/* Discount tag */}
@@ -505,19 +505,19 @@ export default function ProductCarousel({
                         </div>
 
                         {/* Product Info */}
-                        <div className="p-1 sm:p-1.5 text-center">
-                          <p className="text-[#A9A9A9] text-[8px] sm:text-[9px] font-semibold uppercase">{product.category}</p>
+                        <div className="p-2 sm:p-3 text-center">
+                          <p className="text-[#A9A9A9] text-[10px] sm:text-[11px] font-semibold uppercase">{product.category}</p>
                           <Link href={`/products/${product.id}`}>
-                            <h3 className="text-[#3F3F3F] text-[10px] sm:text-xs font-semibold mt-0.5 line-clamp-1 hover:text-[#006B51] transition-colors">
+                            <h3 className="text-[#3F3F3F] text-[12px] sm:text-sm font-semibold mt-1 line-clamp-1 hover:text-[#006B51] transition-colors">
                               {product.name}
                             </h3>
                           </Link>
 
                           {/* Price */}
-                          <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
-                            <span className="text-[#006B51] text-[9px] sm:text-[10px] font-semibold">৳{product.discountPrice}</span>
+                          <div className="mt-1 flex items-center justify-center gap-1 sm:gap-1.5">
+                            <span className="text-[#006B51] text-[11px] sm:text-[12px] font-semibold">৳{product.discountPrice}</span>
                             {product.discountPercentage > 0 && (
-                              <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
+                              <span className="text-[#E12625] text-[11px] sm:text-[12px] font-normal line-through">৳{product.price}</span>
                             )}
                           </div>
                         </div>
@@ -566,7 +566,7 @@ export default function ProductCarousel({
                 <div className="swiper-pagination-row2 hidden"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
-                  spaceBetween={18}
+                  spaceBetween={24}
                   slidesPerView="auto"
                   navigation={{
                     prevEl: prevRefRow2.current,
@@ -604,8 +604,8 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow2}
                 >
                   {secondRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${enableSwipingRow2 ? '!w-[calc(40vw-16px)] sm:!w-[calc(25vw-16px)] md:!w-[calc(20vw-16px)] lg:!w-[calc(12.666vw-16px)] xl:!w-[calc(10.285vw-16px)] 2xl:!w-[calc(8.5vw-16px)]' : 'w-full sm:max-w-[220px] mx-auto'}`}>
-                      <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[280px]">
+                    <SwiperSlide key={product.id} className={`${enableSwipingRow2 ? '!w-[calc(45vw-20px)] sm:!w-[calc(30vw-20px)] md:!w-[calc(22vw-20px)] lg:!w-[calc(15vw-20px)] xl:!w-[calc(11.5vw-20px)] 2xl:!w-[calc(10vw-20px)]' : 'w-full sm:max-w-[280px] mx-auto'}`}>
+                      <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[320px]">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
                           <div
@@ -617,9 +617,9 @@ export default function ProductCarousel({
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
-                                width={140}
-                                height={140}
-                                className="w-full h-full object-cover rounded-[4px] sm:rounded-[6px] transition-transform duration-300 hover:scale-105"
+                                width={180}
+                                height={180}
+                                className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
                               />
 
                               {/* Quick view overlay */}
@@ -644,9 +644,9 @@ export default function ProductCarousel({
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
-                                width={220}
-                                height={220}
-                                className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
+                                width={280}
+                                height={280}
+                                className="w-full h-full object-cover rounded-[8px] sm:rounded-[10px] transition-transform duration-300 hover:scale-105"
                               />
 
                               {/* Discount tag */}
@@ -667,19 +667,19 @@ export default function ProductCarousel({
                         </div>
 
                         {/* Product Info */}
-                        <div className="p-1 sm:p-1.5 text-center">
-                          <p className="text-[#A9A9A9] text-[8px] sm:text-[9px] font-semibold uppercase">{product.category}</p>
+                        <div className="p-2 sm:p-3 text-center">
+                          <p className="text-[#A9A9A9] text-[10px] sm:text-[11px] font-semibold uppercase">{product.category}</p>
                           <Link href={`/products/${product.id}`}>
-                            <h3 className="text-[#3F3F3F] text-[10px] sm:text-xs font-semibold mt-0.5 line-clamp-1 hover:text-[#006B51] transition-colors">
+                            <h3 className="text-[#3F3F3F] text-[12px] sm:text-sm font-semibold mt-1 line-clamp-1 hover:text-[#006B51] transition-colors">
                               {product.name}
                             </h3>
                           </Link>
 
                           {/* Price */}
-                          <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
-                            <span className="text-[#006B51] text-[9px] sm:text-[10px] font-semibold">৳{product.discountPrice}</span>
+                          <div className="mt-1 flex items-center justify-center gap-1 sm:gap-1.5">
+                            <span className="text-[#006B51] text-[11px] sm:text-[12px] font-semibold">৳{product.discountPrice}</span>
                             {product.discountPercentage > 0 && (
-                              <span className="text-[#E12625] text-[9px] sm:text-[10px] font-normal line-through">৳{product.price}</span>
+                              <span className="text-[#E12625] text-[11px] sm:text-[12px] font-normal line-through">৳{product.price}</span>
                             )}
                           </div>
                         </div>
