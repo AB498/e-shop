@@ -13,6 +13,7 @@ import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
 import Footer from "@/components/layout/Footer";
 import Copyright from "@/components/layout/Copyright";
 import AdminRedirectNotification from "@/components/auth/AdminRedirectNotification";
+import WhatsAppFAB from "@/components/ui/WhatsAppFAB";
 
 export const dynamic = 'force-dynamic';
 
@@ -109,6 +110,7 @@ export default function RootLayout({ children }) {
                   </div>
                 </div>
                 <Toaster position="top-center" />
+                <WhatsAppFAB />
               </WishlistProvider>
             </CartProvider>
           </SessionProvider>

@@ -549,7 +549,6 @@ export default function ProductCarousel({
                                 e.preventDefault();
                                 e.stopPropagation();
                                 addToCart(product, 1);
-                                toast.success('Added to cart');
                               }}
                               className="w-full bg-[#E12625] text-white text-[11px] sm:text-[14px] font-semibold py-1.5 sm:py-2 px-3 sm:px-4 hover:bg-[#C41E3A] transition-all duration-300
                                          sm:absolute sm:bottom-0 sm:left-0 sm:right-0 sm:opacity-0 sm:group-hover:opacity-100 sm:transform sm:translate-y-full sm:group-hover:translate-y-0 sm:pointer-events-none sm:group-hover:pointer-events-auto sm:w-auto"
