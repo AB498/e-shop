@@ -340,25 +340,27 @@ export default function ProductCarousel({
   }
 
   return (
-    <section className={`py-2 sm:py-3 md:py-4 relative ${className}`}>
+    <section className={`py-4 sm:py-6 md:py-8 lg:py-10 relative ${className}`}>
       {/* Apply custom styles */}
       <style dangerouslySetInnerHTML={{ __html: customStyles }} />
       {/* Section title */}
       {(title || icon) && (
-        <div className="container mx-auto px-2 sm:px-3">
-          <div className="flex items-center mb-2 sm:mb-3 relative">
-            <div className="flex items-center gap-1 sm:gap-2">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center mb-4 sm:mb-6 md:mb-8 relative">
+            <div className="flex items-center gap-3 sm:gap-4">
               {icon && (
-                <ImageWithFallback
-                  src={icon}
-                  fallbackSrc="/images/placeholder-icon.svg"
-                  width={24}
-                  height={24}
-                  className="h-5 w-5 sm:h-6 sm:w-6 aspect-square object-contain"
-                  alt={title || "Category icon"}
-                />
+                <div className="flex-shrink-0">
+                  <ImageWithFallback
+                    src={icon}
+                    fallbackSrc="/images/placeholder-icon.svg"
+                    width={32}
+                    height={32}
+                    className="h-7 w-7 sm:h-9 sm:w-9 md:h-10 md:w-10 aspect-square object-contain"
+                    alt={title || "Category icon"}
+                  />
+                </div>
               )}
-              {title && <h2 className="text-sm sm:text-base md:text-lg font-semibold">{title}</h2>}
+              {title && <div className="text-lg sm:!text-xl md:!text-2xl font-bold text-[#3F3F3F] leading-tight">{title}</div>}
             </div>
           </div>
         </div>
@@ -409,7 +411,7 @@ export default function ProductCarousel({
                 <div className="swiper-pagination-row1 hidden"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
-                  spaceBetween={20}
+                  spaceBetween={16}
                   slidesPerView="auto"
                   navigation={{
                     prevEl: prevRefRow1.current,
@@ -444,7 +446,7 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow1}
                 >
                   {firstRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${enableSwipingRow1 ? '!w-[calc(50vw-12px)] sm:!w-[calc(35vw-16px)] md:!w-[calc(26vw-20px)] lg:!w-[calc(18vw-24px)] xl:!w-[calc(14vw-24px)]' : 'w-full sm:max-w-[240px] mx-auto'}`}>
+                    <SwiperSlide key={product.id} className={`${enableSwipingRow1 ? '!w-[calc(45vw-10px)] sm:!w-[calc(35vw-16px)] md:!w-[calc(26vw-20px)] lg:!w-[calc(18vw-24px)] xl:!w-[calc(14vw-24px)]' : 'w-full sm:max-w-[240px] mx-auto'}`}>
                       <div className="bg-white rounded-lg shadow-sm relative h-full flex flex-col group overflow-visible">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
@@ -507,11 +509,11 @@ export default function ProductCarousel({
                         </div>
 
                         {/* Product Info */}
-                        <div className="p-2 sm:p-2.5 flex-1 flex flex-col justify-between">
+                        <div className="p-1.5 sm:p-2.5 flex-1 flex flex-col justify-between">
                           <div>
                             {/* Categories */}
                             <div className="text-left mb-1.5">
-                              <p className="text-[#A9A9A9] text-[11px] sm:text-[12px] font-normal">
+                              <p className="text-[#A9A9A9] text-[10px] sm:text-[12px] font-normal">
                                 {[
                                   product.category,
                                   product.subcategory,
@@ -522,7 +524,7 @@ export default function ProductCarousel({
 
                             {/* Product Name */}
                             <Link href={`/products/${product.id}`}>
-                              <h3 className="text-[#3F3F3F] text-[13px] sm:text-[15px] font-semibold mb-2 line-clamp-2 hover:text-[#006B51] transition-colors text-left">
+                              <h3 className="text-[#3F3F3F] text-[12px] sm:text-[15px] font-semibold mb-2 line-clamp-1 hover:text-[#006B51] transition-colors text-left">
                                 {product.name}
                               </h3>
                             </Link>
@@ -533,11 +535,11 @@ export default function ProductCarousel({
                             <div className="text-left mb-2.5">
                               {product.discountPercentage > 0 ? (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[#E12625] text-[15px] sm:text-[17px] font-semibold">${product.discountPrice}</span>
-                                  <span className="text-[#A9A9A9] text-[13px] sm:text-[15px] font-normal line-through">${product.price}</span>
+                                  <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">${product.discountPrice}</span>
+                                  <span className="text-[#A9A9A9] text-[12px] sm:text-[15px] font-normal line-through">${product.price}</span>
                                 </div>
                               ) : (
-                                <span className="text-[#E12625] text-[15px] sm:text-[17px] font-semibold">${product.price || product.discountPrice}</span>
+                                <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">${product.price || product.discountPrice}</span>
                               )}
                             </div>
 
@@ -549,7 +551,7 @@ export default function ProductCarousel({
                                 addToCart(product, 1);
                                 toast.success('Added to cart');
                               }}
-                              className="w-full bg-[#E12625] text-white text-[12px] sm:text-[14px] font-semibold py-2 px-4 hover:bg-[#C41E3A] transition-all duration-300
+                              className="w-full bg-[#E12625] text-white text-[11px] sm:text-[14px] font-semibold py-1.5 sm:py-2 px-3 sm:px-4 hover:bg-[#C41E3A] transition-all duration-300
                                          sm:absolute sm:bottom-0 sm:left-0 sm:right-0 sm:opacity-0 sm:group-hover:opacity-100 sm:transform sm:translate-y-full sm:group-hover:translate-y-0 sm:pointer-events-none sm:group-hover:pointer-events-auto sm:w-auto"
                             >
                               Add To Cart
@@ -601,7 +603,7 @@ export default function ProductCarousel({
                 <div className="swiper-pagination-row2 hidden"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
-                  spaceBetween={20}
+                  spaceBetween={16}
                   slidesPerView="auto"
                   navigation={{
                     prevEl: prevRefRow2.current,
@@ -639,7 +641,7 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow2}
                 >
                   {secondRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${enableSwipingRow2 ? '!w-[calc(50vw-12px)] sm:!w-[calc(35vw-16px)] md:!w-[calc(26vw-20px)] lg:!w-[calc(18vw-24px)] xl:!w-[calc(14vw-24px)]' : 'w-full sm:max-w-[240px] mx-auto'}`}>
+                    <SwiperSlide key={product.id} className={`${enableSwipingRow2 ? '!w-[calc(45vw-10px)] sm:!w-[calc(35vw-16px)] md:!w-[calc(26vw-20px)] lg:!w-[calc(18vw-24px)] xl:!w-[calc(14vw-24px)]' : 'w-full sm:max-w-[240px] mx-auto'}`}>
                       <div className="bg-white rounded-lg shadow-sm relative h-full flex flex-col group overflow-visible">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
@@ -702,11 +704,11 @@ export default function ProductCarousel({
                         </div>
 
                         {/* Product Info */}
-                        <div className="p-2 sm:p-2.5 flex-1 flex flex-col justify-between">
+                        <div className="p-1.5 sm:p-2.5 flex-1 flex flex-col justify-between">
                           <div>
                             {/* Categories */}
                             <div className="text-left mb-1.5">
-                              <p className="text-[#A9A9A9] text-[11px] sm:text-[12px] font-normal">
+                              <p className="text-[#A9A9A9] text-[10px] sm:text-[12px] font-normal">
                                 {[
                                   product.category,
                                   product.subcategory,
@@ -717,7 +719,7 @@ export default function ProductCarousel({
 
                             {/* Product Name */}
                             <Link href={`/products/${product.id}`}>
-                              <h3 className="text-[#3F3F3F] text-[13px] sm:text-[15px] font-semibold mb-2 line-clamp-2 hover:text-[#006B51] transition-colors text-left">
+                              <h3 className="text-[#3F3F3F] text-[12px] sm:text-[15px] font-semibold mb-2 line-clamp-1 hover:text-[#006B51] transition-colors text-left">
                                 {product.name}
                               </h3>
                             </Link>
@@ -728,11 +730,11 @@ export default function ProductCarousel({
                             <div className="text-left mb-2.5">
                               {product.discountPercentage > 0 ? (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[#E12625] text-[15px] sm:text-[17px] font-semibold">${product.discountPrice}</span>
-                                  <span className="text-[#A9A9A9] text-[13px] sm:text-[15px] font-normal line-through">${product.price}</span>
+                                  <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">${product.discountPrice}</span>
+                                  <span className="text-[#A9A9A9] text-[12px] sm:text-[15px] font-normal line-through">${product.price}</span>
                                 </div>
                               ) : (
-                                <span className="text-[#E12625] text-[15px] sm:text-[17px] font-semibold">${product.price || product.discountPrice}</span>
+                                <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">${product.price || product.discountPrice}</span>
                               )}
                             </div>
 
@@ -744,7 +746,7 @@ export default function ProductCarousel({
                                 addToCart(product, 1);
                                 toast.success('Added to cart');
                               }}
-                              className="w-full bg-[#E12625] text-white text-[12px] sm:text-[14px] font-semibold py-2 px-4 hover:bg-[#C41E3A] transition-all duration-300
+                              className="w-full bg-[#E12625] text-white text-[11px] sm:text-[14px] font-semibold py-1.5 sm:py-2 px-3 sm:px-4 hover:bg-[#C41E3A] transition-all duration-300
                                          sm:absolute sm:bottom-0 sm:left-0 sm:right-0 sm:opacity-0 sm:group-hover:opacity-100 sm:transform sm:translate-y-full sm:group-hover:translate-y-0 sm:pointer-events-none sm:group-hover:pointer-events-auto sm:w-auto"
                             >
                               Add To Cart
