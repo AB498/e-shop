@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import StarRating from '@/components/ui/StarRating';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useProductQuickView } from '@/context/ProductQuickViewContext';
@@ -253,8 +252,8 @@ const ProductListSection = ({
 
             {/* Discount Badge */}
             {discountPercentage > 0 && (
-              <div className="absolute top-1 left-1">
-                <div className="bg-[#006B51] text-white text-[8px] xs:text-xs font-medium py-0.5 px-1 rounded-sm">
+              <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+                <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
                   -{discountPercentage}%
                 </div>
               </div>
@@ -262,7 +261,7 @@ const ProductListSection = ({
 
             {/* Wishlist Button */}
             {showWishlist && (
-              <div className="absolute top-1 right-1 z-10">
+              <div className="absolute top-0.5 sm:top-1 right-0.5 sm:right-1 z-10">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -292,45 +291,37 @@ const ProductListSection = ({
         </Link>
 
         {/* Product Details */}
-        <div className="p-1.5 sm:p-2 grow shadow-md rounded-md -mt-2 sm:-mt-3 mb-2 mx-1.5 sm:mx-2 bg-white relative">
+        <div className="p-2.5 sm:p-3 grow shadow-md rounded-md -mt-2 sm:-mt-3 mb-2 mx-1.5 sm:mx-2 bg-white relative">
           <Link href={`/products/${product.id}`} onClick={closeQuickView}>
-            <h3 className="text-[#253D4E] text-[10px] xs:text-xs font-semibold leading-tight mb-1 line-clamp-1 hover:text-[#006B51] transition-colors">
+            <h3 className="text-[#3F3F3F] text-sm sm:text-base font-semibold leading-tight mb-2 line-clamp-1 hover:text-[#006B51] transition-colors">
               {product.name}
             </h3>
           </Link>
 
-          <div className="mb-1">
-            <StarRating
-              rating={parseFloat(product.rating) || 4.0}
-              reviewCount={product.reviewCount || 0}
-              size="xs"
-            />
-          </div>
-
           <div className="flex flex-wrap justify-between items-center mt-1 gap-1">
             {discountPercentage > 0 ? (
               <div className="min-w-0 flex-shrink">
-                <span className="text-[#006B51] text-[8px] xs:text-[9px] block truncate">{product.category}</span>
-                <div className="mt-0.5 flex flex-wrap items-center">
-                  <span className="text-[#006B51] font-semibold text-[9px] xs:text-[10px]">
+                <span className="text-[#A9A9A9] text-xs sm:text-sm block truncate">{product.category}</span>
+                <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                  <span className="text-[#006B51] font-semibold text-sm sm:text-base">
                     ৳{parseFloat(product.discountPrice || 0).toFixed(0)}
                   </span>
-                  <span className="text-[#ADADAD] font-medium text-[8px] xs:text-[9px] ml-1 line-through">
+                  <span className="text-[#A9A9A9] font-normal text-xs sm:text-sm line-through">
                     ৳{parseFloat(product.price || 0).toFixed(0)}
                   </span>
                 </div>
               </div>
             ) : (
               <div className="min-w-0 flex-shrink">
-                <span className="text-[#006B51] text-[8px] xs:text-[9px] block truncate">{product.category}</span>
-                <span className="text-[#006B51] font-semibold text-[9px] xs:text-[10px] block">
+                <span className="text-[#A9A9A9] text-xs sm:text-sm block truncate">{product.category}</span>
+                <span className="text-[#006B51] font-semibold text-sm sm:text-base block mt-1.5">
                   ৳{parseFloat(product.price || 0).toFixed(0)}
                 </span>
               </div>
             )}
 
             <button
-              className="bg-[#006B51] text-white text-[8px] xs:text-[9px] font-medium py-0.5 px-1.5 rounded-sm flex items-center hover:bg-[#005541] transition-colors flex-shrink-0"
+              className="bg-[#006B51] text-white text-[10px] sm:text-xs font-medium py-1 px-2 rounded-sm flex items-center hover:bg-[#005541] transition-colors flex-shrink-0"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -346,12 +337,12 @@ const ProductListSection = ({
               disabled={loading}
             >
               <svg
-                width="8"
-                height="8"
+                width="10"
+                height="10"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="mr-0.5"
+                className="mr-1"
               >
                 <path
                   d="M12 5V19M5 12H19"
