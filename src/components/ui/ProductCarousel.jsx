@@ -10,6 +10,7 @@ import ProductCarouselSkeleton from "./ProductCarouselSkeleton";
 import { useProductQuickView } from "@/context/ProductQuickViewContext";
 import { usePathname } from "next/navigation";
 import { useWishlist } from "@/context/WishlistContext";
+import { useCart } from "@/context/CartContext";
 import { toast } from "react-hot-toast";
 
 // Import Swiper styles
@@ -109,28 +110,28 @@ export default function ProductCarousel({
   className = "",
   breakpoints = {
     320: {
-      slidesPerView: 2,
-      spaceBetween: 6,
+      slidesPerView: 1.5,
+      spaceBetween: 12,
     },
     480: {
-      slidesPerView: 2.5,
-      spaceBetween: 8,
+      slidesPerView: 2,
+      spaceBetween: 16,
     },
     640: {
-      slidesPerView: 3,
-      spaceBetween: 10,
+      slidesPerView: 2.5,
+      spaceBetween: 20,
     },
     768: {
-      slidesPerView: 4,
-      spaceBetween: 12,
+      slidesPerView: 3,
+      spaceBetween: 20,
     },
     1024: {
-      slidesPerView: 6,
-      spaceBetween: 12,
+      slidesPerView: 4,
+      spaceBetween: 24,
     },
     1280: {
-      slidesPerView: 8,
-      spaceBetween: 12,
+      slidesPerView: 5,
+      spaceBetween: 24,
     },
   }
 }) {
@@ -141,6 +142,7 @@ export default function ProductCarousel({
   const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const { openQuickView } = useProductQuickView();
+  const { addToCart } = useCart();
   const pathname = usePathname();
 
   // Check if we're on mobile
@@ -391,7 +393,7 @@ export default function ProductCarousel({
                   <div className="absolute right-0 top-1/2 transform translate-x-1/3 -translate-y-full z-10 hidden sm:block">
                     <button
                       ref={nextRefRow1}
-                      className="bg-white rounded-sm p-1 sm:p-1.5 shadow-md hover:bg-gray-50 transition-colors"
+                      className="bg-white rounded-sm p-1 sm:p-1.5 shadow-sm hover:bg-gray-50 transition-colors"
                       aria-label="Next slide"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -407,7 +409,7 @@ export default function ProductCarousel({
                 <div className="swiper-pagination-row1 hidden"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
-                  spaceBetween={24}
+                  spaceBetween={20}
                   slidesPerView="auto"
                   navigation={{
                     prevEl: prevRefRow1.current,
@@ -442,22 +444,22 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow1}
                 >
                   {firstRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${enableSwipingRow1 ? '!w-[calc(45vw-20px)] sm:!w-[calc(30vw-20px)] md:!w-[calc(22vw-20px)] lg:!w-[calc(15vw-20px)] xl:!w-[calc(11.5vw-20px)] 2xl:!w-[calc(10vw-20px)]' : 'w-full sm:max-w-[280px] mx-auto'}`}>
-                      <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[320px]">
+                    <SwiperSlide key={product.id} className={`${enableSwipingRow1 ? '!w-[calc(50vw-12px)] sm:!w-[calc(35vw-16px)] md:!w-[calc(26vw-20px)] lg:!w-[calc(18vw-24px)] xl:!w-[calc(14vw-24px)]' : 'w-full sm:max-w-[240px] mx-auto'}`}>
+                      <div className="bg-white rounded-lg shadow-sm relative h-full flex flex-col group overflow-visible">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
                           <div
                             className="block cursor-pointer"
                             onClick={() => openQuickView(product)}
                           >
-                            <div className="aspect-square relative">
+                            <div className="aspect-square relative overflow-hidden rounded-t-lg">
                               <ImageWithFallback
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
                                 width={180}
                                 height={180}
-                                className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
+                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                               />
 
                               {/* Quick view overlay */}
@@ -477,14 +479,14 @@ export default function ProductCarousel({
                           </div>
                         ) : (
                           <Link href={`/products/${product.id}`} className="block">
-                            <div className="aspect-square relative">
+                            <div className="aspect-square relative overflow-hidden rounded-t-lg">
                               <ImageWithFallback
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
                                 width={280}
                                 height={280}
-                                className="w-full h-full object-cover rounded-[8px] sm:rounded-[10px] transition-transform duration-300 hover:scale-105"
+                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                               />
 
                               {/* Discount tag */}
@@ -505,20 +507,53 @@ export default function ProductCarousel({
                         </div>
 
                         {/* Product Info */}
-                        <div className="p-2 sm:p-3 text-center">
-                          <p className="text-[#A9A9A9] text-[10px] sm:text-[11px] font-semibold uppercase">{product.category}</p>
-                          <Link href={`/products/${product.id}`}>
-                            <h3 className="text-[#3F3F3F] text-[12px] sm:text-sm font-semibold mt-1 line-clamp-1 hover:text-[#006B51] transition-colors">
-                              {product.name}
-                            </h3>
-                          </Link>
+                        <div className="p-2 sm:p-2.5 flex-1 flex flex-col justify-between">
+                          <div>
+                            {/* Categories */}
+                            <div className="text-left mb-1.5">
+                              <p className="text-[#A9A9A9] text-[11px] sm:text-[12px] font-normal">
+                                {[
+                                  product.category,
+                                  product.subcategory,
+                                  'All Products'
+                                ].filter(Boolean).join(', ')}
+                              </p>
+                            </div>
 
-                          {/* Price */}
-                          <div className="mt-1 flex items-center justify-center gap-1 sm:gap-1.5">
-                            <span className="text-[#006B51] text-[11px] sm:text-[12px] font-semibold">৳{product.discountPrice}</span>
-                            {product.discountPercentage > 0 && (
-                              <span className="text-[#E12625] text-[11px] sm:text-[12px] font-normal line-through">৳{product.price}</span>
-                            )}
+                            {/* Product Name */}
+                            <Link href={`/products/${product.id}`}>
+                              <h3 className="text-[#3F3F3F] text-[13px] sm:text-[15px] font-semibold mb-2 line-clamp-2 hover:text-[#006B51] transition-colors text-left">
+                                {product.name}
+                              </h3>
+                            </Link>
+                          </div>
+
+                          <div className="relative">
+                            {/* Price */}
+                            <div className="text-left mb-2.5">
+                              {product.discountPercentage > 0 ? (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[#E12625] text-[15px] sm:text-[17px] font-semibold">${product.discountPrice}</span>
+                                  <span className="text-[#A9A9A9] text-[13px] sm:text-[15px] font-normal line-through">${product.price}</span>
+                                </div>
+                              ) : (
+                                <span className="text-[#E12625] text-[15px] sm:text-[17px] font-semibold">${product.price || product.discountPrice}</span>
+                              )}
+                            </div>
+
+                            {/* Add to Cart Button - Always visible on mobile, hover on desktop */}
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                addToCart(product, 1);
+                                toast.success('Added to cart');
+                              }}
+                              className="w-full bg-[#E12625] text-white text-[12px] sm:text-[14px] font-semibold py-2 px-4 hover:bg-[#C41E3A] transition-all duration-300
+                                         sm:absolute sm:bottom-0 sm:left-0 sm:right-0 sm:opacity-0 sm:group-hover:opacity-100 sm:transform sm:translate-y-full sm:group-hover:translate-y-0 sm:pointer-events-none sm:group-hover:pointer-events-auto sm:w-auto"
+                            >
+                              Add To Cart
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -550,7 +585,7 @@ export default function ProductCarousel({
                   <div className="absolute right-0 top-1/2 transform translate-x-1/3 -translate-y-full z-10 hidden sm:block">
                     <button
                       ref={nextRefRow2}
-                      className="bg-white rounded-sm p-1 sm:p-1.5 shadow-md hover:bg-gray-50 transition-colors"
+                      className="bg-white rounded-sm p-1 sm:p-1.5 shadow-sm hover:bg-gray-50 transition-colors"
                       aria-label="Next slide"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -566,7 +601,7 @@ export default function ProductCarousel({
                 <div className="swiper-pagination-row2 hidden"></div>
                 <Swiper
                   modules={[Navigation, Pagination, A11y]}
-                  spaceBetween={24}
+                  spaceBetween={20}
                   slidesPerView="auto"
                   navigation={{
                     prevEl: prevRefRow2.current,
@@ -604,22 +639,22 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow2}
                 >
                   {secondRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${enableSwipingRow2 ? '!w-[calc(45vw-20px)] sm:!w-[calc(30vw-20px)] md:!w-[calc(22vw-20px)] lg:!w-[calc(15vw-20px)] xl:!w-[calc(11.5vw-20px)] 2xl:!w-[calc(10vw-20px)]' : 'w-full sm:max-w-[280px] mx-auto'}`}>
-                      <div className="bg-white rounded-md shadow-md overflow-hidden relative h-full sm:max-h-[320px]">
+                    <SwiperSlide key={product.id} className={`${enableSwipingRow2 ? '!w-[calc(50vw-12px)] sm:!w-[calc(35vw-16px)] md:!w-[calc(26vw-20px)] lg:!w-[calc(18vw-24px)] xl:!w-[calc(14vw-24px)]' : 'w-full sm:max-w-[240px] mx-auto'}`}>
+                      <div className="bg-white rounded-lg shadow-sm relative h-full flex flex-col group overflow-visible">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
                           <div
                             className="block cursor-pointer"
                             onClick={() => openQuickView(product)}
                           >
-                            <div className="aspect-square relative">
+                            <div className="aspect-square relative overflow-hidden rounded-t-lg">
                               <ImageWithFallback
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
                                 width={180}
                                 height={180}
-                                className="w-full h-full object-cover rounded-[6px] sm:rounded-[8px] transition-transform duration-300 hover:scale-105"
+                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                               />
 
                               {/* Quick view overlay */}
@@ -639,14 +674,14 @@ export default function ProductCarousel({
                           </div>
                         ) : (
                           <Link href={`/products/${product.id}`} className="block">
-                            <div className="aspect-square relative">
+                            <div className="aspect-square relative overflow-hidden rounded-t-lg">
                               <ImageWithFallback
                                 src={product.image || "/images/product-image.png"}
                                 fallbackSrc="/images/product-image.png"
                                 alt={product.name}
                                 width={280}
                                 height={280}
-                                className="w-full h-full object-cover rounded-[8px] sm:rounded-[10px] transition-transform duration-300 hover:scale-105"
+                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                               />
 
                               {/* Discount tag */}
@@ -667,20 +702,53 @@ export default function ProductCarousel({
                         </div>
 
                         {/* Product Info */}
-                        <div className="p-2 sm:p-3 text-center">
-                          <p className="text-[#A9A9A9] text-[10px] sm:text-[11px] font-semibold uppercase">{product.category}</p>
-                          <Link href={`/products/${product.id}`}>
-                            <h3 className="text-[#3F3F3F] text-[12px] sm:text-sm font-semibold mt-1 line-clamp-1 hover:text-[#006B51] transition-colors">
-                              {product.name}
-                            </h3>
-                          </Link>
+                        <div className="p-2 sm:p-2.5 flex-1 flex flex-col justify-between">
+                          <div>
+                            {/* Categories */}
+                            <div className="text-left mb-1.5">
+                              <p className="text-[#A9A9A9] text-[11px] sm:text-[12px] font-normal">
+                                {[
+                                  product.category,
+                                  product.subcategory,
+                                  'All Products'
+                                ].filter(Boolean).join(', ')}
+                              </p>
+                            </div>
 
-                          {/* Price */}
-                          <div className="mt-1 flex items-center justify-center gap-1 sm:gap-1.5">
-                            <span className="text-[#006B51] text-[11px] sm:text-[12px] font-semibold">৳{product.discountPrice}</span>
-                            {product.discountPercentage > 0 && (
-                              <span className="text-[#E12625] text-[11px] sm:text-[12px] font-normal line-through">৳{product.price}</span>
-                            )}
+                            {/* Product Name */}
+                            <Link href={`/products/${product.id}`}>
+                              <h3 className="text-[#3F3F3F] text-[13px] sm:text-[15px] font-semibold mb-2 line-clamp-2 hover:text-[#006B51] transition-colors text-left">
+                                {product.name}
+                              </h3>
+                            </Link>
+                          </div>
+
+                          <div className="relative">
+                            {/* Price */}
+                            <div className="text-left mb-2.5">
+                              {product.discountPercentage > 0 ? (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[#E12625] text-[15px] sm:text-[17px] font-semibold">${product.discountPrice}</span>
+                                  <span className="text-[#A9A9A9] text-[13px] sm:text-[15px] font-normal line-through">${product.price}</span>
+                                </div>
+                              ) : (
+                                <span className="text-[#E12625] text-[15px] sm:text-[17px] font-semibold">${product.price || product.discountPrice}</span>
+                              )}
+                            </div>
+
+                            {/* Add to Cart Button - Always visible on mobile, hover on desktop */}
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                addToCart(product, 1);
+                                toast.success('Added to cart');
+                              }}
+                              className="w-full bg-[#E12625] text-white text-[12px] sm:text-[14px] font-semibold py-2 px-4 hover:bg-[#C41E3A] transition-all duration-300
+                                         sm:absolute sm:bottom-0 sm:left-0 sm:right-0 sm:opacity-0 sm:group-hover:opacity-100 sm:transform sm:translate-y-full sm:group-hover:translate-y-0 sm:pointer-events-none sm:group-hover:pointer-events-auto sm:w-auto"
+                            >
+                              Add To Cart
+                            </button>
                           </div>
                         </div>
                       </div>
