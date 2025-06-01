@@ -11,8 +11,8 @@ const RelatedProducts = ({ products = [], category = 'Products' }) => {
     default: 2,
     xs: 2,
     sm: 3,
-    lg: 4,
-    xl: 5
+    lg: 3,
+    xl: 4
   }), []);
 
   return (

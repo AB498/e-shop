@@ -111,16 +111,20 @@ const ProductListSection = ({
   if (!loading && (!displayProducts || displayProducts.length === 0)) {
     return (
       <div className="py-2 xs:py-3 md:py-4">
-        <div className="flex justify-between items-center mb-2 xs:mb-3">
-          <div className="flex items-center gap-1 xs:gap-1.5">
-            <h2 className="text-sm xs:text-base md:text-lg font-semibold text-black">{title}</h2>
-            <Image
-              src={titleIcon}
-              alt="Icon"
-              width={20}
-              height={20}
-              className="object-contain w-4 h-4 xs:w-5 xs:h-5 md:w-5 md:h-5"
-            />
+        <div className="flex justify-between items-center mb-4 sm:mb-6 md:mb-8">
+          <div className="flex items-center gap-3 sm:gap-4">
+            {titleIcon && (
+              <div className="flex-shrink-0">
+                <Image
+                  src={titleIcon}
+                  alt="Icon"
+                  width={32}
+                  height={32}
+                  className="h-7 w-7 sm:h-9 sm:w-9 md:h-10 md:w-10 aspect-square object-contain"
+                />
+              </div>
+            )}
+            <div className="text-lg sm:!text-xl md:!text-2xl font-bold text-[#3F3F3F] leading-tight">{title}</div>
           </div>
           <div className="flex items-center text-[#7E7E7E]">
             <Link href={allItemsLink} onClick={closeQuickView} className="flex items-center hover:text-[#006B51] transition-colors">
@@ -363,7 +367,7 @@ const ProductListSection = ({
   return (
     <div className="py-2 xs:py-3 md:py-4">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-2 xs:mb-3 md:mb-4">
+      <div className="flex justify-between items-center mb-4 sm:mb-6 md:mb-8">
         {loading ? (
           // Skeleton header while loading
           <>
@@ -384,15 +388,19 @@ const ProductListSection = ({
         ) : (
           // Actual header when loaded
           <>
-            <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2">
-              <h2 className="text-sm xs:text-base md:text-lg font-semibold text-black">{title}</h2>
-              <Image
-                src={titleIcon}
-                alt="Icon"
-                width={20}
-                height={20}
-                className="object-contain w-4 h-4 xs:w-5 xs:h-5 md:w-6 md:h-6"
-              />
+            <div className="flex items-center gap-3 sm:gap-4">
+              {titleIcon && (
+                <div className="flex-shrink-0">
+                  <Image
+                    src={titleIcon}
+                    alt="Icon"
+                    width={32}
+                    height={32}
+                    className="h-7 w-7 sm:h-9 sm:w-9 md:h-10 md:w-10 aspect-square object-contain"
+                  />
+                </div>
+              )}
+              <div className="text-lg sm:!text-xl md:!text-2xl font-bold text-[#3F3F3F] leading-tight">{title}</div>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               {/* Navigation Buttons for scroll view */}
