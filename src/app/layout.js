@@ -84,7 +84,11 @@ export default function RootLayout({ children }) {
         <style>
           {`html, body {
             font-family: 'Poppins', sans-serif;
-          }`}
+            font-size: 105% !important;
+          }
+          * {
+          }
+          `}
         </style>
         <ProductQuickViewProvider>
           <SessionProvider>

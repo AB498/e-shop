@@ -105,30 +105,7 @@ const Hero = () => {
                             Your Trusted Source for Thai & Bangladeshi Groceries
                         </p>
 
-                        {/* Search Box */}
-                        <div className="relative mb-3">
-                            <form onSubmit={handleSearch}>
-                                <div className="w-full h-[30px] rounded-[30px] bg-white/40 border border-[#BABABA] flex items-center px-3">
-                                    <input
-                                        type="text"
-                                        placeholder="Search products..."
-                                        className="w-full bg-transparent border-none outline-none text-[12px] text-white placeholder-white"
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
-                                    <button
-                                        type="submit"
-                                        className="cursor-pointer"
-                                    >
-                                        <img
-                                            src="/images/hero/search-icon.png"
-                                            alt="Search"
-                                            className="w-4 h-4 ml-2"
-                                        />
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+
 
                         {/* Description text */}
                         <p className="text-[12px] font-normal text-white tracking-wide">
