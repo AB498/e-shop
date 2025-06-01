@@ -46,6 +46,20 @@ const SidebarClient = ({ categories = [] }) => {
     setCollapsed(true);
   };
 
+  // Function to handle mouse enter (hover) on collapsed sidebar
+  const handleMouseEnter = () => {
+    if (collapsed) {
+      setCollapsed(false);
+    }
+  };
+
+  // Function to handle mouse leave on expanded sidebar
+  const handleMouseLeave = () => {
+    if (!collapsed) {
+      setCollapsed(true);
+    }
+  };
+
   // Find the active category index based on the URL
   const getActiveCategoryIndex = () => {
     // Special case for discount
@@ -121,7 +135,8 @@ const SidebarClient = ({ categories = [] }) => {
       ></div>
       <div
         className={`${collapsed ? 'w-[0px] sm:w-[55px]' : 'w-[16rem]'} h-screen bg-white sm:border-r sm:border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
-
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         {/* Menu Toggle Button */}
         <div className="px-3 py-6 flex items-center justify-start">
