@@ -14,6 +14,7 @@ export async function GET(request) {
     const maxPrice = searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')) : null;
     const color = searchParams.get('color') || null;
     const condition = searchParams.get('condition') || null;
+    const rating = searchParams.get('rating') || null;
     const promotionId = searchParams.get('promotion') ? parseInt(searchParams.get('promotion')) : null;
 
     let products;
@@ -35,6 +36,7 @@ export async function GET(request) {
         maxPrice,
         color,
         condition,
+        rating,
         promotionId
       });
 

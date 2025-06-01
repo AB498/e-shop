@@ -84,6 +84,19 @@ const ActiveFilters = ({ promotionName }) => {
       });
     }
 
+    // Check for rating filter
+    const rating = searchParams.get('rating');
+    if (rating) {
+      hasFilters = true;
+      const ratingLabel = rating === '5' ? `Rating: 5 Stars` : `Rating: ${rating} Stars & Up`;
+      filters.push({
+        type: 'rating',
+        label: ratingLabel,
+        value: rating,
+        priority: 6
+      });
+    }
+
     // Sort filters by priority
     filters.sort((a, b) => a.priority - b.priority);
 

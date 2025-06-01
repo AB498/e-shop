@@ -21,6 +21,7 @@ const ProductLeftBarWrapper = ({
   categories,
   categoryCounts = {},
   newProducts = [],
+  ratingStats = [],
   isMobile = false
 }) => {
   return (
@@ -29,6 +30,7 @@ const ProductLeftBarWrapper = ({
         categories={categories}
         categoryCounts={categoryCounts}
         newProducts={newProducts}
+        ratingStats={ratingStats}
         isMobile={isMobile}
       />
     </Suspense>

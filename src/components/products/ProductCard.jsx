@@ -6,9 +6,10 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { toast } from 'react-hot-toast';
 import ImageWithFallback from '../ui/ImageWithFallback';
+import StarRating from '@/components/ui/StarRating';
 
 const ProductCard = ({ product, showAddToCart = true }) => {
-  const { id, name, price, image, category, discountPrice, discountPercentage, promotion } = product;
+  const { id, name, price, image, category, discountPrice, discountPercentage, promotion, rating, reviewCount } = product;
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
@@ -118,6 +119,16 @@ const ProductCard = ({ product, showAddToCart = true }) => {
             {name}
           </h3>
         </Link>
+
+        {/* Rating */}
+        <div className="flex justify-center mb-1 md:mb-1.5">
+          <StarRating
+            rating={rating || 0}
+            reviewCount={reviewCount || 0}
+            size="xs"
+            showCount={true}
+          />
+        </div>
 
         <div className="flex items-center justify-center space-x-1 md:space-x-1.5 mb-2 md:mb-2.5">
           {discountPrice !== price && (

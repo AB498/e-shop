@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db';
 import { products, categories, productImages, productPromotions, promotions, productReviews } from '@/db/schema';
-import { eq, or, desc, asc, like, sql, and, inArray, avg, count } from 'drizzle-orm';
+import { eq, or, desc, asc, like, sql, and, inArray, avg } from 'drizzle-orm';
 
 /**
  * Fetch products by category IDs
@@ -146,6 +146,7 @@ export async function getAllProducts({
   maxPrice = null,
   color = null,
   condition = null,
+  rating = null,
   promotionId = null,
 } = {}) {
   console.log('getAllProducts called with search:', search);
@@ -210,6 +211,43 @@ export async function getAllProducts({
       }
     }
 
+    // Handle rating filter - filter products by average rating
+    let ratingFilteredProductIds = null;
+    if (rating) {
+      console.log('Filtering by rating:', rating);
+      const minRating = parseFloat(rating);
+
+      // Get products with average rating >= minRating
+      const ratingQuery = await db
+        .select({
+          productId: productReviews.product_id,
+          avgRating: avg(productReviews.rating),
+        })
+        .from(productReviews)
+        .where(eq(productReviews.status, 'published'))
+        .groupBy(productReviews.product_id)
+        .having(sql`AVG(${productReviews.rating}) >= ${minRating}`);
+
+      if (ratingQuery.length > 0) {
+        ratingFilteredProductIds = ratingQuery.map(r => r.productId);
+        console.log(`Found ${ratingFilteredProductIds.length} products with rating >= ${minRating}`);
+      } else {
+        console.log(`No products found with rating >= ${minRating}`);
+        // Return empty result if no products meet the rating criteria
+        return {
+          products: [],
+          pagination: {
+            page: Number(page),
+            limit: Number(limit),
+            totalProducts: 0,
+            totalPages: 0,
+            hasNextPage: false,
+            hasPrevPage: false,
+          },
+        };
+      }
+    }
+
     // Handle promotion filter
     let productIds = null;
     if (promotionId) {
@@ -263,13 +301,28 @@ export async function getAllProducts({
       query = query.where(and(...conditions));
     }
 
-    // Add promotion filter if we have product IDs
-    if (productIds) {
+    // Combine promotion and rating filters
+    let finalProductIds = null;
+    if (productIds && ratingFilteredProductIds) {
+      // If both filters are active, get intersection
+      finalProductIds = productIds.filter(id => ratingFilteredProductIds.includes(id));
+    } else if (productIds) {
+      // Only promotion filter
+      finalProductIds = productIds;
+    } else if (ratingFilteredProductIds) {
+      // Only rating filter
+      finalProductIds = ratingFilteredProductIds;
+    }
+
+    // Add product ID filters if we have any
+    if (finalProductIds) {
       if (conditions.length > 0) {
-        query = query.where(inArray(products.id, productIds));
+        query = query.where(and(...conditions, inArray(products.id, finalProductIds)));
       } else {
-        query = query.where(inArray(products.id, productIds));
+        query = query.where(inArray(products.id, finalProductIds));
       }
+    } else if (conditions.length > 0) {
+      query = query.where(and(...conditions));
     }
 
     // Add sorting
@@ -288,14 +341,15 @@ export async function getAllProducts({
     // Count total products for pagination
     let countQuery = db.select({ count: sql`count(*)` }).from(products);
 
-    // Apply the same conditions as the main query
-    if (conditions.length > 0) {
+    // Apply the same filters as the main query
+    if (finalProductIds) {
+      if (conditions.length > 0) {
+        countQuery = countQuery.where(and(...conditions, inArray(products.id, finalProductIds)));
+      } else {
+        countQuery = countQuery.where(inArray(products.id, finalProductIds));
+      }
+    } else if (conditions.length > 0) {
       countQuery = countQuery.where(and(...conditions));
-    }
-
-    // Apply promotion filter to count query if we have product IDs
-    if (productIds) {
-      countQuery = countQuery.where(inArray(products.id, productIds));
     }
 
     const [{ count }] = await countQuery;
@@ -362,6 +416,33 @@ export async function getAllProducts({
       });
     }
 
+    // Fetch review statistics for all products
+    let productRatings = {};
+    if (resultProductIds.length > 0) {
+      const reviewStatsData = await db
+        .select({
+          productId: productReviews.product_id,
+          averageRating: avg(productReviews.rating),
+          totalReviews: sql`COUNT(${productReviews.id})`,
+        })
+        .from(productReviews)
+        .where(
+          and(
+            inArray(productReviews.product_id, resultProductIds),
+            eq(productReviews.status, 'published')
+          )
+        )
+        .groupBy(productReviews.product_id);
+
+      // Create a map of product ID to its rating data
+      reviewStatsData.forEach(stat => {
+        productRatings[stat.productId] = {
+          rating: parseFloat(stat.averageRating) || 0,
+          reviewCount: parseInt(stat.totalReviews) || 0,
+        };
+      });
+    }
+
     // Add category name and calculate discount for each product
     const productsWithCategory = productData.map(product => {
       // Get the best discount for this product (if any)
@@ -374,11 +455,16 @@ export async function getAllProducts({
         ? (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
         : originalPrice.toFixed(2);
 
+      // Get rating data for this product
+      const ratingData = productRatings[product.id] || { rating: 0, reviewCount: 0 };
+
       return {
         ...product,
         category: categoryMap[product.categoryId] || 'Unknown',
         discountPrice,
         discountPercentage,
+        rating: ratingData.rating,
+        reviewCount: ratingData.reviewCount,
         promotion: productDiscount ? {
           id: productDiscount.promotionId,
           title: productDiscount.promotionTitle,
@@ -739,6 +825,74 @@ export async function getProductImages(productId) {
   }
 }
 
+/**
+ * Get rating statistics for filter options
+ * @returns {Promise<Array>} - Array of rating options with counts
+ */
+export async function getRatingFilterStats() {
+  try {
+    // Get products with average rating >= 5 (perfect rating)
+    const rating5Plus = await db
+      .select({
+        productId: productReviews.product_id,
+        avgRating: avg(productReviews.rating),
+      })
+      .from(productReviews)
+      .where(eq(productReviews.status, 'published'))
+      .groupBy(productReviews.product_id)
+      .having(sql`AVG(${productReviews.rating}) >= 5`);
+
+    // Get products with average rating >= 4
+    const rating4Plus = await db
+      .select({
+        productId: productReviews.product_id,
+        avgRating: avg(productReviews.rating),
+      })
+      .from(productReviews)
+      .where(eq(productReviews.status, 'published'))
+      .groupBy(productReviews.product_id)
+      .having(sql`AVG(${productReviews.rating}) >= 4`);
+
+    // Get products with average rating >= 3
+    const rating3Plus = await db
+      .select({
+        productId: productReviews.product_id,
+        avgRating: avg(productReviews.rating),
+      })
+      .from(productReviews)
+      .where(eq(productReviews.status, 'published'))
+      .groupBy(productReviews.product_id)
+      .having(sql`AVG(${productReviews.rating}) >= 3`);
+
+    // Get products with average rating >= 2
+    const rating2Plus = await db
+      .select({
+        productId: productReviews.product_id,
+        avgRating: avg(productReviews.rating),
+      })
+      .from(productReviews)
+      .where(eq(productReviews.status, 'published'))
+      .groupBy(productReviews.product_id)
+      .having(sql`AVG(${productReviews.rating}) >= 2`);
+
+    return [
+      { value: '5', label: '5 Stars', count: rating5Plus.length },
+      { value: '4', label: '4 Stars & Up', count: rating4Plus.length },
+      { value: '3', label: '3 Stars & Up', count: rating3Plus.length },
+      { value: '2', label: '2 Stars & Up', count: rating2Plus.length }
+    ];
+  } catch (error) {
+    console.error('Error fetching rating filter stats:', error);
+    // Return default values if there's an error
+    return [
+      { value: '5', label: '5 Stars', count: 0 },
+      { value: '4', label: '4 Stars & Up', count: 0 },
+      { value: '3', label: '3 Stars & Up', count: 0 },
+      { value: '2', label: '2 Stars & Up', count: 0 }
+    ];
+  }
+}
+
 export async function getNewProducts(limit = 3) {
   try {
     // Fetch products sorted by creation date (newest first)
@@ -833,6 +987,33 @@ export async function getNewProducts(limit = 3) {
       });
     }
 
+    // Fetch review statistics for new products
+    let productRatings = {};
+    if (resultProductIds.length > 0) {
+      const reviewStatsData = await db
+        .select({
+          productId: productReviews.product_id,
+          averageRating: avg(productReviews.rating),
+          totalReviews: sql`COUNT(${productReviews.id})`,
+        })
+        .from(productReviews)
+        .where(
+          and(
+            inArray(productReviews.product_id, resultProductIds),
+            eq(productReviews.status, 'published')
+          )
+        )
+        .groupBy(productReviews.product_id);
+
+      // Create a map of product ID to its rating data
+      reviewStatsData.forEach(stat => {
+        productRatings[stat.productId] = {
+          rating: parseFloat(stat.averageRating) || 0,
+          reviewCount: parseInt(stat.totalReviews) || 0,
+        };
+      });
+    }
+
     // Add category name and calculate discount for each product
     const productsWithCategory = productData.map(product => {
       // Get the best discount for this product (if any)
@@ -845,20 +1026,22 @@ export async function getNewProducts(limit = 3) {
         ? (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
         : originalPrice.toFixed(2);
 
+      // Get rating data for this product
+      const ratingData = productRatings[product.id] || { rating: 0, reviewCount: 0 };
+
       return {
         ...product,
         category: categoryMap[product.categoryId] || 'Unknown',
         discountPrice,
         discountPercentage,
+        rating: ratingData.rating,
+        reviewCount: ratingData.reviewCount,
         // Add promotion information if available
         promotion: productDiscount ? {
           id: productDiscount.promotionId,
           title: productDiscount.promotionTitle,
           type: productDiscount.promotionType,
         } : null,
-        // Add mock rating and review count for display
-        rating: (Math.random() * 2 + 3).toFixed(1), // Random rating between 3.0 and 5.0
-        reviewCount: Math.floor(Math.random() * 20) + 1, // Random review count between 1 and 20
       };
     });
 

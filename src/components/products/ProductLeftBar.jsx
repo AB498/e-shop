@@ -5,12 +5,14 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PriceRangeFilterWrapper from './PriceRangeFilterWrapper';
 import CheckboxFilterWrapper from './CheckboxFilterWrapper';
+import RatingFilterWrapper from './RatingFilterWrapper';
 import StarRating from '@/components/ui/StarRating';
 
 const ProductLeftBar = ({
     categories = [],
     categoryCounts = {},
     newProducts = [],
+    ratingStats = [],
     isMobile = false
 }) => {
     const searchParams = useSearchParams();
@@ -59,6 +61,13 @@ const ProductLeftBar = ({
         { value: 'new', label: 'New', count: 1506 },
         { value: 'refurbished', label: 'Refurbished', count: 27 },
         { value: 'thai', label: 'Thai Products', count: 45 }
+    ];
+
+    // Rating filter options - use real data from database
+    const ratingOptions = ratingStats.length > 0 ? ratingStats : [
+        { value: '4', label: '4 Stars & Up', count: 0 },
+        { value: '3', label: '3 Stars & Up', count: 0 },
+        { value: '2', label: '2 Stars & Up', count: 0 }
     ];
 
     // Function to preserve existing query parameters when changing category
@@ -148,6 +157,12 @@ const ProductLeftBar = ({
                 <div className="mb-4">
                     <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-2">Item Condition</h4>
                     <CheckboxFilterWrapper title="Item Condition" type="condition" options={conditionOptions} />
+                </div>
+
+                {/* Rating Filter */}
+                <div className="mb-4">
+                    <h4 className="text-[#7E7E7E] font-extrabold text-sm mb-2">Customer Rating</h4>
+                    <RatingFilterWrapper options={ratingOptions} />
                 </div>
 
                 {/* Clear All Filters Button */}

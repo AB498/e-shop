@@ -17,6 +17,7 @@ export default async function ProductList({
   maxPrice = null,
   color = null,
   condition = null,
+  rating = null,
   promotionId = null
 }) {
   // Fetch products with pagination and all filters
@@ -31,6 +32,7 @@ export default async function ProductList({
     maxPrice: maxPrice ? Number(maxPrice) : null,
     color,
     condition,
+    rating,
     promotionId: promotionId ? Number(promotionId) : null
   });
 

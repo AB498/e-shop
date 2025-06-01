@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useProductQuickView } from '@/context/ProductQuickViewContext';
 import ProductSkeleton from './ProductSkeleton';
+import StarRating from '@/components/ui/StarRating';
 import { toast } from 'react-hot-toast';
 
 const ProductListSection = ({
@@ -301,6 +302,16 @@ const ProductListSection = ({
               {product.name}
             </h3>
           </Link>
+
+          {/* Rating */}
+          <div className="mb-2">
+            <StarRating
+              rating={product.rating || 0}
+              reviewCount={product.reviewCount || 0}
+              size="xs"
+              showCount={true}
+            />
+          </div>
 
           <div className="flex flex-wrap justify-between items-center mt-1 gap-1">
             {discountPercentage > 0 ? (
