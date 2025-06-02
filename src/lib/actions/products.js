@@ -567,7 +567,7 @@ export async function getProductById(id) {
     const reviewStats = await db
       .select({
         averageRating: avg(productReviews.rating),
-        totalReviews: count(productReviews.id),
+        totalReviews: sql`COUNT(${productReviews.id})`,
       })
       .from(productReviews)
       .where(

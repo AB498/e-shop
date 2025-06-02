@@ -1,4 +1,5 @@
 import LandingPage from "./LandingPage";
+import { getAllCategories } from "@/lib/actions/categories";
 
 export const metadata = {
   title: "Thai Bangla Store - Premium Thai Products in Bangladesh",
@@ -27,6 +28,9 @@ export const metadata = {
   },
 };
 
-export default function Home() {
-  return <LandingPage />;
+export default async function Home() {
+  // Fetch categories server-side
+  const categories = await getAllCategories();
+
+  return <LandingPage categories={categories} />;
 }

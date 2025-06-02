@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import SearchBarWrapper from './SearchBarWrapper';
+import CategoryChips from '../categories/CategoryChips';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useSession } from 'next-auth/react';
@@ -10,7 +11,7 @@ import { usePathname } from 'next/navigation';
 import { getResponsiveTextClass } from '@/utils/responsiveUtils';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-const Navigation = () => {
+const Navigation = ({ categories = [] }) => {
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
   const { data: session, status } = useSession();
@@ -139,6 +140,16 @@ const Navigation = () => {
           {/* Mobile Search Bar - Moved up for better visibility */}
           <div className="w-full">
             <SearchBarWrapper placeholder="Search products..." />
+          </div>
+
+          {/* Category Chips - Mobile Only */}
+          <div className="w-full mt-2">
+            <CategoryChips
+              categories={categories}
+              size="small"
+              showOnMobile={true}
+              showOnDesktop={false}
+            />
           </div>
         </div>
 

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useWishlist } from '@/context/WishlistContext';
 import Navigation from './Navigation';
 
-const Topbar = ({ serverSession, serverAuthStatus }) => {
+const Topbar = ({ categories = [], serverSession, serverAuthStatus }) => {
   // Use server-provided auth state as initial values, then use client-side session for updates
   const { data: clientSession, status } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -284,7 +284,7 @@ const Topbar = ({ serverSession, serverAuthStatus }) => {
           </div>
         </div>
       </div>
-      <Navigation />
+      <Navigation categories={categories} />
     </div>
   );
 };

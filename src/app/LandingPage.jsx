@@ -5,6 +5,7 @@ import Hero from "../components/layout/Hero";
 import FeatureIcons from "../components/layout/FeatureIcons";
 import PopularCategories from "../components/categories/PopularCategories";
 import PopularCategoriesServer from "../components/categories/PopularCategoriesServer";
+import CategoryChips from "../components/categories/CategoryChips";
 import BannerSection from "../components/landing/BannerSection";
 import ProductShowcase from "../components/landing/ProductShowcase";
 import Footer from "../components/layout/Footer";
@@ -24,13 +25,28 @@ import TopBrandsSectionClient from "@/components/categories/TopBrandsSectionClie
 /**
  * Landing page component that uses responsive design system
  *
+ * @param {Object} props - Component props
+ * @param {Array} props.categories - Categories fetched server-side
+ * @param {JSX.Element} props.featuredCarouselComponent - Optional featured carousel component
+ * @param {JSX.Element} props.weeklyDealsComponent - Optional weekly deals component
+ * @param {JSX.Element} props.popularCategoriesComponent - Optional popular categories component
  * @returns {JSX.Element}
  */
-export default function LandingPage({ featuredCarouselComponent, weeklyDealsComponent, popularCategoriesComponent }) {
+export default function LandingPage({ categories = [], featuredCarouselComponent, weeklyDealsComponent, popularCategoriesComponent }) {
     return (
         <>
             {/* Hero Section */}
             <Hero />
+
+            {/* Category Chips - Desktop Only */}
+            <div className="hidden md:block w-full px-6 md:px-12 container mx-auto pt-4">
+                <CategoryChips
+                    categories={categories}
+                    size="large"
+                    showOnMobile={false}
+                    showOnDesktop={true}
+                />
+            </div>
 
             <div className="relative z-0 w-full px-6 md:px-12 container mx-auto flex flex-col py-6 gap-6">
 
@@ -38,7 +54,7 @@ export default function LandingPage({ featuredCarouselComponent, weeklyDealsComp
                 <FeatureIcons />
 
                 {/* Popular Categories */}
-                {popularCategoriesComponent || <PopularCategories categories={[]} />}
+                {popularCategoriesComponent || <PopularCategories categories={categories} />}
 
                 {/* Featured Carousel */}
                 {featuredCarouselComponent || <FeaturedCarousel />}

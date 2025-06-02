@@ -140,7 +140,6 @@ const PopularCategories = () => {
       subcategories: [
         "Lipstick",
         "Foundation",
-        "Mascara",
         "Eyeliner",
         "Blush",
         "Compact Powder"
@@ -155,7 +154,6 @@ const PopularCategories = () => {
         "Supplements",
         "Hygiene Products",
         "Body Care",
-        "Oral Care",
         "Wellness Essentials"
       ]
     },
@@ -242,7 +240,7 @@ const PopularCategories = () => {
     <section className="container mx-auto py-2 sm:py-3 md:py-4">
       {/* Section title */}
       <div className="flex items-center justify-start mb-1 sm:mb-1.5 md:mb-2 relative h-4 sm:h-5 md:h-6 gap-0.5 md:gap-1">
-        <h2 className="text-sm sm:text-base md:text-lg font-semibold">Popular Categories</h2>
+        <h2 className="text-lg sm:!text-xl md:!text-2xl font-bold text-[#3F3F3F] leading-tight">Popular Categories</h2>
       </div>
 
       {/* Categories Container with Overflow Hidden */}
@@ -255,39 +253,39 @@ const PopularCategories = () => {
           {/* Categories Flex Container */}
           <div
             ref={containerRef}
-            className={`flex gap-1 xs:gap-1.5 sm:gap-2 md:gap-3 flex-nowrap w-full py-2`}
+            className={`flex gap-2 sm:gap-2 md:gap-3 flex-nowrap w-full py-2`}
           >
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="flex w-[180px] sm:w-[200px] md:w-[220px] aspect-video bg-white rounded-[4px] xs:rounded-[5px] sm:rounded-[6px] shadow-md overflow-hidden hover:shadow-md transition-shadow flex-none"
+                className="flex w-[300px] sm:w-[320px] md:w-[340px] h-[180px] sm:h-[190px] md:h-[200px] bg-white rounded-[8px] xs:rounded-[9px] sm:rounded-[10px] shadow-md overflow-hidden hover:shadow-md transition-shadow flex-none"
               >
                 {/* Category Image */}
-                <div className="relative p-2 w-2/5 h-full min-h-[80px] xs:min-h-[90px] sm:min-h-[100px] md:min-h-[110px]">
+                <div className="relative p-4 w-2/5 h-full min-h-[180px] xs:min-h-[190px] sm:min-h-[200px]">
                   <div className="relative w-full h-full">
                     <Image
                       src={category.image}
                       alt={category.name}
                       fill
-                      className="object-cover rounded-[4px] sm:rounded-[5px]"
+                      className="object-cover rounded-[6px] sm:rounded-[7px]"
                     />
                   </div>
                 </div>
 
                 {/* Category Content */}
-                <div className="p-0.5 xs:p-1 sm:p-1.5 md:p-2 grow">
-                  <h3 className="text-[10px] xs:text-[11px] sm:text-xs font-semibold mb-0.5">{category.name}</h3>
-                  <ul className="space-y-0">
+                <div className="p-3 grow">
+                  <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-semibold mb-2 sm:mb-3">{category.name}</h3>
+                  <ul className="">
                     {category.subcategories.slice(0, screenWidth < 480 ? 3 : category.subcategories.length).map((subcategory, index) => (
                       <li
                         key={index}
-                        className="text-[8px] xs:text-[9px] sm:text-[10px] text-[#535353] hover:text-black transition-colors cursor-pointer"
+                        className="text-sm xs:text-base sm:text-lg text-[#535353] hover:text-black transition-colors cursor-pointer"
                       >
                         {subcategory}
                       </li>
                     ))}
                     {screenWidth > 0 && screenWidth < 480 && category.subcategories.length > 3 && (
-                      <li className="text-[8px] xs:text-[9px] sm:text-[10px] text-[#B74B4B] font-medium cursor-pointer">
+                      <li className="text-sm xs:text-base sm:text-lg text-[#B74B4B] font-medium cursor-pointer">
                         + {category.subcategories.length - 3} more
                       </li>
                     )}

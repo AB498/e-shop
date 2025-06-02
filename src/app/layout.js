@@ -7,7 +7,7 @@ import SessionProvider from "../components/providers/SessionProvider";
 import { CartProvider } from "../context/CartContext";
 import { WishlistProvider } from "../context/WishlistContext";
 import { Toaster } from "react-hot-toast";
-import Navigation from "@/components/layout/Navigation";
+
 import { ProductQuickViewProvider } from "@/context/ProductQuickViewContext";
 import ProductQuickViewModal from "@/components/products/ProductQuickViewModal";
 import Footer from "@/components/layout/Footer";
