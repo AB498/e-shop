@@ -317,7 +317,7 @@ export default function ProductCarousel({
       <style dangerouslySetInnerHTML={{ __html: customStyles }} />
       {/* Section title */}
       {(title || icon) && (
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="flex items-center mb-4 sm:mb-6 md:mb-8 relative">
             <div className="flex items-center gap-3 sm:gap-4">
               {icon && (
@@ -341,7 +341,7 @@ export default function ProductCarousel({
       {/* Products carousel */}
       {products.length === 0 ? (
         // No products found
-        <div className="container mx-auto px-4 py-4 sm:py-6 md:py-8 text-center">
+        <div className="container mx-auto py-4 sm:py-6 md:py-8 text-center">
           <p className="text-gray-500 text-sm sm:text-base">No products found.</p>
         </div>
       ) : (
@@ -410,7 +410,7 @@ export default function ProductCarousel({
                     swiper.pagination.enabled = !isMobile && enableSwipingRow1;
                     swiper.pagination.update();
                   }}
-                  className={`px-2 sm:px-0 overflow-visible pb-2`}
+                  className={`overflow-visible pb-2`}
                   loop={false}
                   loopFillGroupWithBlank={false}
                   slidesPerGroupAuto={true}
@@ -601,7 +601,7 @@ export default function ProductCarousel({
                     swiper.pagination.enabled = !isMobile && enableSwipingRow2;
                     swiper.pagination.update();
                   }}
-                  className={`px-2 sm:px-0 overflow-visible pb-2`}
+                  className={`px-2 sm:overflow-visible pb-2`}
                   loop={false}
                   loopFillGroupWithBlank={false}
                   slidesPerGroupAuto={true}

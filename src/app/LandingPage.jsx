@@ -37,7 +37,7 @@ export default async function LandingPage({ categories = [], featuredCarouselCom
             <Hero />
 
             {/* Category Chips - Desktop Only */}
-            <div className="hidden md:block w-full px-6 md:px-12 container mx-auto pt-4">
+            <div className="hidden md:block w-full px-3 md:px-6 container mx-auto pt-4">
                 <CategoryChips
                     categories={categories}
                     size="large"
@@ -46,7 +46,7 @@ export default async function LandingPage({ categories = [], featuredCarouselCom
                 />
             </div>
 
-            <div className="relative z-0 w-full px-6 md:px-12 container mx-auto flex flex-col py-6 gap-6">
+            <div className="relative z-0 w-full px-3 md:px-6 container mx-auto flex flex-col py-6 gap-6">
 
                 {/* Feature Icons */}
                 <FeatureIcons />
