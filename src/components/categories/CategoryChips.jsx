@@ -136,7 +136,7 @@ const CategoryChips = ({ categories: propCategories = null, size = 'medium', cla
             className={`
               ${config.chip}
               bg-white border border-[#E3E3E3] rounded-full
-              hover:bg-[#006B51] hover:text-white hover:border-[#006B51]
+              hover:bg-[#006B51] hover:text-white hover:border-[#006B51] group
               transition-all duration-200 ease-in-out
               font-medium text-[#253D4E]
               whitespace-nowrap
@@ -151,7 +151,7 @@ const CategoryChips = ({ categories: propCategories = null, size = 'medium', cla
                   src={category.image}
                   alt={category.name}
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:invert"
                   sizes="20px"
                 />
               </div>
