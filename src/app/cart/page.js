@@ -11,7 +11,7 @@ import CartSummary from '@/components/cart/CartSummary';
 import EmptyCart from '@/components/cart/EmptyCart';
 import Link from 'next/link';
 import Image from 'next/image';
-import DealsOfTheDay from '@/components/deals/DealsOfTheDay';
+import DealsOfTheDayClient from '@/components/deals/DealsOfTheDayClient';
 
 export default function CartPage() {
   const { cart } = useCart();
@@ -53,7 +53,7 @@ export default function CartPage() {
       </div>
 
       <div className="container mx-auto mt-4">
-        <DealsOfTheDay />
+        <DealsOfTheDayClient />
       </div>
 
     </div>

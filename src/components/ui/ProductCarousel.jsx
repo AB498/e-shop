@@ -418,7 +418,7 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow1}
                 >
                   {firstRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${enableSwipingRow1 ? '!w-[calc(45vw-10px)] sm:!w-[calc(35vw-16px)] md:!w-[calc(26vw-20px)] lg:!w-[calc(18vw-24px)] xl:!w-[calc(14vw-24px)]' : 'w-full sm:max-w-[240px] mx-auto'}`}>
+                    <SwiperSlide key={product.id} className={`${'w-full sm:max-w-[240px] mx-auto'}`}>
                       <div className="bg-white rounded-lg shadow-sm relative h-full flex flex-col group overflow-visible">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
@@ -609,7 +609,7 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow2}
                 >
                   {secondRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${enableSwipingRow2 ? '!w-[calc(45vw-10px)] sm:!w-[calc(35vw-16px)] md:!w-[calc(26vw-20px)] lg:!w-[calc(18vw-24px)] xl:!w-[calc(14vw-24px)]' : 'w-full sm:max-w-[240px] mx-auto'}`}>
+                    <SwiperSlide key={product.id} className={`${'w-full sm:max-w-[240px] mx-auto'}`}>
                       <div className="bg-white rounded-lg shadow-sm relative h-full flex flex-col group overflow-visible">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (

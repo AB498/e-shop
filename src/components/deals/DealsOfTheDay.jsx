@@ -1,19 +1,23 @@
-'use client';
-import React, { memo } from 'react';
+import React from 'react';
 import ProductListSection from '@/components/products/ProductListSection';
+import { getAllProducts } from '@/lib/actions/products';
 
-// Create a memoized version of ProductListSection with fixed props
-const MemoizedProductListSection = memo(ProductListSection);
+// Server Component that fetches deals data with async/await
+const DealsOfTheDay = async () => {
+  // Fetch products with discounts/promotions directly in the server component
+  const { products } = await getAllProducts({
+    page: 1,
+    limit: 3,
+    sortBy: 'id',
+    sortOrder: 'asc'
+  });
 
-const DealsOfTheDay = () => {
-  // Use fixed values for props to prevent unnecessary re-renders
-  const fetchUrl = "/api/products";
-  const fetchLimit = 3;
+  // Filter products that have discounts (discountPercentage > 0)
+  const dealsProducts = products;
 
   return (
-    <MemoizedProductListSection
-      fetchUrl={fetchUrl}
-      fetchLimit={fetchLimit}
+    <ProductListSection
+      products={dealsProducts}
       title="Deals Of The Day"
       viewType="scroll"
       showWishlist={true}
@@ -26,4 +30,4 @@ const DealsOfTheDay = () => {
   );
 };
 
-export default memo(DealsOfTheDay);
+export default DealsOfTheDay;
