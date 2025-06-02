@@ -1,5 +1,3 @@
-'use client';
-
 // Navigation is imported in the layout.js file
 import Hero from "../components/layout/Hero";
 import FeatureIcons from "../components/layout/FeatureIcons";
@@ -32,7 +30,7 @@ import TopBrandsSectionClient from "@/components/categories/TopBrandsSectionClie
  * @param {JSX.Element} props.popularCategoriesComponent - Optional popular categories component
  * @returns {JSX.Element}
  */
-export default function LandingPage({ categories = [], featuredCarouselComponent, weeklyDealsComponent, popularCategoriesComponent }) {
+export default async function LandingPage({ categories = [], featuredCarouselComponent, weeklyDealsComponent, popularCategoriesComponent }) {
     return (
         <>
             {/* Hero Section */}

@@ -8,6 +8,7 @@ import { useProductQuickView } from '@/context/ProductQuickViewContext';
 import ProductSkeleton from './ProductSkeleton';
 import StarRating from '@/components/ui/StarRating';
 import { toast } from 'react-hot-toast';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 const ProductListSection = ({
   // Data props
@@ -116,7 +117,7 @@ const ProductListSection = ({
           <div className="flex items-center gap-3 sm:gap-4">
             {titleIcon && (
               <div className="flex-shrink-0">
-                <Image
+                <ImageWithFallback
                   src={titleIcon}
                   alt="Icon"
                   width={32}
@@ -222,7 +223,7 @@ const ProductListSection = ({
         {/* Product Image */}
         <Link href={`/products/${product.id}`} onClick={closeQuickView}>
           <div className={`relative ${viewType === 'scroll' ? 'h-32 xs:h-36 sm:h-40' : 'h-28 xs:h-32 sm:h-36'}`}>
-            <Image
+            <ImageWithFallback
               src={product.image || "/images/product-image.png"}
               alt={product.name}
               fill
@@ -236,7 +237,7 @@ const ProductListSection = ({
             {/* Overlay images for deals */}
             {showOverlays && index === 1 && (
               <div className="absolute inset-0">
-                <Image
+                <ImageWithFallback
                   src="/images/deals/product-deal-2-overlay.png"
                   alt="Product Overlay"
                   fill
@@ -246,7 +247,7 @@ const ProductListSection = ({
             )}
             {showOverlays && index === 2 && (
               <div className="absolute inset-0">
-                <Image
+                <ImageWithFallback
                   src="/images/deals/product-deal-3-overlay.png"
                   alt="Product Overlay"
                   fill
@@ -279,7 +280,7 @@ const ProductListSection = ({
                   {isWishlistLoading ? (
                     <div className="w-3.5 h-3.5 xs:w-4 xs:h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
                   ) : (
-                    <Image
+                    <ImageWithFallback
                       src={productInWishlist
                         ? "/images/wishlist/wishlist-icon-filled.svg"
                         : "/images/wishlist/wishlist-icon-outline.svg"}
@@ -402,7 +403,7 @@ const ProductListSection = ({
             <div className="flex items-center gap-3 sm:gap-4">
               {titleIcon && (
                 <div className="flex-shrink-0">
-                  <Image
+                  <ImageWithFallback
                     src={titleIcon}
                     alt="Icon"
                     width={32}

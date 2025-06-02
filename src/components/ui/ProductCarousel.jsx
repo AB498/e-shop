@@ -6,7 +6,7 @@ import Link from "next/link";
 // Import Swiper and required modules
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y } from "swiper/modules";
-import ProductCarouselSkeleton from "./ProductCarouselSkeleton";
+
 import { useProductQuickView } from "@/context/ProductQuickViewContext";
 import { usePathname } from "next/navigation";
 import { useWishlist } from "@/context/WishlistContext";
@@ -139,7 +139,6 @@ export default function ProductCarousel({
   const nextRefRow1 = useRef(null);
   const prevRefRow2 = useRef(null);
   const nextRefRow2 = useRef(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const { openQuickView } = useProductQuickView();
   const { addToCart } = useCart();
@@ -297,21 +296,7 @@ export default function ProductCarousel({
   const swiperRef1 = useRef(null);
   const swiperRef2 = useRef(null);
 
-  // Set loading to false after Swiper is initialized
-  useEffect(() => {
-    // Check if products are loaded
-    if (products.length > 0) {
-      // Simulate loading time or wait for resources to load
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 800); // Adjust timing as needed - shorter time for better UX
 
-      return () => clearTimeout(timer);
-    } else {
-      // If no products, no need to show loading state
-      setIsLoading(false);
-    }
-  }, [products]);
 
   // Update pagination when mobile state changes
   useEffect(() => {
@@ -325,19 +310,6 @@ export default function ProductCarousel({
       swiperRef2.current.pagination.update();
     }
   }, [isMobile, enableSwipingRow1, enableSwipingRow2]);
-
-  // Show skeleton while loading
-  if (isLoading || !products.length) {
-    return (
-      <ProductCarouselSkeleton
-        title={title}
-        hasIcon={!!icon}
-        className={className}
-        itemCount={Math.min(products.length, 6) || 6}
-        breakpoints={breakpoints}
-      />
-    );
-  }
 
   return (
     <section className={`py-4 sm:py-6 md:py-8 lg:py-10 relative ${className}`}>
@@ -628,9 +600,6 @@ export default function ProductCarousel({
                     // Update pagination based on mobile state
                     swiper.pagination.enabled = !isMobile && enableSwipingRow2;
                     swiper.pagination.update();
-
-                    // Ensure loading state is set to false when Swiper is fully initialized
-                    setIsLoading(false);
                   }}
                   className={`px-2 sm:px-0 overflow-visible pb-2`}
                   loop={false}

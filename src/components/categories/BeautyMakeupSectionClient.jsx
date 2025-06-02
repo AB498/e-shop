@@ -1,30 +1,10 @@
-'use client';
-import { useState, useEffect } from 'react';
+import { getProductsByCategories } from "@/lib/actions/products";
 import ProductCarousel from "../ui/ProductCarousel";
 
-export default function BeautyMakeupSectionClient() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await fetch('/api/products?categoryId=3,6&limit=30');
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        setProducts(data.products || []);
-      } catch (error) {
-        console.error('Error fetching beauty & makeup products:', error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProducts();
-  }, []);
+// Server Component that fetches data with async/await
+export default async function BeautyMakeupSectionClient() {
+  // Fetch products directly in the server component using async/await
+  const products = await getProductsByCategories([3, 6], 30);
 
   return (
     <ProductCarousel

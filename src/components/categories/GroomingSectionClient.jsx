@@ -1,32 +1,10 @@
-'use client';
-import { useState, useEffect } from 'react';
+import { getProductsByCategories } from "@/lib/actions/products";
 import ProductCarousel from "../ui/ProductCarousel";
 
-export default function GroomingSectionClient() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        // Fetch products from category ID 1 (Grooming)
-        const response = await fetch('/api/products?categoryId=1&limit=30');
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        console.log(data.products)
-        setProducts(data.products || []);
-      } catch (error) {
-        console.error('Error fetching grooming products:', error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProducts();
-  }, []);
+// Server Component that fetches data with async/await
+export default async function GroomingSectionClient() {
+  // Fetch products directly in the server component using async/await
+  const products = await getProductsByCategories([1], 30);
 
   return (
     <ProductCarousel

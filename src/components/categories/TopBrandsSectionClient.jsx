@@ -1,31 +1,10 @@
-'use client';
-import { useState, useEffect } from 'react';
+import { getProductsByCategories } from "@/lib/actions/products";
 import ProductCarousel from "../ui/ProductCarousel";
 
-export default function TopBrandsSectionClient() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        // Fetch products from category ID 8 (Top Brands)
-        const response = await fetch('/api/products?categoryId=8&limit=30');
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        setProducts(data.products || []);
-      } catch (error) {
-        console.error('Error fetching top brands products:', error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProducts();
-  }, []);
+// Server Component that fetches data with async/await
+export default async function TopBrandsSectionClient() {
+  // Fetch products directly in the server component using async/await
+  const products = await getProductsByCategories([8], 30);
 
   return (
     <ProductCarousel
