@@ -75,7 +75,7 @@ const WishlistButton = ({ product }) => {
       aria-label={productInWishlist ? "Remove from wishlist" : "Add to wishlist"}
     >
       {isWishlistLoading ? (
-        <div className="w-3 h-3 sm:w-4 sm:h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-4 h-4 sm:w-5 sm:h-5 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
       ) : (
         <ImageWithFallback
           src={productInWishlist
@@ -83,9 +83,9 @@ const WishlistButton = ({ product }) => {
             : "/images/wishlist/wishlist-icon-outline.svg"}
           fallbackSrc="/images/wishlist/wishlist-icon-outline.svg"
           alt="Wishlist"
-          width={16}
-          height={16}
-          className="w-3 h-3 sm:w-4 sm:h-4 cursor-pointer transition-all"
+          width={20}
+          height={20}
+          className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer transition-all"
         />
       )}
     </button>
@@ -443,8 +443,8 @@ export default function ProductCarousel({
 
                               {/* Discount tag */}
                               {product.discountPercentage > 0 && (
-                                <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
-                                  <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
+                                <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+                                  <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-sm text-[10px] sm:text-[11px] font-semibold">
                                     -{Math.round(product.discountPercentage)}%
                                   </div>
                                 </div>
@@ -466,7 +466,7 @@ export default function ProductCarousel({
                               {/* Discount tag */}
                               {product.discountPercentage > 0 && (
                                 <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
-                                  <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
+                                  <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-md text-[10px] sm:text-[11px] font-semibold">
                                     -{Math.round(product.discountPercentage)}%
                                   </div>
                                 </div>
@@ -634,8 +634,8 @@ export default function ProductCarousel({
 
                               {/* Discount tag */}
                               {product.discountPercentage > 0 && (
-                                <div className="absolute top-0.5 sm:top-1 left-0.5 sm:left-1">
-                                  <div className="bg-[#006B51] text-white px-0.5 py-0 sm:px-1 sm:py-0.5 rounded-sm text-[8px] sm:text-[9px] font-semibold">
+                                <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+                                  <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-sm text-[10px] sm:text-[11px] font-semibold">
                                     -{Math.round(product.discountPercentage)}%
                                   </div>
                                 </div>
@@ -657,7 +657,7 @@ export default function ProductCarousel({
                               {/* Discount tag */}
                               {product.discountPercentage > 0 && (
                                 <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
-                                  <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold">
+                                  <div className="bg-[#006B51] text-white px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-md text-[10px] sm:text-[11px] font-semibold">
                                     -{Math.round(product.discountPercentage)}%
                                   </div>
                                 </div>

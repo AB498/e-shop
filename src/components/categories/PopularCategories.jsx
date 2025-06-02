@@ -237,10 +237,10 @@ const PopularCategories = () => {
   };
 
   return (
-    <section className="container mx-auto py-2 sm:py-3 md:py-4">
+    <section className="container mx-auto py-1 sm:py-2 md:py-3">
       {/* Section title */}
-      <div className="flex items-center justify-start mb-1 sm:mb-1.5 md:mb-2 relative h-4 sm:h-5 md:h-6 gap-0.5 md:gap-1">
-        <h2 className="text-lg sm:!text-xl md:!text-2xl font-bold text-[#3F3F3F] leading-tight">Popular Categories</h2>
+      <div className="flex items-center justify-start mb-1 sm:mb-1 md:mb-1.5 relative h-3 sm:h-4 md:h-5 gap-0.5 md:gap-1">
+        <h2 className="text-base sm:!text-lg md:!text-xl font-bold text-[#3F3F3F] leading-tight">Popular Categories</h2>
       </div>
 
       {/* Categories Container with Overflow Hidden */}
@@ -253,39 +253,39 @@ const PopularCategories = () => {
           {/* Categories Flex Container */}
           <div
             ref={containerRef}
-            className={`flex gap-2 sm:gap-2 md:gap-3 flex-nowrap w-full py-2`}
+            className={`flex gap-1.5 sm:gap-1.5 md:gap-2 flex-nowrap w-full py-1.5`}
           >
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="flex w-[300px] sm:w-[320px] md:w-[340px] h-[180px] sm:h-[190px] md:h-[200px] bg-white rounded-[8px] xs:rounded-[9px] sm:rounded-[10px] shadow-md overflow-hidden hover:shadow-md transition-shadow flex-none"
+                className="flex w-[260px] sm:w-[280px] md:w-[300px] h-[150px] sm:h-[160px] md:h-[170px] bg-white rounded-[6px] xs:rounded-[7px] sm:rounded-[8px] shadow-md overflow-hidden hover:shadow-md transition-shadow flex-none"
               >
                 {/* Category Image */}
-                <div className="relative p-4 w-2/5 h-full min-h-[180px] xs:min-h-[190px] sm:min-h-[200px]">
+                <div className="relative p-3 w-2/5 h-full min-h-[150px] xs:min-h-[160px] sm:min-h-[170px]">
                   <div className="relative w-full h-full">
                     <Image
                       src={category.image}
                       alt={category.name}
                       fill
-                      className="object-cover rounded-[6px] sm:rounded-[7px]"
+                      className="object-cover rounded-[4px] sm:rounded-[5px]"
                     />
                   </div>
                 </div>
 
                 {/* Category Content */}
-                <div className="p-3 grow">
-                  <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-semibold mb-2 sm:mb-3">{category.name}</h3>
+                <div className="p-2.5 grow">
+                  <h3 className="text-sm xs:text-base sm:text-lg md:text-xl font-semibold mb-1.5 sm:mb-2">{category.name}</h3>
                   <ul className="">
                     {category.subcategories.slice(0, screenWidth < 480 ? 3 : category.subcategories.length).map((subcategory, index) => (
                       <li
                         key={index}
-                        className="text-sm xs:text-base sm:text-lg text-[#535353] hover:text-black transition-colors cursor-pointer"
+                        className="text-xs xs:text-sm sm:text-base text-[#535353] hover:text-black transition-colors cursor-pointer"
                       >
                         {subcategory}
                       </li>
                     ))}
                     {screenWidth > 0 && screenWidth < 480 && category.subcategories.length > 3 && (
-                      <li className="text-sm xs:text-base sm:text-lg text-[#B74B4B] font-medium cursor-pointer">
+                      <li className="text-xs xs:text-sm sm:text-base text-[#B74B4B] font-medium cursor-pointer">
                         + {category.subcategories.length - 3} more
                       </li>
                     )}
