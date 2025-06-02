@@ -31,7 +31,7 @@ const Hero = () => {
     };
 
     return (
-        <div className="relative z-0 w-full md:px-12 md:container md:mx-auto">
+        <div className="relative z-0 w-full md:px-6 md:container md:mx-auto">
             <div className="rounded-2xl mt-0 md:mt-10 relative">
                 {/* Desktop Banner */}
                 <div className="relative hidden md:flex">
