@@ -40,7 +40,7 @@ const Hero = () => {
                         alt="Thai Bangla Background"
                         className="w-full h-full object-contain opacity-90"
                     />
-                    <div className="absolute top-1/2 w-1/2 pl-[5%] flex flex-col h-1/2 pt-2 break-words">
+                    <div className="absolute top-1/2 w-1/2 p-[5%] flex flex-col h-1/2 pt-2 break-words">
                         {/* Subtitle with shape */}
                         <div className="flex items-center mb-2 w-full">
                             <img
@@ -48,7 +48,7 @@ const Hero = () => {
                                 alt=""
                                 className="w-5 h-5 mr-3 object-contain"
                             />
-                            <p className="text-[6px] md:text-[10px] lg:text-[14px] text-white font-normal">
+                            <p className="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[20px] text-white font-normal">
                                 Your Trusted Source for Thai & Bangladeshi Groceries
                             </p>
                         </div>
@@ -79,9 +79,8 @@ const Hero = () => {
                         </div>
 
                         {/* Description text */}
-                        <p className="text-[6px] md:text-[8px] lg:text-[12px] font-normal text-white max-w-[520px] tracking-wide">
-                            From Bangkok to Dhaka — premium Thai imports and everyday Bangladeshi<br />
-                            essentials delivered to your doorstep.
+                        <p className="text-[6px] md:text-[6px] lg:text-[8px] xl:text-[14px] font-normal text-white max-w-[520px] tracking-wide">
+                            From Bangkok to Dhaka — premium Thai imports and everyday Bangladeshi essentials delivered to your doorstep.
                         </p>
                     </div>
                 </div>

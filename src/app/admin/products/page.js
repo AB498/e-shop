@@ -106,7 +106,6 @@ export default function ProductsPage() {
       .then(data => {
         const processedData = processProductData(data);
         setProducts(processedData);
-        toast.success('Product added successfully');
       })
       .catch(err => {
         console.error('Error refreshing products:', err);

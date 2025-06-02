@@ -599,6 +599,22 @@ async function seedDatabase() {
         insertData('contact_messages', schema.contactMessages, contactMessagesSeed)
       ]);
 
+      // Reset sequences to prevent duplicate key errors when creating new records
+      console.log('Resetting database sequences...');
+      const sequenceResets = [
+        'SELECT setval(pg_get_serial_sequence(\'promotions\', \'id\'), COALESCE((SELECT MAX(id) FROM promotions), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'categories\', \'id\'), COALESCE((SELECT MAX(id) FROM categories), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'users\', \'id\'), COALESCE((SELECT MAX(id) FROM users), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'files\', \'id\'), COALESCE((SELECT MAX(id) FROM files), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'couriers\', \'id\'), COALESCE((SELECT MAX(id) FROM couriers), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'delivery_persons\', \'id\'), COALESCE((SELECT MAX(id) FROM delivery_persons), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'settings\', \'id\'), COALESCE((SELECT MAX(id) FROM settings), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'contact_messages\', \'id\'), COALESCE((SELECT MAX(id) FROM contact_messages), 1), true)'
+      ];
+
+      await Promise.all(sequenceResets.map(query => pool.query(query)));
+      console.log('✓ Database sequences reset successfully');
+
       // Fetch products from Google Sheets
       console.log('Fetching products from Google Sheets...');
       const sheetsData = await getProductsFromSheets();
@@ -827,6 +843,19 @@ async function seedDatabase() {
       // Store the total number of product promotions for stats
       global.totalProductPromotions = productPromotionsSeed.length + additionalProductPromotions.length;
       console.log(`Total product promotions: ${global.totalProductPromotions}`);
+
+      // Reset sequences for tables with data that was inserted later
+      console.log('Resetting remaining database sequences...');
+      const remainingSequenceResets = [
+        'SELECT setval(pg_get_serial_sequence(\'products\', \'id\'), COALESCE((SELECT MAX(id) FROM products), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'product_images\', \'id\'), COALESCE((SELECT MAX(id) FROM product_images), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'wishlist_items\', \'id\'), COALESCE((SELECT MAX(id) FROM wishlist_items), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'product_reviews\', \'id\'), COALESCE((SELECT MAX(id) FROM product_reviews), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'product_promotions\', \'id\'), COALESCE((SELECT MAX(id) FROM product_promotions), 1), true)'
+      ];
+
+      await Promise.all(remainingSequenceResets.map(query => pool.query(query)));
+      console.log('✓ All database sequences reset successfully');
     } catch (error) {
       console.error('Error inserting sample data:', error);
       throw error;
