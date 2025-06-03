@@ -23,15 +23,15 @@ const ProductTabs = ({ description, sku, type, productId, product }) => {
   const productDescription = description ||
     "This product has no description yet. Please check back later for more information.";
 
-  // Product specifications using real data
+  // Product specifications using real data - only show fields with actual values
   const specifications = [
-    { label: "SKU", value: sku || "N/A" },
-    { label: "Type", value: type || product?.type || "N/A" },
-    { label: "Brand", value: product?.brand || "N/A" },
-    { label: "Material", value: product?.material || "N/A" },
-    { label: "Origin Country", value: product?.originCountry || "N/A" },
-    { label: "Manufacturing Date", value: product?.mfgDate || "N/A" },
-    { label: "Lifespan", value: product?.lifespan || "N/A" },
+    ...(sku ? [{ label: "SKU", value: sku }] : []),
+    ...(type || product?.type ? [{ label: "Type", value: type || product?.type }] : []),
+    ...(product?.brand ? [{ label: "Brand", value: product?.brand }] : []),
+    ...(product?.material ? [{ label: "Material", value: product?.material }] : []),
+    ...(product?.originCountry ? [{ label: "Origin Country", value: product?.originCountry }] : []),
+    ...(product?.mfgDate ? [{ label: "Manufacturing Date", value: product?.mfgDate }] : []),
+    ...(product?.lifespan ? [{ label: "Lifespan", value: product?.lifespan }] : []),
     ...(product?.sizes && product.sizes.length > 0 ? [{ label: "Available Sizes", value: product.sizes.join(", ") }] : []),
     ...(product?.colors && product.colors.length > 0 ? [{ label: "Available Colors", value: product.colors.join(", ") }] : []),
     ...(product?.tags && product.tags.length > 0 ? [{ label: "Tags", value: product.tags.join(", ") }] : []),
@@ -254,26 +254,34 @@ const ProductTabs = ({ description, sku, type, productId, product }) => {
         <div className="text-[#7E7E7E]">
           <h3 className="text-[#253D4E] text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Vendor Information</h3>
           <div className="mb-3 sm:mb-4">
-            <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
-              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Brand</span>
-              <span className="text-[#7E7E7E] text-xs sm:text-sm">{product?.brand || 'N/A'}</span>
-            </div>
+            {product?.brand && (
+              <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
+                <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Brand</span>
+                <span className="text-[#7E7E7E] text-xs sm:text-sm">{product.brand}</span>
+              </div>
+            )}
             <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
               <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Store Name</span>
               <span className="text-[#7E7E7E] text-xs sm:text-sm">Thai Bangla Store</span>
             </div>
-            <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
-              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Origin Country</span>
-              <span className="text-[#7E7E7E] text-xs sm:text-sm">{product?.originCountry || 'N/A'}</span>
-            </div>
-            <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
-              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Material</span>
-              <span className="text-[#7E7E7E] text-xs sm:text-sm">{product?.material || 'N/A'}</span>
-            </div>
-            <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
-              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Manufacturing Date</span>
-              <span className="text-[#7E7E7E] text-xs sm:text-sm">{product?.mfgDate || 'N/A'}</span>
-            </div>
+            {product?.originCountry && (
+              <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
+                <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Origin Country</span>
+                <span className="text-[#7E7E7E] text-xs sm:text-sm">{product.originCountry}</span>
+              </div>
+            )}
+            {product?.material && (
+              <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
+                <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Material</span>
+                <span className="text-[#7E7E7E] text-xs sm:text-sm">{product.material}</span>
+              </div>
+            )}
+            {product?.mfgDate && (
+              <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
+                <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Manufacturing Date</span>
+                <span className="text-[#7E7E7E] text-xs sm:text-sm">{product.mfgDate}</span>
+              </div>
+            )}
           </div>
         </div>
       )}
