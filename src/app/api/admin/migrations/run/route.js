@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { runMigration as createPaymentTransactionsTable } from '@/db/migrations/create-payment-transactions';
 
 export async function POST(request) {
   try {

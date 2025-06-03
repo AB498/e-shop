@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon, TrashIcon, DownloadIcon } from '@heroicons/react/24/outline';
 import PageHeader from './PageHeader';
 import SearchBar from './SearchBar';
 import DirectoryView from './DirectoryView';
@@ -21,6 +21,17 @@ export default function FilesPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Multiple selection state
+  const [selectedFiles, setSelectedFiles] = useState(new Set());
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+
+  // Bulk operations state
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   // Fetch files on component mount if authenticated
   useEffect(() => {
@@ -58,6 +69,34 @@ export default function FilesPage() {
   // Handle navigating to a directory
   const handleNavigate = (path) => {
     fetchDirectoryStructure(path);
+    // Clear selections when navigating
+    setSelectedFiles(new Set());
+    setSelectAll(false);
+    setCurrentPage(1);
+  };
+
+  // Handle file selection
+  const handleFileSelect = (fileKey, isSelected) => {
+    setSelectedFiles(prevSelected => {
+      const newSelected = new Set(prevSelected);
+      if (isSelected) {
+        newSelected.add(fileKey);
+      } else {
+        newSelected.delete(fileKey);
+      }
+      return newSelected;
+    });
+  };
+
+  // Handle select all
+  const handleSelectAll = (isSelected) => {
+    setSelectAll(isSelected);
+    if (isSelected) {
+      const allFileKeys = new Set(filteredFiles.map(file => file.name));
+      setSelectedFiles(allFileKeys);
+    } else {
+      setSelectedFiles(new Set());
+    }
   };
 
   // Handle deleting a file from S3
