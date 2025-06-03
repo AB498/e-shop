@@ -13,14 +13,20 @@ import {
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
-export default function DirectoryView({ 
-  directories, 
-  files, 
-  path, 
-  breadcrumbs, 
-  onNavigate, 
-  onDelete, 
-  isLoading 
+export default function DirectoryView({
+  directories,
+  files,
+  path,
+  breadcrumbs,
+  onNavigate,
+  onDelete,
+  isLoading,
+  // Multiple selection props
+  selectedFiles = new Set(),
+  selectAll = false,
+  onFileSelect = () => {},
+  onSelectAll = () => {},
+  showCheckboxes = false
 }) {
   const [previewFile, setPreviewFile] = useState(null);
 
@@ -104,6 +110,16 @@ export default function DirectoryView({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              {showCheckboxes && (
+                <th scope="col" className="px-6 py-3 text-left">
+                  <input
+                    type="checkbox"
+                    checked={selectAll}
+                    onChange={(e) => onSelectAll(e.target.checked)}
+                    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                  />
+                </th>
+              )}
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
               </th>
@@ -121,13 +137,13 @@ export default function DirectoryView({
           <tbody className="bg-white divide-y divide-gray-200">
             {isLoading ? (
               <tr>
-                <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={showCheckboxes ? "5" : "4"} className="px-6 py-4 text-center text-sm text-gray-500">
                   Loading...
                 </td>
               </tr>
             ) : directories.length === 0 && files.length === 0 ? (
               <tr>
-                <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={showCheckboxes ? "5" : "4"} className="px-6 py-4 text-center text-sm text-gray-500">
                   This directory is empty
                 </td>
               </tr>
@@ -136,6 +152,11 @@ export default function DirectoryView({
                 {/* Directories */}
                 {directories.map((directory, index) => (
                   <tr key={`dir-${index}`} className="hover:bg-gray-50 cursor-pointer" onClick={() => onNavigate(directory.name)}>
+                    {showCheckboxes && (
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {/* Empty cell for directories */}
+                      </td>
+                    )}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <FolderIcon className="h-6 w-6 text-yellow-500 mr-3" />
@@ -166,6 +187,17 @@ export default function DirectoryView({
                 {/* Files */}
                 {files.map((file, index) => (
                   <tr key={`file-${index}`} className="hover:bg-gray-50">
+                    {showCheckboxes && (
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedFiles.has(file.name)}
+                          onChange={(e) => onFileSelect(file.name, e.target.checked)}
+                          className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </td>
+                    )}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         {file.fileType === 'image' && file.url ? (

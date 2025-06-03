@@ -49,8 +49,11 @@ export const authOptions = {
           console.error('Error fetching fresh user data:', error);
         }
 
-        // Fallback: log them out
-        return null;
+        // Fallback to token data if fresh data fetch fails
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
       }
       return session;
     },

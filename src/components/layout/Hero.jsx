@@ -38,7 +38,7 @@ const Hero = () => {
                     <img
                         src="/images/hero/bg.png"
                         alt="Thai Bangla Background"
-                        className="w-full h-full object-contain opacity-90"
+                        className="w-full aspect-[3.3/1] object-fill opacity-90"
                     />
                     <div className="absolute top-1/2 w-1/2 pl-[5%] flex flex-col h-1/2 pt-2 break-words">
                         {/* Subtitle with shape */}
