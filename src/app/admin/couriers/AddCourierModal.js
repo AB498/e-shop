@@ -57,7 +57,7 @@ export default function AddCourierModal({ onClose, onSubmit }) {
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                 />
               </div>
 
@@ -71,7 +71,7 @@ export default function AddCourierModal({ onClose, onSubmit }) {
                   rows="3"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                 ></textarea>
               </div>
 
@@ -85,7 +85,7 @@ export default function AddCourierModal({ onClose, onSubmit }) {
                   required
                   value={formData.courier_type}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                 >
                   <option value="external">External (Third-party)</option>
                   <option value="internal">Internal (Our own delivery)</option>

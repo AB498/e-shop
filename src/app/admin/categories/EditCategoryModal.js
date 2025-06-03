@@ -169,7 +169,7 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                        className="mt-1 block w-full border border-gray-300 bg-gray-50 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white sm:text-sm transition-colors"
                       />
                     </div>
 
@@ -183,7 +183,7 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
                         id="slug"
                         value={formData.slug}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                        className="mt-1 block w-full border border-gray-300 bg-gray-50 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white sm:text-sm transition-colors"
                       />
                       <p className="mt-1 text-xs text-gray-500">
                         Auto-generated from name if left empty. Used in URLs.
@@ -201,7 +201,7 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
                         value={formData.display_order}
                         onChange={handleInputChange}
                         min="1"
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                        className="mt-1 block w-full border border-gray-300 bg-gray-50 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white sm:text-sm transition-colors"
                       />
                       <p className="mt-1 text-xs text-gray-500">
                         Order in which the category will be displayed. Lower numbers appear first (1 is the top position).
@@ -267,7 +267,7 @@ export default function EditCategoryModal({ isOpen, onClose, onSubmit, category 
                           id="image-url-edit"
                           value={formData.image}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                          className="mt-1 block w-full border border-gray-300 bg-gray-50 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white sm:text-sm transition-colors"
                         />
                       </div>
                     </div>

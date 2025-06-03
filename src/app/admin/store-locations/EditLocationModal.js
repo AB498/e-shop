@@ -91,7 +91,7 @@ export default function EditLocationModal({
   if (!isOpen || !location) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-3 sm:p-4">
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 !mt-0 flex items-center justify-center z-50 p-3 sm:p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Edit Store Location</h3>
         <form onSubmit={handleSubmit}>

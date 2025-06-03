@@ -21,7 +21,7 @@ export default async function ProductBreadcrumb({ categoryId = null }) {
             <div className="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-3">
                 <div className="flex flex-col space-y-1 md:space-y-1 py-1 md:py-2 w-full md:w-auto">
                     {/* Page Title */}
-                    <h1 className="text-[#253D4E] text-2xl sm:text-3xl md:text-4xl font-bold break-words">{categoryName}</h1>
+                    <h1 className="text-3xl md:text-4xl lg:text-[42px] font-bold text-[#253D4E] mb-4">{categoryName}</h1>
 
                     {/* Breadcrumb Navigation */}
                     <div className="flex items-center flex-wrap">

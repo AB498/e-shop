@@ -200,7 +200,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-3 sm:p-4 z-50">
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 !mt-0 flex items-center justify-center p-3 sm:p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
         <div className="flex justify-between items-center px-3 sm:px-6 py-3 sm:py-4 border-b">
           <h2 className="text-base sm:text-xl font-semibold text-gray-900 truncate">
@@ -237,7 +237,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -254,7 +254,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     id="sku"
                     value={formData.sku}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -270,7 +270,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     name="category_id"
                     value={formData.category_id}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   >
                     <option value="">Select a category</option>
                     {categories.map((category) => (
@@ -300,7 +300,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     step="0.01"
                     value={formData.price}
                     onChange={handleInputChange}
-                    className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-7 pr-12 text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full pl-7 pr-12 text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 transition-colors"
                     placeholder="0.00"
                   />
                 </div>
@@ -319,7 +319,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     min="0"
                     value={formData.stock}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -338,7 +338,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     step="0.01"
                     value={formData.weight}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -355,7 +355,7 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     rows={3}
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>

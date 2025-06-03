@@ -161,7 +161,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-3 sm:p-4 z-50">
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 !mt-0 flex items-center justify-center p-3 sm:p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
         <div className="flex justify-between items-center px-3 sm:px-6 py-3 sm:py-4 border-b">
           <h2 className="text-base sm:text-xl font-semibold text-gray-900">Edit Promotion</h2>
@@ -196,7 +196,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     required
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     rows={3}
                     value={formData.description || ''}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -251,7 +251,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current.click()}
-                      className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                       disabled={uploadingImage}
                     >
                       {uploadingImage ? 'Uploading...' : 'Change Image'}
@@ -275,7 +275,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="image_url"
                     value={formData.image_url || ''}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                     placeholder="https://example.com/image.jpg or /images/custom.jpg"
                   />
                 </div>
@@ -296,7 +296,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="link_url"
                     value={formData.link_url || ''}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                     placeholder="https://example.com/page or /products?category=1"
                   />
                 </div>
@@ -313,7 +313,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   >
                     <option value="carousel">Carousel</option>
                     <option value="banner">Banner</option>
@@ -333,7 +333,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     name="position"
                     value={formData.position}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   >
                     <option value="home">Home Page</option>
                     <option value="category">Category Page</option>
@@ -355,7 +355,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="start_date"
                     value={formData.start_date}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -371,7 +371,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="end_date"
                     value={formData.end_date}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -388,7 +388,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     id="discount"
                     value={formData.discount || ''}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                     placeholder="e.g., 25"
                   />
                 </div>
@@ -408,7 +408,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     max="100"
                     value={formData.priority}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
                 <p className="mt-1 text-xs text-gray-500">
@@ -424,7 +424,7 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     type="checkbox"
                     checked={formData.is_active}
                     onChange={handleInputChange}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
                   />
                   <label htmlFor="is_active" className="ml-2 block text-xs sm:text-sm text-gray-700">
                     Active
@@ -460,14 +460,14 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>

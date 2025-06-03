@@ -62,7 +62,7 @@ export default function AddDeliveryPersonModal({ onClose, onSubmit }) {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                   />
                 </div>
 
@@ -77,7 +77,7 @@ export default function AddDeliveryPersonModal({ onClose, onSubmit }) {
                     required
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                   />
                 </div>
 
@@ -91,7 +91,7 @@ export default function AddDeliveryPersonModal({ onClose, onSubmit }) {
                     id="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                   />
                 </div>
 
@@ -105,7 +105,7 @@ export default function AddDeliveryPersonModal({ onClose, onSubmit }) {
                     id="address"
                     value={formData.address}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                   />
                 </div>
 
@@ -119,7 +119,7 @@ export default function AddDeliveryPersonModal({ onClose, onSubmit }) {
                     id="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                   />
                 </div>
 
@@ -133,7 +133,7 @@ export default function AddDeliveryPersonModal({ onClose, onSubmit }) {
                     id="area"
                     value={formData.area}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                   />
                 </div>
 
@@ -146,7 +146,7 @@ export default function AddDeliveryPersonModal({ onClose, onSubmit }) {
                     id="status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                   >
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
@@ -164,7 +164,7 @@ export default function AddDeliveryPersonModal({ onClose, onSubmit }) {
                     rows="3"
                     value={formData.notes}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                   ></textarea>
                 </div>
               </div>

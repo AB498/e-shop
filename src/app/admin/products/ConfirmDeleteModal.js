@@ -33,7 +33,7 @@ export default function ConfirmDeleteModal({ product, onClose, onDelete }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-3 z-50">
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 !mt-0 flex items-center justify-center p-3 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-sm w-full overflow-hidden">
         <div className="flex justify-between items-center px-4 py-3 border-b">
           <h2 className="text-base sm:text-lg font-semibold text-gray-900">Confirm Delete</h2>

@@ -163,7 +163,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-3 z-50">
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 !mt-0 flex items-center justify-center p-3 z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[85vh] overflow-hidden">
         <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3 border-b">
           <h2 className="text-base sm:text-lg font-semibold text-gray-900">Add New Product</h2>
@@ -198,7 +198,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -215,7 +215,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     id="sku"
                     value={formData.sku}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -231,7 +231,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     name="category_id"
                     value={formData.category_id}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   >
                     <option value="">Select a category</option>
                     {categories.map((category) => (
@@ -261,7 +261,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     step="0.01"
                     value={formData.price}
                     onChange={handleInputChange}
-                    className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-7 pr-12 text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full pl-7 pr-12 text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 transition-colors"
                     placeholder="0.00"
                   />
                 </div>
@@ -280,7 +280,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     min="0"
                     value={formData.stock}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -299,7 +299,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     step="0.01"
                     value={formData.weight}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -316,7 +316,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     rows={3}
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -334,7 +334,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.type}
                     onChange={handleInputChange}
                     placeholder="e.g., Shampoo, Grooming Kit"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -352,7 +352,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.brand}
                     onChange={handleInputChange}
                     placeholder="e.g., GroomMaster, BeardCraft"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -370,7 +370,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.sizes.join(', ')}
                     onChange={(e) => handleArrayInputChange('sizes', e.target.value)}
                     placeholder="e.g., 30ml, 50ml, 100ml"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
                 <p className="mt-1 text-xs text-gray-500">Separate multiple sizes with commas</p>
@@ -389,7 +389,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.colors.join(', ')}
                     onChange={(e) => handleArrayInputChange('colors', e.target.value)}
                     placeholder="e.g., Black, Silver, Blue"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
                 <p className="mt-1 text-xs text-gray-500">Separate multiple colors with commas</p>
@@ -408,7 +408,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.tags.join(', ')}
                     onChange={(e) => handleArrayInputChange('tags', e.target.value)}
                     placeholder="e.g., Men's Grooming, Shaving, Kit, Essential"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
                 <p className="mt-1 text-xs text-gray-500">Separate multiple tags with commas</p>
@@ -427,7 +427,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.material}
                     onChange={handleInputChange}
                     placeholder="e.g., Natural Oils, Stainless Steel"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -445,7 +445,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.origin_country}
                     onChange={handleInputChange}
                     placeholder="e.g., Germany, USA, Morocco"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -463,7 +463,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.mfg_date}
                     onChange={handleInputChange}
                     placeholder="e.g., Mar 15, 2024"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>
@@ -481,7 +481,7 @@ export default function AddProductModal({ onClose, onSubmit }) {
                     value={formData.lifespan}
                     onChange={handleInputChange}
                     placeholder="e.g., 2 years, 18 months"
-                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
                   />
                 </div>
               </div>

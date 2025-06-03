@@ -109,7 +109,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 !mt-0 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
           <h2 className="text-base sm:text-lg font-medium text-gray-900">Edit Admin User</h2>
@@ -136,7 +136,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                   id="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${errors.firstName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
+                  className={`mt-1 block w-full border ${errors.firstName ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white text-sm transition-colors`}
                 />
                 {errors.firstName && (
                   <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.firstName}</p>
@@ -152,7 +152,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                   id="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${errors.lastName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
+                  className={`mt-1 block w-full border ${errors.lastName ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white text-sm transition-colors`}
                 />
                 {errors.lastName && (
                   <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.lastName}</p>
@@ -171,7 +171,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                 id="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`mt-1 block w-full border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
+                className={`mt-1 block w-full border ${errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white text-sm transition-colors`}
               />
               {errors.email && (
                 <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.email}</p>
@@ -190,7 +190,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                   id="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${errors.password ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
+                  className={`mt-1 block w-full border ${errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white text-sm transition-colors`}
                 />
                 {errors.password && (
                   <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.password}</p>
@@ -206,7 +206,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                   id="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm`}
+                  className={`mt-1 block w-full border ${errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50'} rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white text-sm transition-colors`}
                 />
                 {errors.confirmPassword && (
                   <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.confirmPassword}</p>
@@ -225,7 +225,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
                 id="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                className="mt-1 block w-full border border-gray-300 bg-gray-50 rounded-md shadow-sm py-1.5 sm:py-2 px-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white text-sm transition-colors"
               />
             </div>
 

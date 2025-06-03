@@ -124,7 +124,7 @@ export default function ContactMessageModal({
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
                 rows={4}
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                className="w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                 placeholder="Add notes about this message or how it was handled..."
               />
               <div className="mt-2 flex justify-end">
