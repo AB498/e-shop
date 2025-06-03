@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import ImageWithFallback from '../ui/ImageWithFallback';
+import { uploadMultipleFilesToS3 } from '@/lib/client-upload';
 
 export default function MultipleImageUpload({ onImagesChange, initialImages = [] }) {
   const [images, setImages] = useState(initialImages);
@@ -20,9 +21,8 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
     setError(null);
 
     try {
-      const uploadedImages = [];
-
-      // Process each file
+      // Validate files before upload
+      const validFiles = [];
       for (const file of files) {
         // Validate file type
         const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -31,40 +31,36 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
           continue;
         }
 
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          setError(`File "${file.name}" exceeds the 5MB size limit`);
+        // Validate file size (max 50MB for client-side upload)
+        if (file.size > 50 * 1024 * 1024) {
+          setError(`File "${file.name}" exceeds the 50MB size limit`);
           continue;
         }
 
-        // Create form data for upload
-        const uploadFormData = new FormData();
-        uploadFormData.append('file', file);
-        uploadFormData.append('folder', 'products');
-
-        // Upload the image
-        const response = await fetch('/api/s3-upload', {
-          method: 'POST',
-          body: uploadFormData,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `Failed to upload ${file.name}`);
-        }
-
-        const data = await response.json();
-
-        // Add to uploaded images
-        uploadedImages.push({
-          id: Date.now() + Math.random(), // Temporary ID for UI purposes
-          url: data.url,
-          key: data.key,
-          altText: file.name.split('.')[0], // Use filename as alt text
-          position: images.length + uploadedImages.length,
-          isPrimary: images.length === 0 && uploadedImages.length === 0, // First image is primary
-        });
+        validFiles.push(file);
       }
+
+      if (validFiles.length === 0) {
+        return;
+      }
+
+      // Upload files using client-side upload
+      const uploadResult = await uploadMultipleFilesToS3(validFiles, 'products');
+
+      if (!uploadResult.success && uploadResult.errors.length > 0) {
+        const errorMessages = uploadResult.errors.map(err => `${err.file}: ${err.error}`).join(', ');
+        throw new Error(`Upload failed: ${errorMessages}`);
+      }
+
+      // Process successful uploads
+      const uploadedImages = uploadResult.results.map((result, index) => ({
+        id: Date.now() + Math.random() + index, // Temporary ID for UI purposes
+        url: result.url,
+        key: result.key,
+        altText: result.file.split('.')[0], // Use filename as alt text
+        position: images.length + index,
+        isPrimary: images.length === 0 && index === 0, // First image is primary
+      }));
 
       // Update state with new images
       const updatedImages = [...images, ...uploadedImages];
@@ -72,6 +68,13 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
 
       // Notify parent component
       onImagesChange(updatedImages);
+
+      // Show any partial errors
+      if (uploadResult.errors.length > 0) {
+        const errorMessages = uploadResult.errors.map(err => `${err.file}: ${err.error}`).join(', ');
+        setError(`Some uploads failed: ${errorMessages}`);
+      }
+
     } catch (err) {
       console.error('Error uploading images:', err);
       setError(err.message || 'Failed to upload images');
@@ -199,7 +202,7 @@ export default function MultipleImageUpload({ onImagesChange, initialImages = []
       </div>
 
       <p className="text-xs sm:text-sm text-gray-500">
-        PNG, JPG, GIF up to 5MB. Tap on an image to set as primary or remove it.
+        PNG, JPG, GIF up to 50MB. Tap on an image to set as primary or remove it.
       </p>
     </div>
   );

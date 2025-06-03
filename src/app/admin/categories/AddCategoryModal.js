@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { PhotoIcon } from '@heroicons/react/24/outline';
+import { uploadFileToS3 } from '@/lib/client-upload';
 
 export default function AddCategoryModal({ isOpen, onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -58,9 +59,9 @@ export default function AddCategoryModal({ isOpen, onClose, onSubmit }) {
       return;
     }
 
-    // Check file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      setError('Image size should be less than 2MB');
+    // Check file size (max 50MB for client-side upload)
+    if (file.size > 50 * 1024 * 1024) {
+      setError('Image size should be less than 50MB');
       return;
     }
 
@@ -93,28 +94,16 @@ export default function AddCategoryModal({ isOpen, onClose, onSubmit }) {
     setError(null);
 
     try {
-      // If we have a new image file, upload it first
+      // If we have a new image file, upload it first using client-side upload
       if (formData.imageFile) {
-        // Create form data for upload
-        const uploadFormData = new FormData();
-        uploadFormData.append('file', formData.imageFile);
-        uploadFormData.append('folder', 'categories');
+        const uploadResult = await uploadFileToS3(formData.imageFile, 'categories');
 
-        // Upload the image
-        const response = await fetch('/api/s3-upload', {
-          method: 'POST',
-          body: uploadFormData,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to upload image');
+        if (!uploadResult.success) {
+          throw new Error(uploadResult.error || 'Failed to upload image');
         }
 
-        const data = await response.json();
-
         // Update form data with the image URL
-        formData.image = data.url;
+        formData.image = uploadResult.url;
       }
 
       // Remove the imageFile property before submitting
@@ -242,7 +231,7 @@ export default function AddCategoryModal({ isOpen, onClose, onSubmit }) {
                               <p className="mb-2 text-sm text-gray-500">
                                 <span className="font-semibold">Click to upload</span> or drag and drop
                               </p>
-                              <p className="text-xs text-gray-500">PNG, JPG, GIF or WEBP (MAX. 2MB)</p>
+                              <p className="text-xs text-gray-500">PNG, JPG, GIF or WEBP (MAX. 50MB)</p>
                             </div>
                             <input
                               id="file-upload"
