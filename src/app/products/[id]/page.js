@@ -100,23 +100,37 @@ export async function generateMetadata({ params }) {
         ? product.description.replace(/<[^>]*>/g, '').replace(/\n/g, ' ')
         : `Discover ${product.name || 'our products'} at Thai Bangla Store.`;
 
+      // Helper function to check if value is valid (not null, undefined, empty, or "N/A")
+      const isValidValue = (value) => {
+        return value &&
+               value !== 'N/A' &&
+               value !== 'n/a' &&
+               value.trim() !== '' &&
+               value.toLowerCase() !== 'null' &&
+               value.toLowerCase() !== 'undefined';
+      };
+
       // Add key product attributes to description for better SEO
       const attributeParts = [];
 
-      if (product.brand && product.brand !== 'Thai Bangla Store') {
+      if (isValidValue(product.brand) && product.brand !== 'Thai Bangla Store') {
         attributeParts.push(`Brand: ${product.brand}`);
       }
 
-      if (product.type) {
+      if (isValidValue(product.type)) {
         attributeParts.push(`Type: ${product.type}`);
       }
 
-      if (product.originCountry) {
+      if (isValidValue(product.originCountry)) {
         attributeParts.push(`Origin: ${product.originCountry}`);
       }
 
       if (product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0) {
-        attributeParts.push(`Available in: ${product.sizes.slice(0, 3).join(', ')}`);
+        // Filter out N/A values from sizes array
+        const validSizes = product.sizes.filter(size => isValidValue(size));
+        if (validSizes.length > 0) {
+          attributeParts.push(`Available in: ${validSizes.slice(0, 3).join(', ')}`);
+        }
       }
 
       // Combine base description with attributes
@@ -130,27 +144,35 @@ export async function generateMetadata({ params }) {
       cleanDescription = `Discover our products at Thai Bangla Store. Premium quality Thai products delivered to your doorstep.`;
     }
 
-    // Safely calculate discount price if applicable
-    let discountPrice, hasDiscount;
+    // Calculate discount info for keywords
+    let hasDiscount;
     try {
-      discountPrice = product.discountPrice || product.price;
       hasDiscount = product.discountPercentage > 0;
     } catch (error) {
       console.error('Error calculating discount:', error);
-      discountPrice = product.price;
       hasDiscount = false;
     }
 
     // Safely generate keywords based on product attributes including new fields
     let keywords;
     try {
+      // Helper function to check if value is valid (not null, undefined, empty, or "N/A")
+      const isValidKeyword = (value) => {
+        return value &&
+               value !== 'N/A' &&
+               value !== 'n/a' &&
+               value.trim() !== '' &&
+               value.toLowerCase() !== 'null' &&
+               value.toLowerCase() !== 'undefined';
+      };
+
       const baseKeywords = [
         product.name,
         product.category,
-        product.brand, // NEW: Include brand
-        product.type, // NEW: Include product type
-        product.material, // NEW: Include material
-        product.originCountry, // NEW: Include origin country
+        isValidKeyword(product.brand) ? product.brand : null, // Filter N/A
+        isValidKeyword(product.type) ? product.type : null, // Filter N/A
+        isValidKeyword(product.material) ? product.material : null, // Filter N/A
+        isValidKeyword(product.originCountry) ? product.originCountry : null, // Filter N/A
         'Thai products',
         'Bangladesh',
         'beauty products',
@@ -165,14 +187,20 @@ export async function generateMetadata({ params }) {
         'imported products'
       ];
 
-      // Add tags if available
-      const productTags = product.tags && Array.isArray(product.tags) ? product.tags : [];
+      // Add tags if available and filter out N/A values
+      const productTags = product.tags && Array.isArray(product.tags)
+        ? product.tags.filter(tag => isValidKeyword(tag))
+        : [];
 
-      // Add sizes if available
-      const productSizes = product.sizes && Array.isArray(product.sizes) ? product.sizes : [];
+      // Add sizes if available and filter out N/A values
+      const productSizes = product.sizes && Array.isArray(product.sizes)
+        ? product.sizes.filter(size => isValidKeyword(size))
+        : [];
 
-      // Add colors if available
-      const productColors = product.colors && Array.isArray(product.colors) ? product.colors : [];
+      // Add colors if available and filter out N/A values
+      const productColors = product.colors && Array.isArray(product.colors)
+        ? product.colors.filter(color => isValidKeyword(color))
+        : [];
 
       keywords = [
         ...baseKeywords,
@@ -191,18 +219,28 @@ export async function generateMetadata({ params }) {
       // Create SEO-optimized title with key product attributes
       let seoTitle = product.name || 'Product';
 
-      // Add brand if different from store name
-      if (product.brand && product.brand !== 'Thai Bangla Store') {
+      // Helper function to check if value is valid (not null, undefined, empty, or "N/A")
+      const isValidValue = (value) => {
+        return value &&
+               value !== 'N/A' &&
+               value !== 'n/a' &&
+               value.trim() !== '' &&
+               value.toLowerCase() !== 'null' &&
+               value.toLowerCase() !== 'undefined';
+      };
+
+      // Add brand if different from store name and valid
+      if (isValidValue(product.brand) && product.brand !== 'Thai Bangla Store') {
         seoTitle = `${seoTitle} by ${product.brand}`;
       }
 
-      // Add product type for better categorization
-      if (product.type) {
+      // Add product type for better categorization if valid
+      if (isValidValue(product.type)) {
         seoTitle = `${seoTitle} - ${product.type}`;
       }
 
-      // Add origin country for premium positioning
-      if (product.originCountry && product.originCountry !== 'Bangladesh') {
+      // Add origin country for premium positioning if valid
+      if (isValidValue(product.originCountry) && product.originCountry !== 'Bangladesh') {
         seoTitle = `${seoTitle} from ${product.originCountry}`;
       }
 
@@ -270,10 +308,20 @@ export default async function ProductDetailPage(props) {
     if (!isNaN(productId)) {
       const product = await getProductById(productId);
       if (product) {
+        // Helper function to check if value is valid (not null, undefined, empty, or "N/A")
+        const isValidStructuredValue = (value) => {
+          return value &&
+                 value !== 'N/A' &&
+                 value !== 'n/a' &&
+                 value.trim() !== '' &&
+                 value.toLowerCase() !== 'null' &&
+                 value.toLowerCase() !== 'undefined';
+        };
+
         // Create structured data for this product
         const additionalProperties = [];
 
-        if (product.material) {
+        if (isValidStructuredValue(product.material)) {
           additionalProperties.push({
             '@type': 'PropertyValue',
             name: 'Material',
@@ -281,7 +329,7 @@ export default async function ProductDetailPage(props) {
           });
         }
 
-        if (product.originCountry) {
+        if (isValidStructuredValue(product.originCountry)) {
           additionalProperties.push({
             '@type': 'PropertyValue',
             name: 'Country of Origin',
@@ -290,19 +338,25 @@ export default async function ProductDetailPage(props) {
         }
 
         if (product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0) {
-          additionalProperties.push({
-            '@type': 'PropertyValue',
-            name: 'Available Sizes',
-            value: product.sizes.join(', ')
-          });
+          const validSizes = product.sizes.filter(size => isValidStructuredValue(size));
+          if (validSizes.length > 0) {
+            additionalProperties.push({
+              '@type': 'PropertyValue',
+              name: 'Available Sizes',
+              value: validSizes.join(', ')
+            });
+          }
         }
 
         if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
-          additionalProperties.push({
-            '@type': 'PropertyValue',
-            name: 'Available Colors',
-            value: product.colors.join(', ')
-          });
+          const validColors = product.colors.filter(color => isValidStructuredValue(color));
+          if (validColors.length > 0) {
+            additionalProperties.push({
+              '@type': 'PropertyValue',
+              name: 'Available Colors',
+              value: validColors.join(', ')
+            });
+          }
         }
 
         const discountPrice = product.discountPrice || product.price;
