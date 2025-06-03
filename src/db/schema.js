@@ -60,7 +60,7 @@ const categories = pgTable('categories', {
 const products = pgTable('products', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
-  sku: text('sku').notNull().unique(),
+  sku: text('sku').unique(),
   category_id: integer('category_id').references(() => categories.id),
   price: decimal('price', { precision: 10, scale: 2 }).notNull(),
   stock: integer('stock').default(0).notNull(),

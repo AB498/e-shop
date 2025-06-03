@@ -83,8 +83,8 @@ export default function AddProductModal({ onClose, onSubmit }) {
       setError(null);
 
       // Validate required fields
-      if (!formData.name || !formData.sku || !formData.price) {
-        setError('Name, SKU, and price are required');
+      if (!formData.name || !formData.price) {
+        setError('Name and price are required');
         return;
       }
 
@@ -186,14 +186,13 @@ export default function AddProductModal({ onClose, onSubmit }) {
               {/* SKU */}
               <div className="col-span-1 sm:col-span-3">
                 <label htmlFor="sku" className="block text-xs sm:text-sm font-medium text-gray-700">
-                  SKU *
+                  SKU
                 </label>
                 <div className="mt-1">
                   <input
                     type="text"
                     name="sku"
                     id="sku"
-                    required
                     value={formData.sku}
                     onChange={handleInputChange}
                     className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"

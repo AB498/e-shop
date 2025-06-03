@@ -596,19 +596,21 @@ export async function getProductById(productId) {
 export async function createProduct(productData) {
   try {
     // Validate required fields
-    if (!productData.name || !productData.sku || !productData.price) {
-      throw new Error('Name, SKU, and price are required');
+    if (!productData.name || !productData.price) {
+      throw new Error('Name and price are required');
     }
 
-    // Check if SKU already exists
-    const existingSku = await db
-      .select({ id: products.id })
-      .from(products)
-      .where(eq(products.sku, productData.sku))
-      .limit(1);
+    // Check if SKU already exists (only if SKU is provided)
+    if (productData.sku && productData.sku.trim() !== '') {
+      const existingSku = await db
+        .select({ id: products.id })
+        .from(products)
+        .where(eq(products.sku, productData.sku))
+        .limit(1);
 
-    if (existingSku.length) {
-      throw new Error('SKU already exists');
+      if (existingSku.length) {
+        throw new Error('SKU already exists');
+      }
     }
 
     // Reset the sequence for the products table to avoid primary key conflicts
@@ -629,7 +631,7 @@ export async function createProduct(productData) {
         .insert(products)
         .values({
           name: productData.name,
-          sku: productData.sku,
+          sku: productData.sku && productData.sku.trim() !== '' ? productData.sku : null,
           category_id: productData.category_id || null,
           price: productData.price,
           stock: productData.stock || 0,
@@ -689,22 +691,24 @@ export async function createProduct(productData) {
 export async function updateProduct(productId, productData) {
   try {
     // Validate required fields
-    if (!productData.name || !productData.sku || !productData.price) {
-      throw new Error('Name, SKU, and price are required');
+    if (!productData.name || !productData.price) {
+      throw new Error('Name and price are required');
     }
 
-    // Check if SKU already exists and belongs to another product
-    const existingSku = await db
-      .select({ id: products.id })
-      .from(products)
-      .where(and(
-        eq(products.sku, productData.sku),
-        sql`${products.id} != ${productId}`
-      ))
-      .limit(1);
+    // Check if SKU already exists and belongs to another product (only if SKU is provided)
+    if (productData.sku && productData.sku.trim() !== '') {
+      const existingSku = await db
+        .select({ id: products.id })
+        .from(products)
+        .where(and(
+          eq(products.sku, productData.sku),
+          sql`${products.id} != ${productId}`
+        ))
+        .limit(1);
 
-    if (existingSku.length) {
-      throw new Error('SKU already exists for another product');
+      if (existingSku.length) {
+        throw new Error('SKU already exists for another product');
+      }
     }
 
     // Update product with error handling
@@ -713,7 +717,7 @@ export async function updateProduct(productId, productData) {
         .update(products)
         .set({
           name: productData.name,
-          sku: productData.sku,
+          sku: productData.sku && productData.sku.trim() !== '' ? productData.sku : null,
           category_id: productData.category_id || null,
           price: productData.price,
           stock: productData.stock !== undefined ? productData.stock : products.stock,

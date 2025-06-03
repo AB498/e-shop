@@ -32,8 +32,8 @@ export async function POST(request) {
     const body = await request.json();
 
     // Validate required fields
-    if (!body.name || !body.sku || !body.price) {
-      return NextResponse.json({ error: 'Name, SKU, and price are required' }, { status: 400 });
+    if (!body.name || !body.price) {
+      return NextResponse.json({ error: 'Name and price are required' }, { status: 400 });
     }
 
     // Create product

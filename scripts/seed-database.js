@@ -299,7 +299,7 @@ async function seedDatabase() {
         CREATE TABLE products (
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
-          sku TEXT NOT NULL UNIQUE,
+          sku TEXT UNIQUE,
           category_id INTEGER REFERENCES categories(id),
           price DECIMAL(10, 2) NOT NULL,
           stock INTEGER NOT NULL DEFAULT 0,
