@@ -57,7 +57,7 @@ export default function AddCourierModal({ onClose, onSubmit }) {
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
+                  className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                 />
               </div>
 
@@ -71,7 +71,7 @@ export default function AddCourierModal({ onClose, onSubmit }) {
                   rows="3"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
+                  className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                 ></textarea>
               </div>
 
@@ -85,7 +85,7 @@ export default function AddCourierModal({ onClose, onSubmit }) {
                   required
                   value={formData.courier_type}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
+                  className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                 >
                   <option value="external">External (Third-party)</option>
                   <option value="internal">Internal (Our own delivery)</option>
@@ -99,7 +99,7 @@ export default function AddCourierModal({ onClose, onSubmit }) {
                   id="is_active"
                   checked={formData.is_active}
                   onChange={handleInputChange}
-                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
                 />
                 <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">
                   Active
@@ -109,14 +109,14 @@ export default function AddCourierModal({ onClose, onSubmit }) {
               <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                 <button
                   type="submit"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:col-start-2 sm:text-sm"
                 >
                   Add
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                 >
                   Cancel
                 </button>

@@ -288,6 +288,11 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
               <div className="sm:col-span-6">
                 <label htmlFor="link_url" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Link URL
+                  {promotion && (
+                    <span className="ml-2 text-xs text-emerald-600 font-normal">
+                      (Current ID: #{promotion.id})
+                    </span>
+                  )}
                 </label>
                 <div className="mt-1">
                   <input
@@ -300,6 +305,9 @@ export default function EditPromotionModal({ promotion, onClose, onSubmit }) {
                     placeholder="https://example.com/page or /products?category=1"
                   />
                 </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  Current promotion ID is shown above. You can modify this URL as needed.
+                </p>
               </div>
 
               {/* Type and Position */}

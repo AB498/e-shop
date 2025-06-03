@@ -127,7 +127,7 @@ export default function AssignDeliveryPersonModal({ order, onClose, onAssign }) 
                       name="deliveryPerson"
                       value={selectedPersonId}
                       onChange={(e) => setSelectedPersonId(e.target.value)}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                      className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:bg-white sm:text-sm px-3 py-2 transition-colors"
                     >
                       {deliveryPersons.map((person) => (
                         <option key={person.id} value={person.id}>
@@ -141,7 +141,7 @@ export default function AssignDeliveryPersonModal({ order, onClose, onAssign }) 
                     <button
                       type="submit"
                       disabled={submitting || deliveryPersons.length === 0}
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:col-start-2 sm:text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
                     >
                       {submitting ? (
                         <>
@@ -155,7 +155,7 @@ export default function AssignDeliveryPersonModal({ order, onClose, onAssign }) 
                     <button
                       type="button"
                       onClick={onClose}
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                     >
                       Cancel
                     </button>

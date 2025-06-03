@@ -220,6 +220,23 @@ export async function getPromotionById(id) {
 }
 
 /**
+ * Get the next available promotion ID
+ * @returns {Promise<number>} - Next available promotion ID
+ */
+export async function getNextPromotionId() {
+  try {
+    const [result] = await db
+      .select({ maxId: sql`COALESCE(MAX(${promotions.id}), 0) + 1` })
+      .from(promotions);
+
+    return result?.maxId || 1;
+  } catch (error) {
+    console.error('Error fetching next promotion ID:', error);
+    return 1;
+  }
+}
+
+/**
  * Create a new promotion
  * @param {object} data - Promotion data
  * @param {File} imageFile - Image file (optional)

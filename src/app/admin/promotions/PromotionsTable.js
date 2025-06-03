@@ -26,6 +26,16 @@ export default function PromotionsTable({
   // Table columns configuration
   const columns = [
     {
+      id: 'id',
+      key: 'id',
+      label: 'ID',
+      cell: ({ row }) => (
+        <span className="text-sm font-mono text-gray-900">
+          #{row.id}
+        </span>
+      ),
+    },
+    {
       id: 'image',
       key: 'image',
       label: 'Image',

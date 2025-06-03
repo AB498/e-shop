@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { XMarkIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import { createPromotion } from '@/lib/actions/promotions';
+import { createPromotion, getNextPromotionId } from '@/lib/actions/promotions';
 import { updateProductPromotionRelations } from '@/lib/actions/product-promotions';
 import MultiSelectProducts from '@/components/admin/MultiSelectProducts';
 
@@ -25,7 +25,28 @@ export default function AddPromotionModal({ onClose, onSubmit }) {
   const [error, setError] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [nextPromotionId, setNextPromotionId] = useState(null);
   const fileInputRef = useRef(null);
+
+  // Fetch next promotion ID when component mounts
+  useEffect(() => {
+    const fetchNextId = async () => {
+      try {
+        const nextId = await getNextPromotionId();
+        setNextPromotionId(nextId);
+
+        // Update the link_url with the next promotion ID
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          link_url: `/products?promotion=${nextId}`,
+        }));
+      } catch (error) {
+        console.error('Error fetching next promotion ID:', error);
+      }
+    };
+
+    fetchNextId();
+  }, []);
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -270,6 +291,11 @@ export default function AddPromotionModal({ onClose, onSubmit }) {
               <div className="sm:col-span-6">
                 <label htmlFor="link_url" className="block text-xs sm:text-sm font-medium text-gray-700">
                   Link URL
+                  {nextPromotionId && (
+                    <span className="ml-2 text-xs text-emerald-600 font-normal">
+                      (Next ID: #{nextPromotionId})
+                    </span>
+                  )}
                 </label>
                 <div className="mt-1">
                   <input
@@ -282,6 +308,9 @@ export default function AddPromotionModal({ onClose, onSubmit }) {
                     placeholder="https://example.com/page or /products?category=1"
                   />
                 </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  Pre-filled with next promotion ID. You can modify this URL as needed.
+                </p>
               </div>
 
               {/* Type and Position */}
