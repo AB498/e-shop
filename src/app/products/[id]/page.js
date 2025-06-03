@@ -1,7 +1,24 @@
 import ProductDetail from '@/components/products/ProductDetail';
 import { getProductById } from '@/lib/actions/products';
 
-export const dynamic = 'force-dynamic';
+// Enable static generation for better performance
+export const dynamic = 'auto';
+export const revalidate = 3600; // Revalidate every hour
+
+// Generate static params for popular products (improves initial load time)
+export async function generateStaticParams() {
+  try {
+    // Pre-generate pages for the first 50 products (most popular/recent)
+    const staticParams = [];
+    for (let i = 1; i <= 50; i++) {
+      staticParams.push({ id: i.toString() });
+    }
+    return staticParams;
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
 
 export async function generateMetadata({ params }) {
   // Default metadata in case of errors
@@ -32,7 +49,6 @@ export async function generateMetadata({ params }) {
   };
 
   // Safely parse the ID parameter
-  let { _ } = await params;
   let productId;
   try {
     productId = parseInt(params?.id);
@@ -172,8 +188,34 @@ export async function generateMetadata({ params }) {
 
 
     try {
+      // Create SEO-optimized title with key product attributes
+      let seoTitle = product.name || 'Product';
+
+      // Add brand if different from store name
+      if (product.brand && product.brand !== 'Thai Bangla Store') {
+        seoTitle = `${seoTitle} by ${product.brand}`;
+      }
+
+      // Add product type for better categorization
+      if (product.type) {
+        seoTitle = `${seoTitle} - ${product.type}`;
+      }
+
+      // Add origin country for premium positioning
+      if (product.originCountry && product.originCountry !== 'Bangladesh') {
+        seoTitle = `${seoTitle} from ${product.originCountry}`;
+      }
+
+      // Add store name
+      seoTitle = `${seoTitle} | Thai Bangla Store`;
+
+      // Ensure title is not too long (recommended max 60 characters for SEO)
+      if (seoTitle.length > 60) {
+        seoTitle = `${product.name} - ${product.type || 'Premium Product'} | Thai Bangla Store`;
+      }
+
       return {
-        title: `${product.name || 'Product'} - Thai Bangla Store`,
+        title: seoTitle,
         description: cleanDescription.substring(0, 160), // Limit description to 160 characters for SEO
         keywords: keywords,
 

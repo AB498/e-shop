@@ -71,10 +71,16 @@ const ProductListSection = ({
       const fetchProducts = async () => {
         try {
           setLoading(true);
-          // Add cache-busting parameter to prevent browser caching
-          const cacheKey = Date.now();
-          const url = `${fetchUrl}${fetchUrl.includes('?') ? '&' : '?'}limit=${fetchLimit}&_cache=${cacheKey}`;
-          const response = await fetch(url, { cache: 'no-store' });
+          // Use clean URL without cache-busting parameters for better SEO
+          const url = `${fetchUrl}${fetchUrl.includes('?') ? '&' : '?'}limit=${fetchLimit}`;
+          const response = await fetch(url, {
+            cache: 'no-store',
+            // Use headers for cache control instead of URL parameters
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache'
+            }
+          });
           const data = await response.json();
 
           if (isMounted && data.products) {

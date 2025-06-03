@@ -31,6 +31,7 @@ const ProductImageGallery = ({ images, image, name, discountPercentage = 0 }) =>
           src={activeImage.trim() || "/images/product-image.png"}
           alt={productImages[activeImageIndex]?.altText || name || "Product"}
           fill
+          priority={activeImageIndex === 0} // Priority loading for main image
           className="object-contain w-full h-full"
           onError={(e) => { e.target.src = "/images/product-image.png"; }}
         />
