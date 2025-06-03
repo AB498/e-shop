@@ -9,7 +9,8 @@ import StarRating from '@/components/ui/StarRating';
 
 const ProductInfo = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState(product?.defaultSize || '60g');
+  const [selectedSize, setSelectedSize] = useState(product?.defaultSize || (product?.sizes && product.sizes.length > 0 ? product.sizes[0] : '60g'));
+  const [selectedColor, setSelectedColor] = useState(product?.colors && product.colors.length > 0 ? product.colors[0] : null);
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
@@ -48,7 +49,7 @@ const ProductInfo = ({ product }) => {
 
       <div className="flex items-center gap-1 sm:gap-1.5 mb-2 sm:mb-3">
         <StarRating
-          rating={product?.rating || 4.5}
+          rating={product?.rating || 0}
           reviewCount={product?.reviewCount || 0}
           size="md"
           showCount={true}
@@ -69,9 +70,9 @@ const ProductInfo = ({ product }) => {
         )}
       </div>
 
-      <p className="text-[#7E7E7E] text-sm sm:text-base mb-3 sm:mb-4">
+      <div className="text-[#7E7E7E] text-sm sm:text-base mb-3 sm:mb-4 whitespace-pre-wrap">
         {product?.description || 'No description available.'}
-      </p>
+      </div>
 
       <div className="mb-3 sm:mb-4">
         {product?.sizes && product.sizes.length > 0 && (
@@ -95,16 +96,52 @@ const ProductInfo = ({ product }) => {
           </div>
         )}
 
+        {product?.colors && product.colors.length > 0 && (
+          <div className="flex items-center gap-1 sm:gap-1.5 mb-2">
+            <span className="text-[#7E7E7E] text-sm font-semibold">Color:</span>
+            <div className="flex flex-wrap gap-1 sm:gap-1.5">
+              {product.colors.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setSelectedColor(color)}
+                  className={`${
+                    selectedColor === color
+                      ? 'bg-[#3BB77E] text-white border-[#3BB77E]'
+                      : 'border border-[#ECECEC] text-[#7E7E7E] hover:bg-[#F5F5F5]'
+                  } rounded-sm px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm transition-colors`}
+                >
+                  {color}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-y-1 mb-3 sm:mb-4">
           <div className="w-full sm:w-1/2 flex items-center gap-1">
             <span className="text-[#7E7E7E] text-xs sm:text-sm">Type: {product?.type || 'N/A'}</span>
           </div>
+          {product?.brand && (
+            <div className="w-full sm:w-1/2 flex items-center gap-1">
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">Brand: {product.brand}</span>
+            </div>
+          )}
           <div className="w-full sm:w-1/2 flex items-center gap-1">
             <span className="text-[#7E7E7E] text-xs sm:text-sm">MFG: {product?.mfgDate || 'N/A'}</span>
           </div>
           <div className="w-full sm:w-1/2 flex items-center gap-1">
             <span className="text-[#7E7E7E] text-xs sm:text-sm">LIFE: {product?.lifespan || 'N/A'}</span>
           </div>
+          {product?.material && (
+            <div className="w-full sm:w-1/2 flex items-center gap-1">
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">Material: {product.material}</span>
+            </div>
+          )}
+          {product?.originCountry && (
+            <div className="w-full sm:w-1/2 flex items-center gap-1">
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">Origin: {product.originCountry}</span>
+            </div>
+          )}
           <div className="w-full sm:w-1/2 flex items-center gap-1">
             <span className="text-[#7E7E7E] text-xs sm:text-sm">SKU: {product?.sku || 'N/A'}</span>
           </div>
@@ -154,7 +191,8 @@ const ProductInfo = ({ product }) => {
               const cartItem = {
                 ...product,
                 quantity,
-                size: selectedSize
+                size: selectedSize,
+                color: selectedColor
               };
               // Pass false to prevent duplicate toast from CartContext
               addToCart(cartItem, quantity);

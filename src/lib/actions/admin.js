@@ -452,7 +452,17 @@ export async function getAllProductsWithInventory() {
         categoryId: products.category_id,
         image: products.image,
         description: products.description,
-        createdAt: products.created_at
+        createdAt: products.created_at,
+        // New product attributes
+        sizes: products.sizes,
+        colors: products.colors,
+        tags: products.tags,
+        type: products.type,
+        brand: products.brand,
+        material: products.material,
+        originCountry: products.origin_country,
+        mfgDate: products.mfg_date,
+        lifespan: products.lifespan,
       })
       .from(products)
       .orderBy(products.name);
@@ -549,7 +559,17 @@ export async function getProductById(productId) {
         image: products.image,
         categoryId: products.category_id,
         createdAt: products.created_at,
-        updatedAt: products.updated_at
+        updatedAt: products.updated_at,
+        // New product attributes
+        sizes: products.sizes,
+        colors: products.colors,
+        tags: products.tags,
+        type: products.type,
+        brand: products.brand,
+        material: products.material,
+        originCountry: products.origin_country,
+        mfgDate: products.mfg_date,
+        lifespan: products.lifespan,
       })
       .from(products)
       .where(eq(products.id, productId))
@@ -638,6 +658,16 @@ export async function createProduct(productData) {
           weight: productData.weight || 0.5,
           description: productData.description || '',
           image: productData.image || '',
+          // New product attributes
+          sizes: productData.sizes || null,
+          colors: productData.colors || null,
+          tags: productData.tags || null,
+          type: productData.type || null,
+          brand: productData.brand || null,
+          material: productData.material || null,
+          origin_country: productData.origin_country || null,
+          mfg_date: productData.mfg_date || null,
+          lifespan: productData.lifespan || null,
           created_at: new Date(),
           updated_at: new Date()
         })
@@ -724,6 +754,16 @@ export async function updateProduct(productId, productData) {
           weight: productData.weight || products.weight,
           description: productData.description || products.description,
           image: productData.image || products.image,
+          // New product attributes
+          sizes: productData.sizes !== undefined ? productData.sizes : products.sizes,
+          colors: productData.colors !== undefined ? productData.colors : products.colors,
+          tags: productData.tags !== undefined ? productData.tags : products.tags,
+          type: productData.type !== undefined ? productData.type : products.type,
+          brand: productData.brand !== undefined ? productData.brand : products.brand,
+          material: productData.material !== undefined ? productData.material : products.material,
+          origin_country: productData.origin_country !== undefined ? productData.origin_country : products.origin_country,
+          mfg_date: productData.mfg_date !== undefined ? productData.mfg_date : products.mfg_date,
+          lifespan: productData.lifespan !== undefined ? productData.lifespan : products.lifespan,
           updated_at: new Date()
         })
         .where(eq(products.id, productId))

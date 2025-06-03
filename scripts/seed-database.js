@@ -19,7 +19,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fs from 'fs/promises';
 import bcrypt from 'bcrypt';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { getProductsFromSheets } from './seed-products-from-sheets.js';
@@ -306,6 +306,15 @@ async function seedDatabase() {
           weight DECIMAL(5, 2) DEFAULT 0.5,
           description TEXT,
           image TEXT,
+          sizes JSONB,
+          colors JSONB,
+          tags JSONB,
+          type TEXT,
+          brand TEXT,
+          material TEXT,
+          origin_country TEXT,
+          mfg_date TEXT,
+          lifespan TEXT,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )
@@ -734,8 +743,126 @@ async function seedDatabase() {
       console.log(`Added ${additionalProducts.length} additional product variations`);
       console.log(`Total products to insert: ${combinedProducts.length}`);
 
+      // Helper function to add default attributes to products that don't have them
+      const addDefaultAttributes = (product) => {
+        // If product already has new attributes, return as is
+        if (product.sizes || product.colors || product.tags || product.type || product.brand) {
+          return product;
+        }
+
+        // Default attributes based on category
+        const categoryDefaults = {
+          1: { // Grooming
+            sizes: ['Standard', 'Travel Size'],
+            colors: ['Black', 'Silver'],
+            tags: ['Men\'s Grooming', 'Essential', 'Daily Use'],
+            type: 'Grooming Product',
+            brand: 'GroomCare',
+            material: 'Natural Ingredients',
+            origin_country: 'USA',
+            mfg_date: 'Mar 2024',
+            lifespan: '2 years'
+          },
+          2: { // Hair Care
+            sizes: ['250ml', '500ml'],
+            colors: ['Clear', 'White'],
+            tags: ['Hair Care', 'Professional', 'All Hair Types'],
+            type: 'Hair Product',
+            brand: 'HairPro',
+            material: 'Natural Extracts',
+            origin_country: 'France',
+            mfg_date: 'Apr 2024',
+            lifespan: '3 years'
+          },
+          3: { // Health and Beauty
+            sizes: ['50ml', '100ml'],
+            colors: ['White', 'Clear'],
+            tags: ['Skincare', 'Beauty', 'Health'],
+            type: 'Beauty Product',
+            brand: 'BeautyCare',
+            material: 'Natural Botanicals',
+            origin_country: 'South Korea',
+            mfg_date: 'Mar 2024',
+            lifespan: '2 years'
+          },
+          4: { // Hot Offers
+            sizes: ['Standard'],
+            colors: ['Various'],
+            tags: ['Special Offer', 'Limited Time', 'Best Value'],
+            type: 'Special Offer',
+            brand: 'Various Brands',
+            material: 'Mixed',
+            origin_country: 'Various',
+            mfg_date: 'Apr 2024',
+            lifespan: '2 years'
+          },
+          5: { // Kids and Baby
+            sizes: ['Baby Size', 'Family Size'],
+            colors: ['Pink', 'Blue', 'White'],
+            tags: ['Baby Care', 'Gentle', 'Hypoallergenic'],
+            type: 'Baby Product',
+            brand: 'BabyCare',
+            material: 'Gentle Formula',
+            origin_country: 'Germany',
+            mfg_date: 'Mar 2024',
+            lifespan: '3 years'
+          },
+          6: { // Makeup
+            sizes: ['Standard', 'Mini'],
+            colors: ['Various Shades'],
+            tags: ['Makeup', 'Beauty', 'Cosmetics'],
+            type: 'Makeup Product',
+            brand: 'MakeupPro',
+            material: 'Cosmetic Grade',
+            origin_country: 'Italy',
+            mfg_date: 'Apr 2024',
+            lifespan: '2 years'
+          },
+          7: { // Perfume
+            sizes: ['30ml', '50ml', '100ml'],
+            colors: ['Clear', 'Amber'],
+            tags: ['Fragrance', 'Perfume', 'Luxury'],
+            type: 'Fragrance',
+            brand: 'FragranceLux',
+            material: 'Premium Oils',
+            origin_country: 'France',
+            mfg_date: 'Mar 2024',
+            lifespan: '5 years'
+          },
+          8: { // Top Brands
+            sizes: ['Premium', 'Luxury'],
+            colors: ['Elegant'],
+            tags: ['Luxury', 'Premium', 'Top Brand'],
+            type: 'Luxury Product',
+            brand: 'Luxury Brand',
+            material: 'Premium Quality',
+            origin_country: 'Switzerland',
+            mfg_date: 'Apr 2024',
+            lifespan: '3 years'
+          }
+        };
+
+        const defaults = categoryDefaults[product.category_id] || categoryDefaults[1];
+
+        return {
+          ...product,
+          sizes: defaults.sizes,
+          colors: defaults.colors,
+          tags: defaults.tags,
+          type: defaults.type,
+          brand: defaults.brand,
+          material: defaults.material,
+          origin_country: defaults.origin_country,
+          mfg_date: defaults.mfg_date,
+          lifespan: defaults.lifespan
+        };
+      };
+
+      // Add default attributes to products that don't have them
+      const productsWithAttributes = combinedProducts.map(addDefaultAttributes);
+
       // Insert products
-      await insertData('products', schema.products, combinedProducts);
+      await insertData('products', schema.products, productsWithAttributes);
 
       // Combine all product images
       const combinedProductImages = [...sheetsData.productImages, ...productImagesSeed, ...additionalImages];
@@ -759,21 +886,37 @@ async function seedDatabase() {
       // Insert product promotions after products and promotions are inserted
       console.log(`Inserting ${productPromotionsSeed.length} product promotions...`);
 
-      // First, insert the original product promotions with conflict handling
+      // First, insert the original product promotions with efficient batch handling
       console.log('Inserting original product promotions with conflict handling...');
-      for (const promotion of productPromotionsSeed) {
+      if (productPromotionsSeed.length > 0) {
         try {
           await db.insert(schema.productPromotions)
-            .values(promotion)
+            .values(productPromotionsSeed)
             .onConflictDoUpdate({
               target: [schema.productPromotions.product_id, schema.productPromotions.promotion_id],
               set: {
-                discount_percentage: promotion.discount_percentage,
+                discount_percentage: sql`excluded.discount_percentage`,
                 updated_at: new Date()
               }
             });
         } catch (error) {
-          console.error(`Error inserting product promotion for product ${promotion.product_id}, promotion ${promotion.promotion_id}:`, error.message);
+          console.error('Error inserting batch of original product promotions:', error.message);
+          // Fallback to individual inserts if batch fails
+          for (const promotion of productPromotionsSeed) {
+            try {
+              await db.insert(schema.productPromotions)
+                .values(promotion)
+                .onConflictDoUpdate({
+                  target: [schema.productPromotions.product_id, schema.productPromotions.promotion_id],
+                  set: {
+                    discount_percentage: promotion.discount_percentage,
+                    updated_at: new Date()
+                  }
+                });
+            } catch (individualError) {
+              console.error(`Error inserting individual product promotion for product ${promotion.product_id}:`, individualError.message);
+            }
+          }
         }
       }
 
@@ -815,26 +958,40 @@ async function seedDatabase() {
       if (additionalProductPromotions.length > 0) {
         console.log(`Adding ${additionalProductPromotions.length} product promotions for additional products...`);
 
-        // Use batching for better performance but with conflict handling
-        const batchSize = 50;
+        // Use efficient batch inserts
+        const batchSize = 100;
         for (let i = 0; i < additionalProductPromotions.length; i += batchSize) {
           const batch = additionalProductPromotions.slice(i, i + batchSize);
           console.log(`Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(additionalProductPromotions.length/batchSize)}`);
 
-          // Process each item in the batch
-          for (const promotion of batch) {
-            try {
-              await db.insert(schema.productPromotions)
-                .values(promotion)
-                .onConflictDoUpdate({
-                  target: [schema.productPromotions.product_id, schema.productPromotions.promotion_id],
-                  set: {
-                    discount_percentage: promotion.discount_percentage,
-                    updated_at: new Date()
-                  }
-                });
-            } catch (error) {
-              console.error(`Error inserting additional product promotion for product ${promotion.product_id}, promotion ${promotion.promotion_id}:`, error.message);
+          try {
+            // Insert entire batch at once with conflict handling
+            await db.insert(schema.productPromotions)
+              .values(batch)
+              .onConflictDoUpdate({
+                target: [schema.productPromotions.product_id, schema.productPromotions.promotion_id],
+                set: {
+                  discount_percentage: sql`excluded.discount_percentage`,
+                  updated_at: new Date()
+                }
+              });
+          } catch (error) {
+            console.error(`Error inserting batch of product promotions:`, error.message);
+            // Fallback to individual inserts for this batch if batch insert fails
+            for (const promotion of batch) {
+              try {
+                await db.insert(schema.productPromotions)
+                  .values(promotion)
+                  .onConflictDoUpdate({
+                    target: [schema.productPromotions.product_id, schema.productPromotions.promotion_id],
+                    set: {
+                      discount_percentage: promotion.discount_percentage,
+                      updated_at: new Date()
+                    }
+                  });
+              } catch (individualError) {
+                console.error(`Error inserting individual product promotion for product ${promotion.product_id}:`, individualError.message);
+              }
             }
           }
         }

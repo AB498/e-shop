@@ -524,6 +524,16 @@ export async function getProductById(id) {
         stock: products.stock,
         sku: products.sku,
         createdAt: products.created_at,
+        // New product attributes
+        sizes: products.sizes,
+        colors: products.colors,
+        tags: products.tags,
+        type: products.type,
+        brand: products.brand,
+        material: products.material,
+        originCountry: products.origin_country,
+        mfgDate: products.mfg_date,
+        lifespan: products.lifespan,
       })
       .from(products)
       .where(eq(products.id, id))
@@ -641,13 +651,18 @@ export async function getProductById(id) {
       // Add review data
       rating: reviewStats[0]?.averageRating ? parseFloat(reviewStats[0].averageRating) : 0.0,
       reviewCount: reviewStats[0]?.totalReviews ? parseInt(reviewStats[0].totalReviews) : 0,
-      // Add some additional fields for the product detail page
-      sizes: ['50g', '60g', '80g'], // Mock sizes
-      defaultSize: '60g', // Mock default size
-      type: 'Thai Brand', // Mock type
-      mfgDate: 'Apr 4, 2025', // Mock manufacturing date
-      lifespan: '70 days', // Mock lifespan
-      tags: ['Beauty', 'Thai Brand', 'Skin Care'], // Mock tags
+      // Add product attributes from database
+      sizes: product.sizes || [],
+      colors: product.colors || [],
+      tags: product.tags || [],
+      type: product.type || 'N/A',
+      brand: product.brand || 'N/A',
+      material: product.material || 'N/A',
+      originCountry: product.originCountry || 'N/A',
+      mfgDate: product.mfgDate || 'N/A',
+      lifespan: product.lifespan || 'N/A',
+      // Set default size to first available size or fallback
+      defaultSize: (product.sizes && product.sizes.length > 0) ? product.sizes[0] : '60g',
     };
   } catch (error) {
     console.error('Error fetching product by ID:', error);

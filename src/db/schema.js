@@ -67,6 +67,16 @@ const products = pgTable('products', {
   weight: decimal('weight', { precision: 5, scale: 2 }).default('0.5'),
   description: text('description'),
   image: text('image'),
+  // New product attributes
+  sizes: jsonb('sizes'), // Array of available sizes
+  colors: jsonb('colors'), // Array of available colors
+  tags: jsonb('tags'), // Array of product tags
+  type: text('type'), // Product type (e.g., "Thai Brand", "Organic")
+  brand: text('brand'), // Brand name
+  material: text('material'), // Material composition
+  origin_country: text('origin_country'), // Country of origin
+  mfg_date: text('mfg_date'), // Manufacturing date
+  lifespan: text('lifespan'), // Product lifespan/expiry info
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
 })

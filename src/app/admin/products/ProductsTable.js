@@ -58,6 +58,28 @@ export default function ProductsTable({
       responsive: 'md'
     },
     {
+      key: 'brand',
+      label: 'Brand',
+      sortable: true,
+      responsive: 'lg',
+      render: (product) => (
+        <div className="max-w-xs truncate" title={product.brand}>
+          {product.brand || 'N/A'}
+        </div>
+      )
+    },
+    {
+      key: 'type',
+      label: 'Type',
+      sortable: true,
+      responsive: 'lg',
+      render: (product) => (
+        <div className="max-w-xs truncate" title={product.type}>
+          {product.type || 'N/A'}
+        </div>
+      )
+    },
+    {
       key: 'price',
       label: 'Price',
       sortable: true,

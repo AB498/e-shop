@@ -16,6 +16,16 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
     weight: product.weight || 0.5,
     description: product.description || '',
     image: product.image || '', // Keep for backward compatibility
+    // New product attributes
+    sizes: product.sizes || [],
+    colors: product.colors || [],
+    tags: product.tags || [],
+    type: product.type || '',
+    brand: product.brand || '',
+    material: product.material || '',
+    origin_country: product.originCountry || '',
+    mfg_date: product.mfgDate || '',
+    lifespan: product.lifespan || '',
   });
 
   const [productImages, setProductImages] = useState([]);
@@ -82,6 +92,16 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
         [name]: value,
       }));
     }
+  };
+
+  // Handle array inputs (sizes, colors, tags)
+  const handleArrayInputChange = (fieldName, value) => {
+    // Split by comma and trim whitespace
+    const arrayValue = value.split(',').map(item => item.trim()).filter(item => item !== '');
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [fieldName]: arrayValue,
+    }));
   };
 
   // Handle images change from MultipleImageUpload component
@@ -335,6 +355,171 @@ export default function EditProductModal({ product, onClose, onSubmit }) {
                     rows={3}
                     value={formData.description}
                     onChange={handleInputChange}
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+              </div>
+
+              {/* Product Type */}
+              <div className="sm:col-span-3">
+                <label htmlFor="type" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Product Type
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="type"
+                    id="type"
+                    value={formData.type}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Shampoo, Grooming Kit"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+              </div>
+
+              {/* Brand */}
+              <div className="sm:col-span-3">
+                <label htmlFor="brand" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Brand
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="brand"
+                    id="brand"
+                    value={formData.brand}
+                    onChange={handleInputChange}
+                    placeholder="e.g., GroomMaster, BeardCraft"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+              </div>
+
+              {/* Sizes */}
+              <div className="sm:col-span-3">
+                <label htmlFor="sizes" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Available Sizes
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="sizes"
+                    id="sizes"
+                    value={formData.sizes.join(', ')}
+                    onChange={(e) => handleArrayInputChange('sizes', e.target.value)}
+                    placeholder="e.g., 30ml, 50ml, 100ml"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Separate multiple sizes with commas</p>
+              </div>
+
+              {/* Colors */}
+              <div className="sm:col-span-3">
+                <label htmlFor="colors" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Available Colors
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="colors"
+                    id="colors"
+                    value={formData.colors.join(', ')}
+                    onChange={(e) => handleArrayInputChange('colors', e.target.value)}
+                    placeholder="e.g., Black, Silver, Blue"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Separate multiple colors with commas</p>
+              </div>
+
+              {/* Tags */}
+              <div className="sm:col-span-6">
+                <label htmlFor="tags" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Product Tags
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="tags"
+                    id="tags"
+                    value={formData.tags.join(', ')}
+                    onChange={(e) => handleArrayInputChange('tags', e.target.value)}
+                    placeholder="e.g., Men's Grooming, Shaving, Kit, Essential"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Separate multiple tags with commas</p>
+              </div>
+
+              {/* Material */}
+              <div className="sm:col-span-3">
+                <label htmlFor="material" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Material
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="material"
+                    id="material"
+                    value={formData.material}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Natural Oils, Stainless Steel"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+              </div>
+
+              {/* Origin Country */}
+              <div className="sm:col-span-3">
+                <label htmlFor="origin_country" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Origin Country
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="origin_country"
+                    id="origin_country"
+                    value={formData.origin_country}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Germany, USA, Morocco"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+              </div>
+
+              {/* Manufacturing Date */}
+              <div className="sm:col-span-3">
+                <label htmlFor="mfg_date" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Manufacturing Date
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="mfg_date"
+                    id="mfg_date"
+                    value={formData.mfg_date}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Mar 15, 2024"
+                    className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
+                  />
+                </div>
+              </div>
+
+              {/* Lifespan */}
+              <div className="sm:col-span-3">
+                <label htmlFor="lifespan" className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Product Lifespan
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="lifespan"
+                    id="lifespan"
+                    value={formData.lifespan}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 2 years, 18 months"
                     className="shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full text-xs sm:text-sm border-gray-300 rounded-md py-1.5"
                   />
                 </div>

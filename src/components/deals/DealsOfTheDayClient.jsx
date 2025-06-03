@@ -21,7 +21,7 @@ const DealsOfTheDayClient = () => {
         });
 
         // Filter products that have discounts (discountPercentage > 0)
-        const dealsProducts = allProducts.filter(product => product.discountPercentage > 0);
+        const dealsProducts = allProducts;
         
         // Take only the first 3 deals
         setProducts(dealsProducts.slice(0, 3));

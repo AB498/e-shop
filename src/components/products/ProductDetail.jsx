@@ -59,6 +59,7 @@ export default async function ProductDetail({ productId }) {
             sku={product.sku}
             type={product.type}
             productId={product.id}
+            product={product}
           />
 
           {/* Related Products Section */}

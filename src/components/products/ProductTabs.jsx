@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 
-const ProductTabs = ({ description, sku, type, productId }) => {
+const ProductTabs = ({ description, sku, type, productId, product }) => {
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState('description');
   const [reviews, setReviews] = useState([]);
@@ -23,15 +23,18 @@ const ProductTabs = ({ description, sku, type, productId }) => {
   const productDescription = description ||
     "This product has no description yet. Please check back later for more information.";
 
-  // Sample specifications
+  // Product specifications using real data
   const specifications = [
-    { label: "Type Of Packing", value: "Bottle" },
-    { label: "Color", value: "Green, Pink, Powder Blue, Purple" },
-    { label: "Quantity Per Case", value: "100ml" },
-    { label: "Ethyl Alcohol", value: "70%" },
-    { label: "Piece In One", value: "Carton" },
     { label: "SKU", value: sku || "N/A" },
-    { label: "Type", value: type || "N/A" },
+    { label: "Type", value: type || product?.type || "N/A" },
+    { label: "Brand", value: product?.brand || "N/A" },
+    { label: "Material", value: product?.material || "N/A" },
+    { label: "Origin Country", value: product?.originCountry || "N/A" },
+    { label: "Manufacturing Date", value: product?.mfgDate || "N/A" },
+    { label: "Lifespan", value: product?.lifespan || "N/A" },
+    ...(product?.sizes && product.sizes.length > 0 ? [{ label: "Available Sizes", value: product.sizes.join(", ") }] : []),
+    ...(product?.colors && product.colors.length > 0 ? [{ label: "Available Colors", value: product.colors.join(", ") }] : []),
+    ...(product?.tags && product.tags.length > 0 ? [{ label: "Tags", value: product.tags.join(", ") }] : []),
   ];
 
   // Fetch reviews when the component mounts or when the productId changes
@@ -190,9 +193,9 @@ const ProductTabs = ({ description, sku, type, productId }) => {
       {/* Description Tab */}
       {activeTab === 'description' && (
         <div className="text-[#7E7E7E]">
-          <p className="text-sm mb-2 sm:mb-3">
+          <div className="text-sm mb-2 sm:mb-3 whitespace-pre-wrap">
             {productDescription}
-          </p>
+          </div>
 
           {/* Product Specifications */}
           <div className="mb-3 sm:mb-4">
@@ -252,20 +255,24 @@ const ProductTabs = ({ description, sku, type, productId }) => {
           <h3 className="text-[#253D4E] text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Vendor Information</h3>
           <div className="mb-3 sm:mb-4">
             <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
-              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Vendor</span>
-              <span className="text-[#7E7E7E] text-xs sm:text-sm">Thai Beauty Products Co.</span>
+              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Brand</span>
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">{product?.brand || 'N/A'}</span>
             </div>
             <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
               <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Store Name</span>
-              <span className="text-[#7E7E7E] text-xs sm:text-sm">Thai Beauty Official Store</span>
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">Thai Bangla Store</span>
             </div>
             <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
-              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Address</span>
-              <span className="text-[#7E7E7E] text-xs sm:text-sm">123 Beauty Street, Bangkok, Thailand</span>
+              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Origin Country</span>
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">{product?.originCountry || 'N/A'}</span>
             </div>
             <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
-              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Vendor Rating</span>
-              <span className="text-[#7E7E7E] text-xs sm:text-sm">4.8/5 (256 ratings)</span>
+              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Material</span>
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">{product?.material || 'N/A'}</span>
+            </div>
+            <div className="flex mb-1.5 border-b border-[#ECECEC] pb-1.5">
+              <span className="text-[#7E7E7E] text-xs sm:text-sm font-semibold w-1/3">Manufacturing Date</span>
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">{product?.mfgDate || 'N/A'}</span>
             </div>
           </div>
         </div>

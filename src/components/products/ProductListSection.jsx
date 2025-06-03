@@ -47,6 +47,8 @@ const ProductListSection = ({
 
   const [displayProducts, setDisplayProducts] = useState(products);
   const [loading, setLoading] = useState(!!fetchUrl);
+  // State to track wishlist operations for all products - MOVED HERE to avoid conditional hook calls
+  const [wishlistLoadingStates, setWishlistLoadingStates] = useState({});
 
   // Function to scroll the container left or right (for scroll view)
   const scroll = (direction) => {
@@ -158,8 +160,7 @@ const ProductListSection = ({
     );
   }
 
-  // State to track wishlist operations for all products
-  const [wishlistLoadingStates, setWishlistLoadingStates] = useState({});
+
 
   // Function to handle wishlist operations
   const handleWishlistAction = (productId, isInWishlist) => {
