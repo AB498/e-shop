@@ -77,12 +77,38 @@ export async function generateMetadata({ params }) {
       };
     }
 
-    // Safely create a clean description without HTML tags
+    // Safely create a clean description without HTML tags, enhanced with product attributes
     let cleanDescription;
     try {
-      cleanDescription = product.description
-        ? product.description.replace(/<[^>]*>/g, '')
-        : `Discover ${product.name || 'our products'} at Thai Bangla Store. Premium quality Thai products delivered to your doorstep.`;
+      let baseDescription = product.description
+        ? product.description.replace(/<[^>]*>/g, '').replace(/\n/g, ' ')
+        : `Discover ${product.name || 'our products'} at Thai Bangla Store.`;
+
+      // Add key product attributes to description for better SEO
+      const attributeParts = [];
+
+      if (product.brand && product.brand !== 'Thai Bangla Store') {
+        attributeParts.push(`Brand: ${product.brand}`);
+      }
+
+      if (product.type) {
+        attributeParts.push(`Type: ${product.type}`);
+      }
+
+      if (product.originCountry) {
+        attributeParts.push(`Origin: ${product.originCountry}`);
+      }
+
+      if (product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0) {
+        attributeParts.push(`Available in: ${product.sizes.slice(0, 3).join(', ')}`);
+      }
+
+      // Combine base description with attributes
+      if (attributeParts.length > 0) {
+        cleanDescription = `${baseDescription} ${attributeParts.join(' | ')}. Premium quality products delivered to your doorstep.`;
+      } else {
+        cleanDescription = `${baseDescription} Premium quality Thai products delivered to your doorstep.`;
+      }
     } catch (error) {
       console.error('Error cleaning description:', error);
       cleanDescription = `Discover our products at Thai Bangla Store. Premium quality Thai products delivered to your doorstep.`;
@@ -99,12 +125,16 @@ export async function generateMetadata({ params }) {
       hasDiscount = false;
     }
 
-    // Safely generate keywords based on product attributes
+    // Safely generate keywords based on product attributes including new fields
     let keywords;
     try {
-      keywords = [
+      const baseKeywords = [
         product.name,
         product.category,
+        product.brand, // NEW: Include brand
+        product.type, // NEW: Include product type
+        product.material, // NEW: Include material
+        product.originCountry, // NEW: Include origin country
         'Thai products',
         'Bangladesh',
         'beauty products',
@@ -117,55 +147,29 @@ export async function generateMetadata({ params }) {
         'premium products',
         'Thai beauty',
         'imported products'
+      ];
+
+      // Add tags if available
+      const productTags = product.tags && Array.isArray(product.tags) ? product.tags : [];
+
+      // Add sizes if available
+      const productSizes = product.sizes && Array.isArray(product.sizes) ? product.sizes : [];
+
+      // Add colors if available
+      const productColors = product.colors && Array.isArray(product.colors) ? product.colors : [];
+
+      keywords = [
+        ...baseKeywords,
+        ...productTags,
+        ...productSizes,
+        ...productColors
       ].filter(Boolean).join(', ');
     } catch (error) {
       console.error('Error generating keywords:', error);
       keywords = 'Thai products, Bangladesh, beauty products, health products, Thai Bangla Store, online shopping';
     }
 
-    // Safely create structured data for product (JSON-LD)
-    let structuredData;
-    try {
-      structuredData = {
-        '@context': 'https://schema.org/',
-        '@type': 'Product',
-        name: product.name || 'Thai Product',
-        description: cleanDescription,
-        image: product.image || '/images/logo.png',
-        sku: product.sku || `product-${productId}`,
-        mpn: product.sku || `product-${productId}`,
-        brand: {
-          '@type': 'Brand',
-          name: 'Thai Bangla Store'
-        },
-        offers: {
-          '@type': 'Offer',
-          url: `https://thaibanglastore.com/products/${productId}`,
-          priceCurrency: 'BDT',
-          price: hasDiscount ? discountPrice : product.price,
-          priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
-          itemCondition: 'https://schema.org/NewCondition',
-          availability: (product.stock > 0) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-          seller: {
-            '@type': 'Organization',
-            name: 'Thai Bangla Store'
-          }
-        }
-      };
-    } catch (error) {
-      console.error('Error creating structured data:', error);
-      structuredData = {
-        '@context': 'https://schema.org/',
-        '@type': 'Product',
-        name: 'Thai Product',
-        description: 'Premium Thai product from Thai Bangla Store',
-        image: '/images/logo.png',
-        brand: {
-          '@type': 'Brand',
-          name: 'Thai Bangla Store'
-        }
-      };
-    }
+
 
     try {
       return {
@@ -199,10 +203,7 @@ export async function generateMetadata({ params }) {
           images: [product.image || '/images/logo.png'],
         },
 
-        // Structured data for rich results in search engines
-        other: {
-          'application/ld+json': JSON.stringify(structuredData),
-        },
+
       };
     } catch (error) {
       console.error('Error creating final metadata:', error);
@@ -220,11 +221,103 @@ export default async function ProductDetailPage(props) {
   await params;
   const { id } = params;
 
+  // Fetch product data for structured data
+  let structuredData = null;
+  try {
+    const productId = parseInt(id);
+    if (!isNaN(productId)) {
+      const product = await getProductById(productId);
+      if (product) {
+        // Create structured data for this product
+        const additionalProperties = [];
+
+        if (product.material) {
+          additionalProperties.push({
+            '@type': 'PropertyValue',
+            name: 'Material',
+            value: product.material
+          });
+        }
+
+        if (product.originCountry) {
+          additionalProperties.push({
+            '@type': 'PropertyValue',
+            name: 'Country of Origin',
+            value: product.originCountry
+          });
+        }
+
+        if (product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0) {
+          additionalProperties.push({
+            '@type': 'PropertyValue',
+            name: 'Available Sizes',
+            value: product.sizes.join(', ')
+          });
+        }
+
+        if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
+          additionalProperties.push({
+            '@type': 'PropertyValue',
+            name: 'Available Colors',
+            value: product.colors.join(', ')
+          });
+        }
+
+        const discountPrice = product.discountPrice || product.price;
+        const hasDiscount = product.discountPercentage > 0;
+
+        structuredData = {
+          '@context': 'https://schema.org/',
+          '@type': 'Product',
+          name: product.name,
+          description: product.description?.replace(/<[^>]*>/g, '').replace(/\n/g, ' ') || `Discover ${product.name} at Thai Bangla Store`,
+          image: product.image || '/images/logo.png',
+          sku: product.sku || `product-${productId}`,
+          mpn: product.sku || `product-${productId}`,
+          category: product.category || 'Beauty & Health',
+          brand: {
+            '@type': 'Brand',
+            name: product.brand || 'Thai Bangla Store'
+          },
+          manufacturer: {
+            '@type': 'Organization',
+            name: product.brand || 'Thai Bangla Store'
+          },
+          ...(additionalProperties.length > 0 && { additionalProperty: additionalProperties }),
+          ...(product.tags && Array.isArray(product.tags) && product.tags.length > 0 && {
+            keywords: product.tags.join(', ')
+          }),
+          offers: {
+            '@type': 'Offer',
+            url: `https://thai-bangla-store.vercel.app/products/${productId}`,
+            priceCurrency: 'BDT',
+            price: hasDiscount ? discountPrice : product.price,
+            priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+            itemCondition: 'https://schema.org/NewCondition',
+            availability: (product.stock > 0) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            seller: {
+              '@type': 'Organization',
+              name: 'Thai Bangla Store'
+            }
+          }
+        };
+      }
+    }
+  } catch (error) {
+    console.error('Error creating structured data for page:', error);
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Inject structured data */}
+      {structuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      )}
 
       <ProductDetail productId={id} />
-
     </div>
   );
 }
