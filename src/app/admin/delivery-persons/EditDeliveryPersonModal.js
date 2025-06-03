@@ -18,7 +18,8 @@ export default function EditDeliveryPersonModal({ deliveryPerson, onClose, onSub
   // Initialize form data with delivery person data
   useEffect(() => {
     if (deliveryPerson) {
-      setFormData({
+      setFormData(prevFormData => ({
+        ...prevFormData,
         name: deliveryPerson.name || '',
         phone: deliveryPerson.phone || '',
         email: deliveryPerson.email || '',
@@ -27,7 +28,7 @@ export default function EditDeliveryPersonModal({ deliveryPerson, onClose, onSub
         area: deliveryPerson.area || '',
         status: deliveryPerson.status || 'active',
         notes: deliveryPerson.notes || '',
-      });
+      }));
     }
   }, [deliveryPerson]);
 

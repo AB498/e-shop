@@ -48,15 +48,15 @@ export default function AddProductModal({ onClose, onSubmit }) {
 
     // Handle numeric inputs
     if (type === 'number') {
-      setFormData({
-        ...formData,
+      setFormData(prevFormData => ({
+        ...prevFormData,
         [name]: value === '' ? '' : Number(value),
-      });
+      }));
     } else {
-      setFormData({
-        ...formData,
+      setFormData(prevFormData => ({
+        ...prevFormData,
         [name]: value,
-      });
+      }));
     }
   };
 
@@ -67,10 +67,10 @@ export default function AddProductModal({ onClose, onSubmit }) {
     // If there's a primary image, also set it as the main image for backward compatibility
     const primaryImage = images.find(img => img.isPrimary);
     if (primaryImage) {
-      setFormData({
-        ...formData,
+      setFormData(prevFormData => ({
+        ...prevFormData,
         image: primaryImage.url,
-      });
+      }));
     }
   };
 

@@ -14,12 +14,13 @@ export default function EditCourierModal({ courier, onClose, onSubmit }) {
   // Initialize form data with courier data
   useEffect(() => {
     if (courier) {
-      setFormData({
+      setFormData(prevFormData => ({
+        ...prevFormData,
         name: courier.name || '',
         description: courier.description || '',
         courier_type: courier.courier_type || 'external',
         is_active: courier.is_active !== undefined ? courier.is_active : true,
-      });
+      }));
     }
   }, [courier]);
 

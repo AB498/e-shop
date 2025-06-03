@@ -19,11 +19,12 @@ export default function AccountSettings() {
   // Fetch user data on component mount
   useEffect(() => {
     if (session?.user) {
-      setFormData({
+      setFormData(prevFormData => ({
+        ...prevFormData,
         firstName: session.user.firstName || '',
         lastName: session.user.lastName || '',
         email: session.user.email || '',
-      });
+      }));
       setLoading(false);
     }
   }, [session]);
@@ -91,11 +92,12 @@ export default function AccountSettings() {
   const handleCancel = () => {
     // Reset form to original values
     if (session?.user) {
-      setFormData({
+      setFormData(prevFormData => ({
+        ...prevFormData,
         firstName: session.user.firstName || '',
         lastName: session.user.lastName || '',
         email: session.user.email || '',
-      });
+      }));
     }
     setError(null);
     setSuccess(null);

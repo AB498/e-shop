@@ -150,10 +150,11 @@ export default function DeliveryPage() {
 
       // Clear form if successful
       if (response.ok) {
-        setFormData({
+        setFormData(prevFormData => ({
+          ...prevFormData,
           orderId: '',
           otp: '',
-        });
+        }));
       }
     } catch (error) {
       setVerificationResult({

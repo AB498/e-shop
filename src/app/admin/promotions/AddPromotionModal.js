@@ -32,10 +32,10 @@ export default function AddPromotionModal({ onClose, onSubmit }) {
     const { name, value, type, checked } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
 
-    setFormData({
-      ...formData,
+    setFormData(prevFormData => ({
+      ...prevFormData,
       [name]: newValue,
-    });
+    }));
 
     // If discount is changed, update all selected products with the new discount value
     if (name === 'discount' && selectedProducts.length > 0) {

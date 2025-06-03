@@ -24,7 +24,8 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
   // Initialize form data with user data
   useEffect(() => {
     if (user) {
-      setFormData({
+      setFormData(prevFormData => ({
+        ...prevFormData,
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         email: user.email || '',
@@ -36,7 +37,7 @@ export default function EditUserModal({ user, onClose, onSubmit }) {
         postCode: user.postCode || '',
         country: user.country || '',
         region: user.region || '',
-      });
+      }));
     }
   }, [user]);
 

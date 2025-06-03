@@ -32,7 +32,8 @@ export default function EditLocationModal({
   // Initialize form data when location changes
   useEffect(() => {
     if (location) {
-      setFormData({
+      setFormData(prevFormData => ({
+        ...prevFormData,
         name: location.name || '',
         contact_name: location.contact_name || '',
         contact_number: location.contact_number || '',
@@ -43,7 +44,7 @@ export default function EditLocationModal({
         area_id: location.area_id ? location.area_id.toString() : '',
         is_default: location.is_default || false,
         is_active: location.is_active !== undefined ? location.is_active : true
-      });
+      }));
     }
   }, [location]);
 
