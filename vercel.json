@@ -1,0 +1,22 @@
+{
+  "functions": {
+    "src/app/api/admin/backups/route.js": {
+      "maxDuration": 60
+    },
+    "src/app/api/admin/backups/[id]/restore/route.js": {
+      "maxDuration": 60
+    },
+    "src/app/api/admin/backups/[id]/download/route.js": {
+      "maxDuration": 60
+    },
+    "src/app/api/cron/backup/route.js": {
+      "maxDuration": 60
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/backup",
+      "schedule": "0 2 * * *"
+    }
+  ]
+}

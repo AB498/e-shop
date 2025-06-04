@@ -254,6 +254,20 @@ const settings = pgTable('settings', {
   updated_at: timestamp('updated_at').defaultNow(),
 })
 
+// Database backups table for tracking backup metadata
+const databaseBackups = pgTable('database_backups', {
+  id: serial('id').primaryKey(),
+  filename: text('filename').notNull().unique(),
+  s3_key: text('s3_key').notNull(),
+  file_size: integer('file_size').notNull(), // Size in bytes
+  backup_type: text('backup_type').default('full').notNull(), // 'full', 'incremental'
+  status: text('status').default('completed').notNull(), // 'in_progress', 'completed', 'failed'
+  created_by: text('created_by').default('system').notNull(), // 'system', 'admin'
+  metadata: jsonb('metadata'), // Additional backup information
+  created_at: timestamp('created_at').defaultNow(),
+  completed_at: timestamp('completed_at'),
+})
+
 // Product reviews table
 const productReviews = pgTable('product_reviews', {
   id: serial('id').primaryKey(),
@@ -289,6 +303,7 @@ export {
   productPromotions,
   paymentTransactions,
   settings,
+  databaseBackups,
   contactMessages,
   productReviews,
   userRoleEnum,

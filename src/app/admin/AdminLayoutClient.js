@@ -22,9 +22,10 @@ import {
   CurrencyDollarIcon,
   SparklesIcon,
   EnvelopeIcon,
-  StarIcon
+  StarIcon,
+  CloudArrowDownIcon
 } from "@heroicons/react/24/outline";
-import { FiPackage, FiTruck, FiShoppingCart, FiUsers, FiSettings, FiDollarSign, FiLogOut, FiMail } from "react-icons/fi";
+import { FiPackage, FiTruck, FiShoppingCart, FiUsers, FiSettings, FiDollarSign, FiLogOut, FiMail, FiDatabase } from "react-icons/fi";
 
 // Icon mapping object
 const iconComponents = {
@@ -41,7 +42,8 @@ const iconComponents = {
   CurrencyDollarIcon,
   SparklesIcon,
   EnvelopeIcon,
-  StarIcon
+  StarIcon,
+  CloudArrowDownIcon
 };
 
 // Custom icon mapping object
@@ -53,7 +55,8 @@ const customIconComponents = {
   FiUser: () => <FiUsers className="w-4 h-4 sm:w-5 sm:h-5" />,
   FiSettings: () => <FiSettings className="w-4 h-4 sm:w-5 sm:h-5" />,
   FiDollarSign: () => <FiDollarSign className="w-4 h-4 sm:w-5 sm:h-5" />,
-  FiMail: () => <FiMail className="w-4 h-4 sm:w-5 sm:h-5" />
+  FiMail: () => <FiMail className="w-4 h-4 sm:w-5 sm:h-5" />,
+  FiDatabase: () => <FiDatabase className="w-4 h-4 sm:w-5 sm:h-5" />
 };
 
 export default function AdminLayoutClient({

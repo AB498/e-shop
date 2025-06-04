@@ -13,6 +13,7 @@
     "test-order": "node scripts/test-order.js",
     "test-webhook": "node scripts/test-webhook.js",
     "migrate-courier": "node scripts/migrate-courier-status.js",
+    "migrate-backups": "node scripts/migrate-add-backups-table.js",
     "reset-sequence": "node scripts/reset-sequence.js",
     "reset-products": "node scripts/reset-products-sequence.js",
     "reset-contact-messages": "node scripts/reset-contact-messages-sequence.js"

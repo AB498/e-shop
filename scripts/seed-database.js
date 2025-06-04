@@ -194,6 +194,7 @@ async function seedDatabase() {
         'DROP TABLE IF EXISTS users CASCADE',
         'DROP TABLE IF EXISTS files CASCADE',
         'DROP TABLE IF EXISTS settings CASCADE',
+        'DROP TABLE IF EXISTS database_backups CASCADE',
         'DROP TABLE IF EXISTS contact_messages CASCADE',
         'DROP TYPE IF EXISTS user_role CASCADE',
         'DROP TYPE IF EXISTS order_status CASCADE',
@@ -478,6 +479,22 @@ async function seedDatabase() {
         )
       `);
 
+      // Database backups table for tracking backup metadata
+      await pool.query(`
+        CREATE TABLE database_backups (
+          id SERIAL PRIMARY KEY,
+          filename TEXT NOT NULL UNIQUE,
+          s3_key TEXT NOT NULL,
+          file_size INTEGER NOT NULL,
+          backup_type TEXT DEFAULT 'full' NOT NULL,
+          status TEXT DEFAULT 'completed' NOT NULL,
+          created_by TEXT DEFAULT 'system' NOT NULL,
+          metadata JSONB,
+          created_at TIMESTAMP DEFAULT NOW(),
+          completed_at TIMESTAMP
+        )
+      `);
+
       // Product reviews table
       await pool.query(`
         CREATE TABLE product_reviews (
@@ -618,6 +635,7 @@ async function seedDatabase() {
         'SELECT setval(pg_get_serial_sequence(\'couriers\', \'id\'), COALESCE((SELECT MAX(id) FROM couriers), 1), true)',
         'SELECT setval(pg_get_serial_sequence(\'delivery_persons\', \'id\'), COALESCE((SELECT MAX(id) FROM delivery_persons), 1), true)',
         'SELECT setval(pg_get_serial_sequence(\'settings\', \'id\'), COALESCE((SELECT MAX(id) FROM settings), 1), true)',
+        'SELECT setval(pg_get_serial_sequence(\'database_backups\', \'id\'), COALESCE((SELECT MAX(id) FROM database_backups), 1), true)',
         'SELECT setval(pg_get_serial_sequence(\'contact_messages\', \'id\'), COALESCE((SELECT MAX(id) FROM contact_messages), 1), true)'
       ];
 

@@ -7,7 +7,7 @@ const DealsOfTheDay = async () => {
   // Fetch products with discounts/promotions directly in the server component
   const { products } = await getAllProducts({
     page: 1,
-    limit: 3,
+    limit: 5,
     sortBy: 'created_at',
     sortOrder: 'desc'
   });

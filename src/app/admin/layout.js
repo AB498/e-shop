@@ -122,6 +122,12 @@ export default async function AdminLayout({ children }) {
       iconName: 'CogIcon',
       customIconName: 'FiSettings'
     },
+    {
+      name: 'Database Backups',
+      href: '/admin/backups',
+      iconName: 'CloudArrowDownIcon',
+      customIconName: 'FiDatabase'
+    },
   ];
 
   // Return the AdminLayoutClient component with the server-fetched data

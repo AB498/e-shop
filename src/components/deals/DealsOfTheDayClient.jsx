@@ -24,7 +24,7 @@ const DealsOfTheDayClient = () => {
         const dealsProducts = allProducts;
         
         // Take only the first 3 deals
-        setProducts(dealsProducts.slice(0, 3));
+        setProducts(dealsProducts.slice(0, 5));
       } catch (error) {
         console.error('Error fetching deals products:', error);
         setProducts([]);
