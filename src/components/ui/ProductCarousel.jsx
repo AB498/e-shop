@@ -311,6 +311,10 @@ export default function ProductCarousel({
     }
   }, [isMobile, enableSwipingRow1, enableSwipingRow2]);
 
+  if(products.length === 0) {
+    return null;
+  }
+
   return (
     <section className={`py-4 sm:py-6 md:py-8 lg:py-10 relative ${className}`}>
       {/* Apply custom styles */}
@@ -418,7 +422,7 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow1}
                 >
                   {firstRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${'w-full sm:max-w-[240px] mx-auto'}`}>
+                    <SwiperSlide key={product.id} className={`${'w-full sm:max-w-[240px] mr-auto'}`}>
                       <div className="bg-white rounded-lg shadow-sm relative h-full flex flex-col group overflow-visible">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
@@ -608,7 +612,7 @@ export default function ProductCarousel({
                   allowTouchMove={enableSwipingRow2}
                 >
                   {secondRowProducts.map((product) => (
-                    <SwiperSlide key={product.id} className={`${'w-full sm:max-w-[240px] mx-auto'}`}>
+                    <SwiperSlide key={product.id} className={`${'w-full sm:max-w-[240px] mr-auto'}`}>
                       <div className="bg-white rounded-lg shadow-sm relative h-full flex flex-col group overflow-visible">
                         {/* Product Image with Link or Quick View */}
                         {isLandingPage ? (
