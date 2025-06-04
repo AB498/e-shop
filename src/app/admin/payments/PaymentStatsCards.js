@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  CurrencyDollarIcon,
+  BanknotesIcon,
   CheckCircleIcon,
   XCircleIcon,
   ClockIcon
@@ -48,9 +48,9 @@ export default function PaymentStatsCards({ stats, isLoading }) {
     {
       title: 'Total Revenue',
       value: formatCurrency(stats.totalAmount),
-      icon: CurrencyDollarIcon,
+      icon: BanknotesIcon,
       color: 'bg-emerald-500',
-      prefix: 'BDT ',
+      prefix: '৳',
       suffix: '',
     },
     {

@@ -18,9 +18,9 @@ export default function PaymentDetailsModal({ transaction, onClose }) {
   };
 
   // Format currency for display
-  const formatCurrency = (amount, currency = 'BDT') => {
+  const formatCurrency = (amount, currency = '৳') => {
     if (amount === null || amount === undefined) return 'N/A';
-    return `${currency} ${parseFloat(amount).toFixed(2)}`;
+    return `${currency}${parseFloat(amount).toFixed(2)}`;
   };
 
   // Get status badge color

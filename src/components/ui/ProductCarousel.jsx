@@ -507,11 +507,11 @@ export default function ProductCarousel({
                             <div className="text-left mb-2.5">
                               {product.discountPercentage > 0 ? (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">${product.discountPrice}</span>
-                                  <span className="text-[#A9A9A9] text-[12px] sm:text-[15px] font-normal line-through">${product.price}</span>
+                                  <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">৳{product.discountPrice}</span>
+                                  <span className="text-[#A9A9A9] text-[12px] sm:text-[15px] font-normal line-through">৳{product.price}</span>
                                 </div>
                               ) : (
-                                <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">${product.price || product.discountPrice}</span>
+                                <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">৳{product.price || product.discountPrice}</span>
                               )}
                             </div>
 
@@ -698,11 +698,11 @@ export default function ProductCarousel({
                             <div className="text-left mb-2.5">
                               {product.discountPercentage > 0 ? (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">${product.discountPrice}</span>
-                                  <span className="text-[#A9A9A9] text-[12px] sm:text-[15px] font-normal line-through">${product.price}</span>
+                                  <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">৳{product.discountPrice}</span>
+                                  <span className="text-[#A9A9A9] text-[12px] sm:text-[15px] font-normal line-through">৳{product.price}</span>
                                 </div>
                               ) : (
-                                <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">${product.price || product.discountPrice}</span>
+                                <span className="text-[#E12625] text-[14px] sm:text-[17px] font-semibold">৳{product.price || product.discountPrice}</span>
                               )}
                             </div>
 
