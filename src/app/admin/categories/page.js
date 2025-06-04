@@ -220,8 +220,8 @@ export default function CategoriesPage() {
 
   // Filter categories based on search term
   const filteredCategories = categories.filter(category =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    category.slug.toLowerCase().includes(searchTerm.toLowerCase())
+    (category.name && category.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (category.slug && category.slug.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   if (status === 'loading') {

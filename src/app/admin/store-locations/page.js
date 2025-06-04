@@ -260,8 +260,8 @@ export default function StoreLocationsPage() {
 
   // Filter store locations based on search term
   const filteredLocations = storeLocations.filter(location =>
-    location.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    location.address.toLowerCase().includes(searchTerm.toLowerCase())
+    (location.name && location.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (location.address && location.address.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // If loading session, show loading state

@@ -125,9 +125,9 @@ export default function AdminUsersPage() {
   const filteredUsers = users.filter(user => {
     const searchTermLower = searchTerm.toLowerCase();
     return (
-      user.firstName.toLowerCase().includes(searchTermLower) ||
-      user.lastName.toLowerCase().includes(searchTermLower) ||
-      user.email.toLowerCase().includes(searchTermLower) ||
+      (user.firstName && user.firstName.toLowerCase().includes(searchTermLower)) ||
+      (user.lastName && user.lastName.toLowerCase().includes(searchTermLower)) ||
+      (user.email && user.email.toLowerCase().includes(searchTermLower)) ||
       (user.fullName && user.fullName.toLowerCase().includes(searchTermLower))
     );
   });

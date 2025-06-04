@@ -149,6 +149,29 @@ async function updateCategory(id, categoryData) {
  */
 async function deleteCategory(id) {
   try {
+    // Check if category exists
+    const categoryExists = await db
+      .select({ id: categories.id })
+      .from(categories)
+      .where(eq(categories.id, id))
+      .limit(1);
+
+    if (!categoryExists.length) {
+      return false;
+    }
+
+    // Check if any products are assigned to this category
+    const productsInCategory = await db
+      .select({ count: sql`COUNT(*)` })
+      .from(products)
+      .where(eq(products.category_id, id));
+
+    const productCount = productsInCategory[0]?.count || 0;
+    if (productCount > 0) {
+      throw new Error(`Cannot delete category with ${productCount} products. Please move or delete the products first.`);
+    }
+
+    // Delete the category
     await db.delete(categories).where(eq(categories.id, id));
 
     // Normalize category order after deletion to ensure sequential ordering
@@ -157,7 +180,7 @@ async function deleteCategory(id) {
     return true;
   } catch (error) {
     console.error(`Error deleting category with ID ${id}:`, error);
-    return false;
+    throw new Error(error.message || 'Failed to delete category');
   }
 }
 

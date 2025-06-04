@@ -498,13 +498,17 @@ export async function getAllProductsWithInventory() {
     return productsData.map(product => ({
       ...product,
       // Use primary image from product_images if available, otherwise use the legacy image field
-      image: primaryImageMap[product.id] || product.image,
-      category: categoryMap[product.categoryId] || 'Uncategorized',
+      image: primaryImageMap[product.id] || product.image || '',
+      // Ensure category is never null or undefined
+      category: (product.categoryId && categoryMap[product.categoryId]) || 'Uncategorized',
       price: `৳${parseFloat(product.price).toFixed(2)}`,
       createdAt: product.createdAt.toISOString().split('T')[0],
       stockStatus: product.stock <= 10 ? 'low' : product.stock <= 50 ? 'medium' : 'high',
-      // Ensure description is included
-      description: product.description || ''
+      // Ensure description is included and never null
+      description: product.description || '',
+      // Ensure name and sku are never null
+      name: product.name || 'Unnamed Product',
+      sku: product.sku || ''
     }));
   } catch (error) {
     console.error('Error fetching products with inventory:', error);

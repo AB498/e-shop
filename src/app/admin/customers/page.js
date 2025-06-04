@@ -51,8 +51,8 @@ export default function CustomersPage() {
 
   // Filter customers based on search term
   const filteredCustomers = customers.filter(customer =>
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+    (customer.name && customer.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (customer.email && customer.email.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // Handle view customer details

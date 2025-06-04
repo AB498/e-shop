@@ -115,11 +115,47 @@ export async function updateCourier(id, courierData) {
  */
 export async function deleteCourier(id) {
   try {
+    // Check if courier exists
+    const courierExists = await db
+      .select({ id: couriers.id })
+      .from(couriers)
+      .where(eq(couriers.id, id))
+      .limit(1);
+
+    if (!courierExists.length) {
+      return false;
+    }
+
+    // Check for foreign key relationships
+    // 1. Check for orders using this courier
+    const ordersCount = await db
+      .select({ count: sql`COUNT(*)` })
+      .from(orders)
+      .where(eq(orders.courier_id, id));
+
+    const totalOrders = ordersCount[0]?.count || 0;
+    if (totalOrders > 0) {
+      throw new Error(`Cannot delete courier with ${totalOrders} orders. Orders are historical records and cannot be deleted.`);
+    }
+
+    // 2. Check for courier tracking entries
+    const trackingCount = await db
+      .select({ count: sql`COUNT(*)` })
+      .from(courierTracking)
+      .where(eq(courierTracking.courier_id, id));
+
+    const totalTracking = trackingCount[0]?.count || 0;
+    if (totalTracking > 0) {
+      throw new Error(`Cannot delete courier with ${totalTracking} tracking entries. Tracking records are historical and cannot be deleted.`);
+    }
+
+    // Delete the courier
     await db.delete(couriers).where(eq(couriers.id, id));
+    console.log(`Courier deletion successful for ID ${id}`);
     return true;
   } catch (error) {
     console.error(`Error deleting courier with ID ${id}:`, error);
-    return false;
+    throw new Error(error.message || 'Failed to delete courier');
   }
 }
 

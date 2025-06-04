@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
-import { users } from '@/db/schema';
-import { eq, desc, and, ne } from 'drizzle-orm';
+import { users, orders, wishlistItems, productReviews } from '@/db/schema';
+import { eq, desc, and, ne, sql } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 
 /**
@@ -358,18 +358,68 @@ export async function deleteAdminUser(id) {
       return { error: 'Admin user not found' };
     }
 
-    // Delete user
-    const result = await db.delete(users)
-      .where(and(eq(users.id, id), eq(users.role, 'admin')))
-      .returning({ id: users.id });
+    // Check for foreign key relationships
+    // 1. Check for orders
+    const ordersCount = await db
+      .select({ count: sql`COUNT(*)` })
+      .from(orders)
+      .where(eq(orders.user_id, id));
 
-    if (!result.length) {
-      return { error: 'Failed to delete admin user' };
+    const totalOrders = ordersCount[0]?.count || 0;
+    if (totalOrders > 0) {
+      return { error: `Cannot delete admin user with ${totalOrders} orders. Orders are historical records and cannot be deleted.` };
     }
 
-    return { success: true, message: 'Admin user deleted successfully' };
+    // 2. Check for wishlist items
+    const wishlistCount = await db
+      .select({ count: sql`COUNT(*)` })
+      .from(wishlistItems)
+      .where(eq(wishlistItems.user_id, id));
+
+    const totalWishlistItems = wishlistCount[0]?.count || 0;
+
+    // 3. Check for product reviews
+    const reviewsCount = await db
+      .select({ count: sql`COUNT(*)` })
+      .from(productReviews)
+      .where(eq(productReviews.user_id, id));
+
+    const totalReviews = reviewsCount[0]?.count || 0;
+
+    // Use a transaction to delete related data and the user
+    return await db.transaction(async (tx) => {
+      console.log(`Deleting admin user with ID ${id}...`);
+
+      // Delete wishlist items if any exist
+      if (totalWishlistItems > 0) {
+        console.log(`Deleting ${totalWishlistItems} wishlist items for user ID ${id}...`);
+        await tx
+          .delete(wishlistItems)
+          .where(eq(wishlistItems.user_id, id));
+      }
+
+      // Delete product reviews if any exist
+      if (totalReviews > 0) {
+        console.log(`Deleting ${totalReviews} product reviews for user ID ${id}...`);
+        await tx
+          .delete(productReviews)
+          .where(eq(productReviews.user_id, id));
+      }
+
+      // Delete the admin user
+      const result = await tx.delete(users)
+        .where(and(eq(users.id, id), eq(users.role, 'admin')))
+        .returning({ id: users.id });
+
+      if (!result.length) {
+        throw new Error('Failed to delete admin user');
+      }
+
+      console.log(`Admin user deletion successful for ID ${id}`);
+      return { success: true, message: 'Admin user deleted successfully' };
+    });
   } catch (error) {
     console.error(`Error deleting admin user with ID ${id}:`, error);
-    return { error: 'An error occurred while deleting the admin user' };
+    return { error: error.message || 'An error occurred while deleting the admin user' };
   }
 }
