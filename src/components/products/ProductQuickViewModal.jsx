@@ -189,9 +189,9 @@ const ProductQuickViewModal = () => {
                 gridCols={{
                   default: 2,
                   xs: 2,
-                  sm: 3,
-                  lg: 4,
-                  xl: 5
+                  sm: 2,
+                  lg: 3,
+                  xl: 4
                 }}
               />
             </div>

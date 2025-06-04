@@ -17,6 +17,8 @@ const ModalProductDetails = ({
 }) => {
   // State to track wishlist operation in progress
   const [isWishlistLoading, setIsWishlistLoading] = React.useState(false);
+  // State to track read more/less functionality
+  const [isExpanded, setIsExpanded] = React.useState(false);
   return (
     <div className="w-full md:w-3/5 p-3 sm:p-1.5 md:p-2">
       {/* Product title */}
@@ -44,24 +46,43 @@ const ModalProductDetails = ({
       </div>
 
       {/* Available sizes */}
-      <div className="mb-3 sm:mb-1.5 md:mb-2 border-b border-gray-200 pb-3 sm:pb-1.5 md:pb-2">
-        <p className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[10px] mb-2 sm:mb-1 uppercase">available in:</p>
-        <div className="flex flex-wrap gap-2 sm:gap-1">
-          {['small', 'medium', 'large'].map((size) => (
-            <button
-              key={size}
-              onClick={() => changeSize(size)}
-              className={`px-3 py-1 sm:px-1.5 sm:py-0.5 md:px-2 md:py-0.5 border rounded-full text-sm sm:text-[10px] font-semibold ${
-                selectedSize === size
-                  ? 'border-[#006B51] bg-[#006B51] text-white'
-                  : 'border-[#B1AEA9] text-black'
-              }`}
-            >
-              {size}
-            </button>
-          ))}
+      {product.sizes && product.sizes.length > 0 && (
+        <div className="mb-3 sm:mb-1.5 md:mb-2 border-b border-gray-200 pb-3 sm:pb-1.5 md:pb-2">
+          <p className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[10px] mb-2 sm:mb-1 uppercase">available in:</p>
+          <div className="flex flex-wrap gap-2 sm:gap-1">
+            {product.sizes.map((size) => (
+              <button
+                key={size}
+                onClick={() => changeSize(size)}
+                className={`px-3 py-1 sm:px-1.5 sm:py-0.5 md:px-2 md:py-0.5 border rounded-full text-sm sm:text-[10px] font-semibold ${
+                  selectedSize === size
+                    ? 'border-[#006B51] bg-[#006B51] text-white'
+                    : 'border-[#B1AEA9] text-black'
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Available colors */}
+      {product.colors && product.colors.length > 0 && (
+        <div className="mb-3 sm:mb-1.5 md:mb-2 border-b border-gray-200 pb-3 sm:pb-1.5 md:pb-2">
+          <p className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[10px] mb-2 sm:mb-1 uppercase">available colors:</p>
+          <div className="flex flex-wrap gap-2 sm:gap-1">
+            {product.colors.map((color, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 sm:px-1.5 sm:py-0.5 md:px-2 md:py-0.5 border border-[#B1AEA9] rounded-full text-sm sm:text-[10px] font-semibold text-black bg-white"
+              >
+                {color}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Add to cart section */}
       <div className="flex flex-col gap-2 sm:gap-1 md:gap-1.5">
@@ -164,36 +185,111 @@ const ModalProductDetails = ({
       </div>
 
       {/* Tags */}
-      <div className="mt-3 sm:mt-1.5 md:mt-2 flex flex-col">
-        <div className="flex items-center gap-2 mb-2 sm:mb-1">
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-2 sm:h-2 md:w-2.5 md:h-2.5">
-            <path d="M17.2583 11.175L11.1833 17.25C11.0285 17.4045 10.8447 17.5281 10.6424 17.6142C10.4401 17.7003 10.2232 17.7473 10.0042 17.7528C9.78515 17.7584 9.56609 17.7225 9.35949 17.6468C9.15289 17.5711 8.96274 17.4571 8.79998 17.3108L2.69165 11.2025C2.54586 11.0568 2.43033 10.8822 2.35248 10.6896C2.27463 10.497 2.23615 10.2905 2.23999 10.0825V4.16667C2.23999 3.72464 2.41559 3.30072 2.72815 2.98816C3.04071 2.67559 3.46464 2.5 3.90665 2.5H9.82248C10.0304 2.49616 10.237 2.53464 10.4296 2.61249C10.6222 2.69034 10.7968 2.80587 10.9425 2.95167L17.05 9.05917C17.3625 9.37168 17.5359 9.79558 17.5359 10.2371C17.5359 10.6786 17.3625 11.1025 17.05 11.415L17.2583 11.175Z" stroke="#999999" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M6.40002 7.5C6.62093 7.5 6.80002 7.32091 6.80002 7.1C6.80002 6.87909 6.62093 6.7 6.40002 6.7C6.1791 6.7 6.00002 6.87909 6.00002 7.1C6.00002 7.32091 6.1791 7.5 6.40002 7.5Z" stroke="#999999" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span className="text-[rgba(0,0,0,0.8)] text-sm sm:text-[10px]">Tags:</span>
+      {product.tags && product.tags.length > 0 && (
+        <div className="mt-3 sm:mt-1.5 md:mt-2 flex flex-col">
+          <div className="flex items-center gap-2 mb-2 sm:mb-1">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-2 sm:h-2 md:w-2.5 md:h-2.5">
+              <path d="M17.2583 11.175L11.1833 17.25C11.0285 17.4045 10.8447 17.5281 10.6424 17.6142C10.4401 17.7003 10.2232 17.7473 10.0042 17.7528C9.78515 17.7584 9.56609 17.7225 9.35949 17.6468C9.15289 17.5711 8.96274 17.4571 8.79998 17.3108L2.69165 11.2025C2.54586 11.0568 2.43033 10.8822 2.35248 10.6896C2.27463 10.497 2.23615 10.2905 2.23999 10.0825V4.16667C2.23999 3.72464 2.41559 3.30072 2.72815 2.98816C3.04071 2.67559 3.46464 2.5 3.90665 2.5H9.82248C10.0304 2.49616 10.237 2.53464 10.4296 2.61249C10.6222 2.69034 10.7968 2.80587 10.9425 2.95167L17.05 9.05917C17.3625 9.37168 17.5359 9.79558 17.5359 10.2371C17.5359 10.6786 17.3625 11.1025 17.05 11.415L17.2583 11.175Z" stroke="#999999" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6.40002 7.5C6.62093 7.5 6.80002 7.32091 6.80002 7.1C6.80002 6.87909 6.62093 6.7 6.40002 6.7C6.1791 6.7 6.00002 6.87909 6.00002 7.1C6.00002 7.32091 6.1791 7.5 6.40002 7.5Z" stroke="#999999" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="text-[rgba(0,0,0,0.8)] text-sm sm:text-[10px]">Tags:</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {product.tags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 sm:px-1 sm:py-0.5 border border-[#B1AEA9] rounded-full text-sm sm:text-[9px] text-[#595959] font-medium"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {['Beauty & Care', 'Hair Treatment', 'Tag Name', 'Tag Name', 'Tag Name'].map((tag, index) => (
-            <span
-              key={index}
-              className="px-2 py-1 sm:px-1 sm:py-0.5 border border-[#B1AEA9] rounded-full text-sm sm:text-[9px] text-[#595959] font-medium"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
+      )}
 
       {/* Product details */}
       <div className="mt-3 sm:mt-1.5 md:mt-2">
         <h3 className="font-semibold text-black mb-2 text-sm sm:text-[10px]">Product Details:</h3>
-        <p className="text-[#595959] text-sm sm:text-[9px] leading-relaxed">
-          One bottle of this multipurpose toner, a cult favorite, is sold every three seconds!
-          As the name implies, the recipe successfully increases cell turnover. It maintains
-          smooth, healthy skin by combining three different chemical exfoliants...
-          <span className="text-[#006B51] font-medium cursor-pointer ml-2">Read More</span>
-        </p>
+        {product.description ? (
+          <p className="text-[#595959] text-sm sm:text-[9px] leading-relaxed">
+            {isExpanded ? (
+              <>
+                {product.description}
+                <span
+                  className="text-[#006B51] font-medium cursor-pointer ml-2 hover:underline"
+                  onClick={() => setIsExpanded(false)}
+                >
+                  Read Less
+                </span>
+              </>
+            ) : (
+              <>
+                {product.description.length > 150
+                  ? `${product.description.substring(0, 150)}...`
+                  : product.description
+                }
+                {product.description.length > 150 && (
+                  <span
+                    className="text-[#006B51] font-medium cursor-pointer ml-2 hover:underline"
+                    onClick={() => setIsExpanded(true)}
+                  >
+                    Read More
+                  </span>
+                )}
+              </>
+            )}
+          </p>
+        ) : (
+          <p className="text-[#595959] text-sm sm:text-[9px] leading-relaxed italic">
+            No description available for this product.
+          </p>
+        )}
       </div>
+
+      {/* Additional Product Information */}
+      {(product.brand || product.type || product.material || product.originCountry || product.mfgDate || product.lifespan) && (
+        <div className="mt-3 sm:mt-1.5 md:mt-2 border-t border-gray-200 pt-3 sm:pt-1.5 md:pt-2">
+          <h3 className="font-semibold text-black mb-2 text-sm sm:text-[10px]">Additional Information:</h3>
+          <div className="space-y-1 sm:space-y-0.5">
+            {product.brand && (
+              <div className="flex items-center gap-2">
+                <span className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[9px] font-medium min-w-[60px]">Brand:</span>
+                <span className="text-[#595959] text-sm sm:text-[9px]">{product.brand}</span>
+              </div>
+            )}
+            {product.type && (
+              <div className="flex items-center gap-2">
+                <span className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[9px] font-medium min-w-[60px]">Type:</span>
+                <span className="text-[#595959] text-sm sm:text-[9px]">{product.type}</span>
+              </div>
+            )}
+            {product.material && (
+              <div className="flex items-center gap-2">
+                <span className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[9px] font-medium min-w-[60px]">Material:</span>
+                <span className="text-[#595959] text-sm sm:text-[9px]">{product.material}</span>
+              </div>
+            )}
+            {product.originCountry && (
+              <div className="flex items-center gap-2">
+                <span className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[9px] font-medium min-w-[60px]">Origin:</span>
+                <span className="text-[#595959] text-sm sm:text-[9px]">{product.originCountry}</span>
+              </div>
+            )}
+            {product.mfgDate && (
+              <div className="flex items-center gap-2">
+                <span className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[9px] font-medium min-w-[60px]">Mfg Date:</span>
+                <span className="text-[#595959] text-sm sm:text-[9px]">{product.mfgDate}</span>
+              </div>
+            )}
+            {product.lifespan && (
+              <div className="flex items-center gap-2">
+                <span className="text-[rgba(0,0,0,0.7)] text-sm sm:text-[9px] font-medium min-w-[60px]">Lifespan:</span>
+                <span className="text-[#595959] text-sm sm:text-[9px]">{product.lifespan}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

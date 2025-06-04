@@ -489,7 +489,6 @@ export default function ProductCarousel({
                                 {[
                                   product.category,
                                   product.subcategory,
-                                  'All Products'
                                 ].filter(Boolean).join(', ')}
                               </p>
                             </div>
@@ -680,7 +679,6 @@ export default function ProductCarousel({
                                 {[
                                   product.category,
                                   product.subcategory,
-                                  'All Products'
                                 ].filter(Boolean).join(', ')}
                               </p>
                             </div>
