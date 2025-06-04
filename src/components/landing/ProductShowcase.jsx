@@ -14,15 +14,15 @@ const ProductShowcase = () => {
 
   return (
     <section className="container max-w-6xl mx-auto py-4 sm:py-6 md:py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
         {/* First Product Image */}
         <Link href={`/products?${fashionQueryString}`} className="block">
-          <div className="relative aspect-[4/4] rounded-md overflow-hidden shadow-sm transition-transform hover:scale-[1.01] duration-300 cursor-pointer">
+          <div className="relative aspect-[4/3] rounded-md overflow-hidden shadow-sm cursor-pointer">
             <div className="absolute inset-0 bg-[#D9D9D9] rounded-md"></div>
             <img
               src="/images/product-showcase/product-image-1.png"
               alt="Fashion Product Showcase"
-              className="absolute inset-0 w-full h-full object-fit rounded-md"
+              className="absolute inset-0 w-full h-full object-cover object-top rounded-md transition-transform hover:scale-[1.01] duration-300"
             />
             {/* Add overlay text */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
@@ -34,12 +34,12 @@ const ProductShowcase = () => {
 
         {/* Second Product Image */}
         <Link href={`/products?${lifestyleQueryString}`} className="block">
-          <div className="relative aspect-[4/4] rounded-md overflow-hidden shadow-sm transition-transform hover:scale-[1.01] duration-300 cursor-pointer">
+          <div className="relative aspect-[4/3] rounded-md overflow-hidden shadow-sm cursor-pointer">
             <div className="absolute inset-0 bg-[#D9D9D9] rounded-md"></div>
             <img
               src="/images/product-showcase/product-image-2.png"
               alt="Lifestyle Product Showcase"
-              className="absolute inset-0 w-full h-full object-fit rounded-md"
+              className="absolute inset-0 w-full h-full object-cover object-top rounded-md transition-transform hover:scale-[1.01] duration-300"
             />
             {/* Add overlay text */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">

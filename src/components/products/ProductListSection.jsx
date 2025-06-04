@@ -235,7 +235,7 @@ const ProductListSection = ({
               src={product.image || "/images/product-image.png"}
               alt={product.name}
               fill
-              className="object-cover"
+              className="object-contain"
               sizes={viewType === 'scroll'
                 ? "(max-width: 640px) 50vw, 240px"
                 : "(max-width: 640px) 50vw, (max-width: 768px) 33vw, 180px"
@@ -264,7 +264,7 @@ const ProductListSection = ({
                   aria-label={productInWishlist ? "Remove from wishlist" : "Add to wishlist"}
                 >
                   {isWishlistLoading ? (
-                    <div className="w-3.5 h-3.5 xs:w-4 xs:h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 xs:w-4 xs:h-4 border-[1.5px] border-[#FF3E3E] border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     <ImageWithFallback
                       src={productInWishlist
@@ -273,7 +273,7 @@ const ProductListSection = ({
                       alt="Wishlist"
                       width={16}
                       height={16}
-                      className="w-3.5 h-3.5 xs:w-4 xs:h-4 cursor-pointer transition-all"
+                      className="w-5 h-5 xs:w-4 xs:h-4 cursor-pointer transition-all"
                     />
                   )}
                 </button>
