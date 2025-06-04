@@ -1,7 +1,7 @@
 'use server';
 
 import { db, pool } from '@/lib/db';
-import { orders, orderItems, products, users, categories, couriers, deliveryPersons, productImages, wishlistItems } from '@/db/schema';
+import { orders, orderItems, products, users, categories, couriers, deliveryPersons, productImages, wishlistItems, productPromotions, productReviews } from '@/db/schema';
 import { eq, desc, sql, and, gte, lte, inArray } from 'drizzle-orm';
 
 /**
@@ -807,23 +807,67 @@ export async function deleteProduct(productId) {
       return false;
     }
 
-    // First, delete all related product images
-    await db
-      .delete(productImages)
-      .where(eq(productImages.product_id, productId));
+    // Use a transaction to ensure all operations succeed or fail together
+    return await db.transaction(async (tx) => {
+      console.log(`Deleting product with ID ${productId}...`);
 
-    // Then, delete any wishlist items referencing this product
-    await db
-      .delete(wishlistItems)
-      .where(eq(wishlistItems.product_id, productId));
+      // 1. Delete product promotions that reference this product
+      console.log(`Deleting product_promotions entries for product ID ${productId}...`);
+      const deletedPromotions = await tx
+        .delete(productPromotions)
+        .where(eq(productPromotions.product_id, productId))
+        .returning();
+      console.log(`Deleted ${deletedPromotions.length} product_promotions entries`);
 
-    // Finally, delete the product
-    const result = await db
-      .delete(products)
-      .where(eq(products.id, productId))
-      .returning({ id: products.id });
+      // 2. Delete product reviews that reference this product
+      console.log(`Deleting product_reviews entries for product ID ${productId}...`);
+      const deletedReviews = await tx
+        .delete(productReviews)
+        .where(eq(productReviews.product_id, productId))
+        .returning();
+      console.log(`Deleted ${deletedReviews.length} product_reviews entries`);
 
-    return result.length > 0;
+      // 3. Delete product images that reference this product
+      console.log(`Deleting product_images entries for product ID ${productId}...`);
+      const deletedImages = await tx
+        .delete(productImages)
+        .where(eq(productImages.product_id, productId))
+        .returning();
+      console.log(`Deleted ${deletedImages.length} product_images entries`);
+
+      // 4. Delete wishlist items that reference this product
+      console.log(`Deleting wishlist_items entries for product ID ${productId}...`);
+      const deletedWishlistItems = await tx
+        .delete(wishlistItems)
+        .where(eq(wishlistItems.product_id, productId))
+        .returning();
+      console.log(`Deleted ${deletedWishlistItems.length} wishlist_items entries`);
+
+      // 5. Check for order items that reference this product
+      // Note: We don't delete order items as they are historical records
+      // Instead, we'll log a warning if any exist
+      const orderItemsCount = await tx
+        .select({ count: sql`COUNT(*)` })
+        .from(orderItems)
+        .where(eq(orderItems.product_id, productId));
+
+      const orderItemsTotal = orderItemsCount[0]?.count || 0;
+      if (orderItemsTotal > 0) {
+        console.warn(`Warning: Product ID ${productId} has ${orderItemsTotal} order items. These will remain as historical records.`);
+      }
+
+      // 6. Finally, delete the product itself
+      console.log(`Deleting product with ID ${productId}...`);
+      const result = await tx
+        .delete(products)
+        .where(eq(products.id, productId))
+        .returning({ id: products.id });
+
+      const success = result.length > 0;
+      console.log(`Product deletion ${success ? 'successful' : 'failed'} for ID ${productId}`);
+
+      return success;
+    });
   } catch (error) {
     console.error('Error deleting product:', error);
     return false;
