@@ -8,8 +8,8 @@ const DealsOfTheDay = async () => {
   const { products } = await getAllProducts({
     page: 1,
     limit: 3,
-    sortBy: 'id',
-    sortOrder: 'asc'
+    sortBy: 'created_at',
+    sortOrder: 'desc'
   });
 
   // Filter products that have discounts (discountPercentage > 0)

@@ -16,7 +16,7 @@ const DealsOfTheDayClient = () => {
         const { products: allProducts } = await getAllProducts({
           page: 1,
           limit: 10, // Get more products to filter from
-          sortBy: 'id',
+          sortBy: 'created_at',
           sortOrder: 'desc'
         });
 

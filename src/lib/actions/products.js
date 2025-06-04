@@ -24,9 +24,11 @@ export async function getProductsByCategories(categoryIds, limit = 6) {
         image: products.image,
         description: products.description,
         categoryId: products.category_id,
+        createdAt: products.created_at,
       })
       .from(products)
       .where(or(...categoryConditions))
+      .orderBy(desc(products.created_at))
       .limit(limit);
 
     // Fetch category information for the products
@@ -293,6 +295,7 @@ export async function getAllProducts({
         categoryId: products.category_id,
         stock: products.stock,
         sku: products.sku,
+        createdAt: products.created_at,
       })
       .from(products);
 
