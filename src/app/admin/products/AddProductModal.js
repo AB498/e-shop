@@ -5,6 +5,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 import MultipleImageUpload from '@/components/admin/MultipleImageUpload';
+import SlateEditor from '@/components/ui/slate/SlateEditor';
 
 export default function AddProductModal({ onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -310,13 +311,10 @@ export default function AddProductModal({ onClose, onSubmit }) {
                   Description
                 </label>
                 <div className="mt-1">
-                  <textarea
-                    id="description"
-                    name="description"
-                    rows={3}
+                  <SlateEditor
                     value={formData.description}
-                    onChange={handleInputChange}
-                    className="shadow-sm focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white block w-full text-xs sm:text-sm border border-gray-300 bg-gray-50 rounded-md py-1.5 px-3 transition-colors"
+                    onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
+                    placeholder="Enter product description..."
                   />
                 </div>
               </div>

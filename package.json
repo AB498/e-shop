@@ -35,6 +35,7 @@
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.42.0",
     "formidable": "^3.5.4",
+    "is-hotkey": "^0.2.0",
     "module-alias": "^2.2.3",
     "next": "15.3.1",
     "next-auth": "^4.24.11",
@@ -47,6 +48,9 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "recharts": "^2.15.3",
+    "slate": "^0.103.0",
+    "slate-history": "^0.109.0",
+    "slate-react": "^0.110.3",
     "swiper": "^11.2.6",
     "tailwindcss": "^4.1.4",
     "uuid": "^9.0.1"

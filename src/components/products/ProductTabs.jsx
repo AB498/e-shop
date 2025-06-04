@@ -3,6 +3,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
+import SlateRenderer from '@/components/ui/slate/SlateRenderer';
 
 const ProductTabs = ({ description, sku, type, productId, product }) => {
   const { data: session } = useSession();
@@ -19,9 +20,7 @@ const ProductTabs = ({ description, sku, type, productId, product }) => {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  // Default description if none provided
-  const productDescription = description ||
-    "This product has no description yet. Please check back later for more information.";
+
 
   // Product specifications using real data - only show fields with actual values
   const specifications = [
@@ -193,12 +192,12 @@ const ProductTabs = ({ description, sku, type, productId, product }) => {
       {/* Description Tab */}
       {activeTab === 'description' && (
         <div className="text-[#7E7E7E]">
-          <div className="text-sm mb-2 sm:mb-3 whitespace-pre-wrap">
-            {productDescription}
+          <div className="mb-2 sm:mb-3">
+            <SlateRenderer content={description} />
           </div>
 
           {/* Product Specifications */}
-          <div className="mb-3 sm:mb-4">
+          <div className="mb-3 sm:mb-4 border-t border-[#7E7E7E] border-opacity-25 pt-3 sm:pt-4 ">
             {specifications.map((spec, index) => (
               <div key={index} className="flex mb-1.5">
                 <span className="text-[#7E7E7E] text-xs sm:text-sm font-normal w-1/3">{spec.label}</span>
@@ -207,30 +206,6 @@ const ProductTabs = ({ description, sku, type, productId, product }) => {
             ))}
           </div>
 
-          <div className="border-t border-[#7E7E7E] border-opacity-25 pt-3 sm:pt-4 mb-3 sm:mb-4">
-            <h3 className="text-[#253D4E] text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Packaging & Delivery</h3>
-            <p className="text-xs sm:text-sm mb-2 sm:mb-3">
-              Less lion goodness that euphemistically robin expeditiously bluebird smugly scratched far while thus cackled sheepishly rigid after due one assenting regarding censorious while occasional or this more crane went more as this less much amid overhung anathematic because much held one exuberantly sheep goodness so where rat wry well concomitantly.
-            </p>
-
-            <h3 className="text-[#253D4E] text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Suggested Use</h3>
-            <ul className="list-disc pl-4 sm:pl-5 mb-3 sm:mb-4">
-              <li className="text-[#7E7E7E] text-xs sm:text-sm mb-1">Refrigeration not necessary.</li>
-              <li className="text-[#7E7E7E] text-xs sm:text-sm mb-1">Stir before serving</li>
-            </ul>
-
-            <h3 className="text-[#253D4E] text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Other Ingredients</h3>
-            <ul className="list-disc pl-4 sm:pl-5 mb-3 sm:mb-4">
-              <li className="text-[#7E7E7E] text-xs sm:text-sm mb-1">Organic raw pecans, organic raw cashews.</li>
-              <li className="text-[#7E7E7E] text-xs sm:text-sm mb-1">This butter was produced using a LTG (Low Temperature Grinding) process</li>
-              <li className="text-[#7E7E7E] text-xs sm:text-sm mb-1">Made in machinery that processes tree nuts but does not process peanuts, gluten, dairy or soy</li>
-            </ul>
-
-            <h3 className="text-[#253D4E] text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Warnings</h3>
-            <ul className="list-disc pl-4 sm:pl-5">
-              <li className="text-[#7E7E7E] text-xs sm:text-sm">Oil separation occurs naturally. May contain pieces of shell.</li>
-            </ul>
-          </div>
         </div>
       )}
 

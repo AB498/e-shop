@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { toast } from 'react-hot-toast';
 import StarRating from '@/components/ui/StarRating';
+import SlateRenderer from '@/components/ui/slate/SlateRenderer';
 
 const ProductInfo = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
@@ -70,8 +71,8 @@ const ProductInfo = ({ product }) => {
         )}
       </div>
 
-      <div className="text-[#7E7E7E] text-sm sm:text-base mb-3 sm:mb-4 whitespace-pre-wrap">
-        {product?.description || 'No description available.'}
+      <div className="mb-3 sm:mb-4">
+        <SlateRenderer content={product?.description} />
       </div>
 
       <div className="mb-3 sm:mb-4">
