@@ -3,6 +3,7 @@
 import { db, pool } from '@/lib/db';
 import { orders, orderItems, products, users, categories, couriers, deliveryPersons, productImages, wishlistItems, productPromotions, productReviews } from '@/db/schema';
 import { eq, desc, sql, and, gte, lte, inArray } from 'drizzle-orm';
+import { STOCK_THRESHOLD } from '@/lib/constants/inventory';
 
 /**
  * Get dashboard statistics
@@ -311,10 +312,9 @@ export async function getRecentOrders(limit = 5) {
 /**
  * Get low stock products
  * @param {number} limit - Number of products to return
- * @param {number} threshold - Stock threshold
  * @returns {Promise<Array>} - Low stock products
  */
-export async function getLowStockProducts(limit = 5, threshold = 10) {
+export async function getLowStockProducts(limit = 5) {
   try {
     const lowStockProducts = await db
       .select({
@@ -324,7 +324,7 @@ export async function getLowStockProducts(limit = 5, threshold = 10) {
         sku: products.sku
       })
       .from(products)
-      .where(lte(products.stock, threshold))
+      .where(lte(products.stock, STOCK_THRESHOLD))
       .orderBy(products.stock)
       .limit(limit);
 
@@ -332,7 +332,7 @@ export async function getLowStockProducts(limit = 5, threshold = 10) {
       id: product.sku,
       name: product.name,
       stock: product.stock,
-      threshold
+      threshold: STOCK_THRESHOLD
     }));
   } catch (error) {
     console.error('Error fetching low stock products:', error);

@@ -128,12 +128,6 @@ export default function ProductsTable({
       )
     },
     {
-      key: 'threshold',
-      label: 'Threshold',
-      sortable: true,
-      responsive: 'lg'
-    },
-    {
       key: 'description',
       label: 'Description',
       sortable: true,

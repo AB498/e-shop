@@ -14,6 +14,7 @@ import AddProductModal from './AddProductModal';
 import EditProductModal from './EditProductModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import { slateValueToText } from '@/components/ui/slate/SlateUtils';
+import { getStockStatus } from '@/lib/constants/inventory';
 
 // Helper function to extract plain text from rich text descriptions
 const getPlainTextDescription = (description) => {
@@ -53,22 +54,10 @@ const processProductData = (data) => {
       ? parseFloat(product.price.replace('৳', ''))
       : product.price;
 
-    // Determine stock status based on stock level and threshold
-    // Default threshold if not set
-    const threshold = product.threshold || 10;
-    let stockStatus = 'In Stock';
-
-    if (product.stock <= 0) {
-      stockStatus = 'Out of Stock';
-    } else if (product.stock <= threshold) {
-      stockStatus = 'Low Stock';
-    }
-
     return {
       ...product,
       price: numericPrice,
-      threshold: threshold,
-      stockStatus: stockStatus
+      stockStatus: getStockStatus(product.stock)
     };
   });
 };
@@ -223,18 +212,10 @@ export default function ProductsPage() {
       setProducts(prevProducts =>
         prevProducts.map(p => {
           if (p.id === productId) {
-            // Determine new stock status
-            let stockStatus = 'In Stock';
-            if (newStockLevel <= 0) {
-              stockStatus = 'Out of Stock';
-            } else if (newStockLevel <= (p.threshold || 10)) {
-              stockStatus = 'Low Stock';
-            }
-
             return {
               ...p,
               stock: newStockLevel,
-              stockStatus
+              stockStatus: getStockStatus(newStockLevel)
             };
           }
           return p;

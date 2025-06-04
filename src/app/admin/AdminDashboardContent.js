@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { STOCK_THRESHOLD } from '@/lib/constants/inventory';
 import {
   ArrowUpIcon,
   ArrowDownIcon,
@@ -214,7 +215,7 @@ export default function AdminDashboardContent() {
           name: product.name || 'Unknown Product',
           value: product.stock || 0,
           max: 100, // Assuming max stock is 100
-          threshold: product.threshold || 10
+          threshold: STOCK_THRESHOLD
         }));
 
         setDashboardData({
