@@ -655,12 +655,12 @@ export async function getProductById(id) {
       sizes: product.sizes || [],
       colors: product.colors || [],
       tags: product.tags || [],
-      type: product.type || 'N/A',
-      brand: product.brand || 'N/A',
-      material: product.material || 'N/A',
-      originCountry: product.originCountry || 'N/A',
-      mfgDate: product.mfgDate || 'N/A',
-      lifespan: product.lifespan || 'N/A',
+      type: product.type || null,
+      brand: product.brand || null,
+      material: product.material || null,
+      originCountry: product.originCountry || null,
+      mfgDate: product.mfgDate || null,
+      lifespan: product.lifespan || null,
       // Set default size to first available size or fallback
       defaultSize: (product.sizes && product.sizes.length > 0) ? product.sizes[0] : '60g',
     };

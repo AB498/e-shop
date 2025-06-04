@@ -118,20 +118,26 @@ const ProductInfo = ({ product }) => {
         )}
 
         <div className="flex flex-wrap gap-y-1 mb-3 sm:mb-4">
-          <div className="w-full sm:w-1/2 flex items-center gap-1">
-            <span className="text-[#7E7E7E] text-xs sm:text-sm">Type: {product?.type || 'N/A'}</span>
-          </div>
+          {product?.type && (
+            <div className="w-full sm:w-1/2 flex items-center gap-1">
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">Type: {product.type}</span>
+            </div>
+          )}
           {product?.brand && (
             <div className="w-full sm:w-1/2 flex items-center gap-1">
               <span className="text-[#7E7E7E] text-xs sm:text-sm">Brand: {product.brand}</span>
             </div>
           )}
-          <div className="w-full sm:w-1/2 flex items-center gap-1">
-            <span className="text-[#7E7E7E] text-xs sm:text-sm">MFG: {product?.mfgDate || 'N/A'}</span>
-          </div>
-          <div className="w-full sm:w-1/2 flex items-center gap-1">
-            <span className="text-[#7E7E7E] text-xs sm:text-sm">LIFE: {product?.lifespan || 'N/A'}</span>
-          </div>
+          {product?.mfgDate && (
+            <div className="w-full sm:w-1/2 flex items-center gap-1">
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">MFG: {product.mfgDate}</span>
+            </div>
+          )}
+          {product?.lifespan && (
+            <div className="w-full sm:w-1/2 flex items-center gap-1">
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">LIFE: {product.lifespan}</span>
+            </div>
+          )}
           {product?.material && (
             <div className="w-full sm:w-1/2 flex items-center gap-1">
               <span className="text-[#7E7E7E] text-xs sm:text-sm">Material: {product.material}</span>
@@ -142,9 +148,11 @@ const ProductInfo = ({ product }) => {
               <span className="text-[#7E7E7E] text-xs sm:text-sm">Origin: {product.originCountry}</span>
             </div>
           )}
-          <div className="w-full sm:w-1/2 flex items-center gap-1">
-            <span className="text-[#7E7E7E] text-xs sm:text-sm">SKU: {product?.sku || 'N/A'}</span>
-          </div>
+          {product?.sku && (
+            <div className="w-full sm:w-1/2 flex items-center gap-1">
+              <span className="text-[#7E7E7E] text-xs sm:text-sm">SKU: {product.sku}</span>
+            </div>
+          )}
           {product?.tags && product.tags.length > 0 && (
             <div className="w-full flex items-center gap-1">
               <span className="text-[#7E7E7E] text-xs sm:text-sm">Tags: {product.tags.join(', ')}</span>

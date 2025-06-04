@@ -217,7 +217,7 @@ const ProductLeftBar = ({
                                             <p className="text-[#7E7E7E] text-base">৳{parseFloat(product.price).toFixed(2)}</p>
                                             <div className="flex mt-1">
                                                 <StarRating
-                                                    rating={parseFloat(product.rating) || 4.0}
+                                                    rating={parseFloat(product.rating) || 0}
                                                     reviewCount={product.reviewCount || 0}
                                                     size="sm"
                                                 />
