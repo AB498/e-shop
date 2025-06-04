@@ -72,7 +72,8 @@ const ProductListSection = ({
         try {
           setLoading(true);
           // Use clean URL without cache-busting parameters for better SEO
-          const url = `${fetchUrl}${fetchUrl.includes('?') ? '&' : '?'}limit=${fetchLimit}`;
+          // Add sorting parameters to ensure latest products are shown first
+          const url = `${fetchUrl}${fetchUrl.includes('?') ? '&' : '?'}limit=${fetchLimit}&sortBy=created_at&sortOrder=desc`;
           const response = await fetch(url, {
             cache: 'no-store',
             // Use headers for cache control instead of URL parameters

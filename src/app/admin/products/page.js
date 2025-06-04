@@ -13,6 +13,37 @@ import ProductsTable from './ProductsTable';
 import AddProductModal from './AddProductModal';
 import EditProductModal from './EditProductModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
+import { slateValueToText } from '@/components/ui/slate/SlateUtils';
+
+// Helper function to extract plain text from rich text descriptions
+const getPlainTextDescription = (description) => {
+  if (!description) return '';
+
+  // If it's already plain text, return as is
+  if (typeof description === 'string') {
+    try {
+      // Try to parse as JSON (rich text format)
+      const parsed = JSON.parse(description);
+      if (Array.isArray(parsed)) {
+        // It's rich text, convert to plain text
+        return slateValueToText(parsed);
+      }
+      // If parsing succeeds but it's not an array, treat as plain text
+      return description;
+    } catch {
+      // If JSON parsing fails, it's plain text
+      return description;
+    }
+  }
+
+  // If it's already an array (rich text format), convert to plain text
+  if (Array.isArray(description)) {
+    return slateValueToText(description);
+  }
+
+  // Fallback to string conversion
+  return String(description);
+};
 
 // Helper function to process product data
 const processProductData = (data) => {
@@ -79,11 +110,12 @@ export default function ProductsPage() {
   // Filter products based on search term and stock filter
   const filteredProducts = products.filter(product => {
     // If no search term, show all products (only apply stock filter)
+    const plainTextDescription = getPlainTextDescription(product.description);
     const matchesSearch = !searchTerm.trim() ||
       (product.name && product.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (product.sku && product.sku.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (product.category && product.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (product.description && product.description.toLowerCase().includes(searchTerm.toLowerCase()));
+      (plainTextDescription && plainTextDescription.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesFilter =
       filterStock === 'all' ||
@@ -266,34 +298,7 @@ export default function ProductsPage() {
                 <option value="low">Low Stock</option>
                 <option value="out">Out of Stock</option>
               </select>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setFilterMenuOpen(!filterMenuOpen)}
-                  className="inline-flex items-center px-2.5 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-                >
-                  <FunnelIcon className="-ml-1 mr-1.5 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" aria-hidden="true" />
-                  Filter
-                </button>
-                {filterMenuOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-48 sm:w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                    <div className="py-1" role="menu" aria-orientation="vertical">
-                      <a href="#" className="block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                        All Products
-                      </a>
-                      <a href="#" className="block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                        Active Products
-                      </a>
-                      <a href="#" className="block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                        Out of Stock
-                      </a>
-                      <a href="#" className="block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                        Low Stock
-                      </a>
-                    </div>
-                  </div>
-                )}
-              </div>
+          
               <button
                 type="button"
                 onClick={() => {

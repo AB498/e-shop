@@ -1,9 +1,40 @@
 import ProductDetail from '@/components/products/ProductDetail';
 import { getProductById } from '@/lib/actions/products';
+import { slateValueToText } from '@/components/ui/slate/SlateUtils';
 
 // Enable static generation for better performance
 export const dynamic = 'auto';
 export const revalidate = 3600; // Revalidate every hour
+
+// Helper function to extract plain text from rich text descriptions
+const getPlainTextDescription = (description) => {
+  if (!description) return '';
+
+  // If it's already plain text, return as is
+  if (typeof description === 'string') {
+    try {
+      // Try to parse as JSON (rich text format)
+      const parsed = JSON.parse(description);
+      if (Array.isArray(parsed)) {
+        // It's rich text, convert to plain text
+        return slateValueToText(parsed);
+      }
+      // If parsing succeeds but it's not an array, treat as plain text
+      return description;
+    } catch {
+      // If JSON parsing fails, it's plain text
+      return description;
+    }
+  }
+
+  // If it's already an array (rich text format), convert to plain text
+  if (Array.isArray(description)) {
+    return slateValueToText(description);
+  }
+
+  // Fallback to string conversion
+  return String(description);
+};
 
 // Generate static params for popular products (improves initial load time)
 export async function generateStaticParams() {
@@ -97,7 +128,7 @@ export async function generateMetadata({ params }) {
     let cleanDescription;
     try {
       let baseDescription = product.description
-        ? product.description.replace(/<[^>]*>/g, '').replace(/\n/g, ' ')
+        ? getPlainTextDescription(product.description).replace(/\n/g, ' ')
         : `Discover ${product.name || 'our products'} at Thai Bangla Store.`;
 
       // Helper function to check if value is valid (not null, undefined, empty, or "N/A")
@@ -366,7 +397,7 @@ export default async function ProductDetailPage(props) {
           '@context': 'https://schema.org/',
           '@type': 'Product',
           name: product.name,
-          description: product.description?.replace(/<[^>]*>/g, '').replace(/\n/g, ' ') || `Discover ${product.name} at Thai Bangla Store`,
+          description: product.description ? getPlainTextDescription(product.description).replace(/\n/g, ' ') : `Discover ${product.name} at Thai Bangla Store`,
           image: product.image || '/images/logo.png',
           sku: product.sku || `product-${productId}`,
           mpn: product.sku || `product-${productId}`,

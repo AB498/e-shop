@@ -9,8 +9,8 @@ import { getAllProducts } from '@/lib/actions/products';
 export default async function ProductList({
   page = 1,
   limit = 24,
-  sortBy = 'id',
-  sortOrder = 'asc',
+  sortBy = 'created_at',
+  sortOrder = 'desc',
   categoryId = null,
   search = '',
   minPrice = null,

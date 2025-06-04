@@ -465,7 +465,7 @@ export async function getAllProductsWithInventory() {
         lifespan: products.lifespan,
       })
       .from(products)
-      .orderBy(products.name);
+      .orderBy(desc(products.created_at));
 
     // Get categories
     const categoriesData = await db

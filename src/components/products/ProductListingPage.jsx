@@ -18,8 +18,8 @@ export default async function ProductListingPage({ searchParams }) {
   await searchParams;
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit || '24';
-  const sortBy = searchParams?.sortBy || 'id';
-  const sortOrder = searchParams?.sortOrder || 'asc';
+  const sortBy = searchParams?.sortBy || 'created_at';
+  const sortOrder = searchParams?.sortOrder || 'desc';
   const categoryId = searchParams?.categoryId || null;
   const search = searchParams?.search || '';
 

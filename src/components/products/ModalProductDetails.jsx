@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { toast } from 'react-hot-toast';
+import { slateValueToText } from '@/components/ui/slate/SlateUtils';
 
 const ModalProductDetails = ({
   product,
@@ -19,6 +20,36 @@ const ModalProductDetails = ({
   const [isWishlistLoading, setIsWishlistLoading] = React.useState(false);
   // State to track read more/less functionality
   const [isExpanded, setIsExpanded] = React.useState(false);
+
+  // Helper function to extract plain text from rich text descriptions
+  const getPlainTextDescription = (description) => {
+    if (!description) return '';
+
+    // If it's already plain text, return as is
+    if (typeof description === 'string') {
+      try {
+        // Try to parse as JSON (rich text format)
+        const parsed = JSON.parse(description);
+        if (Array.isArray(parsed)) {
+          // It's rich text, convert to plain text
+          return slateValueToText(parsed);
+        }
+        // If parsing succeeds but it's not an array, treat as plain text
+        return description;
+      } catch {
+        // If JSON parsing fails, it's plain text
+        return description;
+      }
+    }
+
+    // If it's already an array (rich text format), convert to plain text
+    if (Array.isArray(description)) {
+      return slateValueToText(description);
+    }
+
+    // Fallback to string conversion
+    return String(description);
+  };
   return (
     <div className="w-full md:w-3/5 p-3 sm:p-1.5 md:p-2">
       {/* Product title */}
@@ -212,32 +243,35 @@ const ModalProductDetails = ({
         <h3 className="font-semibold text-black mb-2 text-sm sm:text-[10px]">Product Details:</h3>
         {product.description ? (
           <p className="text-[#595959] text-sm sm:text-[9px] leading-relaxed">
-            {isExpanded ? (
-              <>
-                {product.description}
-                <span
-                  className="text-[#006B51] font-medium cursor-pointer ml-2 hover:underline"
-                  onClick={() => setIsExpanded(false)}
-                >
-                  Read Less
-                </span>
-              </>
-            ) : (
-              <>
-                {product.description.length > 150
-                  ? `${product.description.substring(0, 150)}...`
-                  : product.description
-                }
-                {product.description.length > 150 && (
+            {(() => {
+              const plainText = getPlainTextDescription(product.description);
+              return isExpanded ? (
+                <>
+                  {plainText}
                   <span
                     className="text-[#006B51] font-medium cursor-pointer ml-2 hover:underline"
-                    onClick={() => setIsExpanded(true)}
+                    onClick={() => setIsExpanded(false)}
                   >
-                    Read More
+                    Read Less
                   </span>
-                )}
-              </>
-            )}
+                </>
+              ) : (
+                <>
+                  {plainText.length > 150
+                    ? `${plainText.substring(0, 150)}...`
+                    : plainText
+                  }
+                  {plainText.length > 150 && (
+                    <span
+                      className="text-[#006B51] font-medium cursor-pointer ml-2 hover:underline"
+                      onClick={() => setIsExpanded(true)}
+                    >
+                      Read More
+                    </span>
+                  )}
+                </>
+              );
+            })()}
           </p>
         ) : (
           <p className="text-[#595959] text-sm sm:text-[9px] leading-relaxed italic">

@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Table from '@/components/ui/table';
 import Image from 'next/image';
+import { slateValueToText } from '@/components/ui/slate/SlateUtils';
 
 export default function ProductsTable({
   products,
@@ -17,6 +18,35 @@ export default function ProductsTable({
   onSelectionChange,
   selectedProducts
 }) {
+  // Helper function to extract plain text from rich text descriptions
+  const getPlainTextDescription = (description) => {
+    if (!description) return '';
+
+    // If it's already plain text, return as is
+    if (typeof description === 'string') {
+      try {
+        // Try to parse as JSON (rich text format)
+        const parsed = JSON.parse(description);
+        if (Array.isArray(parsed)) {
+          // It's rich text, convert to plain text
+          return slateValueToText(parsed);
+        }
+        // If parsing succeeds but it's not an array, treat as plain text
+        return description;
+      } catch {
+        // If JSON parsing fails, it's plain text
+        return description;
+      }
+    }
+
+    // If it's already an array (rich text format), convert to plain text
+    if (Array.isArray(description)) {
+      return slateValueToText(description);
+    }
+
+    // Fallback to string conversion
+    return String(description);
+  };
   // Define table columns
   const columns = [
     {
@@ -108,11 +138,15 @@ export default function ProductsTable({
       label: 'Description',
       sortable: true,
       responsive: 'lg',
-      render: (product) => (
-        <div className="max-w-xs truncate" title={product.description}>
-          {product.description ? product.description.substring(0, 50) + (product.description.length > 50 ? '...' : '') : ''}
-        </div>
-      )
+      render: (product) => {
+        const plainText = getPlainTextDescription(product.description);
+        const truncatedText = plainText ? plainText.substring(0, 50) + (plainText.length > 50 ? '...' : '') : '';
+        return (
+          <div className="max-w-xs truncate" title={plainText}>
+            {truncatedText}
+          </div>
+        );
+      }
     },
     {
       key: 'stockStatus',
@@ -125,6 +159,17 @@ export default function ProductsTable({
             'bg-red-100 text-red-800'}`}>
           {product.stockStatus}
         </span>
+      )
+    },
+    {
+      key: 'createdAt',
+      label: 'Created',
+      sortable: true,
+      responsive: 'lg',
+      render: (product) => (
+        <div className="text-sm text-gray-600">
+          {product.createdAt}
+        </div>
       )
     },
     {
@@ -175,8 +220,8 @@ export default function ProductsTable({
       pageSizeOptions={[10, 25, 50, 100]}
       initialState={{
         pageSize: 10,
-        sortBy: 'name',
-        sortDirection: 'asc',
+        sortBy: 'createdAt',
+        sortDirection: 'desc',
         selectedRows: selectedProducts || []
       }}
       onStateChange={(state) => {

@@ -7,8 +7,8 @@ const ProductListControls = ({ totalProducts }) => {
 
   // Get current values from URL
   const currentLimit = Number(searchParams.get('limit')) || 24;
-  const currentSortBy = searchParams.get('sortBy') || 'id';
-  const currentSortOrder = searchParams.get('sortOrder') || 'asc';
+  const currentSortBy = searchParams.get('sortBy') || 'created_at';
+  const currentSortOrder = searchParams.get('sortOrder') || 'desc';
 
   // State for dropdowns
   const [showLimitDropdown, setShowLimitDropdown] = useState(false);
@@ -21,6 +21,7 @@ const ProductListControls = ({ totalProducts }) => {
   // Available options
   const limitOptions = [12, 24, 36, 48];
   const sortOptions = [
+    { value: 'created_at', label: 'Newest First', order: 'desc' },
     { value: 'id', label: 'Featured', order: 'asc' },
     { value: 'name', label: 'Name (A-Z)', order: 'asc' },
     { value: 'name', label: 'Name (Z-A)', order: 'desc' },
@@ -33,7 +34,7 @@ const ProductListControls = ({ totalProducts }) => {
     const option = sortOptions.find(
       opt => opt.value === currentSortBy && opt.order === currentSortOrder
     );
-    return option ? option.label : 'Featured';
+    return option ? option.label : 'Newest First';
   };
 
   // Handle limit change

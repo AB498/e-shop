@@ -89,16 +89,54 @@ export function TableProvider({
     // Apply sorting
     if (sorting.sortBy) {
       filteredData.sort((a, b) => {
-        const aValue = a[sorting.sortBy];
-        const bValue = b[sorting.sortBy];
+        let aValue = a[sorting.sortBy];
+        let bValue = b[sorting.sortBy];
+
+        // Handle null/undefined values
+        if (aValue == null && bValue == null) return 0;
+        if (aValue == null) return sorting.sortDirection === 'asc' ? -1 : 1;
+        if (bValue == null) return sorting.sortDirection === 'asc' ? 1 : -1;
 
         // Handle different data types
+        const columnKey = sorting.sortBy;
+
+        // Special handling for ID columns (numeric sorting)
+        if (columnKey === 'id' || columnKey.toLowerCase().includes('id')) {
+          const aNum = parseInt(aValue, 10);
+          const bNum = parseInt(bValue, 10);
+          if (!isNaN(aNum) && !isNaN(bNum)) {
+            return sorting.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+          }
+        }
+
+        // Special handling for date columns
+        if (columnKey.toLowerCase().includes('date') || columnKey === 'createdAt' || columnKey === 'updatedAt') {
+          const aDate = new Date(aValue);
+          const bDate = new Date(bValue);
+          if (!isNaN(aDate.getTime()) && !isNaN(bDate.getTime())) {
+            return sorting.sortDirection === 'asc' ? aDate - bDate : bDate - aDate;
+          }
+        }
+
+        // Handle numeric values
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sorting.sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+
+        // Handle string values that might be numbers
         if (typeof aValue === 'string' && typeof bValue === 'string') {
+          const aNum = parseFloat(aValue);
+          const bNum = parseFloat(bValue);
+          if (!isNaN(aNum) && !isNaN(bNum)) {
+            return sorting.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+          }
+          // String comparison
           return sorting.sortDirection === 'asc'
             ? aValue.localeCompare(bValue)
             : bValue.localeCompare(aValue);
         }
 
+        // Fallback comparison
         if (sorting.sortDirection === 'asc') {
           return aValue > bValue ? 1 : -1;
         } else {
@@ -120,11 +158,16 @@ export function TableProvider({
       const validPageIndex = Math.max(0, Math.min(prev.pageCount - 1, pageIndex));
       const newState = { ...prev, pageIndex: validPageIndex };
       if (onStateChange) {
-        onStateChange({ ...initialState, pagination: newState });
+        onStateChange({
+          pagination: newState,
+          sorting,
+          filters,
+          selectedRows
+        });
       }
       return newState;
     });
-  }, [initialState, onStateChange]);
+  }, [onStateChange, sorting, filters, selectedRows]);
 
   const setPageSize = useCallback((pageSize) => {
     setPagination(prev => {
@@ -137,11 +180,16 @@ export function TableProvider({
         pageIndex: 0, // Reset to first page when changing page size
       };
       if (onStateChange) {
-        onStateChange({ ...initialState, pagination: newState });
+        onStateChange({
+          pagination: newState,
+          sorting,
+          filters,
+          selectedRows
+        });
       }
       return newState;
     });
-  }, [data.length, initialState, onStateChange]);
+  }, [data.length, onStateChange, sorting, filters, selectedRows]);
 
   // Sorting handlers
   const handleSort = useCallback((columnKey) => {
@@ -154,22 +202,32 @@ export function TableProvider({
             : 'asc',
       };
       if (onStateChange) {
-        onStateChange({ ...initialState, sorting: newState });
+        onStateChange({
+          sorting: newState,
+          pagination,
+          filters,
+          selectedRows
+        });
       }
       return newState;
     });
-  }, [initialState, onStateChange]);
+  }, [onStateChange, pagination, filters, selectedRows]);
 
   // Filter handlers
   const setFilter = useCallback((columnKey, value) => {
     setFilters(prev => {
       const newState = { ...prev, [columnKey]: value };
       if (onStateChange) {
-        onStateChange({ ...initialState, filters: newState });
+        onStateChange({
+          filters: newState,
+          sorting,
+          pagination,
+          selectedRows
+        });
       }
       return newState;
     });
-  }, [initialState, onStateChange]);
+  }, [onStateChange, sorting, pagination, selectedRows]);
 
   // Selection handlers
   const toggleRowSelection = useCallback((rowId) => {
@@ -180,11 +238,16 @@ export function TableProvider({
         : [...prev, rowId];
 
       if (onStateChange) {
-        onStateChange({ ...initialState, selectedRows: newState });
+        onStateChange({
+          selectedRows: newState,
+          sorting,
+          pagination,
+          filters
+        });
       }
       return newState;
     });
-  }, [initialState, onStateChange]);
+  }, [onStateChange, sorting, pagination, filters]);
 
   const toggleSelectAll = useCallback(() => {
     setSelectAll(prev => {
@@ -197,14 +260,16 @@ export function TableProvider({
 
       if (onStateChange) {
         onStateChange({
-          ...initialState,
           selectAll: newSelectAll,
-          selectedRows: newSelectedRows
+          selectedRows: newSelectedRows,
+          sorting,
+          pagination,
+          filters
         });
       }
       return newSelectAll;
     });
-  }, [data, initialState, onStateChange]);
+  }, [data, onStateChange, sorting, pagination, filters]);
 
   const value = {
     // Data

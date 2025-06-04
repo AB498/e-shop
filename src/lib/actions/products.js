@@ -140,8 +140,8 @@ export async function getProductsByCategories(categoryIds, limit = 6) {
 export async function getAllProducts({
   page = 1,
   limit = 12,
-  sortBy = 'id',
-  sortOrder = 'asc',
+  sortBy = 'created_at',
+  sortOrder = 'desc',
   categoryId = null,
   search = '',
   minPrice = null,

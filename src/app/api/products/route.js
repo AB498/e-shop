@@ -21,8 +21,8 @@ export async function GET(request) {
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')) : 10;
     const page = searchParams.get('page') ? parseInt(searchParams.get('page')) : 1;
     const search = searchParams.get('search') || '';
-    const sortBy = searchParams.get('sortBy') || 'id';
-    const sortOrder = searchParams.get('sortOrder') || 'asc';
+    const sortBy = searchParams.get('sortBy') || 'created_at';
+    const sortOrder = searchParams.get('sortOrder') || 'desc';
     const minPrice = searchParams.get('minPrice') ? parseFloat(searchParams.get('minPrice')) : null;
     const maxPrice = searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')) : null;
     const color = searchParams.get('color') || null;
