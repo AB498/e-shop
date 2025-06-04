@@ -242,28 +242,6 @@ const ProductListSection = ({
               }
             />
 
-            {/* Overlay images for deals */}
-            {showOverlays && index === 1 && (
-              <div className="absolute inset-0">
-                <ImageWithFallback
-                  src="/images/deals/product-deal-2-overlay.png"
-                  alt="Product Overlay"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
-            {showOverlays && index === 2 && (
-              <div className="absolute inset-0">
-                <ImageWithFallback
-                  src="/images/deals/product-deal-3-overlay.png"
-                  alt="Product Overlay"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
-
             {/* Discount Badge */}
             {discountPercentage > 0 && (
               <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">

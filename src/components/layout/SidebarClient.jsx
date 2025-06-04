@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -9,55 +9,71 @@ const SidebarClient = ({ categories = [] }) => {
   // Initialize with collapsed state (true = collapsed, false = expanded)
   const [collapsed, setCollapsed] = useState(true);
 
+  // Single timeout ref for all delayed actions
+  const timeoutRef = useRef(null);
+
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentCategoryId = searchParams.get('categoryId');
 
-  // Log initial state on component mount and set up event listener
-  useEffect(() => {
-    console.log('SidebarClient mounted, initial collapsed state:', collapsed);
+  // Single function to handle all sidebar state changes
+  const setSidebarState = (newState, source = 'unknown', delay = 0) => {
+    // Clear any pending state changes
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
 
-    // Add event listener for toggling the sidebar
-    const handleToggleSidebar = () => {
-      console.log('Toggle sidebar event received, current state:', collapsed);
-      setCollapsed(!collapsed);
+    const executeStateChange = () => {
+      setCollapsed(prevState => {
+        // Only change state if it's actually different
+        if (prevState !== newState) {
+          console.log(`Sidebar ${source}: ${prevState ? 'collapsed' : 'expanded'} → ${newState ? 'collapsed' : 'expanded'}`);
+          return newState;
+        }
+        return prevState;
+      });
     };
 
-    // Create a custom event listener
-    window.addEventListener('expandSidebar', handleToggleSidebar);
+    if (delay > 0) {
+      timeoutRef.current = setTimeout(executeStateChange, delay);
+    } else {
+      executeStateChange();
+    }
+  };
 
-    // Clean up the event listener when component unmounts
+  // Setup external event listener
+  useEffect(() => {
+    const handleToggleSidebar = () => {
+      setSidebarState(!collapsed, 'external-event');
+    };
+
+    window.addEventListener('expandSidebar', handleToggleSidebar);
     return () => {
       window.removeEventListener('expandSidebar', handleToggleSidebar);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, [collapsed]);
 
-  // Function to toggle sidebar collapsed state
-  const toggleSidebar = () => {
-    console.log('toggleSidebar called, current state:', collapsed);
-    const newState = !collapsed;
-    console.log('Setting new state to:', newState);
-    setCollapsed(newState);
+  // Event handlers using the unified pipeline
+  const handleToggleClick = (e) => {
+    e?.stopPropagation();
+    e?.preventDefault();
+    setSidebarState(!collapsed, 'button-click');
   };
 
-  // Function to handle sidebar item click
-  const handleSidebarItemClick = () => {
-    // Collapse sidebar on all screen sizes
-    setCollapsed(true);
-  };
-
-  // Function to handle mouse enter (hover) on collapsed sidebar
   const handleMouseEnter = () => {
-    if (collapsed) {
-      setCollapsed(false);
-    }
+    setSidebarState(false, 'mouse-enter');
   };
 
-  // Function to handle mouse leave on expanded sidebar
   const handleMouseLeave = () => {
-    if (!collapsed) {
-      setCollapsed(true);
-    }
+    setSidebarState(true, 'mouse-leave', 150); // Small delay for mouse leave
+  };
+
+  const handleSidebarItemClick = () => {
+    setSidebarState(true, 'item-click');
   };
 
   // Find the active category index based on the URL
@@ -89,7 +105,7 @@ const SidebarClient = ({ categories = [] }) => {
 
   // Update document with custom property for sidebar width
   useEffect(() => {
-    console.log('Sidebar collapsed state changed:', collapsed);
+    console.log('Sidebar state effect triggered - collapsed:', collapsed);
 
     document.documentElement.style.setProperty(
       '--sidebar-width',
@@ -135,15 +151,13 @@ const SidebarClient = ({ categories = [] }) => {
       ></div>
       <div
         className={`${collapsed ? 'w-[0px] sm:w-[55px]' : 'w-[16rem]'} h-screen bg-white sm:border-r sm:border-[#E3E3E3] fixed left-0 overflow-y-auto transition-all duration-300 ease-in-out z-10`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
       >
         {/* Menu Toggle Button */}
         <div className="px-3 py-6 flex items-center justify-start">
           <button
             type="button"
             className="p-2 h-10aspect-square rounded-full bg-[#372B86] flex items-center justify-center cursor-pointer  "
-            onClick={toggleSidebar}
+            onClick={handleToggleClick}
             title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             <div className="relative flex items-center justify-center duration-300">
@@ -157,7 +171,11 @@ const SidebarClient = ({ categories = [] }) => {
         </div>
 
         {/* Categories */}
-        <nav className="relative">
+        <nav
+          className="relative"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <ul className="px-2 space-y-1 md:space-y-2 flex flex-col">
             {/* All Products option */}
             <li
